@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <!-- PAGE TITLE HERE -->
+    <title>Sri Ahobila Mutt</title>
+    {{-- <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title> --}}
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Kods">
+    <meta name="robots" content="index, follow">
+
+    <meta name="keywords"
+        content="	admin, admin dashboard, admin template, analytics, bootstrap, bootstrap5, bootstrap 5 admin template, modern, responsive admin dashboard, sales dashboard, sass, ui kit, web app, Fillow SaaS, User Interface (UI), User Experience (UX), Dashboard Design, SaaS Application, Web Application, Data Visualization, Analytics, Customization, Responsive Design, Bootstrap Framework, Charts and Graphs, Data Management, Reporting, Dark Mode, Mobile-Friendly, Dashboard Components, Integrations, Analytics Dashboard, API Integration, User Authentication">
+
+
+    <meta name="description"
+        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+
+    <meta property="og:title" content="Kods">
+    <meta property="og:description"
+        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+    <meta property="og:image" content="https://kodstech.com/">
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="twitter:title" content="Kods">
+    <meta name="twitter:description"
+        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+    <meta name="twitter:image" content="https://kodstech.com/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- MOBILE SPECIFIC -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FAVICONS ICON -->
+    <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+    <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
+
+    <!-- Style css -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">
+
+</head>
+
+
+
+<body class="">
+
+    {{-- <div class="min-h-screen bg-gray-100 dark:bg-gray-900"> --}}
+    <div class="">
+        {{-- <div id="preloader">
+                <div class="lds-ripple">
+                    <div></div>
+                    <div></div>
+                </div>
+            </div> --}}
+        <div id="main-wrapper">
+            {{-- @include('layouts.navigation') --}}
+       
+            {{-- <x-toaster /> --}}
+            <!-- Page Heading -->
+            {{-- @if (isset($header))
+                <header class="bg-white dark:bg-gray-800 shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endif --}}
+
+            <!-- Page Content -->
+            <main>
+                {{-- <x-toaster /> --}}
+
+                {{ $slot }}
+            </main>
+        </div>
+    </div>
+    <script src="/assets/vendor/global/global.min.js"></script>
+    <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+
+
+    <!-- counter -->
+    <script src="/assets/vendor/counter/counter.min.js"></script>
+    <script src="/assets/vendor/counter/waypoint.min.js"></script>
+
+    <!-- Apex Chart -->
+    <script src="/assets/vendor/apexchart/apexchart.js"></script>
+    <script src="/assets/vendor/chart-js/chart.bundle.min.js"></script>
+    <!-- Chart piety plugin files -->
+    <script src="/assets/vendor/peity/jquery.peity.min.js"></script>
+    <!-- Dashboard 1 -->
+    <script src="/assets/js/dashboard/dashboard-1.js"></script>
+
+    <script src="/assets/vendor/owl-carousel/owl.carousel.js"></script>
+
+    <script src="/assets/js/custom.min.js"></script>
+    <script src="/assets/js/dlabnav-init.js"></script>
+{{-- data tables link start --}}
+    <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+	<link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+{{-- data tables link end --}}
+  <!-- Datatable scripts start-->
+  {{-- currently this has been placed in the app layout, which is reflecting in all the pages, later you can show in only those pages where its required --}}
+  <script src="/assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
+  <script src="/assets/vendor/datatables/responsive/responsive.js"></script>
+  <script src="/assets/js/plugins-init/datatables.init.js"></script>
+
+  <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+
+  <script src="/assets/js/custom.min.js"></script>
+  <script src="/assets/js/dlabnav-init.js"></script>
+  <!-- Datatable scripts footer-->
+  {{-- toaster start --}}
+  <script src="/assets/vendor/toastr/js/toastr.min.js"></script>
+  <!-- All init script -->
+  <script src="/assets/js/plugins-init/toastr-init.js"></script>
+
+
+  {{-- toaster end --}}
+    <script>
+        function cardsCenter() {
+            /*  testimonial one function by = owl.carousel.js */
+            jQuery('.card-slider').owlCarousel({
+                loop: true,
+                margin: 0,
+                nav: true,
+                //center:true,
+                slideSpeed: 3000,
+                paginationSpeed: 3000,
+                dots: true,
+                navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    576: {
+                        items: 1
+                    },
+                    800: {
+                        items: 1
+                    },
+                    991: {
+                        items: 1
+                    },
+                    1200: {
+                        items: 1
+                    },
+                    1600: {
+                        items: 1
+                    }
+                }
+            })
+        }
+
+        jQuery(window).on('load', function() {
+            setTimeout(function() {
+                cardsCenter();
+            }, 1000);
+        });
+    </script>
+
+</body>
+
+</html>
