@@ -64,7 +64,7 @@
                                         @foreach ($doc_types as $index => $item)
                                             <tr>
                                                 <th scope="row">{{ $index +1}}</th>
-                                                <td>{{ $item->type }}</td>
+                                                <td>{{ $item->name }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

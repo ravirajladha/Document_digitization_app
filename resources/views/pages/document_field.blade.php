@@ -106,7 +106,7 @@
                                     $count = 1;
                                 @endphp
                                 @foreach ($columns as $index => $column)
-                                @if (!($column == 'id' || $column == 'created_at' || $column == 'updated_at' || $column == 'status' || $column == 'document_name' || $column == 'doc_type'))
+                                @if (!($column == 'id' || $column == 'created_at' || $column == 'updated_at' || $column == 'status' || $column == 'document_name' || $column == 'doc_type' || $column == 'doc_id'))
                                     <tr>
                                         <td>{{ $count }}</td>
                                         <td>{{ $column }}</td>

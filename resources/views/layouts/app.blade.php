@@ -43,7 +43,7 @@
     <!-- Style css -->
     <link href="/assets/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">
-
+    <link rel="stylesheet" href="/assets/vendor/select2/css/select2.min.css">
 </head>
 
 
@@ -52,12 +52,12 @@
 
     {{-- <div class="min-h-screen bg-gray-100 dark:bg-gray-900"> --}}
     <div class="">
-        {{-- <div id="preloader">
+        <div id="preloader">
                 <div class="lds-ripple">
                     <div></div>
                     <div></div>
                 </div>
-            </div> --}}
+            </div>
         <div id="main-wrapper">
             {{-- @include('layouts.navigation') --}}
        
@@ -114,14 +114,14 @@
 
   <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
 
-  <script src="/assets/js/custom.min.js"></script>
-  <script src="/assets/js/dlabnav-init.js"></script>
+
   <!-- Datatable scripts footer-->
   {{-- toaster start --}}
   <script src="/assets/vendor/toastr/js/toastr.min.js"></script>
   <!-- All init script -->
   <script src="/assets/js/plugins-init/toastr-init.js"></script>
-
+  <script src="/assets/vendor/select2/js/select2.full.min.js"></script>
+  <script src="/assets/js/plugins-init/select2-init.js"></script>
 
   {{-- toaster end --}}
     <script>

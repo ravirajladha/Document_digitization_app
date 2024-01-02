@@ -18,8 +18,9 @@
                 </ol>
             </div>
     </div>
-    <form action="{{ url('/')}}/add-document-data" method="post" enctype="multipart/form-data">
+    <form action="{{ url('/')}}/update-first-document-data/{{ $document->id }}" method="post" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div class="container-fluid">
             <div class="row">
                
@@ -30,47 +31,49 @@
                         </div>
                         <div class="card-body">
                             <div class="basic-form">
-                                <form action="{{ url('/')}}/add-basic-detail-to-master-doc-data" method="add-basic-detail-to-master-doc-data" enctype="multipart/form-data">
+                                <form action="{{ url('/')}}/add-basic-detail-to-master-doc-data/" method="add-basic-detail-to-master-doc-data" enctype="multipart/form-data">
+                                    <input type="number" name="id" class="form-control"  value="{{ $document->id }}"  hidden>
 
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Select Type *</label>
                                             <select class="form-select form-control" aria-label="Default select example"
                                             name="type" required>
-                                            <option selected disabled>select</option>
-                                            @foreach ($doc_type as $item)
-                                                <option value="{{ $item->id }}|{{ $item->name }}">{{ $item->name }}</option>
-                                            @endforeach
+                                        
+                                                <option value="{{ $document->document_type_name }}">{{ $document->document_type_name }}</option>
                                         </select>
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Name</label>
-                                            <input type="text" name="name" class="form-control" placeholder="Enter Name">
+                                            <input type="text" name="name" class="form-control" placeholder="Enter Name" value="{{ $document->name }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Location</label>
-                                            <input type="text" name="location" class="form-control" placeholder="Enter Location">
+                                            <input type="text" name="location" class="form-control" placeholder="Enter Location" value="{{ $document->location }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Locker ID</label>
-                                            <input type="number" name="locker_id"  class="form-control" placeholder="Enter Locker ID">
+                                            <input type="number" name="locker_id"  class="form-control" placeholder="Enter Locker ID" value="{{ $document->locker_id }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Number of Pages</label>
-                                            <input type="number" name="number_of_page" class="form-control" placeholder="Enter Number of Pages">
+                                            <input type="number" name="number_of_page" class="form-control" placeholder="Enter Number of Pages" value="{{ $document->number_of_page }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current State</label>
-                                            <select id="inputState" name="current_state"  class="default-select form-control wide">
-                                                <option selected>Choose State...</option>
+                                            <select id="inputState" name="current_state" class="default-select form-control wide">
+                                                <option value="">Choose State...</option>
                                                 @foreach($states as $state)
-                                                <option value="{{ $state->name }}">{{ $state->name }}</option>
-                                            @endforeach
+                                                    <option value="{{ $state->name }}" {{ (isset($document->current_state) && $document->current_state === $state->name) ? 'selected' : '' }}>
+                                                        {{ $state->name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
+                                            
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
@@ -78,8 +81,11 @@
                                             <select id="inputState" name="state"  class="default-select form-control wide">
                                                 <option selected>Choose State...</option>
                                                 @foreach($states as $state)
-                                                <option value="{{ $state->name }}">{{ $state->name }}</option>
-                                            @endforeach
+
+                                                <option value="{{ $state->name }}" {{ (isset($document->state) && $document->state === $state->name) ? 'selected' : '' }}>
+                                                    {{ $state->name }}
+                                                </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                         
@@ -88,102 +94,115 @@
                                             <select id="inputState" name="alternate_state" class="default-select form-control wide">
                                                 <option selected>Choose State...</option>
                                                 @foreach($states as $state)
-                                                <option value="{{ $state->name }}">{{ $state->name }}</option>
-                                            @endforeach
+
+                                                <option value="{{ $state->name }}" {{ (isset($document->alternate_state) && $document->alternate_state === $state->name) ? 'selected' : '' }}>
+                                                    {{ $state->name }}
+                                                </option>
+                                                @endforeach
+
                                             </select>
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current District</label>
-                                            <input type="text" name="current_district" class="form-control" placeholder="Enter Current District">
+                                            <input type="text" name="current_district" class="form-control" placeholder="Enter Current District" value="{{ $document->current_district }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">District</label>
-                                            <input type="text" name="district" class="form-control" placeholder="Enter District">
+                                            <input type="text" name="district" class="form-control" placeholder="Enter District" value="{{ $document->district }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate District</label>
-                                            <input type="text" name="alternate_district" class="form-control" placeholder="Enter Alternate District">
+                                            <input type="text" name="alternate_district" class="form-control" placeholder="Enter Alternate District" value="{{ $document->alternate_district }}"> 
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current Taluk</label>
-                                            <input type="text" name="current_taluk" class="form-control" placeholder="Enter Current Taluk">
+                                            <input type="text" name="current_taluk" class="form-control" placeholder="Enter Current Taluk" value="{{ $document->locker_id }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Taluk</label>
-                                            <input type="text" name="taluk" class="form-control" placeholder="Enter Taluk">
+                                            <input type="text" name="taluk" class="form-control" placeholder="Enter Taluk" value="{{ $document->taluk }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate Taluk</label>
-                                            <input type="text" name="alternate_taluk"  class="form-control" placeholder="Enter Alternate Taluk">
+                                            <input type="text" name="alternate_taluk"  class="form-control" placeholder="Enter Alternate Taluk" value="{{ $document->alternate_taluk }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current Village</label>
-                                            <input type="text" name="current_village" class="form-control" placeholder="Enter Current Village">
+                                            <input type="text" name="current_village" class="form-control" placeholder="Enter Current Village" value="{{ $document->current_village }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Village</label>
-                                            <input type="text" name="village" class="form-control" placeholder="Enter Village">
+                                            <input type="text" name="village" class="form-control" placeholder="Enter Village" value="{{ $document->village }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate Village</label>
-                                            <input type="text" name="alternate_village" class="form-control" placeholder="Enter Alternate Village">
+                                            <input type="text" name="alternate_village" class="form-control" placeholder="Enter Alternate Village" value="{{ $document->alternate_village }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Issued Date</label>
-                                            <input type="date" name="issued_date" class="form-control">
+                                            <input type="date" name="issued_date" class="form-control" value="{{ $document->issued_date }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Document Sub Type</label>
-                                            <input type="text" name="document_sub_type" class="form-control" placeholder="Enter Document Sub Type">
+                                            <input type="text" name="document_sub_type" class="form-control" placeholder="Enter Document Sub Type" value="{{ $document->document_sub_type }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current Town</label>
-                                            <input type="text" name="current_towm" class="form-control" placeholder="Enter Current Town">
+                                            <input type="text" name="current_town" class="form-control" placeholder="Enter Current Town" value="{{ $document->current_town }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Town</label>
-                                            <input type="text" name="town" class="form-control" placeholder="Enter Town">
+                                            <input type="text" name="town" class="form-control" placeholder="Enter Town"value="{{ $document->town }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate Town</label>
-                                            <input type="text" name="alternate_town" class="form-control" placeholder="Enter Alternate Town">
+                                            <input type="text" name="alternate_town" class="form-control" placeholder="Enter Alternate Town"value="{{ $document->alternate_town }}">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Old Locker Number</label>
-                                            <input type="text" name="old_locker_number" class="form-control" placeholder="Enter Old Locker Number">
+                                            <input type="text" name="old_locker_number" value="{{ $document->old_locker_number }}" class="form-control" placeholder="Enter Old Locker Number">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">physically</label>
-                                            <input type="text" name="physically" class="form-control" placeholder="Enter physically">
+                                            <input type="text" name="physically" class="form-control" placeholder="Enter physically" value="{{ $document->physically }}">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">status_description</label>
-                                            <input type="text" name="status_description" class="form-control" placeholder="Enter status_description ">
+                                            <input type="text" name="status_description" class="form-control" placeholder="Enter status_description "value="{{ $document->status_description }}">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">review</label>
-                                            <input type="text" name="review" class="form-control" placeholder="Enter review">
+                                            <input type="text" name="review" class="form-control" placeholder="Enter review"value="{{ $document->review }}">
                                         </div>
+                                        @php
+                                        $selectedSets = [];
+                                        if ($document && $document->set_id) {
+                                            $selectedSets = json_decode($document->set_id, true) ?? [];
+                                        }
+                                        @endphp
+                                        
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Set</label>
                                             <select class="select2-width-75" name="set[]" multiple="multiple" style="width: 75%">
                                                 @foreach($sets as $set)
-                                                <option value="{{ $set->id }}">{{ $set->name }}</option>
+                                                <option value="{{ $set->id }}" {{ in_array($set->id, $selectedSets) ? 'selected' : '' }}>
+                                                    {{ $set->name }}
+                                                </option>
                                               @endforeach
                                             </select>
                                         </div>

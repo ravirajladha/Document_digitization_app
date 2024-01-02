@@ -1,5 +1,5 @@
 <x-app-layout>
- 
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
     @include('layouts.header')
     @include('layouts.sidebar')
@@ -15,7 +15,7 @@
                 </ol>
             </div>
 
-            <form action="{{ url('/')}}/add_set" method="POST" enctype="multipart/form-data">
+            <form id="myAjaxForm"  action="{{ url('/')}}/add_set" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="container-fluid">
                     <div class="row">
@@ -53,7 +53,7 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <table class="table m-2">
+                                <table class="table m-2" id="yourTableId">
                                     <thead>
                                         <tr>
                                             <th scope="col">Sl no</th>
@@ -85,3 +85,52 @@
 
 
 </x-app-layout>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myAjaxForm').on('submit', function (e) {
+            e.preventDefault();  // prevent the form from 'submitting'
+
+            var url = $(this).attr('action'); // get the target URL
+            var formData = new FormData(this); // create a FormData object
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (response) {
+                    console.log(response);
+                    loadUpdatedSets();
+                    // Handle success (e.g., display a success message, clear the form)
+                },
+                error: function (response) {
+                    console.log(response);
+                    // Handle error (e.g., display an error message)
+                }
+            });
+        });
+    });
+
+    function loadUpdatedSets() {
+    $.ajax({
+        url: '/get-updated-sets',
+        type: 'GET',
+        success: function(sets) {
+            var newTableContent = '';
+            $.each(sets, function(index, set) {
+                newTableContent += '<tr>' +
+                                   '<th scope="row">' + (index + 1) + '</th>' +
+                                   '<td>' + set.name + '</td>' +
+                                   '<td><Button class="btn btn-primary">Edit</Button></td>' +
+                                   '</tr>';
+            });
+            $('#yourTableId tbody').html(newTableContent);
+        }
+    });
+}
+
+
+</script>

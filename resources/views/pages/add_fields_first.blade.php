@@ -34,7 +34,7 @@
                                                 name="type">
                                                 <option selected disabled>select</option>
                                                 @foreach ($doc_type as $item)
-                                                    <option value="{{ $item->type }}">{{ $item->type }}</option>
+                                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -53,6 +53,7 @@
         </div>
     </form>
 </div>
+</div>
 
 </div>
 </div>
@@ -61,4 +62,3 @@
 
 
 </x-app-layout>
-
