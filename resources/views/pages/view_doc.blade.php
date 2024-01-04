@@ -52,7 +52,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($document as $index => $item)
-                                                @if (!$index == 0)
+                                                {{-- @if (!$index == 0) --}}
                                                     <tr>
                                                         <td>
                                                             <div class="form-check custom-checkbox ms-2">
@@ -62,7 +62,7 @@
                                                                     for="customCheckBox2"></label>
                                                             </div>
                                                         </td>
-                                                        <th scope="row">{{ $index }}</th>
+                                                        <th scope="row">{{ $index+1 }}</th>
                                                         <td scope="row">{{ $item->document_name }}</td>
                                                         <td scope="row">{{ $item->doc_type }}</td>
 
@@ -92,7 +92,7 @@
 
 
                                                     </tr>
-                                                @endif
+                                                {{-- @endif --}}
                                             @endforeach
 
                                         </tbody>

@@ -66,7 +66,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current State</label>
                                             <select id="inputState" name="current_state" class="default-select form-control wide">
-                                                <option value="">Choose State...</option>
+                                                <option value="" disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                     <option value="{{ $state->name }}" {{ (isset($document->current_state) && $document->current_state === $state->name) ? 'selected' : '' }}>
                                                         {{ $state->name }}
@@ -79,7 +79,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">State</label>
                                             <select id="inputState" name="state"  class="default-select form-control wide">
-                                                <option selected>Choose State...</option>
+                                                <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
 
                                                 <option value="{{ $state->name }}" {{ (isset($document->state) && $document->state === $state->name) ? 'selected' : '' }}>
@@ -92,7 +92,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate State</label>
                                             <select id="inputState" name="alternate_state" class="default-select form-control wide">
-                                                <option selected>Choose State...</option>
+                                                <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
 
                                                 <option value="{{ $state->name }}" {{ (isset($document->alternate_state) && $document->alternate_state === $state->name) ? 'selected' : '' }}>
@@ -199,6 +199,8 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Set</label>
                                             <select class="select2-width-75" name="set[]" multiple="multiple" style="width: 75%">
+                                                <option selected disabled>Choose Set...</option>
+
                                                 @foreach($sets as $set)
                                                 <option value="{{ $set->id }}" {{ in_array($set->id, $selectedSets) ? 'selected' : '' }}>
                                                     {{ $set->name }}

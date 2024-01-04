@@ -25,34 +25,44 @@
 
                                 <table class="table m-2">
                                     <tbody>
-                                        @if($master_data)
-    
-    
-            @foreach ($master_data->getAttributes() as $attribute => $value)
-            @if(!($attribute=="created_by" || $attribute=="created_at" || $attribute=="updated_at" || $attribute=="status_id" || $attribute=="set_id" || $attribute=="id"))
-            <tr>
-                <th>{{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
-                <td>{{ $value ?? 'null' }}</td>
-            </tr>
-            @endif
-            @endforeach
-        
+                                        @if ($master_data)
 
-@endif
 
-                                        @foreach ($columns as $column)
-                                            <tr>
-                                                @if (!($column == 'id' || $column == 'created_at' || $column == 'updated_at' || $column == 'status'))
-                                                    @if (!($field_types->$column == 3 || $field_types->$column == 4 || $field_types->$column == 6))
-                                                        @php
-                                                            $columnName = ucWords(str_replace('_', ' ', $column));
-                                                        @endphp
-                                                        <th>{{ $columnName }}</th>
-                                                        <td>{{ $document->$column }}</td>
-                                                    @endif
+                                            @foreach ($master_data->getAttributes() as $attribute => $value)
+                                                @if (
+                                                    !(
+                                                        $attribute == 'created_by' ||
+                                                        $attribute == 'created_at' ||
+                                                        $attribute == 'updated_at' ||
+                                                        $attribute == 'status_id' ||
+                                                        $attribute == 'set_id' ||
+                                                        $attribute == 'id'
+                                                    ))
+                                                    <tr>
+                                                        <th>{{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
+                                                        <td>{{ $value ?? 'null' }}</td>
+                                                    </tr>
                                                 @endif
-                                            </tr>
-                                        @endforeach
+                                            @endforeach
+
+
+                                        @endif
+
+                                        @foreach ($columnMetadata as $meta)
+                                        <tr>
+                                            @if (!in_array($meta->column_name, ['id', 'created_at', 'updated_at', 'status']))
+                                                @if (!in_array($meta->data_type, [3, 4, 6]))
+                                                    @php
+                                                        $columnName = ucWords(str_replace('_', ' ', $meta->column_name));
+                                                        $value = $document->{$meta->column_name} ?? 'null'; // If no value, 'null' will be displayed
+                                                    @endphp
+                                                    <th>{{ $columnName }}</th>
+                                                    <td>{{ $value }}</td>
+                                                @endif
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                    
 
                                     </tbody>
                                 </table>
@@ -74,31 +84,41 @@
                             <div class="card-body">
                                 <h3>File</h3>
                                 <div class="row">
-                                    @foreach ($columns as $column)
-                                    @if (!($column == 'id' || $column == 'created_at' || $column == 'updated_at' || $column == 'status'))
-                                        @php
-                                            $columnName = ucWords(str_replace('_', ' ', $column));
-                                            $defaultImagePath = asset('/assets/sample/image.jpg'); // Set the path to your default image
-                                            $defaultPdfPath = asset('/assets/sample/pdf.pdf'); // Set the path to your default PDF
-                                            $defaultVideoPath = asset('/assets/sample/video.mp4'); // Set the path to your default video
-                                        @endphp
-                                          @if ($field_types->$column == 3 || $field_types->$column == 4 || $field_types->$column == 6)
-                                        <h4 class="mt-2">{{ $columnName }}</h4>
-                                        @endif
-                                        @if ($field_types->$column == 3)
-                                            <img src="{{ $document->$column ? url($document->$column) : $defaultImagePath }}" alt="{{ $columnName }}">
-                                        @elseif($field_types->$column == 4)
-                                            <iframe src="{{ $document->$column ? url($document->$column) : $defaultPdfPath }}"
+                                    @foreach ($columnMetadata as $column)
+                                        @if (!($column->column_name == 'id' || $column->column_name == 'created_at' || $column->column_name == 'updated_at' || $column->column_name == 'status'))
+                                            @php
+                                                $columnName = ucWords(str_replace('_', ' ', $column->column_name));
+                                                $defaultImagePath = asset('/assets/sample/image.jpg'); // Set the path to your default image
+                                                $defaultPdfPath = asset('/assets/sample/pdf.pdf'); // Set the path to your default PDF
+                                                $defaultVideoPath = asset('/assets/sample/video.mp4'); // Set the path to your default video
+                                            @endphp
+                                            @if ($column->data_type == 3 || $column->data_type == 4 || $column->data_type == 6)
+                                                <h4 class="mt-2">{{ $columnName }}</h4>
+                                            @endif
+                                            @if ($column->data_type == 3)
+                                                <img src="{{                         $document->{$column->column_name}
+ ? url(                        $document->{$column->column_name}
+) : $defaultImagePath }}"
+                                                    alt="{{ $columnName }}">
+                                            @elseif($column->data_type == 4)
+                                                <iframe
+                                                    src="{{                         $document->{$column->column_name}
+ ? url(                        $document->{$column->column_name}
+) : $defaultPdfPath }}"
                                                     width="100%" height="600"></iframe>
-                                        @elseif($field_types->$column == 6)
-                                            <video width="100%" height="500" controls>
-                                                <source src="{{ $document->$column ? url($document->$column) : $defaultVideoPath }}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            @elseif($column->data_type == 6)
+                                                <video width="100%" height="500" controls>
+                                                    <source
+                                                        src="{{                         $document->{$column->column_name}
+                                                        ? url(                        $document->{$column->column_name}
+) : $defaultVideoPath }}"
+                                                        type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            @endif
                                         @endif
-                                    @endif
-                                @endforeach
-                                
+                                    @endforeach
+
                                 </div>
 
                             </div>
@@ -108,33 +128,29 @@
                 <div class="row mb-5">
                     <div class="col-lg-12">
                         <div class="my-auto">
-                            <div class="text-end">
-
+                            <div class="text-end d-flex justify-content-end align-items-center">
                                 @if (Auth::user()->type == 'admin')
-                                    <a class="btn btn-primary"
-                                        href="{{ url('/') }}/edit_document/{{ $tableName }}/{{ $document->id }}"
-                                        rel="noopener noreferrer">Edit</a>
-                                    <a class="btn btn-primary"
-                                        href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                        rel="noopener noreferrer">Edit 11</a>
+                                    <!-- Edit button -->
+                                    <a class="btn btn-primary me-2"
+                                       href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
+                                       rel="noopener noreferrer">Edit</a>
                                 @endif
+                            
                                 <!-- Check if the document has not been accepted -->
                                 @if ($document->status == 0)
-                                    <!-- Display the Update/Edit button for admin -->
-
-
-                                    <!-- If the document is not accepted, show the Accept button -->
-                                    <form action="{{ url('/') }}/update_document" method="post">
+                                    <!-- Accept button form -->
+                                    <form action="{{ url('/') }}/update_document" method="post" class="d-inline">
                                         @csrf
                                         <input type="hidden" value="{{ $tableName }}" name="type">
                                         <input type="hidden" value="{{ $document->id }}" name="id">
                                         <button type="submit" class="btn btn-primary">Accept</button>
                                     </form>
                                 @else
-                                    <!-- If the document has been accepted, show an indicator -->
+                                    <!-- Accepted indicator -->
                                     <button type="button" class="btn btn-success" disabled>Accepted</button>
                                 @endif
                             </div>
+                            
                         </div>
 
                     </div>
@@ -149,3 +165,4 @@
 
 
 </x-app-layout>
+

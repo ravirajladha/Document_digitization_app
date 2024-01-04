@@ -22,11 +22,23 @@
 							<li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li>
 							<li><a href="{{ url('/')}}/add_document_first">Add Document</a></li>	
 							<li><a href="{{ url('/')}}/view_doc_first">Documents</a></li>		
+							<li><a href="{{ url('/')}}/filter-document">Filter Document</a></li>		
 							<li><a href="{{ url('/')}}/set">Set</a></li>		
 							<li><a href="{{ url('/')}}/change_password">Change password</a></li>		
 						
 						</ul>
                     </li>
+					{{-- <li>
+						<a  href="javascript:void(0);" aria-expanded="true">
+						
+							&nbsp;
+						</a>
+                        <ul aria-expanded="true">
+							 <li><a href="{{ url('/')}}/document_type"></a></li>
+							
+						
+						</ul>
+                    </li> --}}
                     @else
                     <li><a class="has-arrow " href="javascript:void()" aria-expanded="true">
 						<i class="fas fa-info-circle"></i>
@@ -50,7 +62,24 @@
                    
                  
                 </ul>
-				<div class="side-bar-profile">
+				<style>
+					.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 50vh; /* Adjust the height as needed */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+.sidebar-footer {
+    margin-top: auto;
+}
+.sidebar-content {
+    overflow-y: auto;
+}
+				</style>
+				<div class="sidebar-container d-flex flex-column sidebar-footer">
+					<div class="sidebar-content overflow-auto sidebar-footer">
+				<div class="side-bar-profile sidebar-footer">
 				
 					<div class="d-flex align-items-center justify-content-between mb-3">
 						<div class="side-bar-profile-img">
@@ -74,10 +103,13 @@
 						</div>
 					</div>
 				</div>
-				
+				</div>
+				</div>
+				<div class="sidebar-footer mt-auto">
 				<div class="copyright">
 					<p>Kods © 2023 All Rights Reserved</p>
 					<p class="fs-12">Made  by Kods</p>
+				</div>
 				</div>
 
                 

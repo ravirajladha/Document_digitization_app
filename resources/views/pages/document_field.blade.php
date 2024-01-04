@@ -36,27 +36,15 @@
                         <h3>Document Type: {{$tableName}}</h3>
                             <div class="form theme-form projectcreate">
                                 <div class="row">
-                                    {{-- <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label>Document Type</label>
-                                            <select class="form-select form-control" aria-label="Default select example"
-                                                name="type">
-                                                <option selected disabled>select</option>
-                                                @foreach ($doc_type as $item)
-                                                    <option value="{{ $item->type }}">{{ $item->type }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
+                                  
                                     <input type="hidden" class="form-control" name="type"
                                                 value="{{$tableName}}">
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label>Fields</label>
-                                            {{-- <input type="text" class="tags tags-input form-control" data-type="tags"
-                                                name="fields" id="exampleInputEmail1" aria-describedby="emailHelp"> --}}
+                                           
                                             <input type="text" class="form-control" name="fields[]"
-                                                id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Documnet Type">
+                                                id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter DocumentType" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -102,35 +90,39 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $count = 1;
-                                @endphp
-                                @foreach ($columns as $index => $column)
-                                @if (!($column == 'id' || $column == 'created_at' || $column == 'updated_at' || $column == 'status' || $column == 'document_name' || $column == 'doc_type' || $column == 'doc_id'))
+                                @foreach ($columnDetails as $index => $column)
                                     <tr>
-                                        <td>{{ $count }}</td>
-                                        <td>{{ $column }}</td>
-                                        @if ($document[0]->$column ==1)
-                                        <td>Text</td>
-                                        @elseif($document[0]->$column==2)
-                                        <td>Number</td>
-                                        @elseif($document[0]->$column==3)
-                                        <td>Image</td>
-                                        @elseif($document[0]->$column==4)
-                                        <td>Pdf Files</td>
-                                        @elseif($document[0]->$column==5)
-                                        <td>Date</td>
-                                        @elseif($document[0]->$column==6)
-                                        <td>Video</td>
-                                        @endif
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $column->column_name }}</td>
+                                        <td>
+                                            @switch($column->data_type)
+                                                @case(1)
+                                                    Text
+                                                    @break
+                                                @case(2)
+                                                    Number
+                                                    @break
+                                                @case(3)
+                                                    Image
+                                                    @break
+                                                @case(4)
+                                                    Pdf Files
+                                                    @break
+                                                @case(5)
+                                                    Date
+                                                    @break
+                                                @case(6)
+                                                    Video
+                                                    @break
+                                                @default
+                                                    Unknown
+                                            @endswitch
+                                        </td>
                                     </tr>
-                                    @php
-                                        $count++;
-                                    @endphp
-                                @endif
                                 @endforeach
                             </tbody>
                         </table>
+                        
                     </div>
                 </div>
             </div>
@@ -149,3 +141,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="{{ url('/')}}/assets_tags/jquery-tags-input.js"></script>
 <script src="{{ url('/')}}/assets_tags/jquery-tags-input-init.js"></script>
+
+<script>
+    
+</script>

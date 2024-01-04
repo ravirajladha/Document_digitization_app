@@ -66,7 +66,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current State</label>
                                             <select id="inputState" name="current_state"  class="default-select form-control wide">
-                                                <option selected>Choose State...</option>
+                                                <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
                                             @endforeach
@@ -76,7 +76,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">State</label>
                                             <select id="inputState" name="state"  class="default-select form-control wide">
-                                                <option selected>Choose State...</option>
+                                                <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
                                             @endforeach
@@ -86,7 +86,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate State</label>
                                             <select id="inputState" name="alternate_state" class="default-select form-control wide">
-                                                <option selected>Choose State...</option>
+                                                <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
                                             @endforeach
@@ -168,20 +168,22 @@
                                             <input type="text" name="old_locker_number" class="form-control" placeholder="Enter Old Locker Number">
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">physically</label>
+                                            <label class="form-label">Physically Checked</label>
                                             <input type="text" name="physically" class="form-control" placeholder="Enter physically">
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">status_description</label>
+                                            <label class="form-label">Status Description</label>
                                             <input type="text" name="status_description" class="form-control" placeholder="Enter status_description ">
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">review</label>
+                                            <label class="form-label">Review</label>
                                             <input type="text" name="review" class="form-control" placeholder="Enter review">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Set</label>
                                             <select class="select2-width-75" name="set[]" multiple="multiple" style="width: 75%">
+                                                <option selected disabled>Choose Set...</option>
+
                                                 @foreach($sets as $set)
                                                 <option value="{{ $set->id }}">{{ $set->name }}</option>
                                               @endforeach
