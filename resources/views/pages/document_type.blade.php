@@ -1,7 +1,7 @@
 <x-app-layout>
  
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
 <div class="content-body default-height">
@@ -53,22 +53,31 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <table class="table m-2">
+                                <div class="table-responsive">
+                                    <table id="example5" class="display" style="min-width: 845px">
                                     <thead>
                                         <tr>
                                             <th scope="col">Sl no</th>
                                             <th scope="col">Document type</th>
+                                            <th scope="col">Number of Document </th>
+                                        
+                                            <th scope="col">Action </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($doc_types as $index => $item)
                                             <tr>
                                                 <th scope="row">{{ $index +1}}</th>
-                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->name }}</td> 
+                                                 <td>{{ isset($doc_counts[$item->id]) ? $doc_counts[$item->id] : 0 }}</td>
+                                                 <td>
+                                                    <a href="/document_field/{{ $item->name  }}"><button class="btn btn-success">Add Field</button></a>
+                                                    <a href="/view_doc/{{ $item->name  }}"><button class="btn btn-primary">View</button></a></td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
                             </div>
                         </div>
                     </div>

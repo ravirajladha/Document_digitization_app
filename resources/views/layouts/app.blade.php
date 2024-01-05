@@ -35,7 +35,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
-    <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
     <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
@@ -165,6 +165,36 @@
             }, 1000);
         });
     </script>
+<script>
+    // Check for session messages
+    @if(session('toastr'))
+        let toastrOptions = {
+            positionClass: "toast-top-right",
+            timeOut: 5000,
+            closeButton: true,
+            debug: false,
+            newestOnTop: true,
+            progressBar: true,
+            preventDuplicates: true,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+            tapToDismiss: false
+        };
+
+        let toastrType = "{{ session('toastr.type') }}";
+        let toastrMessage = "{{ session('toastr.message') }}";
+
+        if (toastrType && toastrMessage) {
+            toastr[toastrType](toastrMessage, " ", toastrOptions);
+        }
+    @endif
+</script>
 
 </body>
 

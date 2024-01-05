@@ -1,7 +1,7 @@
 <x-app-layout>
  
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
 <div class="content-body default-height">

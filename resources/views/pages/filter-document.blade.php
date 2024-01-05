@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
     <div class="content-body default-height">
@@ -117,19 +117,24 @@
 
                                             <!-- Number of Pages Range Filter -->
                                             <div class="mb-3 col-md-6">
-                                                <label for="pagesRange" class="form-label">Number of Pages (1 -
-                                                    100)</label>
-                                                <input type="range" id="pagesRange" name="number_of_pages"
-                                                    min="0" max="100"
-                                                    value="{{ old('number_of_pages', 1) }}"
-                                                    oninput="this.nextElementSibling.value = this.value"
-                                                    class="form-range">
-                                                <output>{{ old('number_of_pages', 1) }}</output>
+                                                <label for="pagesRange" class="form-label">Number of Pages (1 - 100)</label>
+                                                <input type="range" id="pagesRange" name="number_of_pages" min="1" max="100"
+                                                       value="{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}"
+                                                       oninput="if(this.value !== 'null') { this.nextElementSibling.value = this.value; } else { this.nextElementSibling.value = ''; }"
+                                                       class="form-range">
+                                                <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
                                             </div>
+                                            <div class="card-footer">
+                                                <a href="" class="btn-link"></a>
+                                                <div class="text-end"><button class="btn btn-secondary"
+                                                        type="submit">Filter</button>
+                                                </div>
+                                            </div>
+                                            
 
-                                            <div class="col-md-12">
+                                            {{-- <div class="col-md-12">
                                                 <button type="submit" class="btn btn-primary">Filter</button>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </form>
 
@@ -147,7 +152,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Document Type: Table name</h4>
+                                <h4 class="card-title">Document</h4>
 
                             </div>
                             <div class="card-body">
@@ -166,6 +171,7 @@
                                                 <th scope="col">Document Name</th>
                                                 <th scope="col">Document Type</th>
                                                 <th scope="col">Created At</th>
+                                         
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
@@ -187,6 +193,7 @@
                                                     <td scope="row">{{ $item->document_type }}</td>
 
                                                     <td>{{ $item->created_at }}</td>
+                                               
                                                     @if ($item->status_id == 0)
                                                         <td>
                                                             <span class="badge light badge-danger">
@@ -195,7 +202,7 @@
                                                             </span>
                                                         </td>
 
-                                                        <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->id }}"
+                                                        <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"
                                                                 type="button" class="btn btn-primary">Review</a>
                                                         </td>
                                                     @else
@@ -206,7 +213,7 @@
                                                             </span>
                                                         </td>
 
-                                                        <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_nam }}/{{ $item->id }}"
+                                                        <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_nam }}/{{ $item->tableId }}"
                                                                 type="button" class="btn btn-primary">View</a></td>
                                                     @endif
 

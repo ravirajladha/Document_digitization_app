@@ -522,14 +522,68 @@
                         {{-- Dashboard --}}
                     </div>
                 </div>
+                <style>
+                    /* .navbar-expand .navbar-nav .dropdown-menu{
+                        position:inherit;
+                    } */
+                </style>
                 <ul class="navbar-nav header-right">
                     
-                    <li class="nav-item d-flex align-items-center">
+                    {{-- <li class="nav-item d-flex align-items-center">
                         <div class="input-group search-area">
                             <input type="text" class="form-control" placeholder="Search here...">
                             <span class="input-group-text"><a href="javascript:void(0)"><i class="flaticon-381-search-2"></i></a></span>
                         </div>
+                        <div class="input-group search-area">
+                        <select class="default-select form-control wide"
+                        aria-label="Default select example" name="type">
+                        <option selected disabled>select</option>
+                        @foreach ($doc_types as $item)
+                            <option value="{{ $item->name }}">{{ $item->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                    </li> --}}
+                    <li class="nav-item d-flex align-items-center">
+                        <form action="{{ url('/') }}/view_doc_first_submit" method="get" enctype="multipart/form-data"
+                        onsubmit="return validateForm()">
+                      @csrf
+                      <div class="input-group search-area">
+                          <select class="default-select form-control wide" 
+                                  aria-label="Default select example" name="type" id="docTypeDropdown"
+                                  style="z-index: 9999;" required>
+                              <option selected disabled>Select Doc type</option>
+                              @foreach ($doc_types as $item)
+                                  <option value="{{ $item->name }}">{{ $item->name }}</option>
+                              @endforeach
+                          </select>
+                          <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                      </div>
+                  </form>
+                  
+                  <script>
+                      function validateForm() {
+                          var dropdown = document.getElementById('docTypeDropdown');
+                          if (dropdown.value == null || dropdown.value == "") {
+                              alert("Please select a document type.");
+                              return false;
+                          }
+                          return true; 
+                      }
+                  </script>
+                  
                     </li>
+                    {{-- <div class="input-group">
+                        <select class="default-select form-control wide bleft" >
+                            <option selected>Choose...</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div> --}}
+
+                    
                     <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link bell dz-theme-mode" href="javascript:void(0);">
                             <i id="icon-light" class="fas fa-sun"></i>

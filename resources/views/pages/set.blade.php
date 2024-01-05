@@ -1,7 +1,7 @@
 <x-app-layout>
     {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
 <div class="content-body default-height">
@@ -103,16 +103,23 @@
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (response) {
                     console.log(response);
+                    if (response.success) {
+                        toastr.success(response.success); // Display success toast
+                    }
                     loadUpdatedSets();
-                    // Handle success (e.g., display a success message, clear the form)
+                    $('#myAjaxForm')[0].reset();
                 },
-                error: function (response) {
-                    console.log(response);
-                    // Handle error (e.g., display an error message)
+                error: function (error) {
+                    console.log(error);
+                    toastr.warning("Duplicate set found");
+                    if (error.responseJSON && error.responseJSON.error) {
+                        toastr.error(error.responseJSON.error); // Display error toast
+                    }
                 }
             });
         });
     });
+
 
     function loadUpdatedSets() {
     $.ajax({

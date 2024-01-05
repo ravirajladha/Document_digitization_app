@@ -16,6 +16,7 @@ use Validator;
 
 class FilterDocumentService
 {
+
     
     public function filterDocuments($typeId = null, $numberOfPages = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$number_of_pages=null): Collection
     {
@@ -58,58 +59,57 @@ class FilterDocumentService
             });
         }
         // return $query->get();
-       
+        $masterDocId = $query->pluck('id')->toArray();
 
-        $filteredData = $query->get();
-        foreach ($filteredData as $item) {
-            $documentType = $item->document_type_name;
-    
-            // Determine the corresponding table name based on documentType
-            $tableName = $documentType;
-            // Query the corresponding table using masterDocId
-            $tableEntry = DB::table($tableName)
-                ->where('doc_id', $item->id)
-                ->first();
-    
-            // Attach tableId to the $item
-            $item->tableId = $tableEntry ? $tableEntry->id : null;
+        // Call the fetchDataForFilter method from the FilterService
+        foreach ($masterDocId as $currentMasterDocId) {
+            // Call the fetchDataForFilter method from the FilterService for each value
+            $filterData = $this->fetchDataForFilter($currentMasterDocId);
+        
+            // Combine and return the results for each value
+            $results[] = [
+                'masterDocId' => $currentMasterDocId,
+                'documents' => $query->get(),
+                'filterData' => $filterData,
+            ];
         }
-    
-        return $filteredData;
+     // Return the combined results array as an Eloquent collection
+     return new \Illuminate\Database\Eloquent\Collection($results);
+     dd($results);
 
 
-
-
+        return collect($results);
+        // Return the combined results array
+        return [$results];
     }
 
     public function fetchDataForFilter($masterDocId)
     {
         // Step 1: Fetch document_type and id from master_doc_data table
-        $masterDocData = DB::table('master_doc_data')
-                           ->select('document_type', 'id')
+        $masterDocData = Master_doc_data::select('document_type', 'id')
                            ->where('id', $masterDocId)
                            ->first();
-
+// dd($masterDocId);
         if (!$masterDocData) {
             // Handle error: Master document data not found
             return null;
         }
 
         $documentType = $masterDocData->document_type;
-
+// dd($masterDocId);
         // Step 2: Determine table_name based on document_type
-        $masterDocTypeData = DB::table('master_doc_type')
-                               ->select('name')
-                               ->where('id', $masterDocId)
+        $masterDocTypeData =Master_doc_type::select('name')
+                               ->where('id', $documentType)
                                ->first();
-
+// dd($masterDocTypeData);
         if (!$masterDocTypeData) {
+            dd("are yourself");
             // Handle error: Master document type data not found
             return null;
         }
 
         $tableName = $masterDocTypeData->name;
-dd($tableName);
+// dd($tableName);
         // Step 3 & 4: Fetch id from the corresponding table
         $docData = DB::table($tableName)
                      ->select('id')
@@ -122,7 +122,7 @@ dd($tableName);
         }
 
         $ids = $docData->pluck('id')->toArray();
-
+// dd($ids);
         // Step 5: Combine and return the results
         return [
             'masterDocId' => $masterDocId,

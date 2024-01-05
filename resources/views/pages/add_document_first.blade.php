@@ -1,7 +1,7 @@
 <x-app-layout>
  
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
 <div class="content-body default-height">
@@ -65,7 +65,7 @@
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current State</label>
-                                            <select id="inputState" name="current_state"  class="default-select form-control wide">
+                                            <select id="inputState" name="current_state"  class="default-select form-control ">
                                                 <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
@@ -150,7 +150,7 @@
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current Town</label>
-                                            <input type="text" name="current_towm" class="form-control" placeholder="Enter Current Town">
+                                            <input type="text" name="current_town" class="form-control" placeholder="Enter Current Town">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
@@ -212,6 +212,8 @@
 
                 </div>
             </div>
+
+         
         </div>
     </form>
 </div>

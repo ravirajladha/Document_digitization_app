@@ -32,14 +32,32 @@ class Reviewer extends Controller
         return view('reviewer.view_doc_first',['doc_type' => $doc_type]);
     }
 
-    public function view_doc_first_submit(Request $req){
+    public function view_doc_first_submit(Request $req)
+    {
+        dd("sdfsd");
         $tableName = $req->type;
+    
+        // Check if the table exists in the database
+        if (!$tableName) {
+            return redirect()->back()->with('error', 'Table does not exist.');
+        }
+        if (!Schema::hasTable($tableName)) {
+            return redirect()->back()->with('error', 'Table does not exist.');
+        }
+    
         $document = DB::table($tableName)->get();
+    
+        // Check if the table has any data
+        if ($document->isEmpty()) {
+            return redirect()->back()->with('error', 'No data available in the selected table.');
+        }
+    
         $columns = Schema::getColumnListing($tableName);
-
-        // return view('admin.view_doc',['document' => $document,'columns'=>$columns,'tableName' => $tableName]);
-        return redirect('/reviewer/view_doc'.'/'.$tableName);
+    
+        // If everything is fine, redirect to the review page
+        return redirect('/reviewer/view_doc' . '/' . $tableName);
     }
+    
     public function view_doc($tableName){
         $document = DB::table($tableName)->get();
         $columns = Schema::getColumnListing($tableName);

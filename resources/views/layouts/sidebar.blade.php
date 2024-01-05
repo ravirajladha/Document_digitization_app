@@ -24,7 +24,7 @@
 							<li><a href="{{ url('/')}}/view_doc_first">Documents</a></li>		
 							<li><a href="{{ url('/')}}/filter-document">Filter Document</a></li>		
 							<li><a href="{{ url('/')}}/set">Set</a></li>		
-							<li><a href="{{ url('/')}}/change_password">Change password</a></li>		
+							<li><a href="{{ url('/')}}/profile">Change password</a></li>		
 						
 						</ul>
                     </li>
@@ -83,7 +83,7 @@
 				
 					<div class="d-flex align-items-center justify-content-between mb-3">
 						<div class="side-bar-profile-img">
-							<img src="/assets/images/user.jpg" alt="">
+							<img src="/assets/images/avatar/1.png" alt="">
 						</div>
 						<div class="profile-info1">
 							<h5>{{ Auth::user()->name }}</h5>

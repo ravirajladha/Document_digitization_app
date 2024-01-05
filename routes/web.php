@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+// Route::view('/error/500', 'error')->name('error');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/update_document', [Admin::class, 'update_document'])->name('update_document');
     Route::get('/review_doc/{table}/{id}', [Admin::class, 'review_doc'])->name('review_doc');
     Route::get('/filter-document', [Admin::class, 'filterDocument']);
+    Route::get('/get-all-documents-type', [Admin::class, 'getAllDocumentsType']);
 
     // reviewer
     Route::get('/reviewer/index', [Reviewer::class, 'index']);

@@ -1,7 +1,7 @@
 <x-app-layout>
  
 
-        @include('layouts.header')
+        <x-header/>
         @include('layouts.sidebar')
 
 
@@ -39,17 +39,19 @@
 														echo $greeting; ?>
 														</h2>
 														
-            
+														
 													<span>{{ ucwords(Auth::user()->type) }}</span>
 
 													{{-- <a href="javascript:void(0);" class="btn btn-rounded">Button</a> --}}
 												</div>
+											
 												<div class="col-xl-5 col-sm-5 ">
 													<img src="images/chart.png" alt="" class="sd-shape">
 												</div>
 											</div>
 										</div>
 									</div>
+									
 									<div class="col-xl-12">
 										<div class="card">
 											<div class="card-header border-0 pb-0 flex-wrap">

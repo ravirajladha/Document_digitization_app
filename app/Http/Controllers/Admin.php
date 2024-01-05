@@ -39,9 +39,30 @@ class Admin extends Controller
 
     public function document_type()
     {
+        // Fetch all document types
         $doc_types = Master_doc_type::get();
 
-        return view('pages.document_type', ['doc_types' => $doc_types]);
+        // Create an empty array to store counts
+        $doc_counts = [];
+
+        // Loop through each document type and fetch the count of records in master_doc_data
+        foreach ($doc_types as $doc_type) {
+            $count = Master_doc_data::where('document_type', $doc_type->id) // Assuming 'id' is the foreign key in master_doc_data referring to document_type
+                ->count();
+
+            // Add the count to the array with document type name as the key
+            $doc_counts[$doc_type->id] = $count;
+        }
+        // throw new \Exception("This is a test exception.");
+
+        return view('pages.document_type', ['doc_types' => $doc_types, 'doc_counts' => $doc_counts]);
+    }
+
+    public function getAllDocumentsType()
+    {
+        $doc_types = Master_doc_type::all();
+
+        return view('components.header', ['doc_types' => $doc_types]);
     }
     public function set()
     {
@@ -53,17 +74,24 @@ class Admin extends Controller
     {
         // Validate the request data
         $request->validate([
-            'name' => 'required|string|max:255', // Validation rules
+            'name' => 'required|string|max:255|unique:sets', // Unique validation rule added
         ]);
+
+        // Check for duplicate set name
+        $existingSet = Set::where('name', $request->name)->first();
+
+        if ($existingSet) {
+            return response()->json(['error' => 'Set name already exists.'], 422); // Return error response for duplicate name
+        }
 
         // Create a new set
         $set = new Set;
         $set->name = $request->name;
+
         // Save the set to the database
         $set->save();
+
         return response()->json(['success' => 'Set added successfully.']);
-        // Redirect or return response
-        // return redirect('/set')->with('success', 'Set added successfully.');
     }
 
 
@@ -149,7 +177,7 @@ class Admin extends Controller
 
     public function add_document_field(Request $req)
     {
-        $type = $req->type; // The table name
+        $type = strtolower($req->type);
         $fields = $req->fields; // Array of fields
         $fieldType = $req->field_type; // Array of field types corresponding to the fields
         $duplicateColumns = [];
@@ -218,8 +246,6 @@ class Admin extends Controller
     public function add_document_data(Request $req)
     {
 
-
-        // dd($req->all());
         if ($req->type == null) {
             return back();
         }
@@ -232,7 +258,12 @@ class Admin extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
+        $existingDocument = Master_doc_data::where('name', $req->name)->first();
+        if ($existingDocument) {
+            // Return back with an error message or handle as needed
+            session()->flash('toastr', ['type' => 'error', 'message' => 'Document with this name already exists.']);
+            return back();
+        }
         // Splitting the type data
         [$id, $tableName] = explode('|', $req->type, 2);
         $selectedSets = $req->input('set');
@@ -283,19 +314,11 @@ class Admin extends Controller
             ]);
         }
 
-        // Get the columns and document for the view
-        // $columns = Schema::getColumnListing($tableName);
-        // $document = DB::table($tableName)->where('id', 1)->first();
+
         $document_data = DB::table($tableName)->where('doc_id', $masterDocData->id)->first();
 
-        // Redirect to the view with the new data
-        // return view('pages.document-creation-continue', [
-        //     'columns' => $columns,
-        //     'document' => $document,
-        //     'table_name' => $tableName,
-        //     'id' => $document_data->id,
-        //     'document_data' => $document_data
-        // ]);
+
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Please fill the other details.']);
 
         return $this->documentCreationContinue(new Request([
             // 'columns' => $columns,
@@ -306,29 +329,7 @@ class Admin extends Controller
         ]));
     }
 
-    public function documentCreationContinue1(Request $req)
-    {
-        // dd($req->all());
-        // Extracting parameters from the request
-        $tableName = $req->input('table_name');
-        $id = $req->input('id');
-        $document_data = $req->input('document_data');
-        // dd($tableName, $id, $document_data);
-        // Retrieve columns and document based on the provided parameters
-        $columns = Schema::getColumnListing($tableName);
-        $document = DB::table($tableName)->where('id', 1)->first();
-        $document_data = DB::table($tableName)->where('doc_id', $document_data->doc_id)->first();
 
-        // dd($document);
-        // Render the view with all the necessary data
-        return view('pages.document-creation-continue', [
-            'columns' => $columns,
-            'document' => $document,
-            'table_name' => $tableName,
-            'doc_id' => $id,
-            'document_data' => $document_data,
-        ]);
-    }
 
     public function documentCreationContinue(Request $req)
     {
@@ -395,11 +396,18 @@ class Admin extends Controller
         if ($existingRecord) {
             // Update the existing record
             $documentId =   DB::table($tableName)->where('doc_id', $master_doc_id)->update($updateData);
+            // dd($documentId->id);
         } else {
             // Insert a new record with the doc_id
             $updateData['doc_id'] = $master_doc_id; // Assuming 'doc_id' is the column name
             $documentId = DB::table($tableName)->insertGetId($updateData); // This is the new
+            // dd("insert");
+
         }
+        $documentId = DB::table($tableName)->where('doc_id', $master_doc_id)->value('id');
+
+        // dd($documentId);
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Document added successfully']);
 
         return redirect('/review_doc/' . $tableName . '/' . $documentId);
     }
@@ -411,27 +419,28 @@ class Admin extends Controller
         if (Schema::hasTable($tableName)) {
             $columns = Schema::getColumnListing($tableName);
         }
-    
+
         $document =  DB::table($tableName)->where('id', $id)->first();
-        
+
         if (!$document) {
             // Handle the case where the document doesn't exist
             return redirect()->back()->withErrors(['error' => 'Document not found']);
         }
-    
+
         $updateData = ['status' => 1]; // Assuming 'status' is the column name
         $updateData1 = ['status_id' => 1]; // Assuming 'status' is the column name
-    
+
         // Update the record in the individual document table
         DB::table($tableName)->where('id', $id)->update($updateData);
-    
+
         // Update the status in the master document table using the doc_id from the individual document
         Master_doc_data::where('id', $document->doc_id)->update($updateData1);
-    
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Document updated successfully']);
+
         // Redirect back with a success message or to a different page
         return redirect('/review_doc/' . $tableName . '/' . $id)->with('success', 'Document updated successfully');
     }
-    
+
 
     public function updateFirstDocumentData(Request $req, $doc_id)
     {
@@ -505,6 +514,7 @@ class Admin extends Controller
 
 
 
+
         return $this->documentCreationContinue(new Request([
             // 'columns' => $columns,
             // 'document' => $document,
@@ -550,13 +560,28 @@ class Admin extends Controller
     public function view_doc_first_submit(Request $req)
     {
         $tableName = $req->type;
+
+        // Check if the table exists in the database
+        if (!Schema::hasTable($tableName)) {
+            session()->flash('toastr', ['type' => 'warning', 'message' => 'No such document found']);
+
+            return redirect()->back()->with('error', 'Table does not exist.');
+        }
+
         $document = DB::table($tableName)->get();
+
+        // Check if the table has any data
+        if ($document->isEmpty()) {
+            session()->flash('toastr', ['type' => 'warning', 'message' => 'No such document found']);
+
+            return redirect()->back()->with('error', 'No data available in the selected table.');
+        }
+
         $columns = Schema::getColumnListing($tableName);
 
-        // return view('pages.view_doc',['document' => $document,'columns'=>$columns,'tableName' => $tableName]);
+        // If everything is fine, redirect to the review page
         return redirect('/view_doc' . '/' . $tableName);
     }
-
 
 
 
@@ -576,6 +601,7 @@ class Admin extends Controller
     }
     public function document_field(Request $req, $table = null)
     {
+        $doc_types = Master_doc_type::all();
         $tableName = $table ?? $req->type ?? null;
 
         if (!$tableName || !Schema::hasTable($tableName)) {
@@ -592,9 +618,6 @@ class Admin extends Controller
             'columnDetails' => $columnDetails,
         ]);
     }
-
-
-
 
     public function edit_document($table, $id)
     {
@@ -664,74 +687,114 @@ class Admin extends Controller
     }
 
     public function review_doc($table, $id)
-{
-    $tableName = $table;
-    if (Schema::hasTable($tableName)) {
-        $columnMetadata = Table_metadata::where('table_name', $tableName)
-                            ->get()
-                            ->keyBy('column_name'); // This will help you to easily find metadata by column name.
+    {
+        $tableName = $table;
+        if (Schema::hasTable($tableName)) {
+            $columnMetadata = Table_metadata::where('table_name', $tableName)
+                ->get()
+                ->keyBy('column_name'); // This will help you to easily find metadata by column name.
+        }
+
+        $document = DB::table($tableName)->where('id', $id)->first();
+        $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
+
+
+
+        // ...
+        $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
+
+        // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
+        $set_ids = array_map('strval', $set_ids);
+        // dd($set_ids);
+        $masterDataEntries = Master_doc_data::all()->filter(function ($entry) use ($set_ids, $document) {
+            $entrySetIds = json_decode($entry->set_id, true);
+            return count(array_intersect($set_ids, $entrySetIds)) > 0 && $entry->id != $document->doc_id;
+        });
+
+
+        //  dd($masterDataEntries);
+        $matchingData[] = null;
+        foreach ($masterDataEntries as $entry) {
+
+            $tableName = $entry->document_type_name;
+
+            // Fetch data from the respective table using doc_id
+            $data = DB::table($tableName)
+                ->where('doc_id', $entry->id)
+                ->first();
+
+            if ($data) {
+                // Add the data to the matchingData array
+                $matchingData[] = $data;
+            } else {
+                $matchingData[] = null;
+            }
+        }
+        //    dd($matchingData);
+
+        return view('pages.review_doc', [
+            'columnMetadata' => $columnMetadata,
+            'document' => $document,
+            'tableName' => $tableName,
+            'id' => $id,
+            'master_data' => $get_document_master_data,
+            'matchingData' => $matchingData,
+        ]);
     }
 
-    $document = DB::table($tableName)->where('id', $id)->first();
-    $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
+    public function filterDocument(Request $request)
+    {
+        $typeId = $request->input('type');
+        $numberOfPages = $request->input('number_of_pages');
+        $state = $request->input('state');
+        $district = $request->input('district');
+        $village = $request->input('village');
+        $locker_no = $request->input('locker_no');
+        $old_locker_no = $request->input('old_locker_no');
+        $number_of_pages = $request->input('number_of_pages');
+        // Flash input to the session
+        $request->flash();
+        $doc_types = Master_doc_type::get();
 
-    return view('pages.review_doc', [
-        'columnMetadata' => $columnMetadata,
-        'document' => $document,
-        'tableName' => $tableName,
-        'id' => $id,
-        'master_data' => $get_document_master_data
-    ]);
-}
-
-public function filterDocument(Request $request){
-    $typeId = $request->input('type');
-    $numberOfPages = $request->input('number_of_pages');
-    $state = $request->input('state');
-    $district = $request->input('district');
-    $village = $request->input('village');
-    $locker_no = $request->input('locker_no');
-    $old_locker_no = $request->input('old_locker_no');
-    $number_of_pages = $request->input('number_of_pages');
- // Flash input to the session
- $request->flash();
- $doc_types = Master_doc_type::get();
-
- // Get unique values from the state columns
- $states = Master_doc_data::pluck('state')
-     ->merge(Master_doc_data::pluck('current_state'))
-     ->merge(Master_doc_data::pluck('alternate_state'))
-     ->unique()
-     ->reject(function ($value) { return empty($value); }) // Reject empty values
-     ->values();
- $districts = Master_doc_data::pluck('district')
-     ->merge(Master_doc_data::pluck('current_district'))
-     ->merge(Master_doc_data::pluck('alternate_district'))
-     ->unique()
-     ->reject(function ($value) { return empty($value); }) // Reject empty values
-     ->values();
- $villages = Master_doc_data::pluck('village')
-     ->merge(Master_doc_data::pluck('current_village'))
-     ->merge(Master_doc_data::pluck('alternate_village'))
-     ->unique()
-     ->reject(function ($value) { return empty($value); }) // Reject empty values
-     ->values();
+        // Get unique values from the state columns
+        $states = Master_doc_data::pluck('state')
+            ->merge(Master_doc_data::pluck('current_state'))
+            ->merge(Master_doc_data::pluck('alternate_state'))
+            ->unique()
+            ->reject(function ($value) {
+                return empty($value);
+            }) // Reject empty values
+            ->values();
+        $districts = Master_doc_data::pluck('district')
+            ->merge(Master_doc_data::pluck('current_district'))
+            ->merge(Master_doc_data::pluck('alternate_district'))
+            ->unique()
+            ->reject(function ($value) {
+                return empty($value);
+            }) // Reject empty values
+            ->values();
+        $villages = Master_doc_data::pluck('village')
+            ->merge(Master_doc_data::pluck('current_village'))
+            ->merge(Master_doc_data::pluck('alternate_village'))
+            ->unique()
+            ->reject(function ($value) {
+                return empty($value);
+            }) // Reject empty values
+            ->values();
 
 
-    $documents = $this->filterdocumentService->filterDocuments($typeId, $numberOfPages,$state,$district,$village,$locker_no,$old_locker_no,$number_of_pages);
+        $documents = $this->filterdocumentService->filterDocuments($typeId, $numberOfPages, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages);
 
-    $data = [
-        'documents' => $documents,
-        'doc_type' => Master_doc_type::get(),
-        'selected_type' => $typeId,
-        'selected_number_of_pages' => $numberOfPages,
-        'states' => $states,
-        'districts' => $districts,
-        'villages' => $villages,
-    ];
+        $data = [
+            'documents' => $documents,
+            'doc_type' => Master_doc_type::get(),
+            'selected_type' => $typeId,
+            'selected_number_of_pages' => $numberOfPages,
+            'states' => $states,
+            'districts' => $districts,
+            'villages' => $villages,
+        ];
 
-    return view('pages.filter-document', $data);
-}
-
-
+        return view('pages.filter-document', $data);
+    }
 }

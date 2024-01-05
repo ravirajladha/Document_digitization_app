@@ -1,7 +1,7 @@
 <x-app-layout>
  
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
 <div class="content-body default-height">
@@ -38,13 +38,14 @@
                                 <div class="row">
                                   
                                     <input type="hidden" class="form-control" name="type"
-                                                value="{{$tableName}}">
+                                                value="{{ucwords($tableName)}}">
+                                                
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label>Fields</label>
+                                            <label>Fields Name</label>
                                            
                                             <input type="text" class="form-control" name="fields[]"
-                                                id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter DocumentType" required>
+                                                id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Field Name" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -81,7 +82,8 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table m-2">
+                        <div class="table-responsive">
+                            <table id="example5" class="display" style="min-width: 845px">
                             <thead>
                                 <tr>
                                     <th scope="col">Sl No.</th>
@@ -123,6 +125,7 @@
                             </tbody>
                         </table>
                         
+                    </div>
                     </div>
                 </div>
             </div>

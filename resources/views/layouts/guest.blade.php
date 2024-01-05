@@ -36,7 +36,8 @@
 
 <head>
   <!-- PAGE TITLE HERE -->
-  <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title>
+  {{-- <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title> --}}
+  <title>Sri Ahobila Mutt</title>
     
     
   <meta charset="utf-8">

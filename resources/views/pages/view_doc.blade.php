@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    @include('layouts.header')
+    <x-header/>
     @include('layouts.sidebar')
 
     <div class="content-body default-height">
@@ -8,11 +8,7 @@
         <div class="container-fluid">
             {{-- $tableName --}}
             <div class="row page-titles">
-                <span> <form action="{{ url('/') }}/add-document-data" method="POST" enctype="multipart/form-data" style="none">
-                    @csrf
-                    <input type="hidden" name="type" value="{{ $tableName }}">
-                    <button class="btn btn-secondary" type="submit">Add Document</button>
-                </form></span> 
+              
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                     <li class="breadcrumb-item "><a href="javascript:void(0)">View Document</a></li>
@@ -28,7 +24,11 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Document Type: {{ $tableName }}</h4>
-
+                                {{-- <span> <form action="{{ url('/') }}/add-document-data" method="POST" enctype="multipart/form-data" style="none">
+                                    @csrf
+                                    <input type="hidden" name="type" value="{{ $tableName }}">
+                                    <button class="btn btn-secondary" type="submit">Add Document</button>
+                                </form></span>  --}}
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
