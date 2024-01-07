@@ -18,13 +18,13 @@
 							<span class="nav-text">Document  <span class="badge badge-xs badge-danger ms-2">New</span></span>
 						</a>
                         <ul aria-expanded="true">
+							<li><a href="{{ url('/')}}/add_document_first">Add Document</a></li>	
 							 <li><a href="{{ url('/')}}/document_type">Document Type</a></li>
 							<li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li>
-							<li><a href="{{ url('/')}}/add_document_first">Add Document</a></li>	
-							<li><a href="{{ url('/')}}/view_doc_first">Documents</a></li>		
+							<li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		
 							<li><a href="{{ url('/')}}/filter-document">Filter Document</a></li>		
 							<li><a href="{{ url('/')}}/set">Set</a></li>		
-							<li><a href="{{ url('/')}}/profile">Change password</a></li>		
+							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
 						
 						</ul>
                     </li>

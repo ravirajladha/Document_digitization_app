@@ -53,7 +53,9 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
+                                <div class="table-responsive">
                                 <table class="table m-2" id="yourTableId">
+                                    
                                     <thead>
                                         <tr>
                                             <th scope="col">Sl no</th>
@@ -73,6 +75,7 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

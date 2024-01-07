@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Migrations\Migration;
-
+// use Illuminate\Database\Eloquent\Collection::paginate;
 class Admin extends Controller
 {
     protected $filterdocumentService;
@@ -564,8 +564,8 @@ class Admin extends Controller
         // Check if the table exists in the database
         if (!Schema::hasTable($tableName)) {
             session()->flash('toastr', ['type' => 'warning', 'message' => 'No such document found']);
-
-            return redirect()->back()->with('error', 'Table does not exist.');
+            return redirect('/filter-document');
+            // return redirect()->back()->with('error', 'Table does not exist.');
         }
 
         $document = DB::table($tableName)->get();
@@ -744,6 +744,8 @@ class Admin extends Controller
 
     public function filterDocument(Request $request)
     {
+        $documents = collect();
+
         $typeId = $request->input('type');
         $numberOfPages = $request->input('number_of_pages');
         $state = $request->input('state');
@@ -781,10 +783,17 @@ class Admin extends Controller
                 return empty($value);
             }) // Reject empty values
             ->values();
+  $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no']);
+    $filterSet = count(array_filter($filters, function($value) { return !is_null($value) && $value !== ''; }));
 
-
+    if ($filterSet > 0) {
+            if ($typeId == 'all') {
+                $documents = Master_doc_data::paginate(15); // Adjust the number per page as needed
+            } else {
         $documents = $this->filterdocumentService->filterDocuments($typeId, $numberOfPages, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages);
-
+            }
+        }
+// dd($documents);
         $data = [
             'documents' => $documents,
             'doc_type' => Master_doc_type::get(),

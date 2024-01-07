@@ -38,6 +38,8 @@
                                                 <select class="form-select form-control"
                                                     aria-label="Default select example" name="type">
                                                     <option value="" selected>Select Document Type</option>
+                                                    <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>Show All Documents</option>
+
                                                     @foreach ($doc_type as $item)
                                                         <option value="{{ $item->id }}"
                                                             {{ old('type') == $item->id ? 'selected' : '' }}>
@@ -236,7 +238,12 @@
         </div>
 
     </div>
-
+    <div id="preloader">
+		<div class="lds-ripple">
+			<div></div>
+			<div></div>
+		</div>
+    </div>
 
     @include('layouts.footer')
 
@@ -253,3 +260,28 @@
         pagesOutput.value = this.value;
     }
 </script>
+<script>
+    document.querySelector('form').onsubmit = function() {
+        document.getElementById('preloader').style.display = 'block'; // Show loader
+    };
+    
+    window.onload = function() {
+        document.getElementById('preloader').style.display = 'none'; // Hide loader on page load
+    };
+    </script>
+    <style>
+        #loader {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            height: 2em;
+            width: 2em;
+            overflow: visible;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+        </style>
+        
