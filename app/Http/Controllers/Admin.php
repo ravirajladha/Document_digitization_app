@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Set;
+use App\Models\Receiver_type;
 use App\Models\User;
 use App\Models\State;
+use App\Models\Receiver;
 use App\Models\Doc_type;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -23,6 +25,7 @@ use App\Services\FilterDocumentService;
 use App\Services\DocumentService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Validator;
@@ -64,6 +67,8 @@ class Admin extends Controller
 
         return view('components.header', ['doc_types' => $doc_types]);
     }
+
+
     public function set()
     {
         $data = Set::get();
@@ -87,13 +92,30 @@ class Admin extends Controller
         // Create a new set
         $set = new Set;
         $set->name = $request->name;
-
+        $set->created_by =  Auth::user()->id;
         // Save the set to the database
         $set->save();
 
         return response()->json(['success' => 'Set added successfully.']);
     }
 
+    public function updateSet(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:sets,id',
+            'name' => 'required|string|max:255', // Validation rules as per your requirements
+        ]);
+
+        try {
+            $set = Set::findOrFail($request->id);
+            $set->name = $request->name;
+            $set->save();
+
+            return response()->json(['success' => 'Set updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the set.'], 500);
+        }
+    }
 
     public function getUpdatedSets()
     {
@@ -101,7 +123,173 @@ class Admin extends Controller
         return response()->json($sets);
     }
 
+    //receiver types function
+    public function receiverType()
+    {
+        $data = Receiver_type::get();
+        return view('pages.receiver-type', ['data' => $data]);
+    }
 
+    public function addReceiverType(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255|unique:receiver_types', // Adjust the table name as needed
+        ]);
+
+        // Create a new receiver type
+        $receiverType = new Receiver_type;
+        $receiverType->name = $request->name;
+        // Assign other fields as necessary
+        $receiverType->created_by =  Auth::user()->id;
+        // Save the receiver type to the database
+        $receiverType->save();
+
+        return response()->json(['success' => 'Receiver type added successfully.']);
+    }
+
+    public function updateReceiverType(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:receiver_types,id',
+            'name' => 'required|string|max:255', // Validation rules as per your requirements
+        ]);
+
+        try {
+            $receiverType = Receiver_type::findOrFail($request->id);
+            $receiverType->name = $request->name;
+            // Update other fields as necessary
+
+            $receiverType->save();
+
+            return response()->json(['success' => 'Receiver type updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the receiver type.'], 500);
+        }
+    }
+    public function getUpdatedReceiverTypes()
+    {
+        $receiverTypes = Receiver_type::get(); // Assuming ReceiverType is your model name
+        return response()->json($receiverTypes);
+    }
+    //receivers
+    public function showReceivers()
+    {
+        $data = Receiver::with('receiverType')->get();
+        $receiverTypes = Receiver_type::all();
+        return view('pages.receivers', [
+            'data' => $data,
+            'receiverTypes' => $receiverTypes
+        ]);
+    }
+    
+    public function getUpdatedReceivers()
+    {
+        // Fetch receivers with the receiver type name
+        $receivers = Receiver::with('receiverType')->get();
+    
+        // Transform the data to include the receiver type name
+        $receivers = $receivers->map(function ($receiver) {
+            return [
+                'id' => $receiver->id,
+                'name' => $receiver->name,
+                'phone' => $receiver->phone,
+                'city' => $receiver->city,
+                'email' => $receiver->email,
+                'receiver_type_name' => optional($receiver->receiverType)->name, // Get the name from the relationship
+            ];
+        });
+    
+        return response()->json($receivers);
+    }
+    
+    
+    public function addReceiver(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:receivers,email',
+            'city' => 'required|string|max:255',
+            'receiver_type_id' => 'required|exists:receiver_types,id',
+        ]);
+
+        // Create a new receiver
+        $receiver = new Receiver;
+        $receiver->name = $request->name;
+        $receiver->phone = $request->phone;
+        $receiver->email = $request->email;
+        $receiver->city = $request->city;
+        $receiver->receiver_type_id = $request->receiver_type_id;
+        $receiver->created_by = Auth::user()->id; // or Auth::user()->id;
+        $receiver->save();
+
+        // Return a JSON response indicating success
+        return response()->json(['success' => 'Receiver added successfully.']);
+    }
+
+    public function updateReceiver(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:receivers,id',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:receivers,email,' . $request->id, // Ensure email is unique except for the current receiver
+            'city' => 'required|string|max:255',
+            'receiver_type_id' => 'required|exists:receiver_types,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $receiver = Receiver::findOrFail($request->id);
+            $receiver->name = $request->name;
+            $receiver->phone = $request->phone;
+            $receiver->email = $request->email;
+            $receiver->city = $request->city;
+            $receiver->receiver_type_id = $request->receiver_type_id;
+            // Add any additional fields you want to update here
+
+            $receiver->save();
+
+            return response()->json(['success' => 'Receiver updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the receiver.'], 500);
+        }
+    }
+
+    public function showAssignedDocument()
+    {
+        $documentTypes = Master_doc_type::all(); // Assuming you have a DocumentType model
+    $receiverTypes = Receiver_type::all(); // Assuming you have a ReceiverType model
+
+    return view('pages.assign-documents', [
+        'documentTypes' => $documentTypes,
+        'receiverTypes' => $receiverTypes
+    ]);
+    }
+    public function assignDocument(Request $request)
+    {
+        // Validate the request...
+
+        $token = Str::random(40); // Generate a unique token
+        // $expiresAt = Carbon::now()->addHours(24); 
+
+        $assignment = Receiver_type::create([
+            'document_type' => $request->document_type,
+            'doc_id' => $request->doc_id,
+            'receiver_id' => $request->receiver_id,
+            'access_token' => $token,
+            'expires_at' => $expiresAt,
+        ]);
+
+        // Send email to the receiver with the unique link
+        // The link would be something like url('/document-access/' . $token)
+    }
     public function addDocumentType(Request $req, DocumentTableService $documentTypeService)
     {
         // First, validate the request data to ensure 'type' is provided
@@ -122,10 +310,6 @@ class Admin extends Controller
             return redirect('/document_type')->with('error', 'Table already exists.');
         }
     }
-
-
-
-
 
     public function add_document_field_old(Request $req)
     {
@@ -316,7 +500,6 @@ class Admin extends Controller
 
 
         $document_data = DB::table($tableName)->where('doc_id', $masterDocData->id)->first();
-
 
         session()->flash('toastr', ['type' => 'success', 'message' => 'Please fill the other details.']);
 
@@ -814,7 +997,7 @@ class Admin extends Controller
                 return empty($value);
             }) // Reject empty values
             ->values();
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date','number_of_pages_start','number_of_pages_end']);
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date', 'number_of_pages_start', 'number_of_pages_end']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
@@ -823,7 +1006,7 @@ class Admin extends Controller
             if ($typeId == 'all') {
                 $documents = Master_doc_data::paginate(15); // Adjust the number per page as needed
             } else {
-                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages_start,$number_of_pages_end, $start_date, $end_date);
+                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages_start, $number_of_pages_end, $start_date, $end_date);
             }
         }
         // dd($documents);
@@ -841,8 +1024,8 @@ class Admin extends Controller
         return view('pages.filter-document', $data);
     }
 
-    public function dataSets(){
+    public function dataSets()
+    {
         return view('pages.data-sets');
-
     }
 }

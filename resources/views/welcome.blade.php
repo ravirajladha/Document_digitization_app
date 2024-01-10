@@ -4,13 +4,16 @@
         @csrf
         <div class="form-group mb-4">
             <label class="form-label" for="username">Email</label>
-            <input type="email"  class="form-control" placeholder="Enter email" id="username" :value="old('email')" name="email" required autofocus autocomplete="username">
+               {{-- replace the below value, if you need to remove the admin login which i have given directly in the input field to reduce the time of testing.
+        :value="old('email')" --}}
+        <input type="email"  class="form-control" placeholder="Enter email" id="username"  value="admin@gmail.com" name="email" required autofocus autocomplete="username">
+          
         </div>
         <div class="mb-sm-4 mb-3 position-relative">
             <label class="form-label" for="dlab-password">Password</label>
             <input  type="password"
             name="password"
-            required autocomplete="current-password"  id="dlab-password" class="form-control" value="123456">
+            required autocomplete="current-password"  id="dlab-password" class="form-control" value="admin">
             <span class="show-pass eye">
                 <i class="fa fa-eye-slash"></i>
                 <i class="fa fa-eye"></i>

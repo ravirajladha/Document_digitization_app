@@ -15,21 +15,21 @@
                     </ol>
                 </div>
 
-                <form id="myAjaxForm" action="{{ url('/') }}/add_set" method="POST" enctype="multipart/form-data">
+                <form id="myAjaxForm" action="{{ url('/') }}/add-receiver-type" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="card profile-card card-bx m-b30">
                                     <div class="card-header">
-                                        <h6 class="title">Add Set</h6>
+                                        <h6 class="title">Add Receiver Type</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="form theme-form projectcreate">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="mb-3">
-                                                        <label for="exampleInputEmail1" class="form-label">Set </label>
+                                                        <label for="exampleInputEmail1" class="form-label">Receiver Type </label>
                                                         <input type="text" class="form-control" name="name"
                                                             id="exampleInputEmail1" aria-describedby="emailHelp"
                                                             placeholder="Enter Set Name">
@@ -107,14 +107,14 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Set</h5>
+                <h5 class="modal-title">Edit Receiver Type</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <!-- Update Form -->
                 <form id="updateSetForm">
                     <div class="mb-3">
-                        <label for="setName" class="form-label">Set Name</label>
+                        <label for="setName" class="form-label">Receiver Type Name</label>
                         <input type="text" class="form-control" id="setName" name="name">
                         <input type="hidden" id="setId" name="id">
                     </div>
@@ -182,7 +182,7 @@
 
     function loadUpdatedSets() {
         $.ajax({
-            url: '/get-updated-sets',
+            url: '/get-updated-receiver-types',
             type: 'GET',
             success: function(sets) {
                 var newTableContent = '';
@@ -214,7 +214,7 @@ function submitUpdateForm() {
 console.log(formData);
     // AJAX call to update the set
     $.ajax({
-        url: '/update-set', // Replace with your server's update URL
+        url: '/update-receiver-type', // Replace with your server's update URL
         type: 'POST',
         data: formData,
         headers: {

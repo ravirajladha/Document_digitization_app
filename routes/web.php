@@ -36,6 +36,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/set', [Admin::class, 'set'])->name('set');
     Route::get('/get-updated-sets',[Admin::class, 'getUpdatedSets'])->name('getUpdatedSets');
     Route::post('/add_set', [Admin::class, 'addSet'])->name('addSet');
+    Route::post('/update-set', [Admin::class, 'updateSet'])->name('updateSet');
+    //receiver type
+    Route::get('/receiver-type', [Admin::class, 'receiverType'])->name('receiverType');
+    Route::get('/get-updated-receiver-types',[Admin::class, 'getUpdatedReceiverTypes'])->name('getUpdatedReceiverTypes');
+    Route::post('/add-receiver-type', [Admin::class, 'addReceiverType'])->name('addReceiverType');
+    Route::post('/update-receiver-type', [Admin::class, 'updateReceiverType'])->name('updateReceiverType');
+ 
+// New routes for receivers
+Route::get('/receivers', [Admin::class, 'showReceivers'])->name('showReceivers');
+Route::post('/add-receiver', [Admin::class, 'addReceiver'])->name('addReceiver');
+Route::post('/update-receiver', [Admin::class, 'updateReceiver'])->name('updateReceiver');
+Route::get('/get-updated-receivers',[Admin::class, 'getUpdatedReceivers'])->name('getUpdatedReceivers');
+// New routes for assigning documents
+Route::get('/assign-documents', [Admin::class, 'showAssignedDocument'])->name('showAssignedDocument');
+
 
     Route::get('/document_type', [Admin::class, 'document_type'])->name('document_type');
     Route::post('/add_document_type', [Admin::class, 'addDocumentType'])->name('addDocumentType');
