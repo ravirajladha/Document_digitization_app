@@ -35,38 +35,41 @@
                                     <table id="example5" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
-                                                <th>
+                                                {{-- <th>
                                                     <div class="custom-control d-inline custom-checkbox ms-2">
                                                         <input type="checkbox" class="form-check-input" id="checkAll"
                                                             required="">
                                                         <label class="form-check-label" for="checkAll"></label>
                                                     </div>
-                                                </th>
+                                                </th> --}}
                                                 <th scope="col">Sl no</th>
                                                 <th scope="col">Document Name</th>
                                                 <th scope="col">Document Type</th>
-                                                <th scope="col">Created At</th>
+                                                <th scope="col">Village</th>
+                                                <th scope="col">District</th>
+                                               
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($document as $index => $item)
+                                            @foreach ($documents as $index => $item)
                                                 {{-- @if (!$index == 0) --}}
                                                     <tr>
-                                                        <td>
+                                                        {{-- <td>
                                                             <div class="form-check custom-checkbox ms-2">
                                                                 <input type="checkbox" class="form-check-input"
                                                                     id="customCheckBox2" required="">
                                                                 <label class="form-check-label"
                                                                     for="customCheckBox2"></label>
                                                             </div>
-                                                        </td>
+                                                        </td> --}}
                                                         <th scope="row">{{ $index+1 }}</th>
                                                         <td scope="row">{{ $item->document_name }}</td>
                                                         <td scope="row">{{ $item->doc_type }}</td>
 
-                                                        <td>{{ $item->created_at }}</td>
+                                                        <td>{{ $item->current_village  ? $item->current_village : '--' }}</td>
+                                                        <td>{{ $item->current_district   ? $item->current_district : '--' }}</td>
                                                         @if ($item->status == 0)
                                                             <td>
                                                                 <span class="badge light badge-danger">

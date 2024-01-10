@@ -32,11 +32,11 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- MOBILE SPECIFIC -->
-    <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
     <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
+    <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
 
@@ -53,14 +53,14 @@
     {{-- <div class="min-h-screen bg-gray-100 dark:bg-gray-900"> --}}
     <div class="">
         <div id="preloader">
-            <div class="lds-ripple">
-                <div></div>
-                <div></div>
+                <div class="lds-ripple">
+                    <div></div>
+                    <div></div>
+                </div>
             </div>
-        </div>
         <div id="main-wrapper">
             {{-- @include('layouts.navigation') --}}
-
+       
             {{-- <x-toaster /> --}}
             <!-- Page Heading -->
             {{-- @if (isset($header))
@@ -99,36 +99,31 @@
 
     <script src="/assets/js/custom.min.js"></script>
     <script src="/assets/js/dlabnav-init.js"></script>
-    {{-- data tables link start --}}
+{{-- data tables link start --}}
     <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
-    {{-- <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet"> --}}
-    {{-- <link href="/assets/css/style.css" rel="stylesheet"> --}}
-    {{-- data tables link end --}}
-    <!-- Datatable scripts start-->
-    {{-- currently this has been placed in the app layout, which is reflecting in all the pages, later you can show in only those pages where its required --}}
-    <script src="/assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="/assets/vendor/datatables/responsive/responsive.js"></script>
-    <script src="/assets/js/plugins-init/datatables.init.js"></script>
+	<link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+{{-- data tables link end --}}
+  <!-- Datatable scripts start-->
+  {{-- currently this has been placed in the app layout, which is reflecting in all the pages, later you can show in only those pages where its required --}}
+  <script src="/assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
+  <script src="/assets/vendor/datatables/responsive/responsive.js"></script>
+  <script src="/assets/js/plugins-init/datatables.init.js"></script>
 
-    {{-- <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script> --}}
+  <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
 
 
-    <!-- Datatable scripts footer-->
-    {{-- toaster start --}}
-    <script src="/assets/vendor/toastr/js/toastr.min.js"></script>
-    <!-- All init script -->
-    <script src="/assets/js/plugins-init/toastr-init.js"></script>
-    <script src="/assets/vendor/select2/js/select2.full.min.js"></script>
-    <script src="/assets/js/plugins-init/select2-init.js"></script>
+  <!-- Datatable scripts footer-->
+  {{-- toaster start --}}
+  <script src="/assets/vendor/toastr/js/toastr.min.js"></script>
+  <!-- All init script -->
+  <script src="/assets/js/plugins-init/toastr-init.js"></script>
+  <script src="/assets/vendor/select2/js/select2.full.min.js"></script>
+  <script src="/assets/js/plugins-init/select2-init.js"></script>
 
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> --}}
-    <script src="{{ url('/') }}/assets/jquery-tags-input.js"></script>
-    <script src="{{ url('/') }}/assets/jquery-tags-input-init.js"></script>
-
-    {{-- <script src="vendor/global/global.min.js"></script> --}}
-
+  {{-- toaster end --}}
     <script>
         function cardsCenter() {
             /*  testimonial one function by = owl.carousel.js */
@@ -170,36 +165,36 @@
             }, 1000);
         });
     </script>
-    <script>
-        // Check for session messages
-        @if (session('toastr'))
-            let toastrOptions = {
-                positionClass: "toast-top-right",
-                timeOut: 5000,
-                closeButton: true,
-                debug: false,
-                newestOnTop: true,
-                progressBar: true,
-                preventDuplicates: true,
-                onclick: null,
-                showDuration: "300",
-                hideDuration: "1000",
-                extendedTimeOut: "1000",
-                showEasing: "swing",
-                hideEasing: "linear",
-                showMethod: "fadeIn",
-                hideMethod: "fadeOut",
-                tapToDismiss: false
-            };
+<script>
+    // Check for session messages
+    @if(session('toastr'))
+        let toastrOptions = {
+            positionClass: "toast-top-right",
+            timeOut: 5000,
+            closeButton: true,
+            debug: false,
+            newestOnTop: true,
+            progressBar: true,
+            preventDuplicates: true,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+            tapToDismiss: false
+        };
 
-            let toastrType = "{{ session('toastr.type') }}";
-            let toastrMessage = "{{ session('toastr.message') }}";
+        let toastrType = "{{ session('toastr.type') }}";
+        let toastrMessage = "{{ session('toastr.message') }}";
 
-            if (toastrType && toastrMessage) {
-                toastr[toastrType](toastrMessage, " ", toastrOptions);
-            }
-        @endif
-    </script>
+        if (toastrType && toastrMessage) {
+            toastr[toastrType](toastrMessage, " ", toastrOptions);
+        }
+    @endif
+</script>
 
 </body>
 

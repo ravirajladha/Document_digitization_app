@@ -141,9 +141,6 @@
 </x-app-layout>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="{{ url('/')}}/assets_tags/jquery-tags-input.js"></script>
-<script src="{{ url('/')}}/assets_tags/jquery-tags-input-init.js"></script>
 
 <script>
     

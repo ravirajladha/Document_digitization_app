@@ -1,7 +1,10 @@
 <x-app-layout>
-
-    <x-header/>
+    {{-- <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css"> --}}
+    <x-header />
+    
+    
     @include('layouts.sidebar')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 
     <div class="content-body default-height">
         <!-- row -->
@@ -21,230 +24,269 @@
 
             </div>
 
-            <div class="container-fluid">
-                <div class="row">
 
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Filter Document</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="basic-form">
-                                    <form action="{{ url('/') }}/filter-document" method="GET">
-                                        <div class="row">
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select Document Type </label>
-                                                <select class="form-select form-control"
-                                                    aria-label="Default select example" name="type">
-                                                    <option value="" selected>Select Document Type</option>
-                                                    <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>Show All Documents</option>
+            <div class="row">
 
-                                                    @foreach ($doc_type as $item)
-                                                        <option value="{{ $item->id }}"
-                                                            {{ old('type') == $item->id ? 'selected' : '' }}>
-                                                            {{ $item->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Filter Document</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="basic-form">
+                                <form action="{{ url('/') }}/filter-document" method="GET">
+                                    <div class="row">
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Select Document Type </label>
+                                            <select class="form-select form-control" aria-label="Default select example"
+                                                name="type">
+                                                <option value="" selected>Select Document Type</option>
+                                                <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>
+                                                    Show All Documents</option>
 
-                                            </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select State </label>
-                                                {{-- ... --}}
-                                                <select class="form-select form-control" name="state"
-                                                    aria-label="State select">
-                                                    <option value="" selected>Select State</option>
-                                                    @foreach ($states as $state)
-                                                        <option value="{{ $state }}"
-                                                            {{ old('state') == $state ? 'selected' : '' }}>
-                                                            {{ $state }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                {{-- ... --}}
+                                                @foreach ($doc_type as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ old('type') == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
 
-
-                                            </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select District </label>
-                                                {{-- ... --}}
-                                                <select class="form-select form-control" name="district"
-                                                    aria-label="District select">
-                                                    <option value="" selected>Select District</option>
-                                                    @foreach ($districts as $district)
-                                                        <option value="{{ $district }}"
-                                                            {{ old('district') == $district ? 'selected' : '' }}>
-                                                            {{ $district }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            {{-- ... --}}
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select Village </label>
-                                                {{-- ... --}}
-                                                <select class="form-select form-control" name="village"
-                                                    aria-label="Village select">
-                                                    <option value="" selected>Select Village</option>
-                                                    @foreach ($villages as $village)
-                                                        <option value="{{ $village }}"
-                                                            {{ old('village') == $village ? 'selected' : '' }}>
-                                                            {{ $village }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-
-                                            </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Locker No</label>
-                                                <input type="number" name="locker_no" class="form-control"
-                                                    placeholder="Enter Locker Number"
-                                                    value="{{ old('locker_no') }}">
-                                            </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Old Locker No</label>
-                                                <input type="number" name="old_locker_no" class="form-control"
-                                                    placeholder="Enter Old Locker Number"
-                                                    value="{{ old('old_locker_no') }}">
-                                            </div>
-                                            <!-- Date Range Filter -->
-                                            {{-- <div class="mb-3 col-md-6">
-                                                <label for="dateRange" class="form-label">Year (1700 -
-                                                    {{ date('Y') }})</label>
-                                                <input type="number" id="dateRange" name="year" min="1700"
-                                                    max="{{ date('Y') }}" value="{{ old('year', date('Y')) }}"
-                                                    class="form-control">
-                                            </div> --}}
-
-                                            <!-- Number of Pages Range Filter -->
-                                            <div class="mb-3 col-md-6">
-                                                <label for="pagesRange" class="form-label">Number of Pages (1 - 100)</label>
-                                                <input type="range" id="pagesRange" name="number_of_pages" min="1" max="100"
-                                                       value="{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}"
-                                                       oninput="if(this.value !== 'null') { this.nextElementSibling.value = this.value; } else { this.nextElementSibling.value = ''; }"
-                                                       class="form-range">
-                                                <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
-                                            </div>
-                                            <div class="card-footer">
-                                                <a href="" class="btn-link"></a>
-                                                <div class="text-end"><button class="btn btn-secondary"
-                                                        type="submit">Filter</button>
-                                                </div>
-                                            </div>
-                                            
-
-                                            {{-- <div class="col-md-12">
-                                                <button type="submit" class="btn btn-primary">Filter</button>
-                                            </div> --}}
                                         </div>
-                                    </form>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Select State </label>
+                                            {{-- ... --}}
+                                            <select class="form-select form-control" name="state"
+                                                aria-label="State select">
+                                                <option value="" selected>Select State</option>
+                                                @foreach ($states as $state)
+                                                    <option value="{{ $state }}"
+                                                        {{ old('state') == $state ? 'selected' : '' }}>
+                                                        {{ $state }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            {{-- ... --}}
 
-                                </div>
+
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Select District </label>
+
+                                            <select class="form-select form-control" name="district"
+                                                aria-label="District select">
+                                                <option value="" selected>Select District</option>
+                                                @foreach ($districts as $district)
+                                                    <option value="{{ $district }}"
+                                                        {{ old('district') == $district ? 'selected' : '' }}>
+                                                        {{ $district }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Select Village </label>
+                                            {{-- ... --}}
+                                            <select class="form-select form-control" name="village"
+                                                aria-label="Village select">
+                                                <option value="" selected>Select Village</option>
+                                                @foreach ($villages as $village)
+                                                    <option value="{{ $village }}"
+                                                        {{ old('village') == $village ? 'selected' : '' }}>
+                                                        {{ $village }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Locker No</label>
+                                            <input type="number" name="locker_no" class="form-control"
+                                                placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Old Locker No</label>
+                                            <input type="number" name="old_locker_no" class="form-control"
+                                                placeholder="Enter Old Locker Number"
+                                                value="{{ old('old_locker_no') }}">
+                                        </div>
+
+                                        {{-- <div class="mb-3 col-md-6">
+                                            <label for="pagesRange" class="form-label">Number of Pages (1 -
+                                                100)</label>
+                                            <input type="range" id="pagesRange" name="number_of_pages" min="1"
+                                                max="100"
+                                                value="{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}"
+                                                oninput="if(this.value !== 'null') { this.nextElementSibling.value = this.value; } else { this.nextElementSibling.value = ''; }"
+                                                class="form-range">
+                                            <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
+                                        </div> --}}
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Start Date</label>
+                                            <div class="input-hasicon">
+                                                <input name="start_date" type="date"
+                                                    class="form-control bt-datepicker solid"
+                                                    value="{{ old('start_date') }}">
+                                                <div class="icon"><i class="far fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">End Date</label>
+                                            <div class="input-hasicon">
+                                                <input name="end_date" type="date"
+                                                    class="form-control bt-datepicker solid"
+                                                    value="{{ old('end_date') }}">
+                                                <div class="icon"><i class="far fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Number of pages</label>
+                                            <!-- Slider for Number of Pages -->
+                                            <div id="page-range-slider" class="slider"></div>
+                                            <input type="hidden" id="number-of-pages-start"
+                                                name="number_of_pages_start"
+                                                value="{{ old('number_of_pages_start') }}">
+                                            <input type="hidden" id="number-of-pages-end" name="number_of_pages_end"
+                                                value="{{ old('number_of_pages_end') }}">
+                                            <div id="number-of-pages-values">
+                                                <span id="number-of-pages-min">Start Page: </span>
+                                                <span id="number-of-pages-max">End Page: </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Number of Area</label>
+                                           
+                                            <div id="area-range-slider" class="slider"></div>
+                                            <input type="hidden" id="area-range-start" name="area_range_start"
+                                                value="{{ old('area_range_start') }}">
+                                            <input type="hidden" id="area-range-end" name="area_range_end"
+                                                value="{{ old('area_range_end') }}">
+                                            <div id="area-range-values">
+                                                <span id="area-range-min">Start Area: </span>
+                                                <span id="area-range-max">End Area: </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="" class="btn-link"></a>
+                                            <div class="text-end"><button class="btn btn-secondary"
+                                                    type="submit">Filter</button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <div class="container-fluid">
-                <div class="row">
-
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Document</h4>
-
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table id="example5" class="display" style="min-width: 845px">
-                                        <thead>
-                                            <tr>
-                                                <th>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Document</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example5" class="display" style="min-width: 845px">
+                                    <thead>
+                                        <tr>
+                                            {{-- <th>
                                                     <div class="custom-control d-inline custom-checkbox ms-2">
                                                         <input type="checkbox" class="form-check-input" id="checkAll"
                                                             required="">
                                                         <label class="form-check-label" for="checkAll"></label>
                                                     </div>
-                                                </th>
-                                                <th scope="col">Sl no</th>
-                                                <th scope="col">Document Name</th>
-                                                <th scope="col">Document Type</th>
-                                                <th scope="col">Created At</th>
-                                         
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                                </th> --}}
+                                            <th scope="col">Sl no</th>
+                                            <th scope="col">Document Name</th>
+                                            <th scope="col">Document Type</th>
+                                            <th scope="col">Village</th>
+                                            <th scope="col">District</th>
 
-                                            @foreach ($documents as $index => $item)
-                                                <tr>
-                                                    <td>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach ($documents as $index => $item)
+                                            <tr>
+                                                {{-- <td>
                                                         <div class="form-check custom-checkbox ms-2">
                                                             <input type="checkbox" class="form-check-input"
                                                                 id="customCheckBox2" required="">
                                                             <label class="form-check-label"
                                                                 for="customCheckBox2"></label>
                                                         </div>
+                                                    </td> --}}
+                                                <th scope="row">{{ $index + 1 }}</th>
+                                                <td scope="row">{{ $item->name }}</td>
+                                                <td scope="row">{{ $item->document_type_name }}</td>
+
+                                                <td>{{ $item->current_village ? $item->current_village : '--' }}
+                                                </td>
+                                                <td>{{ $item->current_district ? $item->current_district : '--' }}
+                                                </td>
+
+                                                @if ($item->status_id == 0)
+                                                    <td>
+                                                        <span class="badge light badge-danger">
+                                                            <i class="fa fa-circle text-danger me-1"></i>
+                                                            Pending
+                                                        </span>
                                                     </td>
-                                                    <th scope="row">{{ $index + 1 }}</th>
-                                                    <td scope="row">{{ $item->name }}</td>
-                                                    <td scope="row">{{ $item->document_type }}</td>
 
-                                                    <td>{{ $item->created_at }}</td>
-                                               
-                                                    @if ($item->status_id == 0)
-                                                        <td>
-                                                            <span class="badge light badge-danger">
-                                                                <i class="fa fa-circle text-danger me-1"></i>
-                                                                Pending
-                                                            </span>
-                                                        </td>
+                                                    <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"
+                                                            type="button" class="btn btn-primary">Review</a>
+                                                    </td>
+                                                @else
+                                                    <td>
+                                                        <span class="badge light badge-success">
+                                                            <i class="fa fa-circle text-success me-1"></i>
+                                                            Accepted
+                                                        </span>
+                                                    </td>
 
-                                                        <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"
-                                                                type="button" class="btn btn-primary">Review</a>
-                                                        </td>
-                                                    @else
-                                                        <td>
-                                                            <span class="badge light badge-success">
-                                                                <i class="fa fa-circle text-success me-1"></i>
-                                                                Accepted
-                                                            </span>
-                                                        </td>
-
-                                                        <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_nam }}/{{ $item->tableId }}"
-                                                                type="button" class="btn btn-primary">View</a></td>
-                                                    @endif
+                                                    <td><a href="{{ url('/') }}/review_doc/{{ $item->document_type_nam }}/{{ $item->tableId }}"
+                                                            type="button" class="btn btn-primary">View</a></td>
+                                                @endif
 
 
-                                                </tr>
-                                            @endforeach
+                                            </tr>
+                                        @endforeach
 
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-
-
-
-
                 </div>
+
+
+
+
+
             </div>
         </div>
 
     </div>
-    <div id="preloader">
-		<div class="lds-ripple">
-			<div></div>
-			<div></div>
-		</div>
-    </div>
+    {{-- <div id="preloader">
+        <div class="lds-ripple">
+            <div></div>
+            <div></div>
+        </div>
+    </div> --}}
+<script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
 
+{{-- <script src="/assets/vendor/nouislider/nouislider.min.js"></script>
+<script src="/assets/vendor/wnumb/wNumb.js"></script>
+<script src="/assets/js/plugins-init/nouislider-init.js"></script> --}}
     @include('layouts.footer')
 
 
@@ -264,24 +306,78 @@
     document.querySelector('form').onsubmit = function() {
         document.getElementById('preloader').style.display = 'block'; // Show loader
     };
-    
+
     window.onload = function() {
         document.getElementById('preloader').style.display = 'none'; // Hide loader on page load
     };
-    </script>
-    <style>
-        #loader {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            height: 2em;
-            width: 2em;
-            overflow: visible;
-            margin: auto;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+</script>
+<style>
+    #loader {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        height: 2em;
+        width: 2em;
+        overflow: visible;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+</style>
+
+<script>
+    // Initialize the Number of Pages slider
+    var pagesSlider = document.getElementById('page-range-slider');
+    var pagesStartInput = document.getElementById('number-of-pages-start');
+    var pagesEndInput = document.getElementById('number-of-pages-end');
+    var pagesValues = [
+        document.getElementById('number-of-pages-min'),
+        document.getElementById('number-of-pages-max')
+    ];
+
+    noUiSlider.create(pagesSlider, {
+        start: [{{ old('number_of_pages_start', 1) }}, {{ old('number_of_pages_end', 100) }}],
+        connect: true,
+        range: {
+            'min': 1,
+            'max': 100
         }
-        </style>
-        
+    });
+
+    pagesSlider.noUiSlider.on('update', function(values, handle) {
+        pagesValues[handle].innerHTML = handle ? "End Page: " + parseInt(values[handle]) : "Start Page: " +
+            parseInt(values[handle]);
+        handle ? pagesEndInput.value = parseInt(values[handle]) : pagesStartInput.value = parseInt(values[
+            handle]);
+    });
+
+    // Initialize the Area Range slider
+    var areaSlider = document.getElementById('area-range-slider');
+    var areaStartInput = document.getElementById('area-range-start');
+    var areaEndInput = document.getElementById('area-range-end');
+    var areaValues = [
+        document.getElementById('area-range-min'),
+        document.getElementById('area-range-max')
+    ];
+
+    noUiSlider.create(areaSlider, {
+        start: [{{ old('area_range_start', 1) }}, {{ old('area_range_end', 100) }}],
+        connect: true,
+        range: {
+            'min': 1,
+            'max': 100
+        }
+    });
+
+    areaSlider.noUiSlider.on('update', function(values, handle) {
+        areaValues[handle].innerHTML = handle ? "End Area: " + parseInt(values[handle]) : "Start Area: " +
+            parseInt(values[handle]);
+        handle ? areaEndInput.value = parseInt(values[handle]) : areaStartInput.value = parseInt(values[
+        handle]);
+    });
+</script>
+
+
+

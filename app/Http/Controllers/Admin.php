@@ -587,10 +587,24 @@ class Admin extends Controller
 
     public function view_doc($tableName)
     {
-        $document = DB::table($tableName)->get();
-        // $columns = Schema::getColumnListing($tableName);
+        $documents = DB::table($tableName)->get();
 
-        return view('pages.view_doc', ['document' => $document, 'tableName' => $tableName]);
+        // Loop through each document to get the doc_id and run the query
+        foreach ($documents as $document) {
+            $doc_id = $document->doc_id;
+
+            // Retrieve the Master_doc_data based on the doc_id
+            $master_doc_data = Master_doc_data::where("id", $doc_id)->first();
+
+            // Merge $master_doc_data into $document
+            if ($master_doc_data) {
+                foreach ($master_doc_data->getAttributes() as $attribute => $value) {
+                    $document->{$attribute} = $value;
+                }
+            }
+        }
+
+        return view('pages.view_doc', ['documents' => $documents, 'tableName' => $tableName]);
     }
 
     public function add_fields_first()
@@ -708,11 +722,19 @@ class Admin extends Controller
         // dd($set_ids);
         $masterDataEntries = Master_doc_data::all()->filter(function ($entry) use ($set_ids, $document) {
             $entrySetIds = json_decode($entry->set_id, true);
+
+            // Check if $entrySetIds is an array
+            if (!is_array($entrySetIds)) {
+                $entrySetIds = []; // Assign an empty array if it's not already an array
+            }
+
             return count(array_intersect($set_ids, $entrySetIds)) > 0 && $entry->id != $document->doc_id;
         });
 
-
         //  dd($masterDataEntries);
+
+
+
         $matchingData[] = null;
         foreach ($masterDataEntries as $entry) {
 
@@ -747,13 +769,22 @@ class Admin extends Controller
         $documents = collect();
 
         $typeId = $request->input('type');
-        $numberOfPages = $request->input('number_of_pages');
+        // $numberOfPages = $request->input('number_of_pages');
         $state = $request->input('state');
         $district = $request->input('district');
         $village = $request->input('village');
         $locker_no = $request->input('locker_no');
         $old_locker_no = $request->input('old_locker_no');
-        $number_of_pages = $request->input('number_of_pages');
+        // $number_of_pages = $request->input('number_of_pages');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+        $number_of_pages_start = $request->input('number_of_pages_start');
+        $number_of_pages_end = $request->input('number_of_pages_end');
+        // dd($number_of_pages_start,$number_of_pages_end);
+        // $area_range_start = $request->input('area_range_start');
+        // $area_range_old = $request->input('area_range_old');
+
+        // dd($end_date);
         // Flash input to the session
         $request->flash();
         $doc_types = Master_doc_type::get();
@@ -783,27 +814,35 @@ class Admin extends Controller
                 return empty($value);
             }) // Reject empty values
             ->values();
-  $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no']);
-    $filterSet = count(array_filter($filters, function($value) { return !is_null($value) && $value !== ''; }));
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date','number_of_pages_start','number_of_pages_end']);
+        $filterSet = count(array_filter($filters, function ($value) {
+            return !is_null($value) && $value !== '';
+        }));
 
-    if ($filterSet > 0) {
+        if ($filterSet > 0) {
             if ($typeId == 'all') {
                 $documents = Master_doc_data::paginate(15); // Adjust the number per page as needed
             } else {
-        $documents = $this->filterdocumentService->filterDocuments($typeId, $numberOfPages, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages);
+                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages_start,$number_of_pages_end, $start_date, $end_date);
             }
         }
-// dd($documents);
+        // dd($documents);
         $data = [
             'documents' => $documents,
             'doc_type' => Master_doc_type::get(),
             'selected_type' => $typeId,
-            'selected_number_of_pages' => $numberOfPages,
+            'number_of_pages_start' => $number_of_pages_start,
+            'number_of_pages_end' => $number_of_pages_end,
             'states' => $states,
             'districts' => $districts,
             'villages' => $villages,
         ];
 
         return view('pages.filter-document', $data);
+    }
+
+    public function dataSets(){
+        return view('pages.data-sets');
+
     }
 }

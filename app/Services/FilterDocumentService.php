@@ -11,13 +11,14 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\Doc_type;
 use App\Models\Master_doc_type;
 use App\Models\Master_doc_data;
+use Carbon\Carbon;
 
 use Validator;
 
 class FilterDocumentService
 {
     
-    public function filterDocuments($typeId = null, $numberOfPages = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$number_of_pages=null): Collection
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$number_of_pages_start=null,$number_of_pages_end=null,$start_date = null,$end_date =null): Collection
     {
         $query = Master_doc_data::query();
 
@@ -32,10 +33,28 @@ class FilterDocumentService
             $query->where('old_locker_number', $old_locker_no);
         }
         // dd($number_of_pages);
-        if ($number_of_pages) {
-            $query->where('number_of_page', '<=', $number_of_pages);
+        if ($number_of_pages_start) {
+            $query->where('number_of_page', '>=', $number_of_pages_start);
         }
-    
+        if ($number_of_pages_end) {
+            $query->where('number_of_page', '<=', $number_of_pages_end);
+        }
+        // dd($start_date);
+        if ($start_date && $end_date) {
+            // Convert dates to Carbon instances to ensure correct format and handle any timezone issues
+            $start = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay(); // Ensures the comparison includes the start of the start_date
+            $end = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay(); // Ensures the comparison includes the end of the end_date
+            $query->whereBetween('issued_date', [$start, $end]);
+            // dd($query);
+        } elseif ($start_date) {
+            // If only start_date is provided
+            $start = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay();
+            $query->where('issued_date', '>=', $start);
+        } elseif ($end_date) {
+            // If only end_date is provided
+            $end = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay();
+            $query->where('issued_date', '<=', $end);
+        }
         if ($state) {
             $query->where(function ($q) use ($state) {
                 $q->where('state', $state)

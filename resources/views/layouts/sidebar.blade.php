@@ -14,7 +14,7 @@
                     @if (Auth::user()->type == "admin")
 					<li>
 						<a class="has-arrow" href="javascript:void(0);" aria-expanded="true">
-							<i class="fas fa-chart-line"></i>
+							<i class="fas fa-clone"></i>
 							<span class="nav-text">Document  <span class="badge badge-xs badge-danger ms-2">New</span></span>
 						</a>
                         <ul aria-expanded="true">
@@ -23,10 +23,16 @@
 							<li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li>
 							<li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		
 							<li><a href="{{ url('/')}}/filter-document">Filter Document</a></li>		
-							<li><a href="{{ url('/')}}/set">Set</a></li>		
+							
 							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
 						
 						</ul>
+                    </li>
+					<li><a class="has-arrow " href="{{ url('/')}}/data-sets" aria-expanded="false">
+						<i class="fas fa-info-circle"></i>
+							<span class="nav-text">Data Sets</span>
+						</a>
+                       
                     </li>
 					{{-- <li>
 						<a  href="javascript:void(0);" aria-expanded="true">

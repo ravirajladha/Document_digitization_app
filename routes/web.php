@@ -16,10 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Route::view('/error/500', 'error')->name('error');
+Route::middleware('guest')->group(function () {
 Route::get('/', function () {
     return view('welcome');
 });
-
+});
 Route::get('/dashboard', function () {
 
     return view('dashboard');
@@ -65,6 +66,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/review_doc/{table}/{id}', [Admin::class, 'review_doc'])->name('review_doc');
     Route::get('/filter-document', [Admin::class, 'filterDocument']);
     Route::get('/get-all-documents-type', [Admin::class, 'getAllDocumentsType']);
+
+    //data sets
+    Route::get('/data-sets', [Admin::class, 'dataSets']);
 
     // reviewer
     Route::get('/reviewer/index', [Reviewer::class, 'index']);

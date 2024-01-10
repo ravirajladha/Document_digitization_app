@@ -544,7 +544,7 @@
                     </select>
                 </div>
                     </li> --}}
-                    <li class="nav-item d-flex align-items-center">
+                    {{-- <li class="nav-item d-flex align-items-center">
                         <form action="{{ url('/') }}/view_doc_first_submit" method="get" enctype="multipart/form-data"
                         onsubmit="return validateForm()">
                       @csrf
@@ -572,7 +572,7 @@
                       }
                   </script>
                   
-                    </li>
+                    </li> --}}
                     {{-- <div class="input-group">
                         <select class="default-select form-control wide bleft" >
                             <option selected>Choose...</option>
