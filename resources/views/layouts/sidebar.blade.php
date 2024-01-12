@@ -29,12 +29,30 @@
 						
 						</ul>
                     </li>
-					<li><a class="has-arrow " href="{{ url('/')}}/data-sets" aria-expanded="false">
+					{{-- <li><a class="has-arrow " href="javascript:void()" aria-expanded="true">
+						<i class="fas fa-info-circle"></i>
+							<span class="nav-text">Receivers</span>
+						</a>
+                        <ul aria-expanded="true">
+                            <li><a href="{{ url('/')}}/receivers">Add Receiver</a></li>
+                           
+                         
+                        </ul>
+                    </li> --}}
+					<li><a  href="{{ url('/')}}/receivers" aria-expanded="false">
+						<i class="fas fa-user-circle"></i>
+							<span class="nav-text">Receivers</span>
+						</a>
+                       
+                    </li>
+
+					<li><a  href="{{ url('/')}}/data-sets" aria-expanded="false">
 						<i class="fas fa-info-circle"></i>
 							<span class="nav-text">Data Sets</span>
 						</a>
                        
                     </li>
+			
 					{{-- <li>
 						<a  href="javascript:void(0);" aria-expanded="true">
 						

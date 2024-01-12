@@ -196,6 +196,7 @@ class Admin extends Controller
                 'phone' => $receiver->phone,
                 'city' => $receiver->city,
                 'email' => $receiver->email,
+                'status' => $receiver->status,
                 'receiver_type_name' => optional($receiver->receiverType)->name, // Get the name from the relationship
             ];
         });
@@ -251,6 +252,7 @@ class Admin extends Controller
             $receiver->phone = $request->phone;
             $receiver->email = $request->email;
             $receiver->city = $request->city;
+            $receiver->status = $request->status;
             $receiver->receiver_type_id = $request->receiver_type_id;
             // Add any additional fields you want to update here
 
@@ -262,34 +264,8 @@ class Admin extends Controller
         }
     }
 
-    public function showAssignedDocument()
-    {
-        $documentTypes = Master_doc_type::all(); // Assuming you have a DocumentType model
-    $receiverTypes = Receiver_type::all(); // Assuming you have a ReceiverType model
 
-    return view('pages.assign-documents', [
-        'documentTypes' => $documentTypes,
-        'receiverTypes' => $receiverTypes
-    ]);
-    }
-    public function assignDocument(Request $request)
-    {
-        // Validate the request...
-
-        $token = Str::random(40); // Generate a unique token
-        // $expiresAt = Carbon::now()->addHours(24); 
-
-        $assignment = Receiver_type::create([
-            'document_type' => $request->document_type,
-            'doc_id' => $request->doc_id,
-            'receiver_id' => $request->receiver_id,
-            'access_token' => $token,
-            'expires_at' => $expiresAt,
-        ]);
-
-        // Send email to the receiver with the unique link
-        // The link would be something like url('/document-access/' . $token)
-    }
+   
     public function addDocumentType(Request $req, DocumentTableService $documentTypeService)
     {
         // First, validate the request data to ensure 'type' is provided
@@ -961,8 +937,8 @@ class Admin extends Controller
         // $number_of_pages = $request->input('number_of_pages');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
-        $number_of_pages_start = $request->input('number_of_pages_start');
-        $number_of_pages_end = $request->input('number_of_pages_end');
+        // $number_of_pages_start = $request->input('number_of_pages_start');
+        // $number_of_pages_end = $request->input('number_of_pages_end');
         // dd($number_of_pages_start,$number_of_pages_end);
         // $area_range_start = $request->input('area_range_start');
         // $area_range_old = $request->input('area_range_old');
@@ -997,7 +973,7 @@ class Admin extends Controller
                 return empty($value);
             }) // Reject empty values
             ->values();
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date', 'number_of_pages_start', 'number_of_pages_end']);
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
@@ -1006,7 +982,7 @@ class Admin extends Controller
             if ($typeId == 'all') {
                 $documents = Master_doc_data::paginate(15); // Adjust the number per page as needed
             } else {
-                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $number_of_pages_start, $number_of_pages_end, $start_date, $end_date);
+                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $start_date, $end_date);
             }
         }
         // dd($documents);
@@ -1014,8 +990,8 @@ class Admin extends Controller
             'documents' => $documents,
             'doc_type' => Master_doc_type::get(),
             'selected_type' => $typeId,
-            'number_of_pages_start' => $number_of_pages_start,
-            'number_of_pages_end' => $number_of_pages_end,
+            // 'number_of_pages_start' => $number_of_pages_start,
+            // 'number_of_pages_end' => $number_of_pages_end,
             'states' => $states,
             'districts' => $districts,
             'villages' => $villages,

@@ -1,8 +1,8 @@
 <x-app-layout>
     {{-- <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css"> --}}
     <x-header />
-    
-    
+
+
     @include('layouts.sidebar')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 
@@ -36,7 +36,7 @@
                             <div class="basic-form">
                                 <form action="{{ url('/') }}/filter-document" method="GET">
                                     <div class="row">
-                                        <div class="mb-3 col-md-6">
+                                        {{-- <div class="mb-3 col-md-6">
                                             <label class="form-label">Select Document Type </label>
                                             <select class="form-select form-control" aria-label="Default select example"
                                                 name="type">
@@ -52,12 +52,38 @@
                                                 @endforeach
                                             </select>
 
+                                        </div> --}}
+
+                                        <div class="mb-3 col-md-6">
+
+                                            {{-- <div class="card-body">
+                                                <div class="mb-4">
+                                                    <h4 class="card-title">Single select boxes</h4>
+                                                    <p>Select2 can take a regular select box like this...</p>
+                                                </div> --}}
+                                            <label class="form-label">Select Document Type </label>
+                                            <select id="single-select-abc1" class="form-select form-control"
+                                                style="width:100%;" name="type">
+                                                <option value="" selected>Select Document Type</option>
+                                                <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>
+                                                    Show All Documents</option>
+                                                @foreach ($doc_type as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ old('type') == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
+                                        {{-- </div> --}}
+
+
+
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Select State </label>
                                             {{-- ... --}}
-                                            <select class="form-select form-control" name="state"
-                                                aria-label="State select">
+                                            <select class="form-select form-control" id="single-select-abc2"
+                                                name="state" aria-label="State select">
                                                 <option value="" selected>Select State</option>
                                                 @foreach ($states as $state)
                                                     <option value="{{ $state }}"
@@ -66,6 +92,10 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+
+
+
+
                                             {{-- ... --}}
 
 
@@ -73,8 +103,8 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Select District </label>
 
-                                            <select class="form-select form-control" name="district"
-                                                aria-label="District select">
+                                            <select class="form-select form-control" id="single-select-abc3"
+                                                name="district" aria-label="District select">
                                                 <option value="" selected>Select District</option>
                                                 @foreach ($districts as $district)
                                                     <option value="{{ $district }}"
@@ -88,8 +118,8 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Select Village </label>
                                             {{-- ... --}}
-                                            <select class="form-select form-control" name="village"
-                                                aria-label="Village select">
+                                            <select class="form-select form-control" id="single-select-abc4"
+                                                name="village" aria-label="Village select">
                                                 <option value="" selected>Select Village</option>
                                                 @foreach ($villages as $village)
                                                     <option value="{{ $village }}"
@@ -123,7 +153,7 @@
                                             <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
                                         </div> --}}
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">Start Date</label>
+                                            <label class="form-label">Document Date (Start)</label>
                                             <div class="input-hasicon">
                                                 <input name="start_date" type="date"
                                                     class="form-control bt-datepicker solid"
@@ -132,7 +162,7 @@
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">End Date</label>
+                                            <label class="form-label">Document Date (End)</label>
                                             <div class="input-hasicon">
                                                 <input name="end_date" type="date"
                                                     class="form-control bt-datepicker solid"
@@ -140,9 +170,8 @@
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        {{-- <div class="mb-3 col-md-6">
                                             <label class="form-label">Number of pages</label>
-                                            <!-- Slider for Number of Pages -->
                                             <div id="page-range-slider" class="slider"></div>
                                             <input type="hidden" id="number-of-pages-start"
                                                 name="number_of_pages_start"
@@ -154,10 +183,10 @@
                                                 <span id="number-of-pages-max">End Page: </span>
                                             </div>
 
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Number of Area</label>
-                                           
+                                        </div> --}}
+                                        <div class="mb-3 col-md-12 col-xl-12">
+                                            <label class="form-label">Area Size (in acres)</label>
+
                                             <div id="area-range-slider" class="slider"></div>
                                             <input type="hidden" id="area-range-start" name="area_range_start"
                                                 value="{{ old('area_range_start') }}">
@@ -282,9 +311,9 @@
             <div></div>
         </div>
     </div> --}}
-<script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
 
-{{-- <script src="/assets/vendor/nouislider/nouislider.min.js"></script>
+    {{-- <script src="/assets/vendor/nouislider/nouislider.min.js"></script>
 <script src="/assets/vendor/wnumb/wNumb.js"></script>
 <script src="/assets/js/plugins-init/nouislider-init.js"></script> --}}
     @include('layouts.footer')
@@ -292,15 +321,15 @@
 
 </x-app-layout>
 <script>
-    // Assuming you have an element with ID 'pagesRange' for the pages slider
-    var pagesSlider = document.getElementById('pagesRange');
-    var pagesOutput = pagesSlider.nextElementSibling; // The <output> element after the slider
-    pagesOutput.value = pagesSlider.value; // Display the default slider value
+    // // Assuming you have an element with ID 'pagesRange' for the pages slider
+    // var pagesSlider = document.getElementById('pagesRange');
+    // var pagesOutput = pagesSlider.nextElementSibling; // The <output> element after the slider
+    // pagesOutput.value = pagesSlider.value; // Display the default slider value
 
-    // Update the current slider value (each time you drag the slider handle)
-    pagesSlider.oninput = function() {
-        pagesOutput.value = this.value;
-    }
+    // // Update the current slider value (each time you drag the slider handle)
+    // pagesSlider.oninput = function() {
+    //     pagesOutput.value = this.value;
+    // }
 </script>
 <script>
     document.querySelector('form').onsubmit = function() {
@@ -329,55 +358,87 @@
 
 <script>
     // Initialize the Number of Pages slider
-    var pagesSlider = document.getElementById('page-range-slider');
-    var pagesStartInput = document.getElementById('number-of-pages-start');
-    var pagesEndInput = document.getElementById('number-of-pages-end');
-    var pagesValues = [
-        document.getElementById('number-of-pages-min'),
-        document.getElementById('number-of-pages-max')
-    ];
+    // var pagesSlider = document.getElementById('page-range-slider');
+    // var pagesStartInput = document.getElementById('number-of-pages-start');
+    // var pagesEndInput = document.getElementById('number-of-pages-end');
+    // var pagesValues = [
+    //     document.getElementById('number-of-pages-min'),
+    //     document.getElementById('number-of-pages-max')
+    // ];
 
-    noUiSlider.create(pagesSlider, {
-        start: [{{ old('number_of_pages_start', 1) }}, {{ old('number_of_pages_end', 100) }}],
-        connect: true,
-        range: {
-            'min': 1,
-            'max': 100
-        }
-    });
+    // noUiSlider.create(pagesSlider, {
+    //     start: [{{ old('number_of_pages_start', 1) }}, {{ old('number_of_pages_end', 100) }}],
+    //     connect: true,
+    //     range: {
+    //         'min': 1,
+    //         'max': 100
+    //     }
+    // });
 
-    pagesSlider.noUiSlider.on('update', function(values, handle) {
-        pagesValues[handle].innerHTML = handle ? "End Page: " + parseInt(values[handle]) : "Start Page: " +
-            parseInt(values[handle]);
-        handle ? pagesEndInput.value = parseInt(values[handle]) : pagesStartInput.value = parseInt(values[
-            handle]);
-    });
+    // pagesSlider.noUiSlider.on('update', function(values, handle) {
+    //     pagesValues[handle].innerHTML = handle ? "End Page: " + parseInt(values[handle]) : "Start Page: " +
+    //         parseInt(values[handle]);
+    //     handle ? pagesEndInput.value = parseInt(values[handle]) : pagesStartInput.value = parseInt(values[
+    //         handle]);
+    // });
 
     // Initialize the Area Range slider
     var areaSlider = document.getElementById('area-range-slider');
-    var areaStartInput = document.getElementById('area-range-start');
-    var areaEndInput = document.getElementById('area-range-end');
-    var areaValues = [
-        document.getElementById('area-range-min'),
-        document.getElementById('area-range-max')
-    ];
+var areaStartInput = document.getElementById('area-range-start');
+var areaEndInput = document.getElementById('area-range-end');
+var areaValues = [
+    document.getElementById('area-range-min'),
+    document.getElementById('area-range-max')
+];
 
-    noUiSlider.create(areaSlider, {
-        start: [{{ old('area_range_start', 1) }}, {{ old('area_range_end', 100) }}],
-        connect: true,
-        range: {
-            'min': 1,
-            'max': 100
+noUiSlider.create(areaSlider, {
+    start: [{{ old('area_range_start', 0.1) }}, {{ old('area_range_end', 100) }}],
+    connect: true,
+    range: {
+        'min': 0.1,
+        'max': 100
+    },
+    step: 0.1, // Add a step property for increments of 0.1
+    format: {
+        // Custom formatting can be added for decimal handling
+        to: function(value) {
+            return value.toFixed(1); // Keep one decimal
+        },
+        from: function(value) {
+            return Number(value);
         }
-    });
+    }
+});
 
-    areaSlider.noUiSlider.on('update', function(values, handle) {
-        areaValues[handle].innerHTML = handle ? "End Area: " + parseInt(values[handle]) : "Start Area: " +
-            parseInt(values[handle]);
-        handle ? areaEndInput.value = parseInt(values[handle]) : areaStartInput.value = parseInt(values[
-        handle]);
-    });
+areaSlider.noUiSlider.on('update', function(values, handle) {
+    areaValues[handle].innerHTML = handle ? "End Area: " + values[handle] : "Start Area: " + values[handle];
+    handle ? areaEndInput.value = values[handle] : areaStartInput.value = values[handle];
+});
 </script>
 
+<script>
+    $("#single-select-abc1").select2();
 
+    $(".single-select-abc1-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc2").select2();
 
+    $(".single-select-abc2-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc3").select2();
+
+    $(".single-select-abc3-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc4").select2();
+
+    $(".single-select-abc4-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+</script>

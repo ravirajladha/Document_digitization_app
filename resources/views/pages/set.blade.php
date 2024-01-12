@@ -76,8 +76,8 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
-                                            {{-- <table id="example5" class="display" style="min-width: 845px"> --}}
-                                        <table  id="example5" class="display" >
+                                        {{-- <table id="example5" class="display" style="min-width: 845px"> --}}
+                                        <table id="example5" class="display">
 
                                             <thead>
                                                 <tr>
@@ -102,31 +102,36 @@
                                         </table>
 
                                         <!-- Modal (outside the loop) -->
-                                       <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Set</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Update Form -->
-                <form id="updateSetForm">
-                    <div class="mb-3">
-                        <label for="setName" class="form-label">Set Name</label>
-                        <input type="text" class="form-control" id="setName" name="name">
-                        <input type="hidden" id="setId" name="id">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModalCenter">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Set</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!-- Update Form -->
+                                                        <form id="updateSetForm">
+                                                            <div class="mb-3">
+                                                                <label for="setName" class="form-label">Set
+                                                                    Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="setName" name="name">
+                                                                <input type="hidden" id="setId" name="id">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger light"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary"
+                                                            onclick="submitUpdateForm()">Save changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         {{-- modal end --}}
                                     </div>
@@ -161,7 +166,7 @@
                 processData: false, // tell jQuery not to process the data
                 contentType: false, // tell jQuery not to set contentType
                 success: function(response) {
-                   
+
                     if (response.success) {
                         toastr.success(response.success); // Display success toast
                     }
@@ -197,38 +202,38 @@
             }
         });
     }
-//set modal update
-    $(document).ready(function () {
-    $('.edit-btn').on('click', function () {
-        var setId = $(this).data('set-id');
-        var setName = $(this).data('set-name');
+    //set modal update
+    $(document).ready(function() {
+        $('.edit-btn').on('click', function() {
+            var setId = $(this).data('set-id');
+            var setName = $(this).data('set-name');
 
-        // Prefill the form
-        $('#updateSetForm #setName').val(setName);
-        $('#updateSetForm #setId').val(setId);
+            // Prefill the form
+            $('#updateSetForm #setName').val(setName);
+            $('#updateSetForm #setId').val(setId);
+        });
     });
-});
 
-function submitUpdateForm() {
-    var formData = $('#updateSetForm').serialize(); // Serialize form data
-console.log(formData);
-    // AJAX call to update the set
-    $.ajax({
-        url: '/update-set', // Replace with your server's update URL
-        type: 'POST',
-        data: formData,
-        headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ensure this meta tag is available in your HTML
-    },
-        success: function(response) {
-            // Handle success (e.g., close modal, show message, update table)
-            toastr.success(response.success);
-            loadUpdatedSets();
-        },
-        error: function(error) {
-            // Handle error
-        }
-    });
-}
-
+    function submitUpdateForm() {
+        var formData = $('#updateSetForm').serialize(); // Serialize form data
+        console.log(formData);
+        // AJAX call to update the set
+        $.ajax({
+            url: '/update-set', // Replace with your server's update URL
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                    'content') // Ensure this meta tag is available in your HTML
+            },
+            success: function(response) {
+                // Handle success (e.g., close modal, show message, update table)
+                toastr.success(response.success);
+                loadUpdatedSets();
+            },
+            error: function(error) {
+                // Handle error
+            }
+        });
+    }
 </script>

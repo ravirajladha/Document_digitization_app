@@ -1,7 +1,7 @@
 <x-app-layout>
 
 
-    <x-header/>
+    <x-header />
 
 
     @include('layouts.sidebar')
@@ -17,8 +17,7 @@
             </div>
 
 
-            <form action="{{ url('/') }}/view_doc_first_submit" method="get"
-                enctype="multipart/form-data">
+            <form action="{{ url('/') }}/view_doc_first_submit" method="get" enctype="multipart/form-data">
                 @csrf
                 <div class="container-fluid">
                     <div class="row">

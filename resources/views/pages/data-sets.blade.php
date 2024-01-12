@@ -45,8 +45,8 @@
                                                     <div class="pt-3 pb-3 ps-0 pe-0 text-center">
                                                         <div class="input-group-append">
                                                             <a href="/set"> <button type="button"
-                                                                class="btn btn-secondary"><i
-                                                                    class="fa fa-plus"></i></button></a>
+                                                                    class="btn btn-secondary"><i
+                                                                        class="fa fa-plus"></i></button></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -70,8 +70,8 @@
                                                     <div class="pt-3 pb-3 ps-0 pe-0 text-center">
                                                         <div class="input-group-append">
                                                             <a href="/receiver-type"> <button type="button"
-                                                                class="btn btn-secondary"><i
-                                                                    class="fa fa-plus"></i></button></a>
+                                                                    class="btn btn-secondary"><i
+                                                                        class="fa fa-plus"></i></button></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -79,7 +79,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xl-3 col-xxl-3 col-sm-6">
+                                    {{-- <div class="col-xl-3 col-xxl-3 col-sm-6">
                                         <div class="card overflow-hidden">
                                             <div class="social-graph-wrapper widget-facebook">
                                                 <span class="s-icon">RECEIVERS</span>
@@ -103,7 +103,7 @@
 
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
 

@@ -22,7 +22,7 @@
 
     <meta property="og:title" content="Kods">
     <meta property="og:description"
-        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+        content="Documents management software.">
     <meta property="og:image" content="https://kodstech.com/">
     <meta name="format-detection" content="telephone=no">
 
@@ -45,9 +45,9 @@
     <link href="/assets/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">
     <link rel="stylesheet" href="/assets/vendor/select2/css/select2.min.css">
+    <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
 </head>
-
-
 
 <body class="">
 
@@ -83,11 +83,9 @@
     <script src="/assets/vendor/global/global.min.js"></script>
     <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
 
-
     <!-- counter -->
     <script src="/assets/vendor/counter/counter.min.js"></script>
     <script src="/assets/vendor/counter/waypoint.min.js"></script>
-
     <!-- Apex Chart -->
     <script src="/assets/vendor/apexchart/apexchart.js"></script>
     <script src="/assets/vendor/chart-js/chart.bundle.min.js"></script>
@@ -95,26 +93,13 @@
     <script src="/assets/vendor/peity/jquery.peity.min.js"></script>
     <!-- Dashboard 1 -->
     <script src="/assets/js/dashboard/dashboard-1.js"></script>
-
     <script src="/assets/vendor/owl-carousel/owl.carousel.js"></script>
-
     <script src="/assets/js/custom.min.js"></script>
     <script src="/assets/js/dlabnav-init.js"></script>
-    {{-- data tables link start --}}
-    <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
-    <!-- Custom Stylesheet -->
-    {{-- <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet"> --}}
-    {{-- <link href="/assets/css/style.css" rel="stylesheet"> --}}
-    {{-- data tables link end --}}
-    <!-- Datatable scripts start-->
-    {{-- currently this has been placed in the app layout, which is reflecting in all the pages, later you can show in only those pages where its required --}}
+
     <script src="/assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
     <script src="/assets/vendor/datatables/responsive/responsive.js"></script>
     <script src="/assets/js/plugins-init/datatables.init.js"></script>
-
-    {{-- <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script> --}}
-
 
     <!-- Datatable scripts footer-->
     {{-- toaster start --}}
@@ -124,11 +109,7 @@
     <script src="/assets/vendor/select2/js/select2.full.min.js"></script>
     <script src="/assets/js/plugins-init/select2-init.js"></script>
 
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> --}}
-    <script src="{{ url('/') }}/assets/jquery-tags-input.js"></script>
-    <script src="{{ url('/') }}/assets/jquery-tags-input-init.js"></script>
 
-    {{-- <script src="vendor/global/global.min.js"></script> --}}
 
     <script>
         function cardsCenter() {

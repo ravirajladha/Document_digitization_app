@@ -18,27 +18,21 @@ use Validator;
 class FilterDocumentService
 {
     
-    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$number_of_pages_start=null,$number_of_pages_end=null,$start_date = null,$end_date =null): Collection
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$start_date = null,$end_date =null): Collection
     {
         $query = Master_doc_data::query();
 
         if ($typeId) {
             $query->where('document_type', explode('|', $typeId)[0]);
         }
-
         if ($locker_no) {
             $query->where('locker_id', $locker_no);
         }
         if ($old_locker_no) {
             $query->where('old_locker_number', $old_locker_no);
         }
-        // dd($number_of_pages);
-        if ($number_of_pages_start) {
-            $query->where('number_of_page', '>=', $number_of_pages_start);
-        }
-        if ($number_of_pages_end) {
-            $query->where('number_of_page', '<=', $number_of_pages_end);
-        }
+    
+      
         // dd($start_date);
         if ($start_date && $end_date) {
             // Convert dates to Carbon instances to ensure correct format and handle any timezone issues

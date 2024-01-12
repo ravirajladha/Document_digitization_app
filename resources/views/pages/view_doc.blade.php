@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <x-header/>
+    <x-header />
     @include('layouts.sidebar')
 
     <div class="content-body default-height">
@@ -8,13 +8,13 @@
         <div class="container-fluid">
             {{-- $tableName --}}
             <div class="row page-titles">
-              
+
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                     <li class="breadcrumb-item "><a href="javascript:void(0)">View Document</a></li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">All Document</a></li>
                 </ol>
-            
+
             </div>
 
             <div class="container-fluid">
@@ -47,7 +47,7 @@
                                                 <th scope="col">Document Type</th>
                                                 <th scope="col">Village</th>
                                                 <th scope="col">District</th>
-                                               
+
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
@@ -55,8 +55,8 @@
                                         <tbody>
                                             @foreach ($documents as $index => $item)
                                                 {{-- @if (!$index == 0) --}}
-                                                    <tr>
-                                                        {{-- <td>
+                                                <tr>
+                                                    {{-- <td>
                                                             <div class="form-check custom-checkbox ms-2">
                                                                 <input type="checkbox" class="form-check-input"
                                                                     id="customCheckBox2" required="">
@@ -64,37 +64,39 @@
                                                                     for="customCheckBox2"></label>
                                                             </div>
                                                         </td> --}}
-                                                        <th scope="row">{{ $index+1 }}</th>
-                                                        <td scope="row">{{ $item->document_name }}</td>
-                                                        <td scope="row">{{ $item->doc_type }}</td>
+                                                    <th scope="row">{{ $index + 1 }}</th>
+                                                    <td scope="row">{{ $item->document_name }}</td>
+                                                    <td scope="row">{{ $item->doc_type }}</td>
 
-                                                        <td>{{ $item->current_village  ? $item->current_village : '--' }}</td>
-                                                        <td>{{ $item->current_district   ? $item->current_district : '--' }}</td>
-                                                        @if ($item->status == 0)
-                                                            <td>
-                                                                <span class="badge light badge-danger">
-                                                                    <i class="fa fa-circle text-danger me-1"></i>
-                                                                    Pending
-                                                                </span>
-                                                            </td>
+                                                    <td>{{ $item->current_village ? $item->current_village : '--' }}
+                                                    </td>
+                                                    <td>{{ $item->current_district ? $item->current_district : '--' }}
+                                                    </td>
+                                                    @if ($item->status == 0)
+                                                        <td>
+                                                            <span class="badge light badge-danger">
+                                                                <i class="fa fa-circle text-danger me-1"></i>
+                                                                Pending
+                                                            </span>
+                                                        </td>
 
-                                                            <td><a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
-                                                                    type="button" class="btn btn-primary">Review</a>
-                                                            </td>
-                                                        @else
-                                                            <td>
-                                                                <span class="badge light badge-success">
-                                                                    <i class="fa fa-circle text-success me-1"></i>
-                                                                    Accepted
-                                                                </span>
-                                                            </td>
+                                                        <td><a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
+                                                                type="button" class="btn btn-primary">Review</a>
+                                                        </td>
+                                                    @else
+                                                        <td>
+                                                            <span class="badge light badge-success">
+                                                                <i class="fa fa-circle text-success me-1"></i>
+                                                                Accepted
+                                                            </span>
+                                                        </td>
 
-                                                            <td><a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
-                                                                    type="button" class="btn btn-primary">View</a></td>
-                                                        @endif
+                                                        <td><a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
+                                                                type="button" class="btn btn-primary">View</a></td>
+                                                    @endif
 
 
-                                                    </tr>
+                                                </tr>
                                                 {{-- @endif --}}
                                             @endforeach
 
@@ -113,10 +115,9 @@
         </div>
 
     </div>
-  
+
 
     @include('layouts.footer')
 
 
 </x-app-layout>
-

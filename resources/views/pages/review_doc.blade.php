@@ -79,13 +79,7 @@
                                 <div class="row">
                                     @php $counter = 0; @endphp
                                     @foreach ($columnMetadata as $column)
-                                        @if (
-                                            !(
-                                                $column->column_name == 'id' ||
-                                                $column->column_name == 'created_at' ||
-                                                $column->column_name == 'updated_at' ||
-                                                $column->column_name == 'status'
-                                            ))
+                                        @if (!($column->column_name == 'id' || $column->column_name == 'created_at' || $column->column_name == 'updated_at' || $column->column_name == 'status'))
                                             @php
                                                 $columnName = ucWords(str_replace('_', ' ', $column->column_name));
                                                 $defaultImagePath = asset('/assets/sample/image.jpg'); 
@@ -172,7 +166,8 @@
                                                     {{-- #toolbar=0 --}}
                                                     @php $counter++; @endphp
                                                 @elseif($column->data_type == 6)
-                                                    <video width="100%" height="500" controls controlsList="nodownload">
+                                                    <video width="100%" height="500" controls
+                                                        controlsList="nodownload">
                                                         <source
                                                             src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultVideoPath }}"
                                                             type="video/mp4">
@@ -193,7 +188,7 @@
                         </div>
                     </div>
 
-                    
+
 
 
 
@@ -256,7 +251,8 @@
                                         </ul>
                                         <div class="card-footer border-0 mt-0">
                                             <a href="{{ url('/') }}/review_doc/{{ $data->doc_type }}/{{ $data->id }}"
-                                                target="_blank" type="button" class="btn btn-primary btn-block">View</a>
+                                                target="_blank" type="button"
+                                                class="btn btn-primary btn-block">View</a>
                                             {{-- <button class="btn btn-primary btn-block">
                                         <i class="fa fa-bell-o"></i> View							
                                     </button>							 --}}

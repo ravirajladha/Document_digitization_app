@@ -1,7 +1,7 @@
 <x-app-layout>
 
 
-    <x-header/>
+    <x-header />
     @include('layouts.sidebar')
 
     <div class="content-body default-height">
@@ -22,9 +22,10 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Update Document</h4>
-                                    <button type="button" class="btn btn-dark mb-2  me-2" id="toastr-success-top-center">Top
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-top-center">Top
                                         Center</button>
-               
+
 
                                 </div>
                                 <div class="card-body">
@@ -58,12 +59,14 @@
                                                                             $file_paths = explode(',', $document->$column);
                                                                         @endphp
                                                                         @foreach ($file_paths as $path)
-                                                                        <label class="form-label mb-0 me-2">
-                                                                            <i class="fa-solid fa-eye"></i>
-                                                                            Visible:
-                                                                        </label>
-                                                                        <span class="font-w500">Public</span>
-                                                                        <a href="{{ url('/') }}/{{ $path }}" class="badge badge-primary light ms-3"    target="_blank"  role="button">View</a>
+                                                                            <label class="form-label mb-0 me-2">
+                                                                                <i class="fa-solid fa-eye"></i>
+                                                                                Visible:
+                                                                            </label>
+                                                                            <span class="font-w500">Public</span>
+                                                                            <a href="{{ url('/') }}/{{ $path }}"
+                                                                                class="badge badge-primary light ms-3"
+                                                                                target="_blank" role="button">View</a>
                                                                         @endforeach
                                                                     @endif
                                                                 </label>
@@ -80,15 +83,14 @@
                                                                             $file_paths = explode(',', $document->$column);
                                                                         @endphp
                                                                         @foreach ($file_paths as $path)
-                                                                         
-
-                                                                                <label class="form-label mb-0 me-2">
-                                                                                    <i class="fa-solid fa-eye"></i>
-                                                                                    Visible:
-                                                                                </label>
-                                                                                <span class="font-w500">Public</span>
-                                                                                <a href="{{ url('/') }}/{{ $path }}" class="badge badge-primary light ms-3"    target="_blank"  role="button">View</a>
-
+                                                                            <label class="form-label mb-0 me-2">
+                                                                                <i class="fa-solid fa-eye"></i>
+                                                                                Visible:
+                                                                            </label>
+                                                                            <span class="font-w500">Public</span>
+                                                                            <a href="{{ url('/') }}/{{ $path }}"
+                                                                                class="badge badge-primary light ms-3"
+                                                                                target="_blank" role="button">View</a>
                                                                         @endforeach
                                                                     @endif
                                                                 </label>
@@ -112,16 +114,14 @@
                                                                             $file_paths = explode(',', $document->$column);
                                                                         @endphp
                                                                         @foreach ($file_paths as $path)
-                                                                          
-
-                                                                                <label class="form-label mb-0 me-2">
-                                                                                    <i class="fa-solid fa-eye"></i>
-                                                                                    Visible:
-                                                                                </label>
-                                                                                <span class="font-w500">Public</span>
-                                                                                <a href="{{ url('/') }}/{{ $path }}" class="badge badge-primary light ms-3"    target="_blank"  role="button">View</a>
-
-
+                                                                            <label class="form-label mb-0 me-2">
+                                                                                <i class="fa-solid fa-eye"></i>
+                                                                                Visible:
+                                                                            </label>
+                                                                            <span class="font-w500">Public</span>
+                                                                            <a href="{{ url('/') }}/{{ $path }}"
+                                                                                class="badge badge-primary light ms-3"
+                                                                                target="_blank" role="button">View</a>
                                                                         @endforeach
                                                                     @endif
                                                                 </label>
