@@ -97,6 +97,10 @@ Route::get('/user-assign-documents/{receiver_id}', [Receiver_process::class, 'sh
 
     //data sets
     Route::get('/data-sets', [Admin::class, 'dataSets']);
+//documents controller
+Route::get('/bulk-upload-master-data', [Document::class, 'bulkUploadMasterData'])->name('bulkUploadMasterData');
+Route::post('/bulk-upload-master-document-data', [Document::class, 'bulkUploadMasterDocumentData'])->name('bulkUploadMasterDocumentData');
+
 
     // reviewer
     Route::get('/reviewer/index', [Reviewer::class, 'index']);

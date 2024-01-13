@@ -24,6 +24,7 @@
 							<li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		
 							<li><a href="{{ url('/')}}/filter-document">Filter Document</a></li>		
 							<li><a href="{{ url('/')}}/assign-documents">Assign Document</a></li>		
+							<li><a href="{{ url('/')}}/bulk-upload-master-data">Bulk upload master data</a></li>	
 							
 							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
 						

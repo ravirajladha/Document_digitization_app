@@ -1,4 +1,4 @@
-<?php 
+<?php
 // File: app/Services/DocumentTableService.php
 
 namespace App\Services;
@@ -17,23 +17,22 @@ class DocumentTableService
     {
         // Your logic to create the table and model
     }
-        public function createDocumentType($typeName)
-        {
-            $type = strtolower(str_replace(' ', '_', $typeName));
+    public function createDocumentType($typeName)
+    {
+        // dd($typeName);
+        $type = strtolower(str_replace(' ', '_', $typeName));
 
-          
-           
-    // Check if a DocType with the same name already exists
-    $doc_type = Master_doc_type::firstOrCreate(
-        ['name' => $type],
-        ['created_by' => Auth::user()->id]
-    );
+        // Check if a DocType with the same name already exists
+        $doc_type = Master_doc_type::firstOrCreate(
+            ['name' => $type],
+            ['created_by' => Auth::user()->id]
+        );
 
-    if ($doc_type->wasRecentlyCreated) {
+        if ($doc_type->wasRecentlyCreated) {
             // Check if the table with the given type name exists
             if (!Schema::hasTable($type)) {
                 // Create the table
-                
+
                 Schema::create($type, function (Blueprint $table) {
                     $table->id();
                     $table->text('document_name')->nullable();
@@ -52,8 +51,9 @@ class DocumentTableService
                 file_put_contents(app_path("Models/{$modelClassName}.php"), $modelContent);
 
                 // Optionally run migrations or perform other tasks
-            }}
-
-            return $doc_type;
+            }
         }
+// dd($doc_type);
+        return $doc_type;
+    }
 }

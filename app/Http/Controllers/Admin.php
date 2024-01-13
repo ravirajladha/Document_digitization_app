@@ -179,10 +179,10 @@ class Admin extends Controller
             ->withCount('documentAssignments') // Add the count of document assignments
             ->orderBy('created_at', 'desc')
             ->get();
-    
+
         $receiverTypes = Receiver_type::all();
         $documentTypes = Master_doc_type::all();
-    
+
         return view('pages.receivers', [
             'data' => $data,
             'receiverTypes' => $receiverTypes,
@@ -190,16 +190,16 @@ class Admin extends Controller
 
         ]);
     }
-    
-    
+
+
     public function getUpdatedReceivers()
     {
         // Fetch receivers with the receiver type name
         $receivers = Receiver::with('receiverType')
-        ->withCount('documentAssignments') // Add the count of document assignments
-        ->orderBy('created_at', 'desc')
-        ->get();
-    
+            ->withCount('documentAssignments') // Add the count of document assignments
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         // Transform the data to include the receiver type name
         $receivers = $receivers->map(function ($receiver) {
             return [
@@ -210,14 +210,14 @@ class Admin extends Controller
                 'email' => $receiver->email,
                 'status' => $receiver->status,
                 'receiver_type_name' => optional($receiver->receiverType)->name, // Get the name from the relationship
-                'document_assignments_count' =>$receiver->document_assignments_count,// Get the name from the relationship
+                'document_assignments_count' => $receiver->document_assignments_count, // Get the name from the relationship
             ];
         });
-    
+
         return response()->json($receivers);
     }
-    
-    
+
+
     public function addReceiver(Request $request)
     {
         // Validate the request data
@@ -278,7 +278,7 @@ class Admin extends Controller
     }
 
 
-   
+
     public function addDocumentType(Request $req, DocumentTableService $documentTypeService)
     {
         // First, validate the request data to ensure 'type' is provided
@@ -415,6 +415,7 @@ class Admin extends Controller
 
         return view('pages.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
     }
+
 
     public function add_document_data(Request $req)
     {
@@ -705,7 +706,7 @@ class Admin extends Controller
         // ]);
     }
 
- 
+
     public function view_doc_first()
     {
 
