@@ -20,6 +20,10 @@ class Receiver extends Model
     {
         return $this->belongsTo(Receiver_type::class, 'receiver_type_id');
     }
-
+    public function documentAssignments()
+    {
+        return $this->hasMany(Document_assignment::class, 'receiver_id');
+    }
+    
     // Add any additional relationships or functionality here...
 }

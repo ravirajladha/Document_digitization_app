@@ -23,195 +23,164 @@
                 </ol>
 
             </div>
+{{-- new card start --}}
 
-
-            <div class="row">
-
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Filter Document</h4>
+<div class="row">
+    <div class="col-xl-12">
+        
+                <div class="filter cm-content-box box-primary">
+                    <div class="content-title SlideToolHeader">
+                        <div class="cpa">
+                            Search Document
                         </div>
+                        <div class="tools">
+                            <a href="javascript:void(0);" class="expand handle"><i class="fal fa-angle-down"></i></a>
+                        </div>
+                    </div>
+                    <div class="cm-content-body  form excerpt">
                         <div class="card-body">
-                            <div class="basic-form">
-                                <form action="{{ url('/') }}/filter-document" method="GET">
-                                    <div class="row">
-                                        {{-- <div class="mb-3 col-md-6">
-                                            <label class="form-label">Select Document Type </label>
-                                            <select class="form-select form-control" aria-label="Default select example"
-                                                name="type">
-                                                <option value="" selected>Select Document Type</option>
-                                                <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>
-                                                    Show All Documents</option>
+                            <form action="{{ url('/') }}/filter-document" method="GET">
+                                <div class="row">
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Select Document Type </label>
+                                        <select id="single-select-abc1" class="form-select form-control"
+                                            style="width:100%;" name="type">
+                                            <option value="" selected>Select Document Type</option>
+                                            <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>
+                                                Show All Documents</option>
+                                            @foreach ($doc_type as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ old('type') == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Select State </label>
+                                  
+                                        <select class="form-select form-control" id="single-select-abc2"
+                                            name="state" aria-label="State select">
+                                            <option value="" selected>Select State</option>
+                                            @foreach ($states as $state)
+                                                <option value="{{ $state }}"
+                                                    {{ old('state') == $state ? 'selected' : '' }}>
+                                                    {{ $state }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Select District </label>
 
-                                                @foreach ($doc_type as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ old('type') == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        <select class="form-select form-control" id="single-select-abc3"
+                                            name="district" aria-label="District select">
+                                            <option value="" selected>Select District</option>
+                                            @foreach ($districts as $district)
+                                                <option value="{{ $district }}"
+                                                    {{ old('district') == $district ? 'selected' : '' }}>
+                                                    {{ $district }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                        </div> --}}
-
-                                        <div class="mb-3 col-md-6">
-
-                                            {{-- <div class="card-body">
-                                                <div class="mb-4">
-                                                    <h4 class="card-title">Single select boxes</h4>
-                                                    <p>Select2 can take a regular select box like this...</p>
-                                                </div> --}}
-                                            <label class="form-label">Select Document Type </label>
-                                            <select id="single-select-abc1" class="form-select form-control"
-                                                style="width:100%;" name="type">
-                                                <option value="" selected>Select Document Type</option>
-                                                <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>
-                                                    Show All Documents</option>
-                                                @foreach ($doc_type as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ old('type') == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        {{-- </div> --}}
-
-
-
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Select State </label>
-                                            {{-- ... --}}
-                                            <select class="form-select form-control" id="single-select-abc2"
-                                                name="state" aria-label="State select">
-                                                <option value="" selected>Select State</option>
-                                                @foreach ($states as $state)
-                                                    <option value="{{ $state }}"
-                                                        {{ old('state') == $state ? 'selected' : '' }}>
-                                                        {{ $state }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-
-
-
-
-                                            {{-- ... --}}
-
-
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Select District </label>
-
-                                            <select class="form-select form-control" id="single-select-abc3"
-                                                name="district" aria-label="District select">
-                                                <option value="" selected>Select District</option>
-                                                @foreach ($districts as $district)
-                                                    <option value="{{ $district }}"
-                                                        {{ old('district') == $district ? 'selected' : '' }}>
-                                                        {{ $district }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Select Village </label>
-                                            {{-- ... --}}
-                                            <select class="form-select form-control" id="single-select-abc4"
-                                                name="village" aria-label="Village select">
-                                                <option value="" selected>Select Village</option>
-                                                @foreach ($villages as $village)
-                                                    <option value="{{ $village }}"
-                                                        {{ old('village') == $village ? 'selected' : '' }}>
-                                                        {{ $village }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Locker No</label>
-                                            <input type="number" name="locker_no" class="form-control"
-                                                placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Old Locker No</label>
-                                            <input type="number" name="old_locker_no" class="form-control"
-                                                placeholder="Enter Old Locker Number"
-                                                value="{{ old('old_locker_no') }}">
-                                        </div>
-
-                                        {{-- <div class="mb-3 col-md-6">
-                                            <label for="pagesRange" class="form-label">Number of Pages (1 -
-                                                100)</label>
-                                            <input type="range" id="pagesRange" name="number_of_pages" min="1"
-                                                max="100"
-                                                value="{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}"
-                                                oninput="if(this.value !== 'null') { this.nextElementSibling.value = this.value; } else { this.nextElementSibling.value = ''; }"
-                                                class="form-range">
-                                            <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
-                                        </div> --}}
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Document Date (Start)</label>
-                                            <div class="input-hasicon">
-                                                <input name="start_date" type="date"
-                                                    class="form-control bt-datepicker solid"
-                                                    value="{{ old('start_date') }}">
-                                                <div class="icon"><i class="far fa-calendar"></i></div>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Document Date (End)</label>
-                                            <div class="input-hasicon">
-                                                <input name="end_date" type="date"
-                                                    class="form-control bt-datepicker solid"
-                                                    value="{{ old('end_date') }}">
-                                                <div class="icon"><i class="far fa-calendar"></i></div>
-                                            </div>
-                                        </div>
-                                        {{-- <div class="mb-3 col-md-6">
-                                            <label class="form-label">Number of pages</label>
-                                            <div id="page-range-slider" class="slider"></div>
-                                            <input type="hidden" id="number-of-pages-start"
-                                                name="number_of_pages_start"
-                                                value="{{ old('number_of_pages_start') }}">
-                                            <input type="hidden" id="number-of-pages-end" name="number_of_pages_end"
-                                                value="{{ old('number_of_pages_end') }}">
-                                            <div id="number-of-pages-values">
-                                                <span id="number-of-pages-min">Start Page: </span>
-                                                <span id="number-of-pages-max">End Page: </span>
-                                            </div>
-
-                                        </div> --}}
-                                        <div class="mb-3 col-md-12 col-xl-12">
-                                            <label class="form-label">Area Size (in acres)</label>
-
-                                            <div id="area-range-slider" class="slider"></div>
-                                            <input type="hidden" id="area-range-start" name="area_range_start"
-                                                value="{{ old('area_range_start') }}">
-                                            <input type="hidden" id="area-range-end" name="area_range_end"
-                                                value="{{ old('area_range_end') }}">
-                                            <div id="area-range-values">
-                                                <span id="area-range-min">Start Area: </span>
-                                                <span id="area-range-max">End Area: </span>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <a href="" class="btn-link"></a>
-                                            <div class="text-end"><button class="btn btn-secondary"
-                                                    type="submit">Filter</button>
-                                            </div>
-                                        </div>
-
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Select Village </label>
+                                
+                                        <select class="form-select form-control" id="single-select-abc4"
+                                            name="village" aria-label="Village select">
+                                            <option value="" selected>Select Village</option>
+                                            @foreach ($villages as $village)
+                                                <option value="{{ $village }}"
+                                                    {{ old('village') == $village ? 'selected' : '' }}>
+                                                    {{ $village }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
                                     </div>
-                                </form>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Locker No</label>
+                                        <input type="number" name="locker_no" class="form-control"
+                                            placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Old Locker No</label>
+                                        <input type="number" name="old_locker_no" class="form-control"
+                                            placeholder="Enter Old Locker Number"
+                                            value="{{ old('old_locker_no') }}">
+                                    </div>
 
-                            </div>
+                                    {{-- <div class="mb-3 col-md-6">
+                                        <label for="pagesRange" class="form-label">Number of Pages (1 -
+                                            100)</label>
+                                        <input type="range" id="pagesRange" name="number_of_pages" min="1"
+                                            max="100"
+                                            value="{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}"
+                                            oninput="if(this.value !== 'null') { this.nextElementSibling.value = this.value; } else { this.nextElementSibling.value = ''; }"
+                                            class="form-range">
+                                        <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
+                                    </div> --}}
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Document Date (Start)</label>
+                                        <div class="input-hasicon">
+                                            <input name="start_date" type="date"
+                                                class="form-control bt-datepicker solid"
+                                                value="{{ old('start_date') }}">
+                                            <div class="icon"><i class="far fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Document Date (End)</label>
+                                        <div class="input-hasicon">
+                                            <input name="end_date" type="date"
+                                                class="form-control bt-datepicker solid"
+                                                value="{{ old('end_date') }}">
+                                            <div class="icon"><i class="far fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                    {{-- <div class="mb-3 col-md-6">
+                                        <label class="form-label">Number of pages</label>
+                                        <div id="page-range-slider" class="slider"></div>
+                                        <input type="hidden" id="number-of-pages-start"
+                                            name="number_of_pages_start"
+                                            value="{{ old('number_of_pages_start') }}">
+                                        <input type="hidden" id="number-of-pages-end" name="number_of_pages_end"
+                                            value="{{ old('number_of_pages_end') }}">
+                                        <div id="number-of-pages-values">
+                                            <span id="number-of-pages-min">Start Page: </span>
+                                            <span id="number-of-pages-max">End Page: </span>
+                                        </div>
+
+                                    </div> --}}
+                                    <div class="mb-3 col-md-12 col-xl-12">
+                                        <label class="form-label">Area Size (in acres)</label>
+
+                                        <div id="area-range-slider" class="slider"></div>
+                                        <input type="hidden" id="area-range-start" name="area_range_start"
+                                            value="{{ old('area_range_start') }}">
+                                        <input type="hidden" id="area-range-end" name="area_range_end"
+                                            value="{{ old('area_range_end') }}">
+                                        <div id="area-range-values">
+                                            <span id="area-range-min">Start Area: </span>
+                                            <span id="area-range-max">End Area: </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="" class="btn-link"></a>
+                                        <div class="text-end"><button class="btn btn-secondary"
+                                                type="submit">Filter</button>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
 
             <div class="row">

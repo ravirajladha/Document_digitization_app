@@ -11,10 +11,45 @@
                 <div class="row page-titles">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Type</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Assigned Document</a></li>
+
                     </ol>
                 </div>
-
+                {{-- <div class="row">
+					<div class="col-xl-12">
+						
+								<div class="filter cm-content-box box-primary">
+									<div class="content-title SlideToolHeader">
+										<div class="cpa">
+											Add Blog Category
+										</div>
+										<div class="tools">
+											<a href="javascript:void(0);" class="expand handle"><i class="fal fa-angle-down"></i></a>
+										</div>
+									</div>
+									<div class="cm-content-body  form excerpt">
+										<div class="card-body">
+											<div class="mb-3">
+											  <label  class="form-label">Name</label>
+											  <input type="text" class="form-control" placeholder="Name">
+											</div>
+											<div class="mb-3">
+												  <label  class="form-label">Slug</label>
+												  <input type="text" class="form-control" placeholder="Slug">
+											</div>
+											<div class="mb-3">
+											  <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
+											  <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+											</div>
+											<div>
+												<button type="button" class="btn btn-primary">Save</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							</div> --}}
+					
 
                   <!-- Modal -->
                   <div class="modal fade" id="exampleModalCenter">
@@ -47,6 +82,8 @@
                                 </select>
                             </div>
                         </div>
+                        <input type="hidden"  name="location" value="all">
+
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="document" class="form-label">Document</label>
@@ -111,7 +148,7 @@
                                  
                                     <div class="table-responsive">
                                         <table id="example5" class="display" style="min-width: 845px">
-                                    <button type="button" class="btn btn-success mb-2 float-end"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Assign Document</button>
+                                    <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-plus"></i>&nbsp;Assign Document</button>
 
                                             <thead>
                                                 <tr>
@@ -292,4 +329,4 @@
         });
     });
     </script>
-    
+    <script></script>

@@ -15,7 +15,7 @@
                     </ol>
                 </div>
 
-                <form id="myAjaxForm" action="{{ url('/') }}/add_set" method="POST" enctype="multipart/form-data">
+                {{-- <form id="myAjaxForm" action="{{ url('/') }}/add_set" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="container-fluid">
                         <div class="row">
@@ -47,38 +47,25 @@
                             </div>
                         </div>
                     </div>
-                </form>
-                <!-- Button trigger modal -->
-                {{-- <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Modal centered</button> --}}
-                <!-- Modal -->
-                {{-- <div class="modal fade" id="exampleModalCenter">
-             <div class="modal-dialog modal-dialog-centered" role="document">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h5 class="modal-title">Modal title</h5>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal">
-                         </button>
-                     </div>
-                     <div class="modal-body">
-                         <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                     </div>
-                     <div class="modal-footer">
-                         <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                         <button type="button" class="btn btn-primary">Save changes</button>
-                     </div>
-                 </div>
-             </div>
-         </div> --}}
+                </form> --}}
+             
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h1 class="title">Sets</h1>
+                                </div>
                                 <div class="card-body">
+                                  
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
                                         {{-- <table id="example5" class="display" style="min-width: 845px"> --}}
                                         <table id="example5" class="display">
-
+                                            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
+                                            data-bs-target="#addDocumentTypeModal">
+                                            <i class="fas fa-plus"></i>&nbsp; Add Set
+                                        </button>
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
@@ -144,6 +131,34 @@
             </div>
         </div>
     </div>
+     <!-- Modal -->
+     <div class="modal fade" id="addDocumentTypeModal" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
+     aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="addDocumentTypeModalLabel">Add Set</h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <form id="myAjaxForm" action="{{ url('/') }}/add_set" method="POST" enctype="multipart/form-data">
+                 @csrf
+                 <div class="modal-body">
+                     <div class="mb-3">
+                         <label for="documentType" class="form-label">Set</label>
+                         <input type="text" class="form-control" name="name"
+                         id="exampleInputEmail1" aria-describedby="emailHelp"
+                         placeholder="Enter Set Name">
+                     </div>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     <button class="btn btn-primary" type="submit">Submit</button>
+                 </div>
+             </form>
+         </div>
+     </div>
+ </div>
+
 
     @include('layouts.footer')
 

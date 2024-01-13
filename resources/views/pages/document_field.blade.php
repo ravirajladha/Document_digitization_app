@@ -26,64 +26,17 @@
 
                     </div>
                 </div>
-                <form action="{{ url('/') }}/add_document_field" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3>Document Type: {{ $tableName }}</h3>
-                                        <div class="form theme-form projectcreate">
-                                            <div class="row">
-
-                                                <input type="hidden" class="form-control" name="type"
-                                                    value="{{ ucwords($tableName) }}">
-
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label>Fields Name</label>
-
-                                                        <input type="text" class="form-control" name="fields[]"
-                                                            id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                            placeholder="Enter Field Name" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label>Field Type</label>
-                                                        <select class="form-select form-control"
-                                                            aria-label="Default select example" name="field_type">
-                                                            <option selected disabled>--Select Any--</option>
-                                                            <option value="1">Text</option>
-                                                            <option value="2">Number</option>
-                                                            <option value="3">Image</option>
-                                                            <option value="4">Pdf Files</option>
-                                                            <option value="5">Date</option>
-                                                            <option value="6">Video</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class=" my-auto">
-                                                    <div class="text-end"><button class="btn btn-secondary"
-                                                            type="submit">Submit</button>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+            
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
+                                        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal"
+                                        data-bs-target="#addDocumentTypeModal">
+                                        <i class="fas fa-plus"></i>&nbsp; Add Document Fields
+                                    </button>
                                         <table id="example5" class="display" style="min-width: 845px">
                                             <thead>
                                                 <tr>
@@ -141,6 +94,49 @@
             </div>
         </div>
     </div>
+
+     <!-- Modal -->
+     <div class="modal fade" id="addDocumentTypeModal" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
+     aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="addDocumentTypeModalLabel">Add Fields to Document: {{ $tableName }} </h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <form action="{{ url('/') }}/add_document_field" method="POST" enctype="multipart/form-data">
+                 @csrf
+                 <input type="hidden" class="form-control" name="type"
+                 value="{{ ucwords($tableName) }}">
+                 <div class="modal-body">
+                      <div class="mb-3">
+                            <label for="documentType" class="form-label">Fields Name</label>
+                            <input type="text" class="form-control" name="fields[]"
+                            id="exampleInputEmail1" aria-describedby="emailHelp"
+                            placeholder="Enter Field Name" required>
+                        </div>
+                      <div class="mb-3">
+                            <label for="documentType" class="form-label">Field Type</label>
+                            <select class="form-select form-control"
+                            aria-label="Default select example" name="field_type">
+                            <option selected disabled>--Select Any--</option>
+                            <option value="1">Text</option>
+                            <option value="2">Number</option>
+                            <option value="3">Image</option>
+                            <option value="4">Pdf Files</option>
+                            <option value="5">Date</option>
+                            <option value="6">Video</option>
+                        </select>
+                        </div>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     <button class="btn btn-primary" type="submit">Submit</button>
+                 </div>
+             </form>
+         </div>
+     </div>
+ </div>
 
     @include('layouts.footer')
 

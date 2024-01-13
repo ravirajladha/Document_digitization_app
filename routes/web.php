@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function () {
     // Route::get('/get-receivers/{typeId}', [Receiver_process::class, 'getReceiversByType'])->name('getReceiversByType');
     Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])->name('getDocumentsByType');
     Route::get('/assign-documents', [Receiver_process::class, 'showAssignedDocument'])->name('showAssignedDocument');
+// Add a parameter to your route for the receiver ID, assigned documents for one particular user
+Route::get('/user-assign-documents/{receiver_id}', [Receiver_process::class, 'showUserAssignedDocument'])
+     ->name('showUserAssignedDocument');
+
     //update the status of the assigned docu
     Route::post('/toggle-assigned-document-status/{id}', [Receiver_process::class, 'toggleStatus'])->name('toggleStatus');
 
@@ -79,8 +83,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/document-creation-continue', [Admin::class, 'documentCreationContinue'])->name('documentCreationContinue');
 
-    Route::get('/change_password', [Admin::class, 'change_password'])->name('change_password');
-    Route::post('/update_password', [Admin::class, 'update_password'])->name('update_password');
 
     Route::get('/view_doc_first', [Admin::class, 'view_doc_first'])->name('view_doc_first');
     Route::get('/view_doc_first_submit', [Admin::class, 'view_doc_first_submit'])->name('view_doc_first_submit');

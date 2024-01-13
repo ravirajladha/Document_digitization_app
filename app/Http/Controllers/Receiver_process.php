@@ -28,114 +28,54 @@ class Receiver_process extends Controller
         $documentTypes = Master_doc_type::all();
         $receiverTypes = Receiver_type::where('status',1)->get();
 
-        return view('pages.assign-documents', [
+        return view('pages.assign-document.assign-documents', [
             'documentAssignments' => $documentAssignments,
             'documentTypes' => $documentTypes,
             'receiverTypes' => $receiverTypes
         ]);
     }
+    public function showUserAssignedDocument($receiverId)
+    {
+        // Filter the document assignments by the passed receiver ID
+        $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])
+            ->where('receiver_id', $receiverId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        // If you still need the lists of document types and receiver types for dropdowns or other UI elements
+        $documentTypes = Master_doc_type::all();
+        $receiverTypes = Receiver_type::where('status', 1)->get();
+    
+        // You can also get the receiver details if needed, for example to display their name on the page
+        $receiver = Receiver::find($receiverId);
+    
+        return view('pages.assign-document.user-document-assignments', [
+            'documentAssignments' => $documentAssignments,
+            'documentTypes' => $documentTypes,
+            'receiverTypes' => $receiverTypes,
+            'receiver' => $receiver, // Pass the receiver details to the view if needed
+        ]);
+    }
+    
 
     public function getReceiversByType($typeId)
     {
         $receivers = Receiver::where('receiver_type_id', $typeId)->get();
         return response()->json(['receivers' => $receivers]);
     }
-    public function assignDocumentsToReceiver1(Request $request)
-    {
-        // Validate the request...
-        $validatedData = $request->validate([
-            'document_type' => 'required', // Assuming this is an ID or a code
-            'document_id' => 'required', // Assuming documents table exists
-            'receiver_id' => 'required', // Assuming receivers table exists
-            'receiver_type' => 'required', // Assuming receivers table exists
-        ]);
-
-        $token = Str::random(40); // Generate a unique token
-        $expiresAt = Carbon::now()->addHours(24);
-
-        // Create a new document assignment entry
-        $assignment = Document_assignment::create([
-            'document_type' => $validatedData['document_type'],
-            'doc_id' => $validatedData['document_id'],
-            'receiver_id' => $validatedData['receiver_id'],
-            'receiver_type' => $validatedData['receiver_type'],
-            'access_token' => $token,
-            'expires_at' => $expiresAt,
-            'created_by' => Auth::user()->id,
-        ]);
-        $assignment->save();
-        if ($assignment->wasRecentlyCreated) {
-            // Assume you have the document type id and document id from the request
-            $documentTypeName = Master_doc_type::where('id', $request->document_type)->first()->name;
-            $documentName = Master_doc_data::where('id', $request->document_id)->first()->name;
-
-            // Retrieve the table and column names for file storage
-            $Table_metadata = Table_metadata::where('table_id', $request->document_type)->whereIn('data_type', [3, 4, 6])->get();
-
-            // Prepare the zip file
-            $zip = new ZipArchive;
-            $zipFileName = 'documents.zip';
-            $path = "uploads/";
-            // $zipFilePath = public_path('uploads\documents.zip');
-            $zipFilePath = storage_path($path . $zipFileName);
-            // if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-            //     // Your logic to add files to the zip archive
-            //     dd($zipFilePath);
-            //     $zip->close();
-            // } else {
-            //     // Handle the error
-            // }
-            dd("hello before else");
-
-            if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-                foreach ($Table_metadata as $metadata) {
-                    $tableName = $documentTypeName; // The table where documents are stored
-                    $columnName = $metadata->column_name; // The column that stores the file path
-
-                    // Retrieve the file path from the document table and column
-                    $filePath = DB::table($tableName)->where('id', $request->document_id)->value($columnName);
-                    dd($filePath);
-                    // Check if file exists and add it to the zip
-                    // Assume $filePath is relative to the "storage/app/public" directory
-                    $fullPath = storage_path($filePath);
-                    if (file_exists($fullPath)) {
-                        // Add file to zip
-                        $zip->addFile($fullPath, basename($filePath));
-                    }
-                }
-                $zip->close();
-
-                // Continue with your logic to serve the zip or send it via email
-            } else {
-                // Handle error
-                dd("hello from else");
-                dd($zipFilePath);
-                Log::error("Cannot create zip file: " . $zipFilePath);
-            }
-
-
-            // Delete the zip file after sending the email
-            // if (file_exists($zipFileName)) {
-            //     unlink($zipFileName);
-            // }
-
-            session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned and emailed successfully']);
-            return redirect('/assign-documents');
-        } else {
-            // Handle error case...
-        }
-    }
+  
     public function assignDocumentsToReceiver(Request $request)
     {
         // Your validation logic here...
         // Validate the request...
-        $validatedData = $request->validate([
+// dd($request->all());
+       $validatedData = $request->validate([
             'document_type' => 'required', // Assuming this is an ID or a code
             'document_id' => 'required', // Assuming documents table exists
             'receiver_id' => 'required', // Assuming receivers table exists
             'receiver_type' => 'required', // Assuming receivers table exists
         ]);
-
+$location = $request->location;
         // Generate a unique token with the current timestamp
         $timestamp = Carbon::now()->timestamp;
         $token = Str::random(40) . '_' . $timestamp;
@@ -169,11 +109,25 @@ class Receiver_process extends Controller
 
             // Redirect with success message
             session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
-            return redirect('/assign-documents');
+            if($location == "all"){
+                return redirect('/assign-documents');
+            }else{
+                // If receiver_id is a part of the request, you can get it like this:
+                $receiverId = $request->input('receiver_id');
+                return redirect('/user-assign-documents/' . $receiverId);
+            }
+            
+          
         } else {
             // Handle the case where the assignment was not created
             session()->flash('toastr', ['type' => 'warning', 'message' => 'Assignment could not be created']);
-            return redirect('/assign-documents');
+            if($location == "all"){
+                return redirect('/assign-documents');
+            }else{
+                // If receiver_id is a part of the request, you can get it like this:
+                $receiverId = $request->input('receiver_id');
+                return redirect('/user-assign-documents/' . $receiverId);
+            }
         }
     }
 

@@ -15,41 +15,7 @@
                     </ol>
                 </div>
 
-                <form id="myAjaxForm" action="{{ url('/') }}/add-receiver-type" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="card profile-card card-bx m-b30">
-                                    <div class="card-header">
-                                        <h6 class="title">Add Receiver Type</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form theme-form projectcreate">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="mb-3">
-                                                        <label for="exampleInputEmail1" class="form-label">Receiver Type
-                                                        </label>
-                                                        <input type="text" class="form-control" name="name"
-                                                            id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                            placeholder="Enter Set Name">
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer">
-                                                    <a href="" class="btn-link"></a>
-
-                                                    <button class="btn btn-secondary" type="submit">Submit</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+             
                 <!-- Button trigger modal -->
                 {{-- <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Modal centered</button> --}}
                 <!-- Modal -->
@@ -75,12 +41,18 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h1 class="title">Receiver Type</h1>
+                                </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
                                         {{-- <table id="example5" class="display" style="min-width: 845px"> --}}
                                         <table id="example5" class="display">
-
+                                            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
+                                            data-bs-target="#addDocumentTypeModal1">
+                                            <i class="fas fa-plus"></i>&nbsp; Add Receiver Type
+                                        </button>
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
@@ -146,7 +118,43 @@
             </div>
         </div>
     </div>
+   <!-- Modal -->
+   <div class="modal fade" id="addDocumentTypeModal1" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title" id="addDocumentTypeModalLabel">Add Recceiver Type</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <form id="myAjaxForm" action="{{ url('/') }}/add-receiver-type" method="POST"
+           enctype="multipart/form-data">
+           @csrf
+           <div class="modal-body">
+                               <div class="form theme-form projectcreate">
+                                   <div class="row">
+                                       <div class="col-md-12">
+                                           <div class="mb-3">
+                                               <label for="exampleInputEmail1" class="form-label">Receiver Type
+                                               </label>
+                                               <input type="text" class="form-control" name="name"
+                                                   id="exampleInputEmail1" aria-describedby="emailHelp"
+                                                   placeholder="Enter Set Name">
+                                           </div>
+                                       </div>
+                                       <div class="card-footer">
+                                           <a href="" class="btn-link"></a>
 
+                                           <button class="btn btn-secondary" type="submit">Submit</button>
+                                       </div>
+                                   </div>
+                               </div>
+                               </div>
+               
+       </form>
+       </div>
+   </div>
+</div>
     @include('layouts.footer')
 
 
