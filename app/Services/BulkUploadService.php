@@ -16,7 +16,7 @@ use App\Models\Master_doc_type;
 use App\Models\Master_doc_data;
 use App\Services\DocumentTableService;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Str;
 class BulkUploadService
 {
     protected $documentTypeService;
@@ -35,7 +35,8 @@ class BulkUploadService
             'updated' => 0,
             'not_used' => 0,  // Assuming 'not_used' means skipped due to validation or other reasons
         ];
-    
+      // Generate a unique batch ID for this upload, used for insertIntoDynamicTables, to update only those details of the excel which was of this batch
+      $batchId = (string) Str::uuid();
         // Open the file
         $handle = fopen($path, 'r');
     
@@ -47,7 +48,7 @@ class BulkUploadService
         })
         ->skip(1) // Skip the header of the CSV file.
         ->chunk(10000) // Process in chunks of 1000 rows.
-        ->each(function ($chunk) use (&$stats) {
+        ->each(function ($chunk) use (&$stats ,$batchId) {
             // Prepare an array to hold all rows for batch insertion.
             $rowsToInsert = [];
     
@@ -56,7 +57,7 @@ class BulkUploadService
                 // Apply your validation and logic here.
                 if($row[6]){
                 
-                $processedRow = $this->processRow($row);
+                $processedRow = $this->processRow($row, $batchId);
             }else{
                 $stats['not_used']++;
             }
@@ -79,7 +80,7 @@ class BulkUploadService
         fclose($handle);
         //the below function calls and find the data which is not added in the subsequent table, and refresh the sub table with the data
         
-        $dynamicStats =  $this->insertIntoDynamicTables();
+        $dynamicStats =  $this->insertIntoDynamicTables($batchId);
             // Combine the stats
             // dd($stats, $dynamicStats);
     $stats['inserted'] += $dynamicStats['inserted'];
@@ -91,22 +92,24 @@ class BulkUploadService
     }
 
 
-    protected function insertIntoDynamicTables() {
+    protected function insertIntoDynamicTables($batchId) {
         $dynamicStats = [
             'inserted' => 0,
             'updated' => 0,
-            'not_used'=>0,
-            
-            ];
-        // Retrieve all distinct table names from the `master_doc_data` table
-        $tableNames = Master_doc_data::distinct()->pluck('document_type_name');
-        // dd($tableNames);
+            'not_used'=> 0,
+        ];
+    
+        // Retrieve all distinct table names from the `master_doc_data` table for the given batch_id
+        $tableNames = Master_doc_data::where('batch_id', $batchId)
+                                      ->distinct()
+                                      ->pluck('document_type_name');
+    
         foreach ($tableNames as $tableName) {
-            
             if (Schema::hasTable($tableName)) {
-            
-                // Get the relevant records from `master_doc_data` for this table
-                $records = Master_doc_data::where('document_type_name', $tableName)->get();
+                // Get the relevant records from `master_doc_data` for this table and batch_id
+                $records = Master_doc_data::where('document_type_name', $tableName)
+                                          ->where('batch_id', $batchId)
+                                          ->get();
                
                 foreach ($records as $record) {
                     // Check if a record with the same doc_id exists in the dynamic table
@@ -116,9 +119,8 @@ class BulkUploadService
                         // The record exists, so we'll increment the 'updated' count.
                         // Update the existing record with new data if necessary
                         DB::table($tableName)->where('doc_id', $record->id)->update([
-                            'doc_id' => $record->id,
-                            'doc_type' => $tableName,
-                            'document_name' => $record->name,
+                            // ... include fields that should be updated
+                            'pdf_file_path' => "uploads/documents/".$record->temp_id.".pdf",
                         ]);
                         $dynamicStats['updated']++;
                     } else {
@@ -127,6 +129,7 @@ class BulkUploadService
                             'doc_id' => $record->id,
                             'doc_type' => $tableName,
                             'document_name' => $record->name,
+                            'pdf_file_path' => "uploads/documents/".$record->temp_id.".pdf",
                             // ... include other fields that should be inserted
                         ]);
                         $dynamicStats['inserted']++;
@@ -136,47 +139,13 @@ class BulkUploadService
                 // Optionally handle the case where the table does not exist
                 $dynamicStats['not_used']++;
             }
-        
         }
+    
         return $dynamicStats;
-    }
-        protected function insertIntoDynamicTables1(&$stats) {
-        // No need to reinitialize $stats here, it's already been passed by reference
-    
-        // Retrieve all distinct table names from the `master_doc_data` table
-        $tableNames = Master_doc_data::distinct()->pluck('document_type_name');
-        
-        foreach ($tableNames as $tableName) {
-            if (Schema::hasTable($tableName)) {
-                // Get the relevant records from `master_doc_data` for this table
-                $records = Master_doc_data::where('document_type_name', $tableName)->get();
-    
-                foreach ($records as $record) {  
-                    $exists = DB::table($tableName)->where('doc_id', $record->id)->exists();
-                    // Insert into dynamic table if not exists
-                    if (!$exists) {
-                        DB::table($tableName)->insert([
-                            'doc_id' => $record->id, // Unique identifier for the document
-                            'doc_type' => $tableName,
-                            'document_name' => $record->name,
-                            // ... include other fields that should be inserted
-                        ]);
-                        $stats['inserted']++;
-                    } else {
-                        // Perform the update logic here if necessary
-                        $stats['updated']++;
-                    }
-                }
-            } else {
-                // Optionally handle the case where the table does not exist
-                // For example, create the table or log an error
-            }
-        }
-        return $stats;
     }
     
 
-    protected function processRow($row)
+    protected function processRow($row,$batchId)
     {
         // $dateFromCsv = $row[19];
         // $formattedDate = \Carbon\Carbon::createFromFormat('m/d/Y', $dateFromCsv)->format('Y-m-d');
@@ -212,7 +181,7 @@ class BulkUploadService
             'physically' => $row[26],
             'bulk_uploaded' => 1,
             'created_by' => Auth::user()->id,
-         
+            'batch_id' => $batchId,
         
             // ... add more fields as necessary
         ];

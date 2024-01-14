@@ -178,11 +178,21 @@
                                             @endif
                                         @endif
                                     @endforeach
-                                    @if ($counter == 0)
-                                        <div class="col-lg-12">
-                                            <p>No files to display.</p>
-                                        </div>
-                                    @endif
+                                    @if ($document->pdf_file_path)
+                                    <h4 class="mt-2">PDF File</h4>
+                                    <div class="pointer-events: auto;">
+                                        <iframe
+                                            src="{{ url($document->pdf_file_path) }}"
+                                            width="100%" height="600"
+                                            frameborder="0"
+                                            oncontextmenu="return false;">
+                                        </iframe>
+                                    </div>
+                                @elseif ($counter == 0)
+                                    <div class="col-lg-12">
+                                        <p>No files to display.</p>
+                                    </div>
+                                @endif
                                 </div>
                             </div>
                         </div>

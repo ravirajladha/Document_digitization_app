@@ -55,6 +55,11 @@
                                                             <input type="text" name="name" class="form-control"
                                                                 placeholder="Enter Name" value="{{ $document->name }}">
                                                         </div>
+                                                        <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Temp id</label>
+                                                            <input type="text" name="name" class="form-control"
+                                                                placeholder="Enter Temp Id" value="{{ $document->temp_id }}">
+                                                        </div>
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Location</label>
@@ -79,7 +84,7 @@
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Current State</label>
-                                                            <select id="inputState" name="current_state"
+                                                            <select id="single-select-abc1"  name="current_state"
                                                                 class="default-select form-control wide">
                                                                 <option value="" disabled>Choose State...</option>
                                                                 @foreach ($states as $state)
@@ -94,7 +99,7 @@
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">State</label>
-                                                            <select id="inputState" name="state"
+                                                            <select id="single-select-abc2" name="state"
                                                                 class="default-select form-control wide">
                                                                 <option selected disabled>Choose State...</option>
                                                                 @foreach ($states as $state)
@@ -108,7 +113,7 @@
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Alternate State</label>
-                                                            <select id="inputState" name="alternate_state"
+                                                            <select id="single-select-abc3" name="alternate_state"
                                                                 class="default-select form-control wide">
                                                                 <option selected disabled>Choose State...</option>
                                                                 @foreach ($states as $state)
@@ -282,7 +287,12 @@
                                             </label>
                                         </div>
                                     </div> --}}
-                                                    <button type="submit" class="btn btn-primary">Next</button>
+                                    <div class="card-footer">
+                                        <a href="" class="btn-link"></a>
+                                        <div class="text-end"><button class="btn btn-primary"
+                                                type="submit">Next</button>
+                                        </div>
+                                    </div>
                                                 </form>
                                             </div>
                                         </div>
@@ -304,3 +314,23 @@
 
 
 </x-app-layout>
+<script>
+    $("#single-select-abc1").select2();
+
+$(".single-select-abc1-placeholder").select2({
+    placeholder: "Select a state",
+    allowClear: true
+});
+$("#single-select-abc2").select2();
+
+$(".single-select-abc2-placeholder").select2({
+    placeholder: "Select a state",
+    allowClear: true
+});
+$("#single-select-abc3").select2();
+
+$(".single-select-abc3-placeholder").select2({
+    placeholder: "Select a state",
+    allowClear: true
+});
+</script>

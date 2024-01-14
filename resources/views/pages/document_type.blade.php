@@ -23,7 +23,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal"
+                                        <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
                                             data-bs-target="#addDocumentTypeModal">
                                             <i class="fas fa-plus"></i>&nbsp; Add Document Type
                                         </button>

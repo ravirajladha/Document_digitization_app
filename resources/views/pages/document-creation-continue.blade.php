@@ -41,12 +41,31 @@
                                                     <input type="hidden" value="{{ $table_name }}" name="type">
                                                     <input type="hidden" value="{{ $document_data->doc_id }}"
                                                         name="master_doc_id">
-                                                    @if (count($columnMetadata) == 0)
+                                                    {{-- @if (count($columnMetadata) == 0)
                                                         <div class="col-lg-12">
                                                             <p>No additional fields to display. Please Submit the Form
                                                                 to review the document.</p>
                                                         </div>
-                                                    @endif
+                                                    @endif --}}
+                                                    <div class="col-lg-6">
+                                                        <div class="mb-3">
+                                                    <i><label for="Default Pdf"
+                                                        class="form-label">Upload Main Scanned Copy (Add Pdf
+                                                        Only)</label></i>
+                                                @if ($documentData->pdf_file_path)
+                                                    <a href="{{ asset($documentData->pdf_file_path) }}"
+                                                        target="_blank"><i
+                                                            class="fa fa-eye"></i></a>
+                                                @else
+                                                    <i class="fa fa-eye-slash"></i>
+                                                @endif
+                                                <input type="file" class="form-control"
+                                                    name="pdf_file_path[]"
+                                                    id="pdf_file_path" accept=".pdf"
+                                                    multiple>
+                                                    </div>
+                                                    </div>
+
                                                     @foreach ($columnMetadata as $meta)
                                                         @if (!in_array($meta->column_name, ['id', 'document_name', 'doc_id', 'created_at', 'updated_at', 'status', 'doc_type']))
                                                             <div class="col-lg-6">
@@ -140,6 +159,8 @@
                                                                                 multiple>
                                                                         @break
                                                                     @endswitch
+
+
                                                                 </div>
                                                             </div>
                                                         @endif

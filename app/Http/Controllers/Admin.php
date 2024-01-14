@@ -446,6 +446,7 @@ class Admin extends Controller
         $masterDocData = Master_doc_data::create([
             // Map your request data to your table columns
             'name' => $req->name,
+            'temp_id' => $req->temp_id,
             // 'type' => $req->type,
             'location' => $req->location,
             'locker_id' => $req->locker_id,
@@ -638,6 +639,7 @@ class Admin extends Controller
         // Update the master_doc_data record
         $masterDocData->update([
             'name' => $req->name,
+            'temp_id' => $req->temp_id,
             // 'type' => $req->type,
             'location' => $req->location,
             'locker_id' => $req->locker_id,
@@ -868,11 +870,9 @@ class Admin extends Controller
         }
 
         $document = DB::table($tableName)->where('id', $id)->first();
-        $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
+      
+               $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
 
-
-
-        // ...
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
 
         // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already

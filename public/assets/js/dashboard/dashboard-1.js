@@ -1009,7 +1009,7 @@
 	}
 	var emailchart = function(){
 		 var options = {
-          series: [27, 11, 22,15,25],
+          series: [27, 11, 22,15,25,25,68,98,85,22,55,88,8,88,55,22,22,55,55,55,55,556,66,99,99,88,88,45],
           chart: {
           type: 'donut',
 		  height:230

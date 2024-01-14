@@ -30,14 +30,15 @@
                         </div>
                         <div class="card-body">
                             <div class="basic-form">
-                                <form action="{{ url('/')}}/add-basic-detail-to-master-doc-data" method="add-basic-detail-to-master-doc-data" enctype="multipart/form-data">
+                              
 
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">Select Type *</label>
-                                            <select class="form-select form-control" aria-label="Default select example"
+                                            <label class="form-label">Select Document Type <span
+                                                class="text-danger">*</span></label>
+                                            <select class="form-select form-control" id="single-select-abc1" aria-label="Default select example"
                                             name="type" required>
-                                            <option selected disabled>select</option>
+                                            <option selected disabled>Select Document Type</option>
                                             @foreach ($doc_type as $item)
                                                 <option value="{{ $item->id }}|{{ $item->name }}">{{ $item->name }}</option>
                                             @endforeach
@@ -46,6 +47,10 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Name</label>
                                             <input type="text" name="name" class="form-control" placeholder="Enter Name">
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Temp Id</label>
+                                            <input type="text" name="temp_id" class="form-control" placeholder="Enter temp id">
                                         </div>
                                         
                                         <div class="mb-3 col-md-6">
@@ -65,7 +70,7 @@
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current State</label>
-                                            <select id="inputState" name="current_state"  class="default-select form-control ">
+                                            <select id="single-select-abc2" name="current_state"  class="default-select form-control ">
                                                 <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
@@ -75,7 +80,7 @@
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">State</label>
-                                            <select id="inputState" name="state"  class="default-select form-control wide">
+                                            <select id="single-select-abc3" name="state"  class="default-select form-control wide">
                                                 <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
@@ -85,7 +90,7 @@
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Alternate State</label>
-                                            <select id="inputState" name="alternate_state" class="default-select form-control wide">
+                                            <select id="single-select-abc4" name="alternate_state" class="default-select form-control wide">
                                                 <option selected disabled>Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
@@ -202,8 +207,17 @@
                                             </label>
                                         </div>
                                     </div> --}}
-                                    <button type="submit" class="btn btn-primary">Next</button>
-                                </form>
+
+                                    <div class="card-footer">
+                                        <a href="" class="btn-link"></a>
+                                        <div class="text-end"><button class="btn btn-primary"
+                                                type="submit">Next</button>
+                                        </div>
+                                    </div>
+
+
+                                    {{-- <button type="submit" class="btn btn-primary">Next</button> --}}
+                          
                             </div>
                         </div>
                     </div>
@@ -227,3 +241,29 @@
 
 </x-app-layout>
 
+<script>
+    $("#single-select-abc1").select2();
+
+    $(".single-select-abc1-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc2").select2();
+
+    $(".single-select-abc2-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc3").select2();
+
+    $(".single-select-abc3-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc4").select2();
+
+    $(".single-select-abc4-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+</script>

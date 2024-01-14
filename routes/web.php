@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Reviewer;
 use App\Http\Controllers\Receiver_process;
 use App\Http\Controllers\Document;
+use App\Http\Controllers\Dashboard;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,13 +24,14 @@ Route::middleware('guest')->group(function () {
         return view('welcome');
     });
 });
-Route::get('/dashboard', function () {
+// Route::get('/dashboard', function () {
 
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/verify-document/{token}', [Receiver_process::class, 'showPublicDocument'])->name('showPublicDocument');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
+    Route::get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -39,6 +39,7 @@ class DocumentTableService
                     $table->text('doc_type')->nullable();
                     $table->integer('status')->default(0);
                     $table->integer('doc_id')->nullable();
+                    $table->string('pdf_file_path',255)->nullable();
                     $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
                     $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
                 });

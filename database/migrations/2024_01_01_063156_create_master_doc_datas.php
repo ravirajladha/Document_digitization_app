@@ -44,6 +44,7 @@ return new class extends Migration
             $table->text('review')->nullable();
             $table->boolean('status_id')->default(0); // 0 for inactive, 1 for active
             $table->boolean('bulk_uploaded')->default(0); // 0 for inactive, 1 for active
+            $table->string('batch_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
             $table->foreign('document_type')->references('id')->on('master_doc_types')->onDelete('set null');
