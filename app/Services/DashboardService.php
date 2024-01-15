@@ -1,4 +1,4 @@
-<?php 
+<?php
 // File: app/Services/DashboardtService.php
 
 namespace App\Services;
@@ -13,6 +13,7 @@ use App\Models\Doc_type;
 
 
 use Validator;
+
 class DashboardService
 {
     public function getDocumentCounts()
@@ -24,49 +25,68 @@ class DashboardService
         return Receiver::where('status', 1)->count();
     }
 
-    public function getDocumentCountsByType() {
+    public function getDocumentCountsByType()
+    {
         $docTypes = DB::table('master_doc_types')->pluck('name');
         $chartLabels = []; //for email pie chart
-        $chartCounts = [];//for email pie chart
+        $chartCounts = []; //for email pie chart
         $acceptedCounts = []; //to get the accepted doc
         $notAcceptedCounts = []; // to get the pending doc
+        $holdedCounts = []; // to get the pending doc
         foreach ($docTypes as $docType) {
             $existsInMasterDocData = Master_doc_data::where('document_type_name', $docType)->exists();
             if ($existsInMasterDocData && Schema::hasTable($docType)) {
-            $count = $existsInMasterDocData ? DB::table($docType)->count() : 0;
-            $chartLabels[] = ucfirst($docType);
-            $chartCounts[] = $count;
+                $count = $existsInMasterDocData ? DB::table($docType)->count() : 0;
+                $chartLabels[] = ucfirst($docType);
+                $chartCounts[] = $count;
 
 
-              // Accepted count
-              $notAcceptedCount  = DB::table($docType)->where('status', '<>', 1)->count();
-              $notAcceptedCounts[] = $notAcceptedCount;
+                // not Accepted count
+                $notAcceptedCount  = DB::table($docType)->where('status', 0)->count();
+                $notAcceptedCounts[] = $notAcceptedCount;
 
                 // Accepted count
-            $acceptedCount = DB::table($docType)->where('status', 1)->count();
-            $acceptedCounts[] = $acceptedCount;
-            }else{
+                $acceptedCount = DB::table($docType)->where('status', 1)->count();
+                $acceptedCounts[] = $acceptedCount;
+                // Hold  count
+                $holdedCount = DB::table($docType)->where('status', 2)->count();
+                $holdedCounts[] = $holdedCount;
+            } else {
                 $chartCounts[] = 0;
-$acceptedCounts[] = 0;
-$notAcceptedCounts[] = 0;
+                $acceptedCounts[] = 0;
+                $notAcceptedCounts[] = 0;
+                $holdedCounts[] = 0;
             }
         }
-  $total_document_type = count($chartLabels);
+        // dd(array_sum($notAcceptedCounts));
+        $total_document_type = count($chartLabels);
+
         $colors = $this->generateColorPalette(count($chartLabels));
-        return compact('chartLabels', 'chartCounts','colors','acceptedCounts', 'notAcceptedCounts','total_document_type');
+        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts','holdedCounts', 'total_document_type');
     }
-    private  function generateColorPalette($numColors) {
+    private function generateColorPalette($numColors)
+    {
         $colors = [];
-        $hueStep = 360 / $numColors;
-    
-        for ($i = 0; $i < $numColors; $i++) {
-            $hue = $i * $hueStep;
-            $colors[] = "hsl(" . $hue . ", 70%, 60%)"; // Adjust saturation and lightness as needed
+
+        if ($numColors > 0) {
+            $hueStep = 360 / $numColors;
+
+            for ($i = 0; $i < $numColors; $i++) {
+                $hue = $i * $hueStep;
+                $colors[] = "hsl(" . $hue . ", 70%, 60%)"; // Adjust saturation and lightness as needed
+            }
+        } else {
+            // Return a default color or empty array if there are no colors to generate
+            $colors = ['#cccccc']; // A default color, could be any color of your choice
+            // OR simply return an empty array if no default color is desired
+            // $colors = [];
         }
-    
+
         return $colors;
     }
-    public function getGeographicalCounts() {
+
+    public function getGeographicalCounts()
+    {
         $villageCount = Master_doc_data::distinct('village')->count('village');
         $talukCount = Master_doc_data::distinct('taluk')->count('taluk');
         $districtCount = Master_doc_data::distinct('district')->count('district');
@@ -79,7 +99,4 @@ $notAcceptedCounts[] = 0;
             // 'totalArea' => $totalArea
         ];
     }
-
 }
-
-?>

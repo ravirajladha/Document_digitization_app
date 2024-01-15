@@ -144,7 +144,7 @@
                                 <div class="card-body">
                                  
                                     <div class="table-responsive">
-                                        <table id="example5" class="display" style="min-width: 845px">
+                                        <table id="example3" class="display" style="min-width: 845px">
                                     {{-- <button type="button" class="btn btn-success mb-2 float-end"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Assign Document</button> --}}
 
                                             <thead>

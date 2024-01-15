@@ -32,7 +32,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example5" class="display" style="min-width: 845px">
+                                    <table id="example3" class="display" style="min-width: 845px">
                                         <thead>
                                             <tr>
                                                 {{-- <th>
@@ -72,7 +72,7 @@
                                                     </td>
                                                     <td>{{ $item->current_district ? $item->current_district : '--' }}
                                                     </td>
-                                                    @if ($item->status == 0)
+                                                    {{-- @if ($item->status == 0)
                                                         <td>
                                                             <span class="badge light badge-danger">
                                                                 <i class="fa fa-circle text-danger me-1"></i>
@@ -93,9 +93,30 @@
 
                                                         <td><a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
                                                                 type="button" class="btn btn-primary">View</a></td>
-                                                    @endif
+                                                    @endif --}}
 
-
+                                                   
+                                                <td>
+                                                    @php
+                                                        $statusClasses = ['0' => 'badge-danger text-danger', '1' => 'badge-success text-success', '2' => 'badge-warning text-warning'];
+                                                        $statusTexts = ['0' => 'Pending', '1' => 'Accepted', '2' => 'Hold'];
+                                                        $statusId = strval($item->status); // Convert to string to match array keys
+        $statusClass = $statusClasses[$statusId] ?? 'badge-secondary text-secondary'; // Default class if key doesn't exist
+        $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn't exist
+                                                    @endphp
+                                                
+                                                    <span class="badge light {{ $statusClass }}">
+                                                        <i class="fa fa-circle {{ $statusClass }} me-1"></i>
+                                                        {{ $statusText }}
+                                                    </span>
+                                                </td>
+                                                
+                                                <td>
+                                                    <a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
+                                                       type="button" class="btn btn-primary">
+                                                        {{ $item->status_id == 1 ? 'View' : 'Review' }}
+                                                    </a>
+                                                </td>
                                                 </tr>
                                                 {{-- @endif --}}
                                             @endforeach

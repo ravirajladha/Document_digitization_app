@@ -233,6 +233,11 @@ let dataSet = [
 	
 	// table row
 	var table = $('#dataTable1, #dataTable2, #dataTable3, #dataTable4,  #example3, #example4 ').DataTable({
+		searching: true,
+		paging:true,
+		select: true,
+		info: true,         
+		lengthChange:true ,
 		language: {
 			paginate: {
 			  next: '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',

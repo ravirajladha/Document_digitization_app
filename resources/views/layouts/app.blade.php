@@ -33,20 +33,25 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- MOBILE SPECIFIC -->
-    <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+  
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
     <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
-    <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
+    {{-- <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet"> --}}
+
 
     <!-- Style css -->
-    <link href="/assets/css/style.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">
     <link rel="stylesheet" href="/assets/vendor/select2/css/select2.min.css">
+ 
+	<link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+
     <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
 </head>
 
 <body class="">

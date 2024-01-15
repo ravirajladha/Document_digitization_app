@@ -27,8 +27,8 @@
                                             Receiver</button>
 
                                         {{-- <div class="table-responsive"> --}}
-                                        {{-- <table id="example5" class="display" style="min-width: 845px"> --}}
-                                        <table id="example5" class="display">
+                                        {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
+                                        <table id="example3" class="display">
 
                                             <thead>
                                                 <tr>
@@ -54,7 +54,7 @@
                                                         <td>{{ $item->email }}</td>
                                                         <td>{{ optional($item->receiverType)->name }}</td>
                                                         <td> <a
-                                                                href="/user-assign-documents/{{ $item->id }}">{{ $item->document_assignments_count }}</a>
+                                                                href="/user-assign-documents/{{ $item->id }}"><u><b>{{ $item->document_assignments_count }}</b></u></a>
                                                         </td>
                                                         <td>{!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
@@ -62,7 +62,7 @@
 
                                                         <!-- Assuming you have a relation to get the receiver type name -->
                                                         <td>
-                                                            <button class="btn btn-primary edit-btn"
+                                                            <button class="btn btn-primary btn-sm edit-btn"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModalCenter"
                                                                 data-receiver-id="{{ $item->id }}"
@@ -74,7 +74,7 @@
                                                                 data-receiver-status="{{ $item->status }}"><i class="fas fa-pencil-square"></i>&nbsp;Edit</button>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-success assign-doc-btn"
+                                                            <button class="btn btn-success btn-sm assign-doc-btn"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#assignDocumentModal"
                                                                 data-receiver-id="{{ $item->id }}"
@@ -130,12 +130,14 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverPhone" class="form-label">Phone</label>
-                                        <input type="number" class="form-control" name="phone" id="receiverPhone"
-                                            placeholder="Enter Receiver's Phone Number">
+                                        <input type="text" class="form-control" name="phone" id="receiverPhone" 
+           placeholder="Enter Receiver's Phone Number" 
+           pattern="\d{0,10}$" title="Please enter a valid phone number with up to 10 digits."
+           maxlength="10">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverCity" class="form-label">City</label>
-                                        <input type="text" class="form-control" name="city" id="receiverCity"
+                                        <input type="text" class="form-control" name="city"  id="receiverCity"
                                             placeholder="Enter Receiver's City">
                                     </div>
                                     <div class="mb-3">
@@ -170,7 +172,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Receiver</h5>
+                    <h5 class="modal-title">Assign Document</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -207,14 +209,12 @@
                                     <!-- Options will be populated based on Document Type selection -->
                                 </select>
                             </div>
-
                         </div>
-
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Assign Document</button>
                 </div>
                 </form>
             </div>
@@ -284,7 +284,35 @@
 </x-app-layout>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+
 <script>
+
+// $(document).ready(function() {
+//     $('.edit-btn').on('click', function() {
+//         var receiverId = $(this).data('receiver-id');
+//         var receiverName = $(this).data('receiver-name');
+//         var receiverPhone = $(this).data('receiver-phone');
+//         var receiverCity = $(this).data('receiver-city');
+//         var receiverEmail = $(this).data('receiver-email');
+//         var receiverTypeId = $(this).data('receiver-type-id');
+//         var receiverStatus = $(this).data('receiver-status');
+
+//         // Console log the data for debugging
+//         console.log('Receiver ID:', receiverId);
+//         console.log('Receiver Name:', receiverName);
+//         console.log('Receiver Phone:', receiverPhone);
+//         console.log('Receiver City:', receiverCity);
+//         console.log('Receiver Email:', receiverEmail);
+//         console.log('Receiver Type ID:', receiverTypeId);
+//         console.log('Receiver Status:', receiverStatus);
+
+      
+//     });
+// });
+
+
+
+
     $(document).ready(function() {
         $('#myAjaxForm').on('submit', function(e) {
             e.preventDefault(); // prevent the form from 'submitting'
@@ -308,7 +336,7 @@
                 },
                 error: function(error) {
                     console.log(error);
-                    toastr.warning("Duplicate set found");
+                    toastr.warning("Wrong format data added or duplicate result found");
                     if (error.responseJSON && error.responseJSON.error) {
                         toastr.error(error.responseJSON.error); // Display error toast
                     }
@@ -353,13 +381,13 @@
 
                         '</tr>';
                 });
-                $('#example5 tbody').html(newTableContent);
+                $('#example3 tbody').html(newTableContent);
             }
         });
     }
     // Pre-fill the update modal form when the Edit button is clicked
     $(document).ready(function() {
-        $('#example5').on('click', '.edit-btn', function() {
+        $('#example3').on('click', '.edit-btn', function() {
             var receiverId = $(this).data('receiver-id');
             var receiverName = $(this).data('receiver-name');
             var receiverPhone = $(this).data('receiver-phone');
@@ -374,6 +402,7 @@
             $('#updateReceiverForm #receiverPhone').val(receiverPhone);
             $('#updateReceiverForm #receiverCity').val(receiverCity);
             $('#updateReceiverForm #receiverEmail').val(receiverEmail);
+            $('#updateReceiverForm #receiverTypeId').val(receiverTypeId);
             $('#updateReceiverForm #receiverStatus').val(receiverStatus);
         });
     });

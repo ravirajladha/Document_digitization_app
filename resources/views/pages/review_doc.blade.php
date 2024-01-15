@@ -19,7 +19,11 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Data</h4>
-
+                                @if (Auth::user()->type == 'admin')
+                            
+                                    <a class="btn btn-primary float-end" href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}" rel="noopener noreferrer">Edit</a>
+                           
+                                @endif
                             </div>
                             <div class="card-body">
 
@@ -34,6 +38,9 @@
                                                         $attribute == 'updated_at' ||
                                                         $attribute == 'status_id' ||
                                                         $attribute == 'set_id' ||
+                                                        $attribute == 'batch_id' ||
+                                                        // $attribute == 'rejection_message' ||
+                                                        $attribute == 'rejection_timestamp' ||
                                                         $attribute == 'id'
                                                     ) && $value !== null)
                                                     <tr style="padding:0 0 0 0;">
@@ -141,7 +148,8 @@
                                                 $column->column_name == 'id' ||
                                                 $column->column_name == 'created_at' ||
                                                 $column->column_name == 'updated_at' ||
-                                                $column->column_name == 'status'
+                                             
+                                                $column->column_name == 'status' 
                                             ))
                                             @php
                                                 $columnName = ucWords(str_replace('_', ' ', $column->column_name));
@@ -203,37 +211,60 @@
 
 
                 </div>
+
+             
+
+
+
+
                 <div class="row mb-5">
                     <div class="col-lg-12">
-                        <div class="my-auto">
-                            <div class="text-end d-flex justify-content-end align-items-center">
-                                @if (Auth::user()->type == 'admin')
-                                    <!-- Edit button -->
-                                    <a class="btn btn-primary me-2"
-                                        href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                        rel="noopener noreferrer">Edit</a>
-                                @endif
+                        <div class="card">
+                
+                            {{-- Edit Button --}}
+                            @if (Auth::user()->type == 'admin')
+                            <div class="card-header">
+                               Document Verification <i style="font-size:12px;">Three stage: Pending, Hold, Accept. To keep the document on hold, message is mandatory. Once accepted, the document status can't be changed</i>
+                            </div>
+                            @endif
+                
+                            <div class="card-body">
+                                {{-- Status Form --}}
+                                @if ($document->status == 0 || $document->status == 2)
+                                <form action="{{ url('/') }}/update_document" method="post" class="mb-3">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $document->id }}">
+                                    <input type="hidden" name="type" value="{{ $tableName }}">
+                
+                                    <div class="form-group">
+                                        <select id="single-select" name="status" onchange="handleStatusChange(this)" class="form-select">
+                                            <option value="0" {{ $document->status == 0 ? 'selected' : '' }}>Pending</option>
+                                            <option value="1">Accept</option>
+                                            <option value="2" {{ $document->status == 2 ? 'selected' : '' }}>Hold</option>
+                                        </select>
+                                    <input type="hidden" id="holdReason" name="holdReason">
 
-                                <!-- Check if the document has not been accepted -->
-                                @if ($document->status == 0)
-                                    <!-- Accept button form -->
-                                    <form action="{{ url('/') }}/update_document" method="post" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" value="{{ $tableName }}" name="type">
-                                        <input type="hidden" value="{{ $document->id }}" name="id">
-                                        <button type="submit" class="btn btn-primary">Accept</button>
-                                    </form>
+                                    </div>
+                                </form>
                                 @else
-                                    <!-- Accepted indicator -->
-                                    <button type="button" class="btn btn-success" disabled>Accepted</button>
+                                <button type="button" class="btn btn-success" disabled>Accepted</button>
+                                @endif
+                
+                                {{-- Rejection Message --}}
+                                @if ($document->status == 2 && $master_data->rejection_message)
+                                <div class="alert alert-warning">
+                                    <strong>Hold Reason:</strong> {{ $master_data->rejection_message }}
+                                    <div><small>{{ $master_data->rejection_timestamp }}</small></div>
+                                </div>
                                 @endif
                             </div>
-
+                
                         </div>
-
                     </div>
                 </div>
+                
 
+              
 
                 <div class="container-fluid">
                     <div class="row">
@@ -285,3 +316,35 @@
 
 
 </x-app-layout>
+<script>
+    function handleStatusChange(select) {
+        if (select.value == "2") { // Assuming '2' is the value for 'Hold'
+            const reason = window.prompt("Please enter the reason for holding: (* Mandatory)");
+            if (reason) {
+                document.getElementById('holdReason').value = reason;
+                select.form.submit();
+            } else {
+                select.value = "{{ $document->status }}"; // Revert back to the original value if no reason is provided
+            }
+        } else {
+            select.form.submit();
+        }
+    }
+
+    // function handleStatusChange(select) {
+    // if (select.value == "2") { // If 'Hold' is selected
+    //     const reason = window.prompt("Please enter the reason for holding:");
+    //     if (reason) {
+    //         document.getElementById('holdReason').value = reason;
+    //         select.form.submit();
+    //     } else {
+    //         select.value = select.dataset.previous; // Revert to previous value if no reason given
+    //     }
+    // } else {
+    //     select.form.submit();
+    // }
+// }
+
+
+
+</script>

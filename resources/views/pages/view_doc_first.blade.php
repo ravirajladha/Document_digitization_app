@@ -33,9 +33,9 @@
                                             <div class="mb-3">
                                                 <label class="form-label">Document type</label>
 
-                                                <select class="default-select form-control wide"
+                                                <select  id="single-select" class="default-select form-control wide"
                                                     aria-label="Default select example" name="type">
-                                                    <option selected disabled>select</option>
+                                                    <option selected disabled>--Select Document Type--</option>
                                                     @foreach ($doc_type as $item)
                                                         <option value="{{ $item->name }}">{{ $item->name }}</option>
                                                     @endforeach
@@ -50,7 +50,7 @@
                                         <div class="card-footer">
                                             <a href="" class="btn-link"></a>
 
-                                            <button class="btn btn-secondary" type="submit">Next</button>
+                                            <button class="btn btn-primary" type="submit">Search</button>
                                         </div>
                                     </div>
                                 </div>

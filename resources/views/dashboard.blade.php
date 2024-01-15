@@ -55,8 +55,8 @@
 
                                 <div class="col-xl-12">
                                     <div class="row">
-                                        <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
-                                            <div class="widget-stat card bg-warning">
+                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                                            <div class="widget-stat card bg-secondary">
                                                 <div class="card-body  p-4">
                                                     <div class="media">
                                                         <span class="me-3">
@@ -70,12 +70,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                             <div class="widget-stat card bg-success">
                                                 <div class="card-body p-4">
                                                     <div class="media">
                                                         <span class="me-3">
-                                                            <i class="flaticon-381-diamond"></i>
+                                                            <i class="flaticon-381-file"></i>
                                                         </span>
                                                         <div class="media-body text-white text-end">
                                                             <p class="mb-1">Total Document Type</p>
@@ -95,7 +95,12 @@
 								
 										@php
 										$totalNotAcceptedCount = array_sum($documentTypeWiseCounts['notAcceptedCounts']);
+										// dd($totalNotAcceptedCount);
 										$notAcceptedProgress = $documentCount > 0 ? ($totalNotAcceptedCount / $documentCount) * 100 : 0;
+									@endphp
+										@php
+										$totalHoldedCount = array_sum($documentTypeWiseCounts['holdedCounts']);
+										// dd($totalNotAcceptedCount);
 									@endphp
 								
 										<div class="col-xl-6 col-sm-6">
@@ -133,17 +138,17 @@
                                                         </div>
                                                         <div class="mt-2">
                                                            
-															<p class="mb-0"><strong class="text-danger me-2">{{  $totalNotAcceptedCount }}</strong>left from target</p>
+															<p class="mb-0"><strong class="text-danger me-2">{{  $totalHoldedCount }}</strong>on hold</p>
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <h2 class="fs-32 font-w700 mb-0">{{ $documentCount-$totalNotAcceptedCount }}</h2>
+                                                        <h2 class="fs-32 font-w700 mb-0">{{ $totalNotAcceptedCount + $totalHoldedCount }}</h2>
                                                     </div>
 
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                             <div class="widget-stat card bg-info">
                                                 <div class="card-body p-4">
                                                     <div class="media">
@@ -161,7 +166,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                             <div class="widget-stat card bg-primary">
                                                 <div class="card-body p-4">
                                                     <div class="media">

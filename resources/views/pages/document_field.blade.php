@@ -14,12 +14,12 @@
                         <div class="row">
                             <div class="col-12 col-sm-6">
                                 <h3>
-                                    Add Fields</h3>
+                                    Document Dynamic Fields</h3>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Add Fields</a></li>
+                                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Dynamic Fields</a></li>
                                 </ol>
                             </div>
                         </div>
@@ -31,13 +31,17 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h4 class="title">Fields Detail</h4>
+                                    <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
+                                    data-bs-target="#addDocumentTypeModal">
+                                    <i class="fas fa-plus"></i>&nbsp; Add Document Fields
+                                </button>
+                                </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal"
-                                        data-bs-target="#addDocumentTypeModal">
-                                        <i class="fas fa-plus"></i>&nbsp; Add Document Fields
-                                    </button>
-                                        <table id="example5" class="display" style="min-width: 845px">
+                                      
+                                        <table id="example3" class="display" style="min-width: 845px">
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl No.</th>

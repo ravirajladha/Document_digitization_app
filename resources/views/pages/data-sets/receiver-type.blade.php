@@ -42,17 +42,18 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h1 class="title">Receiver Type</h1>
+                                    <h4 class="title">Receiver Type</h4>
+                                    <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
+                                    data-bs-target="#addDocumentTypeModal1">
+                                    <i class="fas fa-plus"></i>&nbsp; Add Receiver Type
+                                </button>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
-                                        {{-- <table id="example5" class="display" style="min-width: 845px"> --}}
-                                        <table id="example5" class="display">
-                                            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
-                                            data-bs-target="#addDocumentTypeModal1">
-                                            <i class="fas fa-plus"></i>&nbsp; Add Receiver Type
-                                        </button>
+                                        {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
+                                        <table id="example3" class="display">
+                                           
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>

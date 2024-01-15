@@ -21,13 +21,17 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h4 class="title">Document Type</h4>
+                                    <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
+                                    data-bs-target="#addDocumentTypeModal">
+                                    <i class="fas fa-plus"></i>&nbsp; Add Document Type
+                                </button>
+                                </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
-                                            data-bs-target="#addDocumentTypeModal">
-                                            <i class="fas fa-plus"></i>&nbsp; Add Document Type
-                                        </button>
-                                        <table id="example5" class="display" style="min-width: 845px">
+                                        
+                                        <table id="example3" class="display" style="min-width: 845px">
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>

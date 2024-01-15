@@ -29,8 +29,10 @@ Route::middleware('guest')->group(function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/verify-document/{token}', [Receiver_process::class, 'showPublicDocument'])->name('showPublicDocument');
+Route::get('/otp/{token}', [Receiver_process::class, 'showOtpForm'])->name('otp.form');
+Route::post('/verify-document/{token}', [Receiver_process::class, 'verifyOtp'])->name('otp.verify');
 
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -57,9 +59,9 @@ Route::middleware(['auth','verified'])->group(function () {
     // Route::get('/get-receivers/{typeId}', [Receiver_process::class, 'getReceiversByType'])->name('getReceiversByType');
     Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])->name('getDocumentsByType');
     Route::get('/assign-documents', [Receiver_process::class, 'showAssignedDocument'])->name('showAssignedDocument');
-// Add a parameter to your route for the receiver ID, assigned documents for one particular user
-Route::get('/user-assign-documents/{receiver_id}', [Receiver_process::class, 'showUserAssignedDocument'])
-     ->name('showUserAssignedDocument');
+    // Add a parameter to your route for the receiver ID, assigned documents for one particular user
+    Route::get('/user-assign-documents/{receiver_id}', [Receiver_process::class, 'showUserAssignedDocument'])
+        ->name('showUserAssignedDocument');
 
     //update the status of the assigned docu
     Route::post('/toggle-assigned-document-status/{id}', [Receiver_process::class, 'toggleStatus'])->name('toggleStatus');
@@ -99,11 +101,12 @@ Route::get('/user-assign-documents/{receiver_id}', [Receiver_process::class, 'sh
 
     //data sets
     Route::get('/data-sets', [Admin::class, 'dataSets']);
-//documents controller
-Route::get('/bulk-upload-master-data', [Document::class, 'bulkUploadMasterData'])->name('bulkUploadMasterData');
-Route::post('/bulk-upload-master-document-data', [Document::class, 'bulkUploadMasterDocumentData'])->name('bulkUploadMasterDocumentData');
+    //documents controller
+    Route::get('/bulk-upload-master-data', [Document::class, 'bulkUploadMasterData'])->name('bulkUploadMasterData');
+    Route::post('/bulk-upload-master-document-data', [Document::class, 'bulkUploadMasterDocumentData'])->name('bulkUploadMasterDocumentData');
+//otp ccheck
 
-
+    
     // reviewer
     Route::get('/reviewer/index', [Reviewer::class, 'index']);
     Route::get('/reviewer/view_doc_first', [Reviewer::class, 'view_doc_first']);

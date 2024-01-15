@@ -20,7 +20,7 @@ class Document extends Controller
     }
 
     public function getDocumentsByType($typeId) {
-        $documents = Master_doc_data::where('document_type', $typeId)->get();
+        $documents = Master_doc_data::where('document_type', $typeId)->where('status_id', 1)->get();
         return response()->json(['documents' => $documents]);
     }
 

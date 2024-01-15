@@ -1,5 +1,8 @@
 <x-guest-layout>
+    
     <h4 class="text-center mb-4">Sign in your account</h4>
+<x-auth-session-status class="mb-4" :status="session('status')" />
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="form-group mb-4">
@@ -7,6 +10,7 @@
                {{-- replace the below value, if you need to remove the admin login which i have given directly in the input field to reduce the time of testing.
         :value="old('email')" --}}
         <input type="email"  class="form-control" placeholder="Enter email" id="username"  value="admin@gmail.com" name="email" required autofocus autocomplete="username">
+        <x-input-error :messages="$errors->get('email')" class="mt-2" />
           
         </div>
         <div class="mb-sm-4 mb-3 position-relative">

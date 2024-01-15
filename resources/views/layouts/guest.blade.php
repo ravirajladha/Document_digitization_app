@@ -64,13 +64,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <!-- FAVICONS ICON -->
-  <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
+
   <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
   <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
   
   <!-- Style css -->
   <link href="/assets/css/style.css" rel="stylesheet">
+  {{-- <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css"> --}}
   
 </head>
 
@@ -82,7 +84,7 @@
                     <div class="card mb-0 h-auto">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                <a href="index.html"><img class="logo-auth" src="images/logo-full.png" alt=""></a>
+                                <a href="index.html"><img class="logo-auth" style="width: 15rem;" src="/assets/logo/logo.jpg" alt=""></a>
                             </div>
                             {{ $slot }}
                             {{-- <h4 class="text-center mb-4">Sign in your account</h4>
@@ -131,7 +133,9 @@
     <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
     <script src="/assets/js/custom.min.js"></script>
     <script src="/assets/js/dlabnav-init.js"></script>
-    
+    {{-- <script src="/assets/vendor/toastr/js/toastr.min.js"></script>
+    <script src="/assets/js/plugins-init/toastr-init.js"></script> --}}
+
 	
 </body>
 </html>

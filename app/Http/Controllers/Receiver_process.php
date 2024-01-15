@@ -23,10 +23,10 @@ class Receiver_process extends Controller
     public function showAssignedDocument()
     {
         $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])->orderBy('created_at', 'desc')
-        ->get();
+            ->get();
 
         $documentTypes = Master_doc_type::all();
-        $receiverTypes = Receiver_type::where('status',1)->get();
+        $receiverTypes = Receiver_type::where('status', 1)->get();
 
         return view('pages.assign-document.assign-documents', [
             'documentAssignments' => $documentAssignments,
@@ -41,14 +41,14 @@ class Receiver_process extends Controller
             ->where('receiver_id', $receiverId)
             ->orderBy('created_at', 'desc')
             ->get();
-    
+
         // If you still need the lists of document types and receiver types for dropdowns or other UI elements
         $documentTypes = Master_doc_type::all();
         $receiverTypes = Receiver_type::where('status', 1)->get();
-    
+
         // You can also get the receiver details if needed, for example to display their name on the page
         $receiver = Receiver::find($receiverId);
-    
+
         return view('pages.assign-document.user-document-assignments', [
             'documentAssignments' => $documentAssignments,
             'documentTypes' => $documentTypes,
@@ -56,26 +56,26 @@ class Receiver_process extends Controller
             'receiver' => $receiver, // Pass the receiver details to the view if needed
         ]);
     }
-    
+
 
     public function getReceiversByType($typeId)
     {
         $receivers = Receiver::where('receiver_type_id', $typeId)->get();
         return response()->json(['receivers' => $receivers]);
     }
-  
+
     public function assignDocumentsToReceiver(Request $request)
     {
         // Your validation logic here...
         // Validate the request...
-// dd($request->all());
-       $validatedData = $request->validate([
+        // dd($request->all());
+        $validatedData = $request->validate([
             'document_type' => 'required', // Assuming this is an ID or a code
             'document_id' => 'required', // Assuming documents table exists
             'receiver_id' => 'required', // Assuming receivers table exists
             'receiver_type' => 'required', // Assuming receivers table exists
         ]);
-$location = $request->location;
+        $location = $request->location;
         // Generate a unique token with the current timestamp
         $timestamp = Carbon::now()->timestamp;
         $token = Str::random(40) . '_' . $timestamp;
@@ -103,27 +103,26 @@ $location = $request->location;
             }
 
             // Continue with sending the email
-            $verificationUrl = url('/verify-document/' . $token); // Define this route in your web.php
+            // $verificationUrl = url('/verify-document/' . $token); 
+            $verificationUrl = url('/otp/' . $token); 
 
             Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt));
 
             // Redirect with success message
             session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
-            if($location == "all"){
+            if ($location == "all") {
                 return redirect('/assign-documents');
-            }else{
+            } else {
                 // If receiver_id is a part of the request, you can get it like this:
                 $receiverId = $request->input('receiver_id');
                 return redirect('/user-assign-documents/' . $receiverId);
             }
-            
-          
         } else {
             // Handle the case where the assignment was not created
             session()->flash('toastr', ['type' => 'warning', 'message' => 'Assignment could not be created']);
-            if($location == "all"){
+            if ($location == "all") {
                 return redirect('/assign-documents');
-            }else{
+            } else {
                 // If receiver_id is a part of the request, you can get it like this:
                 $receiverId = $request->input('receiver_id');
                 return redirect('/user-assign-documents/' . $receiverId);
@@ -135,14 +134,21 @@ $location = $request->location;
 
     public function showPublicDocument($token)
     {
+        // dd("adfsdf");
+        if (session()->has('otp_validated') && session()->get('otp_validated') === $token) {
+            // Clear the OTP validation from the session so it's required next time
+            session()->forget('otp_validated');
+
         $assignment = Document_assignment::where('access_token', $token)
             ->where('expires_at', '>', now())
-            ->where('status','1')
+            ->where('status', '1')
             ->first();
-            // dd($assignment->receiver->status);
-            if (!$assignment || $assignment->receiver->status != '1') {
-                abort(404, 'Document not found, link has expired, or receiver is inactive.');
-            }
+        // dd($assignment->receiver->status);
+        if (!$assignment || $assignment->receiver->status != '1') {
+            // dd("here");
+
+            abort(404, 'Document not found, link has expired, or receiver is inactive.');
+        }
         // if (!$assignment) {
         //     abort(404, 'Document not found or link has expired.');
         // }
@@ -168,29 +174,82 @@ $location = $request->location;
             $assignment->first_viewed_at = now();
             $assignment->first_viewed_ip = request()->ip(); // Capture the IP address
         }
-    
+
         $assignment->view_count = $assignment->view_count + 1; // Increment the view count
         $assignment->save();
-    
+
 
         // Serve the document details to a view
         return view('emails.show', [
             'filePaths' => $filePaths,
             'documentName' => $documentData->name,
         ]);
+    }else{
+        return redirect()->route('otp.form', ['token' => $token]);
+    }
     }
 
     public function toggleStatus(Request $request, $id)
-{
-    $assignment = Document_assignment::findOrFail($id);
-    $assignment->status = !$assignment->status; // Toggle the status
-    $assignment->save();
+    {
+        $assignment = Document_assignment::findOrFail($id);
+        $assignment->status = !$assignment->status; // Toggle the status
+        $assignment->save();
 
-    return response()->json([
-      
-        'success' => 'Set added successfully.',
-        'newStatus' => $assignment->status
-    ]);
+        return response()->json([
+
+            'success' => 'Set added successfully.',
+            'newStatus' => $assignment->status
+        ]);
+    }
+
+    public function showOtpForm($token)
+{
+
+    $assignment = Document_assignment::where('access_token', $token)->first();
+    if ($assignment) {
+        // Fetch receiver details using receiver_id
+        $receiver = Receiver::find($assignment->receiver_id);
+        if ($receiver) {
+            // Pass receiver details along with token to the view
+            return view('emails.otp_form', [
+                'token' => $token,
+                'receiverName' => $receiver->name,
+                'receiverPhone' => $receiver->phone
+            ]);
+        }
+    }
+
+
+  
+
+
+    // You can pass the token to the view if you want to keep track of which document the OTP is for
+    return view('emails.otp_form', ['token' => $token]);
+
+
 }
+
+public function verifyOtp(Request $request, $token)
+{
+
+    // dd($request->all());
+    // $inputOtp = $request->input('otp');
+    $inputOtp = '5555';
+    $validOtp = '5555'; // This should be securely retrieved in a real application
+
+    if ($inputOtp === $validOtp) {
+        // Mark the OTP as validated in the session
+        session()->put('otp_validated', $token);
+// dd("otp ");
+        // Redirect to the document viewing page
+        return redirect()->route('showPublicDocument', ['token' => $token]);
+    } else {
+        // If OTP is wrong, redirect back with an error message
+        return redirect()->back()->withErrors(['otp' => 'The OTP entered is incorrect.']);
+    }
+}
+
+
+
 
 }

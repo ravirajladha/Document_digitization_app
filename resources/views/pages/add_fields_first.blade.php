@@ -33,9 +33,9 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="exampleInputEmail1" class="form-label">Document Type</label>
-                                            <select class="form-select form-control" aria-label="Default select example"
+                                            <select id="single-select" class="form-select form-control" aria-label="Default select example"
                                                 name="type">
-                                                <option selected disabled>select</option>
+                                                <option selected disabled>--Select Document Type--</option>
                                                 @foreach ($doc_type as $item)
                                                     <option value="{{ $item->name }}">{{ $item->name }}</option>
                                                 @endforeach

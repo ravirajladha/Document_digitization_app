@@ -119,7 +119,7 @@
 							<i class="fas fa-caret-downd scale5 text-light"></i>
 						</div>
 					</div>	
-					<div class="d-flex justify-content-between mb-2 progress-info">
+					{{-- <div class="d-flex justify-content-between mb-2 progress-info">
 						<span class="fs-12"><i class="fas fa-star text-orange me-2"></i>Task Progress</span>
 						<span class="fs-12">20/45</span>
 					</div>
@@ -127,7 +127,7 @@
 						<div class="progress-bar bg-gradientf progress-animated" style="width: 45%; height:8px;" role="progressbar">
 							<span class="sr-only">45% Complete</span>
 						</div>
-					</div>
+					</div> --}}
 				</div>
 				</div>
 				</div>
