@@ -186,11 +186,20 @@
                                             <div class="card overflow-hidden">
                                                 <div class="card-body">
                                                     <div class="text-center">
+                                                        <div class="row">
+                                                            <div class="col-6 pt-3 pb-3 border-end">
+                                                                <h3 class="mt-4 mb-1">{{$getGeographicalCounts['totalAreaAcre']}}</h3>
+                                                                <p class="text-muted">Area (In Acres and Cents)</p>
+                                                            </div>
+                                                            <div class="col-6 pt-3 pb-3 ">
+                                                                <h3 class="mt-4 mb-1">{{$getGeographicalCounts['totalAreaFeet']}}</h3>
+                                                                <p class="text-muted">Area (In Square Feet)</p>
+                                                            </div>
+                                                        </div>
                                                         {{-- <div class="profile-photo">
 															<img src="/assets/images/profile/profile.png" width="100" class="img-fluid rounded-circle" alt="">
 														</div> --}}
-                                                        <h3 class="mt-4 mb-1">0000</h3>
-                                                        <p class="text-muted">Area (in acres)</p>
+                                                       
                                                         {{-- <a class="btn btn-outline-primary btn-rounded mt-3 px-5" href="javascript:void();">()</a> --}}
                                                     </div>
                                                 </div>
@@ -229,7 +238,7 @@
 
                                 <div class="col-xl-12 col-lg-12">
                                     <div class="row">
-                                        <div class="col-xl-6 col-xxl-12 col-sm-6">
+                                        <div class="col-xl-12 col-xxl-12 col-sm-12">
                                             <div class="card">
                                                 <div class="card-header border-0 pb-0">
                                                     <div>
@@ -287,7 +296,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-6 col-xxl-12 col-sm-6">
+                                        {{-- <div class="col-xl-6 col-xxl-12 col-sm-6">
                                             <div class="card">
                                                 <div class="card-header border-0 pb-0">
                                                     <div>
@@ -414,7 +423,7 @@
                                                         documents</a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
 

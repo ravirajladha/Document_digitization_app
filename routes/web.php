@@ -104,9 +104,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //documents controller
     Route::get('/bulk-upload-master-data', [Document::class, 'bulkUploadMasterData'])->name('bulkUploadMasterData');
     Route::post('/bulk-upload-master-document-data', [Document::class, 'bulkUploadMasterDocumentData'])->name('bulkUploadMasterDocumentData');
-//otp ccheck
+    Route::post('/bulk-upload-child-document-data', [Document::class, 'bulkUploadChildDocumentData'])->name('bulkUploadChildDocumentData');
+    //otp ccheck
 
-    
+
     // reviewer
     Route::get('/reviewer/index', [Reviewer::class, 'index']);
     Route::get('/reviewer/view_doc_first', [Reviewer::class, 'view_doc_first']);

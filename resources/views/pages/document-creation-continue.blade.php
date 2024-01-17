@@ -76,8 +76,7 @@
                                                                         @case(1)
                                                                             {{-- Text input --}}
                                                                             <i><label for="{{ $meta->column_name }}"
-                                                                                    class="form-label">(Enter Text
-                                                                                    Only)</label></i>
+                                                                                    class="form-label"></label></i>
 
                                                                             <input type="text" class="form-control"
                                                                                 name="{{ $meta->column_name }}"

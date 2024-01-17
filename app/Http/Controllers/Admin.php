@@ -223,7 +223,7 @@ class Admin extends Controller
         // Validate the request data
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
+            'phone' => 'required|string|size:10|regex:/^\d{10}$/',
             'email' => 'required|string|email|max:255|unique:receivers,email',
             'city' => 'required|string|max:255',
             'receiver_type_id' => 'required|exists:receiver_types,id',
@@ -586,7 +586,7 @@ class Admin extends Controller
         return redirect('/review_doc/' . $tableName . '/' . $documentId);
     }
 
-    public function update_document(Request $req)
+    public function update_document1(Request $req)
     {
         $id = $req->id;
         $tableName = $req->type;
@@ -616,6 +616,52 @@ class Admin extends Controller
     }
 
 
+    public function update_document(Request $req)
+    {
+        $id = $req->id;
+        $tableName = $req->type;
+        $status = $req->status; // Assuming this is passed in the request
+        $message = $req->holdReason ?? null; // Assuming the hold message is passed in the request
+        // dd($message);
+        if (Schema::hasTable($tableName)) {
+            $columns = Schema::getColumnListing($tableName);
+        }
+
+        $document = DB::table($tableName)->where('id', $id)->first();
+
+        if (!$document) {
+            // Handle the case where the document doesn't exist
+            return redirect()->back()->withErrors(['error' => 'Document not found']);
+        }
+
+        // Prepare data for updating the individual document table
+        $updateData = ['status' => $status];
+
+        // Update the record in the individual document table
+        DB::table($tableName)->where('id', $id)->update($updateData);
+
+        // Prepare data for updating the master document table
+        $updateDataMaster = ['status_id' => $status];
+
+        // If the status is 'Hold', add additional fields for the message and timestamp
+
+        if ($status == 2) { // Assuming '2' represents the 'Hold' status
+       
+            $updateDataMaster['rejection_timestamp'] = now(); // Set the current timestamp
+        }
+        // dd($message);
+        if ($status == 2 && !empty($message)) {
+            // Update with hold reason if provided
+            $updateDataMaster['rejection_message'] = $message;
+        }
+        // Update the status in the master document table using the doc_id from the individual document
+        Master_doc_data::where('id', $document->doc_id)->update($updateDataMaster);
+
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Document status updated successfully']);
+
+        // Redirect back with a success message or to a different page
+        return redirect('/review_doc/' . $tableName . '/' . $id)->with('success', 'Document status updated successfully');
+    }
     public function updateFirstDocumentData(Request $req, $doc_id)
     {
         // First, find the existing document by ID
@@ -870,8 +916,8 @@ class Admin extends Controller
         }
 
         $document = DB::table($tableName)->where('id', $id)->first();
-      
-               $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
+
+        $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
 
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
 
@@ -939,8 +985,9 @@ class Admin extends Controller
         // $number_of_pages_start = $request->input('number_of_pages_start');
         // $number_of_pages_end = $request->input('number_of_pages_end');
         // dd($number_of_pages_start,$number_of_pages_end);
-        // $area_range_start = $request->input('area_range_start');
-        // $area_range_old = $request->input('area_range_old');
+        $area_range_start = $request->input('area_range_start');
+        $area_range_end = $request->input('area_range_end');
+        $area_unit = $request->input('area_unit');
 
         // dd($end_date);
         // Flash input to the session
@@ -972,7 +1019,7 @@ class Admin extends Controller
                 return empty($value);
             }) // Reject empty values
             ->values();
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date']);
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date','area_range_start','area_range_end','area_unit']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
@@ -981,7 +1028,7 @@ class Admin extends Controller
             if ($typeId == 'all') {
                 $documents = Master_doc_data::paginate(15); // Adjust the number per page as needed
             } else {
-                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $start_date, $end_date);
+                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $start_date, $end_date,$area_range_start,$area_range_end,$area_unit);
             }
         }
         // dd($documents);

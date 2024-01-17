@@ -41,8 +41,11 @@
                                                         $attribute == 'batch_id' ||
                                                         // $attribute == 'rejection_message' ||
                                                         $attribute == 'rejection_timestamp' ||
+                                                        $attribute == 'bulk_uploaded' ||
+                                                        $attribute == 'physically' ||
+                                                        
                                                         $attribute == 'id'
-                                                    ) && $value !== null)
+                                                    ) && $value !== null &&  $value !=="" )
                                                     <tr style="padding:0 0 0 0;">
                                                         <th style="padding: 5px;">
                                                             {{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
@@ -53,14 +56,15 @@
                                         @endif
 
                                         <tr style="height: 20px;"></tr>
+                                        {{-- {{dd($columnMetadata)}} --}}
                                         @foreach ($columnMetadata as $meta)
                                             @if (!in_array($meta->column_name, ['id', 'created_at', 'updated_at', 'status']))
-                                                @if (!in_array($meta->data_type, [3, 4, 6]))
+                                                @if (!in_array($meta->data_type, [3, 4, 6]) )
                                                     @php
                                                         $columnName = ucWords(str_replace('_', ' ', $meta->column_name));
-                                                        $value = $document->{$meta->column_name} ?? 'null';
+                                                        $value = $document->{$meta->column_name} ?? null;
                                                     @endphp
-                                                    @if ($value !== 'null')
+                                                    @if ($value !== null)
                                                         {{-- Add this check --}}
                                                         <tr style="padding:0 0 0 0;">
                                                             <th style="padding: 5px;">{{ $columnName }}</th>
@@ -70,9 +74,6 @@
                                                 @endif
                                             @endif
                                         @endforeach
-
-
-
                                     </tbody>
                                 </table>
                             </div>
@@ -247,7 +248,10 @@
                                     </div>
                                 </form>
                                 @else
-                                <button type="button" class="btn btn-success" disabled>Accepted</button>
+                                <div class="alert alert-success">
+                                    <strong>Accepted</strong>
+                                  
+                                </div>
                                 @endif
                 
                                 {{-- Rejection Message --}}
@@ -256,6 +260,12 @@
                                     <strong>Hold Reason:</strong> {{ $master_data->rejection_message }}
                                     <div><small>{{ $master_data->rejection_timestamp }}</small></div>
                                 </div>
+                                @elseif($document->status ==0)
+                                <div class="alert alert-primary">
+                                    <strong>Status : Pending</strong> 
+                                   
+                                </div>
+                               
                                 @endif
                             </div>
                 

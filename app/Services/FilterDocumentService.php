@@ -18,7 +18,7 @@ use Validator;
 class FilterDocumentService
 {
     
-    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$start_date = null,$end_date =null): Collection
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$start_date = null,$end_date =null,$area_range_start=null,$area_range_end=null,$area_unit=null): Collection
     {
         $query = Master_doc_data::query();
 
@@ -69,6 +69,21 @@ class FilterDocumentService
                   ->orWhere('current_village', $village)
                   ->orWhere('alternate_village', $village);
             });
+        }
+        if ($area_range_start !== null || $area_range_end !== null) {
+            $query->where(function ($q) use ($area_range_start, $area_range_end) {
+                if ($area_range_start !== null) {
+                    $q->where('area', '>=', $area_range_start);
+                }
+                if ($area_range_end !== null) {
+                    $q->where('area', '<=', $area_range_end);
+                }
+            });
+        }
+    
+        // Area unit type filter
+        if ($area_unit !== null) {
+            $query->where('unit', $area_unit);
         }
         // return $query->get();
        

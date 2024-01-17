@@ -33,6 +33,13 @@ return new class extends Migration
             $table->string('village')->nullable();
             $table->string('alternate_village')->nullable();
             $table->date('issued_date')->nullable();
+         
+
+            $table->integer('unit')->nullable();
+            $table->string('area')->nullable();
+            $table->string('dry_land')->nullable();
+            $table->string('wet_land')->nullable();
+            $table->string('garden_land')->nullable();
             $table->string('document_sub_type')->nullable();
             $table->string('current_town')->nullable();
             $table->string('town')->nullable();

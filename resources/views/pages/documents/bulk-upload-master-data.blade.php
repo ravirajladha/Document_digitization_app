@@ -14,7 +14,8 @@
                         <div class="row page-titles">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0)">Bulk Upload Master Data</a>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">Bulk Upload Master
+                                        Data</a>
                                 </li>
                             </ol>
                         </div>
@@ -32,7 +33,7 @@
                                                 <i class="fas fa-download"></i>&nbsp; Download Sample CSV File
                                             </button>
                                         </a>
-                                        
+
                                     </div>
                                     <div class="card-body">
                                         <div class="basic-form">
@@ -49,22 +50,67 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                      
+
                                                 {{-- <button type="submit" class="btn btn-primary">Submit</button>  </div> --}}
 
                                                 <div class="card-footer">
                                                     <a href="" class="btn-link"></a>
-                                                    <div class="text-end">  <button type="submit" class="btn btn-success">Submit</button>  </div>
-                                                    </div>
-                                          
+                                                    <div class="text-end"> <button type="submit"
+                                                            class="btn btn-success">Submit</button> </div>
+                                                </div>
+                                            </form>
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
+                        {{-- start child bulk upload --}}
+                        <div class="container-fluid">
+                            <div class="row">
+    
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Bulk Upload Child Data Form</h4>
+                                            <a href="/sample.csv" download="sample.csv">
+                                                <button type="button" class="btn btn-dark btn-sm float-end">
+                                                    <i class="fas fa-download"></i>&nbsp; Download Sample CSV File
+                                                </button>
+                                            </a>
+    
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="basic-form">
+                                                <form action="{{ url('/') }}/bulk-upload-child-document-data"
+                                                    method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="row">
+    
+                                                        <div class="mb-3 col-md-12">
+                                                            <label class="form-label">Bulk Uplaod (in csv file
+                                                                format)</label>
+                                                            <div class="fallback">
+                                                                <input name="document" type="file" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+    
+                                                    {{-- <button type="submit" class="btn btn-primary">Submit</button>  </div> --}}
+    
+                                                    <div class="card-footer">
+                                                        <a href="" class="btn-link"></a>
+                                                        <div class="text-end"> <button type="submit"
+                                                                class="btn btn-success">Submit</button> </div>
+                                                    </div>
+                                                </form>
+    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                     </div>
 
 

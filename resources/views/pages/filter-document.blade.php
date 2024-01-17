@@ -182,6 +182,16 @@
                                             <span id="area-range-min">Start Area: </span>
                                             <span id="area-range-max">End Area: </span>
                                         </div>
+
+
+                                        <label class="form-label">Select Area Unit (Optional)</label>
+                                        <select class="form-control" id="area-unit-dropdown" name="area_unit">
+                                            <option value="">Select Unit</option>
+                                            <option value="1">Acres and Cents</option>
+                                            <option value="2">Square Feet</option>
+                                          
+                                        </select>
+
                                     </div>
                                     <div class="card-footer">
                                         <a href="" class="btn-link"></a>

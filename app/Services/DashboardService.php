@@ -62,7 +62,7 @@ class DashboardService
         $total_document_type = count($chartLabels);
 
         $colors = $this->generateColorPalette(count($chartLabels));
-        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts','holdedCounts', 'total_document_type');
+        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts', 'holdedCounts', 'total_document_type');
     }
     private function generateColorPalette($numColors)
     {
@@ -87,16 +87,39 @@ class DashboardService
 
     public function getGeographicalCounts()
     {
-        $villageCount = Master_doc_data::distinct('village')->count('village');
+        // $villageCount = Master_doc_data::distinct('village')->count('village');
+        $villages = Master_doc_data::pluck('village')->toArray(); // Fetch all village data
+        $allVillages = [];
+
+        foreach ($villages as $villageString) {
+            if (!empty(trim($villageString))) {
+                $splitVillages = explode(',', $villageString); // Split village names
+                $splitVillages = array_filter($splitVillages, function ($village) {
+                    return !empty(trim($village)); // Filter out empty strings
+                });
+                $allVillages = array_merge($allVillages, $splitVillages);
+            }
+        }
+
+        $distinctVillages = array_unique($allVillages); // Remove duplicates
+        $villageCount = count($distinctVillages); // Count distinct villages
+
+        $villageCount = count($distinctVillages); // Count distinct villages
+
         $talukCount = Master_doc_data::distinct('taluk')->count('taluk');
         $districtCount = Master_doc_data::distinct('district')->count('district');
-        // $totalArea = Master_doc_data::sum('area');
+        // Sum of area for acres and cents
+        $totalAreaAcre = Master_doc_data::where('unit', 1)->sum('area');
+
+        // Sum of area for square feer
+        $totalAreaFeet = Master_doc_data::where('unit', 2)->sum('area');
 
         return [
             'villageCount' => $villageCount,
             'talukCount' => $talukCount,
-            'districtCount' => $districtCount
-            // 'totalArea' => $totalArea
+            'districtCount' => $districtCount,
+            'totalAreaAcre' => $totalAreaAcre,
+            'totalAreaFeet' => $totalAreaFeet
         ];
     }
 }

@@ -2,7 +2,7 @@
 // File: app/Services/BulkUploadService.php
 
 namespace App\Services;
-
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -13,10 +13,17 @@ use Illuminate\Support\LazyCollection;
 use App\Models\Property;
 use App\Models\Doc_type;
 use App\Models\Master_doc_type;
+use App\Models\Table_metadata;
 use App\Models\Master_doc_data;
 use App\Services\DocumentTableService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+
+
+
+
 class BulkUploadService
 {
     protected $documentTypeService;
@@ -35,7 +42,7 @@ class BulkUploadService
             'updated' => 0,
             'not_used' => 0,  // Assuming 'not_used' means skipped due to validation or other reasons
         ];
-      // Generate a unique batch ID for this upload, used for insertIntoDynamicTables, to update only those details of the excel which was of this batch
+   
       $batchId = (string) Str::uuid();
         // Open the file
         $handle = fopen($path, 'r');
@@ -147,9 +154,26 @@ class BulkUploadService
 
     protected function processRow($row,$batchId)
     {
-        // $dateFromCsv = $row[19];
-        // $formattedDate = \Carbon\Carbon::createFromFormat('m/d/Y', $dateFromCsv)->format('Y-m-d');
-
+       
+        $dateFormats = ['d-m-Y', 'd/m/Y'];
+        $formattedDate = null;
+        foreach ($dateFormats as $format) {
+            try {
+                $formattedDate = Carbon::createFromFormat($format, trim($row[19]))->toDateString();
+                continue;// Format matched, break out of the loop
+            } catch (\Exception $e) {
+                // Catch the exception and continue trying other formats
+            }
+        }
+    
+        // Assign a code based on the unit
+        $unit = strtolower(trim($row[21]));
+        $unitCode = null;
+        if (strpos($unit, 'acres') !== false) {
+            $unitCode = 1;
+        } elseif (strpos($unit, 'square') !== false) {
+            $unitCode = 2;
+        }
         // Transform the row to your needs.
         $documentType = $this->documentTableService->createDocumentType($row[6]);
         return [
@@ -172,12 +196,20 @@ class BulkUploadService
             'current_village' => $row[16],
             'village' => $row[17],
             'alternate_village' => $row[18],
-            // 'issued_date' => $formattedDate,
-            'document_sub_type' => $row[20],
-            'current_town' => $row[21],
-            'town' => $row[22],
-            'alternate_town' => $row[23],
-            'old_locker_number' => $row[24],
+
+            'issued_date' => $formattedDate,
+            'area' => $row[20],
+            'unit' => $unitCode,
+            'dry_land' => $row[22],
+            'wet_land' => $row[23],
+            'garden_land' => $row[24],
+            
+
+            // 'document_sub_type' => $row[20],
+            // 'current_town' => $row[21],
+            // 'town' => $row[22],
+            // 'alternate_town' => $row[23],
+            'old_locker_number' => $row[25],
             'physically' => $row[26],
             'bulk_uploaded' => 1,
             'created_by' => Auth::user()->id,
@@ -187,7 +219,96 @@ class BulkUploadService
         ];
     }
 
-  
+//   child bulk upload start
 
+public function handleChildUpload($path)
+{
+    $collections = Excel::toCollection(null, $path);
+    
+    // Assuming there is only one sheet and the first row contains headers
+    $headers = $collections[0][1]; // First row of the first sheet is headers
+    $rows = $collections[0]->slice(2); // Rest of the rows with actual data
+
+    foreach ($rows as $row) {
+        $tempId = $row[1]; // Replace 0 with the index of temp_id in your file
+        $masterRecord = Master_doc_data::where('temp_id', $tempId)->first();
+
+        if ($masterRecord) {
+            $tableName = $masterRecord->document_type_name;
+            $tableId = $masterRecord->document_type;
+            if (Schema::hasTable($tableName)) {
+                // Check and create any missing columns in the table
+                $this->checkAndCreateMissingColumns($tableName,$tableId, $headers);
+
+                $docId = $masterRecord->id;
+                // Map the Excel row to the table columns
+                $dataToUpdate = $this->mapRowToTableColumns($headers, $row, $docId, $tableName);
+
+                // Insert or update the record in the child table
+                DB::table($tableName)->updateOrInsert(['doc_id' => $docId], $dataToUpdate);
+            }
+        }
+    }
+
+    // Return some result or status
+    return [
+        'success' => true,
+        // 'inserted' => $numberInserted,
+        // 'updated' => $numberUpdated,
+        // ... other stats
+    ];
+}
+
+
+protected function mapRowToTableColumns($headers, $row, $docId, $tableName)
+{
+    $mappedData = ['doc_id' => $docId]; // Start with the doc_id
+
+    $tableColumns = Schema::getColumnListing($tableName); // Get current columns in the table
+
+    foreach ($headers as $index => $header) {
+        if ($index > 1 && in_array($header, $tableColumns) && isset($row[$index])) {
+            $mappedData[$header] = $row[$index];
+        }
+    }
+
+    return $mappedData;
+}
+
+protected function checkAndCreateMissingColumns($tableName,$tableId, $headers)
+{
+    // Get current columns in the table
+    $tableColumns = Schema::getColumnListing($tableName);
+// dd($tableName);
+    // Define an array of columns to exclude from creation
+    $excludedHeaders = ['sl_no', 'document_id'];
+// dd($headers);
+    foreach ($headers as $index => $header) {
+        $cleanedHeader = str_replace(' ', '_', trim($header));
+        // Skip if the header is in the list of excluded headers
+        if (in_array(strtolower($cleanedHeader), array_map('strtolower', $excludedHeaders))) {
+            continue;
+        }
+
+        // Check if the column exists in the table
+        if (!in_array($cleanedHeader, $tableColumns)) {
+            // add the column detail in the table_metadata
+            Table_metadata::insert([
+                'table_name' => $tableName,
+                'column_name' => $cleanedHeader,
+                'table_id' => $tableId,
+                'data_type' => 1, // Assuming '1' is the default data type
+                'created_by' => Auth::user()->id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            // Column does not exist, create it
+            Schema::table($tableName, function (Blueprint $table) use ($cleanedHeader) {
+                $table->text($cleanedHeader)->nullable();
+            });
+        }
+    }
+}
 }
 ?>

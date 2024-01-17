@@ -65,6 +65,37 @@ class Document extends Controller
             return redirect()->back();
         }
     }
+    public function bulkUploadChildDocumentData(Request $request)
+    {
+        // dd($request->all());
+        // Validate the request, e.g., ensure a file is uploaded and it's a CSV.
+        $validatedData = $request->validate([
+            'document' => 'required|file|mimes:csv,txt',
+        ]);
+        $path = $request->file('document')->getRealPath();
+        $stats =$this->bulkUploadService->handleChildUpload($path);
+        session()->flash('toastr.type', 'success');
+        session()->flash('toastr.message', "Data uploaded successfully.");
+        
+        // Redirect with a success message.
+        return redirect()->back();
+
+        // Format your message
+        // $message = "Total rows processed: {$stats['total']},";
+        // $message .= "Inserted: {$stats['inserted']},";
+        // $message .= "Updated: {$stats['updated']}"; 
+      
+        // try {
+        //     session()->flash('toastr.type', 'success');
+        //     session()->flash('toastr.message', $message);
+        //     return redirect()->back()
+        // } catch (\Exception $e) {
+        //     session()->flash('toastr.type', 'error');
+        //     session()->flash('toastr.message', 'Failed to upload documents: ' . $e->getMessage());
+            
+        //     return redirect()->back();
+        // }
+    }
 
 
    
