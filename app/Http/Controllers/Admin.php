@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Master_doc_data;
 
 use App\Models\Master_doc_type;
+use App\Models\Compliance;
 use App\Models\Table_metadata;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,7 @@ class Admin extends Controller
     public function document_type()
     {
         // Fetch all document types
-        $doc_types = Master_doc_type::get();
+        $doc_types = Master_doc_type::orderBy('name')->get();
 
         // Create an empty array to store counts
         $doc_counts = [];
@@ -71,10 +72,76 @@ class Admin extends Controller
 
     public function set()
     {
-        $data = Set::get();
+        $data = Set::all();
 
-        return view('pages.data-sets.set', ['data' => $data]);
+        // Initialize an empty array to hold the counts
+        $setCounts = [];
+    
+        // Retrieve all set_id entries that are not null
+        $setIds = DB::table('master_doc_datas')
+            ->whereNotNull('set_id')
+            ->get(['set_id']);
+    
+        // Loop through each set_id entry, decode it, and count the occurrences
+        foreach ($setIds as $setIdEntry) {
+            $idsArray = json_decode($setIdEntry->set_id, true); // Decode JSON string to PHP array
+            if (is_array($idsArray)) { // Ensure it's an array
+                foreach ($idsArray as $setId) {
+                    if (!isset($setCounts[$setId])) {
+                        $setCounts[$setId] = 0;
+                    }
+                    $setCounts[$setId]++;
+                }
+            }
+        }
+    
+    
+        // Pass the counts and the set data to the view
+        return view('pages.data-sets.set', [
+            'data' => $data,
+            'setCounts' => $setCounts
+        ]);
     }
+
+    public function documentsForSet($setId)
+    {
+        $get_set_detail  = Set::where('id',$setId)->first();
+        // dd($get_set_detail);
+        // Retrieve all distinct document_type_names (child table names) where the set_id is present
+        $documentTypes = DB::table('master_doc_datas')
+                            ->select('document_type_name')
+                            ->whereRaw("JSON_CONTAINS(set_id, '\"$setId\"')")
+                            ->distinct()
+                            ->orderBy('document_type_name', 'asc')
+                            ->pluck('document_type_name');
+
+    
+        $documentsDetails = collect();
+    
+        // For each document type name, get the associated documents from the child table
+        foreach ($documentTypes as $documentType) {
+            if (Schema::hasTable($documentType)) {
+                // Get the documents from the child table where their doc_id matches an id in master_doc_data
+                $documents = DB::table($documentType)
+                                ->join('master_doc_datas', 'master_doc_datas.id', '=', "$documentType.doc_id")
+                                ->whereRaw("JSON_CONTAINS(master_doc_datas.set_id, '\"$setId\"')")
+                                ->select("$documentType.*") // Select all columns from the child table
+                                ->get();
+    
+                // Merge the documents into the documentsDetails collection
+                $documentsDetails = $documentsDetails->merge($documents);
+            }
+        }
+    // dd($documentsDetails);
+        // Pass the documents details to the view
+        return view('pages.documents-for-set', [
+            'documentsDetails' => $documentsDetails,
+            'setId' => $setId,
+            'get_set_detail' => $get_set_detail,
+        ]);
+    }
+
+
     public function addSet(Request $request)
     {
         // Validate the request data
@@ -181,7 +248,7 @@ class Admin extends Controller
             ->get();
 
         $receiverTypes = Receiver_type::all();
-        $documentTypes = Master_doc_type::all();
+        $documentTypes = Master_doc_type::orderBy('name')->get();
 
         return view('pages.receivers', [
             'data' => $data,
@@ -409,7 +476,7 @@ class Admin extends Controller
     }
     public function add_document_first()
     {
-        $doc_type = Master_doc_type::get();
+        $doc_type = Master_doc_type::orderBy('name')->get();
         $sets = Set::get();
         $states = State::all();
 
@@ -804,6 +871,7 @@ class Admin extends Controller
 
             // Merge $master_doc_data into $document
             if ($master_doc_data) {
+                $document->child_table_id = $document->id;
                 foreach ($master_doc_data->getAttributes() as $attribute => $value) {
                     $document->{$attribute} = $value;
                 }
@@ -901,6 +969,7 @@ class Admin extends Controller
         $field_types = DB::table($tableName)->where('id', 1)->first();
         $document = DB::table($tableName)->where('id', $id)->first();
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
+        
         // dd($document);
         // dd( ['columns' => $columns, 'field_types' => $field_types, 'document' => $document, 'tableName' => $tableName, 'id' => $id,'master_data' => $get_document_master_data]);
         return view('pages.review_doc', ['columns' => $columns, 'field_types' => $field_types, 'document' => $document, 'tableName' => $tableName, 'id' => $id, 'master_data' => $get_document_master_data]);
@@ -914,9 +983,9 @@ class Admin extends Controller
                 ->get()
                 ->keyBy('column_name'); // This will help you to easily find metadata by column name.
         }
-
+// dd($id);
         $document = DB::table($tableName)->where('id', $id)->first();
-
+// dd($document);
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
 
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
@@ -957,7 +1026,8 @@ class Admin extends Controller
             }
         }
         //    dd($matchingData);
-
+        $compliances = Compliance::with([ 'documentType', 'document'])->where('doc_id',$document->doc_id)->orderBy('created_at', 'desc')
+        ->get();
         return view('pages.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,
@@ -965,6 +1035,7 @@ class Admin extends Controller
             'id' => $id,
             'master_data' => $get_document_master_data,
             'matchingData' => $matchingData,
+            'compliances' => $compliances,
         ]);
     }
 
@@ -999,6 +1070,7 @@ class Admin extends Controller
             ->merge(Master_doc_data::pluck('current_state'))
             ->merge(Master_doc_data::pluck('alternate_state'))
             ->unique()
+            ->sort()
             ->reject(function ($value) {
                 return empty($value);
             }) // Reject empty values
@@ -1007,6 +1079,7 @@ class Admin extends Controller
             ->merge(Master_doc_data::pluck('current_district'))
             ->merge(Master_doc_data::pluck('alternate_district'))
             ->unique()
+            ->sort()
             ->reject(function ($value) {
                 return empty($value);
             }) // Reject empty values
@@ -1015,6 +1088,7 @@ class Admin extends Controller
             ->merge(Master_doc_data::pluck('current_village'))
             ->merge(Master_doc_data::pluck('alternate_village'))
             ->unique()
+            ->sort()
             ->reject(function ($value) {
                 return empty($value);
             }) // Reject empty values
@@ -1032,15 +1106,17 @@ class Admin extends Controller
             }
         }
         // dd($documents);
+    //    dd($area_unit);
         $data = [
             'documents' => $documents,
-            'doc_type' => Master_doc_type::get(),
+            'doc_type' => Master_doc_type::orderBy('name')->get(),
             'selected_type' => $typeId,
             // 'number_of_pages_start' => $number_of_pages_start,
             // 'number_of_pages_end' => $number_of_pages_end,
             'states' => $states,
             'districts' => $districts,
             'villages' => $villages,
+            'area_unit' => $area_unit,
         ];
 
         return view('pages.filter-document', $data);

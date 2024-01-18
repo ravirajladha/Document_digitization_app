@@ -6,6 +6,7 @@ use App\Http\Controllers\Reviewer;
 use App\Http\Controllers\Receiver_process;
 use App\Http\Controllers\Document;
 use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\ComplianceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,12 +26,13 @@ Route::middleware('guest')->group(function () {
     });
 });
 // Route::get('/dashboard', function () {
-
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/verify-document/{token}', [Receiver_process::class, 'showPublicDocument'])->name('showPublicDocument');
 Route::get('/otp/{token}', [Receiver_process::class, 'showOtpForm'])->name('otp.form');
 Route::post('/verify-document/{token}', [Receiver_process::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/send-otp', [Receiver_process::class, 'sendOTP'])->name('otp.send');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard');
@@ -41,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // set view
     // @get
     Route::get('/set', [Admin::class, 'set'])->name('set');
+    Route::get('/documents-for-set/{setId}', [Admin::class, 'documentsForSet'])->name('documentsForSet');
     Route::get('/get-updated-sets', [Admin::class, 'getUpdatedSets'])->name('getUpdatedSets');
     Route::post('/add_set', [Admin::class, 'addSet'])->name('addSet');
     Route::post('/update-set', [Admin::class, 'updateSet'])->name('updateSet');
@@ -106,6 +109,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/bulk-upload-master-document-data', [Document::class, 'bulkUploadMasterDocumentData'])->name('bulkUploadMasterDocumentData');
     Route::post('/bulk-upload-child-document-data', [Document::class, 'bulkUploadChildDocumentData'])->name('bulkUploadChildDocumentData');
     //otp ccheck
+
+//compliance routes
+Route::get('/compliances', [ComplianceController::class, 'showCompliances'])->name('showCompliances');
+Route::post('/create-compliances', [ComplianceController::class, 'store']);
+Route::post('/status-change-compliance/{id}/{action}', [ComplianceController::class, 'statusChangeCompliance']);
 
 
     // reviewer

@@ -27,10 +27,11 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamp('first_viewed_at')->nullable();
             $table->integer('view_count')->default(0);
+            $table->string('otp',4)->nullable();
             $table->string('first_viewed_ip', 45)->nullable();
-            $table->foreign('created_by')->references('id')->on('users'); // Assuming you have a users table
+            // $table->foreign('created_by')->references('id')->on('users'); // Assuming you have a users table
 
-            $table->foreign('receiver_id')->references('id')->on('receivers')->onDelete('cascade');
+            // $table->foreign('receiver_id')->references('id')->on('receivers')->onDelete('cascade');
             // Add a foreign key for doc_id if it references another table
         });
     }

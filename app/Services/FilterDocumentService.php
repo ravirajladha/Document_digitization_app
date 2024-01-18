@@ -97,6 +97,7 @@ class FilterDocumentService
             // Query the corresponding table using masterDocId
             $tableEntry = DB::table($tableName)
                 ->where('doc_id', $item->id)
+                ->orderBy('document_name')
                 ->first();
     
             // Attach tableId to the $item

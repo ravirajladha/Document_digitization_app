@@ -33,9 +33,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="basic-form">
-                                                <form action="{{ url('/') }}/add-basic-detail-to-master-doc-data/"
-                                                    method="add-basic-detail-to-master-doc-data"
-                                                    enctype="multipart/form-data">
+                                              
                                                     <input type="number" name="id" class="form-control"
                                                         value="{{ $document->id }}" hidden>
 
@@ -55,11 +53,11 @@
                                                             <input type="text" name="name" class="form-control"
                                                                 placeholder="Enter Name" value="{{ $document->name }}">
                                                         </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <label class="form-label">Temp id</label>
-                                                            <input type="text" name="name" class="form-control"
+                                                        {{-- <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Temp id</label> --}}
+                                                            <input type="text" name="temp_id" hidden class="form-control"
                                                                 placeholder="Enter Temp Id" value="{{ $document->temp_id }}">
-                                                        </div>
+                                                        {{-- </div> --}}
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Location</label>
@@ -293,7 +291,7 @@
                                                 type="submit">Next</button>
                                         </div>
                                     </div>
-                                                </form>
+                                          
                                             </div>
                                         </div>
                                     </div>

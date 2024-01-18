@@ -53,6 +53,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {{-- {{ dd($documents) }} --}}
                                             @foreach ($documents as $index => $item)
                                                 {{-- @if (!$index == 0) --}}
                                                 <tr>
@@ -112,8 +113,9 @@
                                                 </td>
                                                 
                                                 <td>
-                                                    <a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->id }}"
+                                                    <a href="{{ url('/') }}/review_doc/{{ $tableName }}/{{ $item->child_table_id }}"
                                                        type="button" class="btn btn-primary">
+                                              
                                                         {{ $item->status_id == 1 ? 'View' : 'Review' }}
                                                     </a>
                                                 </td>

@@ -25,6 +25,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Schema::table('compliances', function (Blueprint $table) {
+        //     $table->dropForeign(['document_type']); // Adjust the column name if different
+        // });
+    
+        // Schema::dropIfExists('compliances');
         Schema::dropIfExists('master_doc_types');
     }
 };

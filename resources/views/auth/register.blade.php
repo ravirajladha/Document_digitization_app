@@ -54,48 +54,48 @@
 
 <x-guest-layout>
 
-<h4 class="text-center mb-4">Sign up your account</h4>
-<form method="POST" action="{{ route('register') }}">
-@csrf
-                                <div class="form-group mb-4">
-                                    <label class="form-label" for="username">Username</label>
-                                    <input type="text" class="form-control" placeholder="Enter username" id="username" name="name" :value="old('name')" required autofocus autocomplete="name">
+    <h4 class="text-center mb-4">Sign up your account</h4>
+    <form method="POST" action="{{ route('register') }}">
+        @csrf
+        <div class="form-group mb-4">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" class="form-control" placeholder="Enter username" id="username" name="name"
+                :value="old('name')" required autofocus autocomplete="name">
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
 
-                                </div>
-                                <div class="form-group mb-4">
-                                    <label class="form-label" for="email">Email</label>
-                                    <input type="email" name="email" :value="old('email')" required autocomplete="username"  class="form-control" placeholder="hello@example.com" id="email">
-                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                </div>
-                                <div class="mb-sm-4 mb-3 position-relative">
-                                    <label class="form-label" for="dlab-password">Password</label>
-                                    <input  type="password"
-                                    name="password"
-                                    required autocomplete="new-password"  id="dlab-password" class="form-control" value="123456">
-                                    <span class="show-pass eye">
-                                        <i class="fa fa-eye-slash"></i>
-                                        <i class="fa fa-eye"></i>
-                                    </span>
-                                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                                </div>
-                                <div class="mb-sm-4 mb-3 position-relative">
-                                    <label class="form-label" for="dlab-password">Confirm Password</label>
-                                    <input  type="password"
-                                    type="password"
-                                    name="password_confirmation" required autocomplete="new-password" class="form-control" value="123456">
-                                    <span class="show-pass eye">
-                                        <i class="fa fa-eye-slash"></i>
-                                        <i class="fa fa-eye"></i>
-                                    </span>
-                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                                </div>
+        </div>
+        <div class="form-group mb-4">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" name="email" :value="old('email')" required autocomplete="username"
+                class="form-control" placeholder="hello@example.com" id="email">
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+        <div class="mb-sm-4 mb-3 position-relative">
+            <label class="form-label" for="dlab-password">Password</label>
+            <input type="password" name="password" required autocomplete="new-password" id="dlab-password"
+                class="form-control" value="123456">
+            <span class="show-pass eye">
+                <i class="fa fa-eye-slash"></i>
+                <i class="fa fa-eye"></i>
+            </span>
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        </div>
+        <div class="mb-sm-4 mb-3 position-relative">
+            <label class="form-label" for="dlab-password">Confirm Password</label>
+            <input type="password" type="password" name="password_confirmation" required autocomplete="new-password"
+                class="form-control" value="123456">
+            <span class="show-pass eye">
+                <i class="fa fa-eye-slash"></i>
+                <i class="fa fa-eye"></i>
+            </span>
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
 
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary btn-block">Sign up</button>
-                                </div>
-                            </form>
-                            <div class="new-account mt-3">
-                                <p>Already have an account? <a class="text-primary"href="{{ route('login') }}">Sign in</a></p>
-                            </div>
-                        </x-guest-layout>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+        </div>
+    </form>
+    <div class="new-account mt-3">
+        <p>Already have an account? <a class="text-primary"href="{{ route('login') }}">Sign in</a></p>
+    </div>
+</x-guest-layout>

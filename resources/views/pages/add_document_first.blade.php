@@ -40,7 +40,7 @@
                                             name="type" required>
                                             <option selected disabled>Select Document Type</option>
                                             @foreach ($doc_type as $item)
-                                                <option value="{{ $item->id }}|{{ $item->name }}">{{ $item->name }}</option>
+                                                <option value="{{ $item->id }}|{{ $item->name }}">{{ ucWords(str_replace('_', ' ', $item->name)) }}</option>
                                             @endforeach
                                         </select>
                                         </div>
@@ -48,10 +48,10 @@
                                             <label class="form-label">Name</label>
                                             <input type="text" name="name" class="form-control" placeholder="Enter Name">
                                         </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Temp Id</label>
-                                            <input type="text" name="temp_id" class="form-control" placeholder="Enter temp id">
-                                        </div>
+                                        {{-- <div class="mb-3 col-md-6"> --}}
+                                            {{-- <label class="form-label">Temp Id</label> --}}
+                                            <input type="text" name="temp_id"  hidden class="form-control" placeholder="Enter temp id">
+                                        {{-- </div> --}}
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Location</label>

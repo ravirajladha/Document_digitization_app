@@ -40,6 +40,8 @@ class Document extends Controller
         $validatedData = $request->validate([
             'document' => 'required|file|mimes:csv,txt',
         ]);
+
+        
         $path = $request->file('document')->getRealPath();
         $stats =$this->bulkUploadService->handleUpload($path);
    
@@ -72,7 +74,14 @@ class Document extends Controller
         $validatedData = $request->validate([
             'document' => 'required|file|mimes:csv,txt',
         ]);
-        $path = $request->file('document')->getRealPath();
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+            $filename = $file->getClientOriginalName(); // Get the original name
+            $path = $file->storeAs('uploads', $filename); // Store the file and retain the original name and extension
+        }
+
+        // $path = $request->file('document')->getRealPath();
+        // dd($path);
         $stats =$this->bulkUploadService->handleChildUpload($path);
         session()->flash('toastr.type', 'success');
         session()->flash('toastr.message', "Data uploaded successfully.");
@@ -80,21 +89,7 @@ class Document extends Controller
         // Redirect with a success message.
         return redirect()->back();
 
-        // Format your message
-        // $message = "Total rows processed: {$stats['total']},";
-        // $message .= "Inserted: {$stats['inserted']},";
-        // $message .= "Updated: {$stats['updated']}"; 
-      
-        // try {
-        //     session()->flash('toastr.type', 'success');
-        //     session()->flash('toastr.message', $message);
-        //     return redirect()->back()
-        // } catch (\Exception $e) {
-        //     session()->flash('toastr.type', 'error');
-        //     session()->flash('toastr.message', 'Failed to upload documents: ' . $e->getMessage());
-            
-        //     return redirect()->back();
-        // }
+     
     }
 
 

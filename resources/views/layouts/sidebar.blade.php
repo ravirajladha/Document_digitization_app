@@ -18,13 +18,13 @@
 							<span class="nav-text">Document  <span class="badge badge-xs badge-danger ms-2">New</span></span>
 						</a>
                         <ul aria-expanded="true">
+							<li><a href="{{ url('/')}}/filter-document">View Documents</a></li>		
 							<li><a href="{{ url('/')}}/add_document_first">Add Document</a></li>	
+							<li><a href="{{ url('/')}}/assign-documents">Assign Document</a></li>		
+							<li><a href="{{ url('/')}}/bulk-upload-master-data">Bulk Upload</a></li>	
 							 <li><a href="{{ url('/')}}/document_type">Document Type</a></li>
 							<li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li>
-							<li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		
-							<li><a href="{{ url('/')}}/filter-document">Filter Document</a></li>		
-							<li><a href="{{ url('/')}}/assign-documents">Assign Document</a></li>		
-							<li><a href="{{ url('/')}}/bulk-upload-master-data">Bulk upload master data</a></li>	
+							{{-- <li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		 --}}
 							
 							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
 						
@@ -40,20 +40,60 @@
                          
                         </ul>
                     </li> --}}
+					<li><a  href="{{ url('/')}}/set" aria-expanded="false">
+						<i class="fas fa-user-circle"></i>
+							<span class="nav-text">Sets</span>
+						</a>
+                    </li>
+
 					<li><a  href="{{ url('/')}}/receivers" aria-expanded="false">
 						<i class="fas fa-user-circle"></i>
 							<span class="nav-text">Receivers</span>
 						</a>
-                       
                     </li>
+					<li><a  href="{{ url('/')}}/receivers" aria-expanded="false">
+						<i class="fas fa-user-circle"></i>
+							<span class="nav-text">Users</span>
+						</a>
+                    </li>
+				
+					<li><a  href="{{ url('/')}}/compliances" aria-expanded="false">
+						<i class="fas fa-user-circle"></i>
+							<span class="nav-text">Compliances</span>
+						</a>
+                    </li>
+				
+				
 
 					<li><a  href="{{ url('/')}}/data-sets" aria-expanded="false">
 						<i class="fas fa-info-circle"></i>
-							<span class="nav-text">Data Sets</span>
+							<span class="nav-text">Configure</span>
 						</a>
-                       
                     </li>
-			
+					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+						@csrf
+					</form>
+					
+					<li>
+						<a class="has-arrow" href="javascript:void(0);" aria-expanded="true">
+							<i class="fas fa-clone"></i>
+							<span class="nav-text">Settings  <span class="badge badge-xs badge-danger ms-2">New</span></span>
+						</a>
+                        <ul aria-expanded="true">
+							<li><a href="{{ url('/')}}/profile">Profile</a></li>		
+							<li><a href="{{ url('/')}}/add_document_first" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>	
+							
+							
+							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
+						
+						</ul>
+                    </li>
+
+				
+					<
+
+
+
 					{{-- <li>
 						<a  href="javascript:void(0);" aria-expanded="true">
 						
@@ -92,12 +132,12 @@
 					.sidebar-container {
     display: flex;
     flex-direction: column;
-    height: 50vh; /* Adjust the height as needed */
+    height: 10vh; /* Adjust the height as needed */
     overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
 .sidebar-footer {
-    margin-top: auto;
+    /* margin-top: auto; */
 }
 .sidebar-content {
     overflow-y: auto;

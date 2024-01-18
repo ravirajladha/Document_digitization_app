@@ -40,13 +40,16 @@
                                                 </h2>
 
 
-                                                <span>{{ ucwords(Auth::user()->type) }}</span>
+                                                {{-- <span>{{ ucwords(Auth::user()->type) }}</span> --}}
 
-                                                <a href="/filter-document" class="btn btn-rounded">Search Documents</a>
+                                                {{-- <a href="/filter-document" class="btn btn-rounded btn-dark text-white"><i class="fas fa-search"></i>&ensp;Search Documents</a> --}}
+
+
                                             </div>
 
                                             <div class="col-xl-5 col-sm-5 ">
-                                                <img src="images/chart.png" alt="" class="sd-shape">
+                                             
+                                                <a href="/filter-document" class="btn btn-outline-dark btn-rounded d-block" > <button ><i class="fas fa-search"></i>&ensp;Search Documents</button></a>
                                             </div>
                                         </div>
                                     </div>
@@ -55,21 +58,6 @@
 
                                 <div class="col-xl-12">
                                     <div class="row">
-                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
-                                            <div class="widget-stat card bg-secondary">
-                                                <div class="card-body  p-4">
-                                                    <div class="media">
-                                                        <span class="me-3">
-                                                            <i class="flaticon-381-calendar-1"></i>
-                                                        </span>
-                                                        <div class="media-body text-white text-end">
-                                                            <p class="mb-1">Total Document</p>
-                                                            <h3 class="text-white">{{ $documentCount }}</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                             <div class="widget-stat card bg-success">
                                                 <div class="card-body p-4">
@@ -88,6 +76,22 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                                            <div class="widget-stat card bg-secondary">
+                                                <div class="card-body  p-4">
+                                                    <div class="media">
+                                                        <span class="me-3">
+                                                            <i class="flaticon-381-calendar-1"></i>
+                                                        </span>
+                                                        <div class="media-body text-white text-end">
+                                                            <p class="mb-1">Total Document</p>
+                                                            <h3 class="text-white">{{ $documentCount }}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
 										@php
 										$totalAcceptedCount = array_sum($documentTypeWiseCounts['acceptedCounts']);
 										$acceptedProgress = $documentCount > 0 ? ($totalAcceptedCount / $documentCount) * 100 : 0;
@@ -102,7 +106,28 @@
 										$totalHoldedCount = array_sum($documentTypeWiseCounts['holdedCounts']);
 										// dd($totalNotAcceptedCount);
 									@endphp
-								
+								    <div class="col-xl-6 col-sm-6">
+                                        <div class="card">
+                                            <div
+                                                class="card-body card-padding d-flex align-items-center justify-content-between">
+                                                <div class="w-75">
+                                                    <h4 class="mb-3 text-nowrap">Pending Documents</h4>
+                                                    <div class="progress default-progress">
+                                                        <div class="progress-bar bg-gradient1 progress-animated"
+                                                            style="width: {{ $notAcceptedProgress }}%; height:8px;" role="progressbar">
+                                                            <span class="sr-only">{{ $notAcceptedProgress }}% Complete</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <p class="mb-0"><strong class="text-danger me-2">{{  $totalHoldedCount }}</strong>on hold</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h2 class="fs-32 font-w700 mb-0">{{ $totalNotAcceptedCount + $totalHoldedCount }}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 										<div class="col-xl-6 col-sm-6">
 											<div class="card">
 												<div class="card-body card-padding d-flex align-items-center justify-content-between">
@@ -124,27 +149,19 @@
 													</div>
 												</div>
 											</div>
-                                        <div class="col-xl-6 col-sm-6">
-                                            <div class="card">
-                                                <div
-                                                    class="card-body card-padding d-flex align-items-center justify-content-between">
-                                                    <div class="w-75">
-                                                        <h4 class="mb-3 text-nowrap">Pending Documents</h4>
-                                                        <div class="progress default-progress">
-                                                            <div class="progress-bar bg-gradient1 progress-animated"
-                                                                style="width: {{ $notAcceptedProgress }}%; height:8px;" role="progressbar">
-                                                                <span class="sr-only">{{ $notAcceptedProgress }}% Complete</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                           
-															<p class="mb-0"><strong class="text-danger me-2">{{  $totalHoldedCount }}</strong>on hold</p>
+                                    
+                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
+                                            <div class="widget-stat card bg-primary">
+                                                <div class="card-body p-4">
+                                                    <div class="media">
+                                                        <span class="me-3">
+                                                            <i class="flaticon-381-user-7"></i>
+                                                        </span>
+                                                        <div class="media-body text-white text-end">
+                                                            <p class="mb-1">Total Users</p>
+                                                            <h3 class="text-white">0</h3>
                                                         </div>
                                                     </div>
-                                                    <div>
-                                                        <h2 class="fs-32 font-w700 mb-0">{{ $totalNotAcceptedCount + $totalHoldedCount }}</h2>
-                                                    </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -166,35 +183,33 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
-                                            <div class="widget-stat card bg-primary">
-                                                <div class="card-body p-4">
-                                                    <div class="media">
-                                                        <span class="me-3">
-                                                            <i class="flaticon-381-user-7"></i>
-                                                        </span>
-                                                        <div class="media-body text-white text-end">
-                                                            <p class="mb-1">Total Reviewers</p>
-                                                            <h3 class="text-white">0</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                       @php
+                                           $totalAreaFeet = $getGeographicalCounts['totalAreaFeet']; // This is your area in square feet
+
+// Convert square feet to acres
+$totalAreaAcres = ($totalAreaFeet / 43560 )+ $getGeographicalCounts['totalAreaAcre'];
+
+// Convert acres to cents
+// $totalAreaCents = $totalAreaAcres * 100;
+
+
+
+                                       @endphp
 
                                         <div class="col-xl-12 col-lg-12 col-sm-12">
                                             <div class="card overflow-hidden">
-                                                <div class="card-body">
+                                                <div class="card-body" style="padding:0;">
                                                     <div class="text-center">
                                                         <div class="row">
-                                                            <div class="col-6 pt-3 pb-3 border-end">
-                                                                <h3 class="mt-4 mb-1">{{$getGeographicalCounts['totalAreaAcre']}}</h3>
+                                                            <div class="col-12 pt-3 pb-3 ">
+                                                                <h3 class="mt-4 mb-1">{{ number_format($totalAreaAcres, 2) }}
+                                                                </h3>
                                                                 <p class="text-muted">Area (In Acres and Cents)</p>
                                                             </div>
-                                                            <div class="col-6 pt-3 pb-3 ">
+                                                            {{-- <div class="col-6 pt-3 pb-3 ">
                                                                 <h3 class="mt-4 mb-1">{{$getGeographicalCounts['totalAreaFeet']}}</h3>
-                                                                <p class="text-muted">Area (In Square Feet)</p>
-                                                            </div>
+                                                                <p class="text-muted">Area {{ $getGeographicalCounts['totalAreaAcre'] }}</p>
+                                                            </div> --}}
                                                         </div>
                                                         {{-- <div class="profile-photo">
 															<img src="/assets/images/profile/profile.png" width="100" class="img-fluid rounded-circle" alt="">

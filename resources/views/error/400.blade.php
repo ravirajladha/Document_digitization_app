@@ -18,17 +18,17 @@
 
 
     <meta name="description"
-        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+        content="Digitization Document Software">
 
     <meta property="og:title" content="Kods">
     <meta property="og:description"
-        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+        content="Digitization Document Software">
     <meta property="og:image" content="https://kodstech.com/">
     <meta name="format-detection" content="telephone=no">
 
     <meta name="twitter:title" content="Kods">
     <meta name="twitter:description"
-        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+        content="Digitization Document Software">
     <meta name="twitter:image" content="https://kodstech.com/">
     <meta name="twitter:card" content="summary_large_image">
 

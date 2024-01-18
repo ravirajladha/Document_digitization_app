@@ -18,7 +18,7 @@
 
 
     <meta name="description"
-        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+        content="Digitization Document Software">
 
     <meta property="og:title" content="Kods">
     <meta property="og:description"
@@ -28,7 +28,7 @@
 
     <meta name="twitter:title" content="Kods">
     <meta name="twitter:description"
-        content="Elevate your administrative efficiency and enhance productivity with the Fillow SaaS Admin Dashboard Template. Designed to streamline your tasks, this powerful tool provides a user-friendly interface, robust features, and customizable options, making it the ideal choice for managing your data and operations with ease.">
+        content="Digitization Document Software">
     <meta name="twitter:image" content="https://kodstech.com/">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -50,8 +50,8 @@
 
     <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
-    <link href="/assets/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css">
+    <link href="/assets/css/style.css" rel="stylesheet">
 </head>
 
 <body class="">
@@ -117,45 +117,45 @@
 
 
     <script>
-        function cardsCenter() {
-            /*  testimonial one function by = owl.carousel.js */
-            jQuery('.card-slider').owlCarousel({
-                loop: true,
-                margin: 0,
-                nav: true,
-                //center:true,
-                slideSpeed: 3000,
-                paginationSpeed: 3000,
-                dots: true,
-                navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    576: {
-                        items: 1
-                    },
-                    800: {
-                        items: 1
-                    },
-                    991: {
-                        items: 1
-                    },
-                    1200: {
-                        items: 1
-                    },
-                    1600: {
-                        items: 1
-                    }
-                }
-            })
-        }
+        // function cardsCenter() {
+          
+        //     jQuery('.card-slider').owlCarousel({
+        //         loop: true,
+        //         margin: 0,
+        //         nav: true,
+        //         //center:true,
+        //         slideSpeed: 3000,
+        //         paginationSpeed: 3000,
+        //         dots: true,
+        //         navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
+        //         responsive: {
+        //             0: {
+        //                 items: 1
+        //             },
+        //             576: {
+        //                 items: 1
+        //             },
+        //             800: {
+        //                 items: 1
+        //             },
+        //             991: {
+        //                 items: 1
+        //             },
+        //             1200: {
+        //                 items: 1
+        //             },
+        //             1600: {
+        //                 items: 1
+        //             }
+        //         }
+        //     })
+        // }
 
-        jQuery(window).on('load', function() {
-            setTimeout(function() {
-                cardsCenter();
-            }, 1000);
-        });
+        // jQuery(window).on('load', function() {
+        //     setTimeout(function() {
+        //         cardsCenter();
+        //     }, 1000);
+        // });
     </script>
     <script>
         // Check for session messages

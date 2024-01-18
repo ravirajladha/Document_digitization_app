@@ -107,24 +107,39 @@ button {
         <div class="title">Hello,  {{ $receiverName }}</div>
         <div class="title">Verification Code</div>
         <p>We have sent a verification code
-          to your mobile number {{ $receiverPhone }}</p>
-          <span> For testing, enter 5555</span>
+          to your email id {{ substr($receiverEmail, 0, 3) }}...{{ substr($receiverEmail, -5) }}</p>
+      
+        
           <form method="POST" action="{{ route('otp.verify', ['token' => $token]) }}">
             @csrf
-            <div id='inputs'>
+            <div >
+            <input type="text" name="otp" pattern="\d{4}" maxlength="4" name="otp"  placeholder="Enter 4 digit otp" style="width:10vw;">
+          </div>
+            {{-- <div id='inputs'>
                 <input id='input1' type='text' inputmode="numeric" pattern="[0-9]*" maxLength="1" />
                 <input id='input2' type='text' inputmode="numeric" pattern="[0-9]*" maxLength="1" />
                 <input id='input3' type='text' inputmode="numeric" pattern="[0-9]*" maxLength="1" />
                 <input id='input4' type='text' inputmode="numeric" pattern="[0-9]*" maxLength="1" />
-                <!-- Hidden field to store combined OTP -->
+            
                 <input type="hidden" id="otp" name="otp" />
-            </div>
+            </div> --}}
             <button type="submit">Submit</button>
         </form>
-        @if($errors->has('otp'))
-        <div class="error">{{ $errors->first('otp') }}</div>
-    @endif
-
+       
+  
+<!-- Blade Template for Sending OTP -->
+<form action="{{ route('otp.send') }}" method="POST">
+  @csrf
+  <input type="hidden" name="token" value="{{ $token }}">
+  <button type="submit" class="btn btn-secondary" style="background-color:darkseagreen;">Send OTP</button>
+</form>
+@if(session('message'))
+    <div class="alert alert-success">
+        {{ session('message') }}
+    </div>
+@endif
+@if($errors->has('otp'))
+<div class="error">{{ $errors->first('otp') }}</div>  @endif
       </section>
       <script>
         const inputs = document.querySelectorAll('#inputs input');

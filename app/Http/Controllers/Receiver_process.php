@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Mail;
 use App\Mail\AssignDocumentEmail;
+use App\Mail\SendOtpMail;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 use Log;
@@ -25,7 +26,7 @@ class Receiver_process extends Controller
         $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])->orderBy('created_at', 'desc')
             ->get();
 
-        $documentTypes = Master_doc_type::all();
+        $documentTypes = Master_doc_type::orderBy('name')->get();
         $receiverTypes = Receiver_type::where('status', 1)->get();
 
         return view('pages.assign-document.assign-documents', [
@@ -95,6 +96,7 @@ class Receiver_process extends Controller
         if ($assignment->wasRecentlyCreated) {
             $receiver = Receiver::findOrFail($validatedData['receiver_id']);
             $receiverEmail = $receiver->email; // Assuming the 'email' column exists in the receivers table
+            $receiverName = $receiver->name; // Assuming the 'email' column exists in the receivers table
 
             if (!$receiverEmail) {
                 // Handle the case where the email is not set
@@ -106,7 +108,7 @@ class Receiver_process extends Controller
             // $verificationUrl = url('/verify-document/' . $token); 
             $verificationUrl = url('/otp/' . $token); 
 
-            Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt));
+            Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt,$receiverName));
 
             // Redirect with success message
             session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
@@ -214,7 +216,7 @@ class Receiver_process extends Controller
             return view('emails.otp_form', [
                 'token' => $token,
                 'receiverName' => $receiver->name,
-                'receiverPhone' => $receiver->phone
+                'receiverEmail' => $receiver->email
             ]);
         }
     }
@@ -229,10 +231,10 @@ class Receiver_process extends Controller
 
 }
 
-public function verifyOtp(Request $request, $token)
+public function verifyOtp1(Request $request, $token)
 {
 
-    // dd($request->all());
+    dd($request->all());
     // $inputOtp = $request->input('otp');
     $inputOtp = '5555';
     $validOtp = '5555'; // This should be securely retrieved in a real application
@@ -250,6 +252,57 @@ public function verifyOtp(Request $request, $token)
 }
 
 
+public function verifyOtp(Request $request, $token)
+{
+    // Retrieve the document assignment using the token
+    $documentAssignment = Document_assignment::where('access_token', $token)->firstOrFail();
+
+    // Check if OTP is already verified or not set
+    if (empty($documentAssignment->otp)) {
+        return redirect()->back()->withErrors(['otp' => 'OTP is already verified or not set.']);
+    }
+
+    // Get the input OTP from the request
+    $inputOtp = $request->input('otp');
+// dd($inputOtp,$documentAssignment->otp);
+    // Check if the input OTP matches the OTP stored in the database
+    if ($inputOtp == $documentAssignment->otp) {
+        // Mark the OTP as validated in the session
+        session()->put('otp_validated', $token);
+
+        // Clear the OTP from the document_assignment to prevent re-verification
+        $documentAssignment->otp = null;
+        $documentAssignment->save();
+
+        // Redirect to the document viewing page
+        return redirect()->route('showPublicDocument', ['token' => $token]);
+    } else {
+        // If OTP is wrong, redirect back with an error message
+        return redirect()->back()->withErrors(['otp' => 'The OTP entered is incorrect.']);
+    }
+
+}
+public function sendOTP(Request $request)
+{
+    // Validate the token and find the corresponding document assignment
+    $documentAssignment = Document_assignment::where('access_token', $request->token)->firstOrFail();
+
+    // Generate a random 4-digit OTP
+    $otp = rand(1000, 9999);
+
+    // Save the OTP to the document_assignment table
+    $documentAssignment->otp = $otp;
+    $documentAssignment->save();
+
+    // Retrieve receiver's email from the receiver_id
+    $receiverEmail = $documentAssignment->receiver->email; // Assuming a relationship is set up
+// dd($receiverEmail);
+    // Send OTP to the receiver's email
+    Mail::to($receiverEmail)->send(new SendOtpMail($otp));
+
+    // Redirect back or to a specific page
+    return back()->with(['message' => 'OTP sent to the receiver\'s email.']);
+}
 
 
 }

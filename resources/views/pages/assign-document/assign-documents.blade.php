@@ -76,7 +76,7 @@
                                     required>
                                     <option value="">Select Document Type</option>
                                     @foreach ($documentTypes as $type)
-                                        <option value="{{ $type->id }}">{{ $type->name }}
+                                        <option value="{{ $type->id }}">{{  ucwords(str_replace('_', ' ', $type->name)) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -86,14 +86,13 @@
 
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="document" class="form-label">Document</label>
+                                <label for="document" class="form-label">Document <i><span  style="font-size:10px;">(Only the approved documents are shown here.)</span></i></label>
                                 <select class="form-control" id="document" name="document_id"
                                     required>
                                     <option value="">Select Document</option>
                                     <!-- Options will be populated based on Document Type selection -->
                                 </select>
                             </div>
-
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
@@ -148,7 +147,7 @@
                                  
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
-                                    <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-plus"></i>&nbsp;Assign Document</button>
+                                    <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-square-plus"></i>&nbsp;Assign Document</button>
 
                                             <thead>
                                                 <tr>
@@ -173,9 +172,11 @@
                                                         <th scope="row">{{ $index + 1 }}</th>
                                                         <td>{{ $item->receiver->name }}</td>
                                                         <td>{{ $item->receiverType->name }}</td>
-                                                        <td>{{ $item->documentType->name }}</td>
-                                                        <td>{{ $item->document->name }}</td>
-                                                        <td>{{ $item->expires_at }}</td>
+                                                        <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}</td>
+                                                        <td>{{ $item->document->name   }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($item->expires_at)->format('M d, Y, g:i A') }}</td>
+
+
 
 
                                                         <td> {!! $item->first_viewed_at
@@ -225,19 +226,30 @@
 <script>
     // Fetch documents based on the selected document type
     function fetchDocuments(documentTypeId) {
-        $.ajax({
-            url: '/get-documents/' + documentTypeId,
-            type: 'GET',
-            success: function(response) {
-                var documentSelect = $('#document');
-                documentSelect.empty();
+    $.ajax({
+        url: '/get-documents/' + documentTypeId,
+        type: 'GET',
+        success: function(response) {
+            var documentSelect = $('#document');
+            documentSelect.empty();
+            
+            // Check if the response has documents
+            if (response.documents && response.documents.length > 0) {
                 $.each(response.documents, function(key, document) {
                     documentSelect.append(new Option(document.name, document.id));
                 });
+            } else {
+                // If there are no documents, show an alert and add a default 'No documents' option
+                alert('No documents available for this document type.');
+                documentSelect.append(new Option('No documents available', ''));
             }
-        });
-    }
-
+        },
+        error: function(xhr, status, error) {
+            // Handle any Ajax errors here
+            alert('An error occurred while fetching the documents.');
+        }
+    });
+}
     // Fetch receivers based on the selected receiver type
 
 

@@ -49,9 +49,8 @@
                                                     @endif --}}
                                                     <div class="col-lg-6">
                                                         <div class="mb-3">
-                                                    <i><label for="Default Pdf"
-                                                        class="form-label">Upload Main Scanned Copy (Add Pdf
-                                                        Only)</label></i>
+                                                    <label for="Default Pdf"
+                                                        class="form-label">Upload Scanned Document</label>
                                                 @if ($documentData->pdf_file_path)
                                                     <a href="{{ asset($documentData->pdf_file_path) }}"
                                                         target="_blank"><i
@@ -61,7 +60,7 @@
                                                 @endif
                                                 <input type="file" class="form-control"
                                                     name="pdf_file_path[]"
-                                                    id="pdf_file_path" accept=".pdf"
+                                                    id="pdf_file_path" accept=".pdf,image/png,image/jpeg"
                                                     multiple>
                                                     </div>
                                                     </div>

@@ -29,7 +29,7 @@
 
 
                                 <div class="row">
-                                    <div class="col-xl-3 col-xxl-3 col-sm-6">
+                                    {{-- <div class="col-xl-3 col-xxl-3 col-sm-6">
                                         <div class="card overflow-hidden">
                                             <div class="social-graph-wrapper widget-facebook">
                                                 <span class="s-icon">SETS</span>
@@ -53,7 +53,7 @@
 
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-xl-3 col-xxl-3 col-sm-6">
                                         <div class="card overflow-hidden">
                                             <div class="social-graph-wrapper widget-facebook">

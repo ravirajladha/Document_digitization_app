@@ -83,7 +83,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="document" class="form-label">Document</label>
+                                <label for="document" class="form-label">Document <i><span  style="font-size:10px;">(Only the approved documents are shown here.)</span></i></label>
                                 <select class="form-control" id="document" name="document_id"
                                     required>
                                     <option value="">Select Document</option>
@@ -222,18 +222,30 @@
 <script>
     // Fetch documents based on the selected document type
     function fetchDocuments(documentTypeId) {
-        $.ajax({
-            url: '/get-documents/' + documentTypeId,
-            type: 'GET',
-            success: function(response) {
-                var documentSelect = $('#document');
-                documentSelect.empty();
+    $.ajax({
+        url: '/get-documents/' + documentTypeId,
+        type: 'GET',
+        success: function(response) {
+            var documentSelect = $('#document');
+            documentSelect.empty();
+            
+            // Check if the response has documents
+            if (response.documents && response.documents.length > 0) {
                 $.each(response.documents, function(key, document) {
                     documentSelect.append(new Option(document.name, document.id));
                 });
+            } else {
+                // If there are no documents, show an alert and add a default 'No documents' option
+                alert('No documents available for this document type.');
+                documentSelect.append(new Option('No documents available', ''));
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            // Handle any Ajax errors here
+            alert('An error occurred while fetching the documents.');
+        }
+    });
+}
 
     // Fetch receivers based on the selected receiver type
 

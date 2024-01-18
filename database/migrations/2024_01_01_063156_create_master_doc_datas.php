@@ -67,6 +67,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('master_doc_datas');
+        // Schema::dropIfExists('master_doc_datas');
+        // Schema::table('compliances', function (Blueprint $table) {
+        //     $table->dropForeign(['doc_id']); // Adjust the column name if different
+        // });
+    
+        // Schema::dropIfExists('compliances');
+
     }
 };

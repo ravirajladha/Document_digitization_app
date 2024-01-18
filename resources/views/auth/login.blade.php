@@ -85,7 +85,7 @@
         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
     </div>
 </form>
-<div class="new-account mt-3">
+{{-- <div class="new-account mt-3">
     <p>Don't have an account? <a class="text-primary" href="{{ route('register') }}">Sign up</a></p>
-</div>
+</div> --}}
 </x-guest-layout>

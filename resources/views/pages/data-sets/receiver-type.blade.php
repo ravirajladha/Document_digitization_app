@@ -209,7 +209,7 @@
                         '<td><Button class="btn btn-primary">Edit</Button></td>' +
                         '</tr>';
                 });
-                $('#example5 tbody').html(newTableContent);
+                $('#example3 tbody').html(newTableContent);
             }
         });
     }

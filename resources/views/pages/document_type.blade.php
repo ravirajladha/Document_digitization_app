@@ -10,6 +10,7 @@
             <div class="page-body">
                 <div class="row page-titles">
                     <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Type</a></li>
                     </ol>
@@ -25,7 +26,7 @@
                                     <h4 class="title">Document Type</h4>
                                     <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
                                     data-bs-target="#addDocumentTypeModal">
-                                    <i class="fas fa-plus"></i>&nbsp; Add Document Type
+                                    <i class="fas fa-plus-square"></i>&nbsp; Add Document Type
                                 </button>
                                 </div>
                                 <div class="card-body">
@@ -36,8 +37,8 @@
                                                 <tr>
                                                     <th scope="col">Sl no</th>
                                                     <th scope="col">Document type</th>
-                                                    <th scope="col">Number of Document </th>
-                                                    <th scope="col">View </th>
+                                                    <th scope="col">Number of Documents </th>
+                                                    <th scope="col">View Documents </th>
                                                     <th scope="col">Action </th>
                                                 </tr>
                                             </thead>
@@ -45,7 +46,7 @@
                                                 @foreach ($doc_types as $index => $item)
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
-                                                        <td>{{ $item->name }}</td>
+                                                        <td>{{  ucwords(str_replace('_', ' ', $item->name)) }}</td>
                                                         <td>{{ isset($doc_counts[$item->id]) ? $doc_counts[$item->id] : 0 }}
                                                         </td>
                                                         <td>
@@ -56,7 +57,7 @@
                                                         <td>
                                                             <a href="/document_field/{{ $item->name }}"><button
                                                                     class="btn btn-success btn-sm"><i
-                                                                        class="fas fa-plus"></i>&nbsp;Add
+                                                                        class="fas fa-plus-square"></i>&nbsp;Add
                                                                     Field</button></a>
 
                                                         </td>

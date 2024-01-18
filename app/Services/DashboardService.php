@@ -27,7 +27,7 @@ class DashboardService
 
     public function getDocumentCountsByType()
     {
-        $docTypes = DB::table('master_doc_types')->pluck('name');
+        $docTypes = DB::table('master_doc_types')->orderBy('name')->pluck('name');
         $chartLabels = []; //for email pie chart
         $chartCounts = []; //for email pie chart
         $acceptedCounts = []; //to get the accepted doc
@@ -37,7 +37,10 @@ class DashboardService
             $existsInMasterDocData = Master_doc_data::where('document_type_name', $docType)->exists();
             if ($existsInMasterDocData && Schema::hasTable($docType)) {
                 $count = $existsInMasterDocData ? DB::table($docType)->count() : 0;
-                $chartLabels[] = ucfirst($docType);
+
+                $formattedLabel = ucwords(str_replace('_', ' ', $docType));
+                
+                $chartLabels[] = $formattedLabel;
                 $chartCounts[] = $count;
 
 

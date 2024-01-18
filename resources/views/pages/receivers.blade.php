@@ -23,7 +23,8 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <button type="button" class="btn btn-success mb-2 float-end"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i class="fas fa-plus-square"></i>&nbsp;Add
+                                            data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i
+                                                class="fas fa-plus-square"></i>&nbsp;Add
                                             Receiver</button>
 
                                         {{-- <div class="table-responsive"> --}}
@@ -39,9 +40,10 @@
                                                     <th scope="col">Email Id</th>
                                                     <th scope="col">Type</th>
                                                     <th scope="col">Count</th>
+                                                    <th scope="col">View</th>
                                                     <th scope="col">Status</th>
                                                     <th scope="col">Action</th>
-                                                    <th scope="col">Assign</th>
+                                                    <th scope="col">Assign Document</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -53,8 +55,10 @@
                                                         <td>{{ $item->city }}</td>
                                                         <td>{{ $item->email }}</td>
                                                         <td>{{ optional($item->receiverType)->name }}</td>
+                                                        <td> {{ $item->document_assignments_count }}
+                                                        </td>
                                                         <td> <a
-                                                                href="/user-assign-documents/{{ $item->id }}"><u><b>{{ $item->document_assignments_count }}</b></u></a>
+                                                                href="/user-assign-documents/{{ $item->id }}"><u><b><span class="badge bg-secondary">{{ $item->document_assignments_count }}</span></b></u></a>
                                                         </td>
                                                         <td>{!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
@@ -71,15 +75,17 @@
                                                                 data-receiver-city="{{ $item->city }}"
                                                                 data-receiver-email="{{ $item->email }}"
                                                                 data-receiver-type-id="{{ $item->receiver_type_id }}"
-                                                                data-receiver-status="{{ $item->status }}"><i class="fas fa-pencil-square"></i>&nbsp;Edit</button>
+                                                                data-receiver-status="{{ $item->status }}"><i
+                                                                    class="fas fa-pencil-square"></i>&nbsp;Edit</button>
                                                         </td>
                                                         <td>
                                                             <button class="btn btn-success btn-sm assign-doc-btn"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#assignDocumentModal"
                                                                 data-receiver-id="{{ $item->id }}"
-                                                                data-receiver-type-id="{{ $item->receiver_type_id }}"><i class="fas fa-plus"></i>&nbsp;Assign
-                                                                Doc</button>
+                                                                data-receiver-type-id="{{ $item->receiver_type_id }}"><i
+                                                                    class="fas fa-plus-square"></i>&nbsp;Assign
+                                                                </button>
 
                                                         </td>
 
@@ -130,14 +136,14 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverPhone" class="form-label">Phone</label>
-                                        <input type="text" class="form-control" name="phone" id="receiverPhone" 
-           placeholder="Enter Receiver's Phone Number" 
-           pattern="\d{0,10}$" title="Please enter a valid phone number with up to 10 digits."
-           maxlength="10">
+                                        <input type="text" class="form-control" name="phone" id="receiverPhone"
+                                            placeholder="Enter Receiver's Phone Number" pattern="\d{0,10}$"
+                                            title="Please enter a valid phone number with up to 10 digits."
+                                            maxlength="10">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverCity" class="form-label">City</label>
-                                        <input type="text" class="form-control" name="city"  id="receiverCity"
+                                        <input type="text" class="form-control" name="city" id="receiverCity"
                                             placeholder="Enter Receiver's City">
                                     </div>
                                     <div class="mb-3">
@@ -184,7 +190,7 @@
                         <!-- Hidden fields inside the form -->
                         <input type="hidden" id="modalReceiverId" name="receiver_id">
                         <input type="hidden" id="modalReceiverTypeId" name="receiver_type">
-                        <input type="hidden"  name="location" value="user">
+                        <input type="hidden" name="location" value="user">
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="documentType" class="form-label">Document
@@ -195,7 +201,7 @@
                                     </option>
                                     @foreach ($documentTypes as $type)
                                         <option value="{{ $type->id }}">
-                                            {{ $type->name }}
+                                            {{ ucwords(str_replace('_', ' ', $type->name)) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -203,7 +209,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="document" class="form-label">Document</label>
+                                <label for="document" class="form-label">Document <i><span  style="font-size:10px;">(Only the approved documents are shown here.)</span></i></label>
                                 <select class="form-control" id="document" name="document_id" required>
                                     <option value="">Select Document</option>
                                     <!-- Options will be populated based on Document Type selection -->
@@ -286,29 +292,28 @@
 
 
 <script>
+    // $(document).ready(function() {
+    //     $('.edit-btn').on('click', function() {
+    //         var receiverId = $(this).data('receiver-id');
+    //         var receiverName = $(this).data('receiver-name');
+    //         var receiverPhone = $(this).data('receiver-phone');
+    //         var receiverCity = $(this).data('receiver-city');
+    //         var receiverEmail = $(this).data('receiver-email');
+    //         var receiverTypeId = $(this).data('receiver-type-id');
+    //         var receiverStatus = $(this).data('receiver-status');
 
-// $(document).ready(function() {
-//     $('.edit-btn').on('click', function() {
-//         var receiverId = $(this).data('receiver-id');
-//         var receiverName = $(this).data('receiver-name');
-//         var receiverPhone = $(this).data('receiver-phone');
-//         var receiverCity = $(this).data('receiver-city');
-//         var receiverEmail = $(this).data('receiver-email');
-//         var receiverTypeId = $(this).data('receiver-type-id');
-//         var receiverStatus = $(this).data('receiver-status');
+    //         // Console log the data for debugging
+    //         console.log('Receiver ID:', receiverId);
+    //         console.log('Receiver Name:', receiverName);
+    //         console.log('Receiver Phone:', receiverPhone);
+    //         console.log('Receiver City:', receiverCity);
+    //         console.log('Receiver Email:', receiverEmail);
+    //         console.log('Receiver Type ID:', receiverTypeId);
+    //         console.log('Receiver Status:', receiverStatus);
 
-//         // Console log the data for debugging
-//         console.log('Receiver ID:', receiverId);
-//         console.log('Receiver Name:', receiverName);
-//         console.log('Receiver Phone:', receiverPhone);
-//         console.log('Receiver City:', receiverCity);
-//         console.log('Receiver Email:', receiverEmail);
-//         console.log('Receiver Type ID:', receiverTypeId);
-//         console.log('Receiver Status:', receiverStatus);
 
-      
-//     });
-// });
+    //     });
+    // });
 
 
 
@@ -353,7 +358,10 @@
             type: 'GET',
             success: function(receivers) {
                 var newTableContent = '';
-                var assignDocButton = '<button class="btn btn-success assign-doc-btn" data-bs-toggle="modal" data-bs-target="#assignDocumentModal" data-receiver-id="' + receiver.id + '" data-receiver-type-id="' + receiver.receiver_type_id + '"><i class="fas fa-plus"></i>&nbsp;Assign Doc</button>';
+                var assignDocButton =
+                    '<button class="btn btn-success assign-doc-btn" data-bs-toggle="modal" data-bs-target="#assignDocumentModal" data-receiver-id="' +
+                    receiver.id + '" data-receiver-type-id="' + receiver.receiver_type_id +
+                    '"><i class="fas fa-plus-square"></i>&nbsp;Assign</button>';
                 $.each(receivers, function(index, receiver) {
                     var statusBadge = receiver.status ?
                         '<span class="badge bg-success">Active</span>' :
@@ -367,6 +375,8 @@
 
                         '<td>' + receiver.receiver_type_name + '</td>' +
                         '<td>' + receiver.document_assignments_count + '</td>' +
+  '<td><a href="/user-assign-documents/' + receiver.id + '"><u><b><span class="badge bg-secondary">' + 
+  receiver.document_assignments_count + '</span></b></u></a></td>' +
 
                         '<td>' + statusBadge + '</td>' +
                         // Make sure you have the receiver type name available
@@ -410,7 +420,7 @@
     // Submit the updated receiver form
     function submitUpdateForm() {
         var formData = $('#updateReceiverForm').serialize();
-        console.log(formData);
+        // console.log(formData);
         // AJAX call to update the receiver
         $.ajax({
             url: '/update-receiver', // Replace with your server's update URL
@@ -432,18 +442,30 @@
     }
 
     function fetchDocuments(documentTypeId) {
-        $.ajax({
-            url: '/get-documents/' + documentTypeId,
-            type: 'GET',
-            success: function(response) {
-                var documentSelect = $('#document');
-                documentSelect.empty();
+    $.ajax({
+        url: '/get-documents/' + documentTypeId,
+        type: 'GET',
+        success: function(response) {
+            var documentSelect = $('#document');
+            documentSelect.empty();
+            
+            // Check if the response has documents
+            if (response.documents && response.documents.length > 0) {
                 $.each(response.documents, function(key, document) {
                     documentSelect.append(new Option(document.name, document.id));
                 });
+            } else {
+                // If there are no documents, show an alert and add a default 'No documents' option
+                alert('No documents available for this document type.');
+                documentSelect.append(new Option('No documents available', ''));
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            // Handle any Ajax errors here
+            alert('An error occurred while fetching the documents.');
+        }
+    });
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         const assignDocButtons = document.querySelectorAll('.assign-doc-btn');
