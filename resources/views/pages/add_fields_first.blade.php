@@ -37,7 +37,7 @@
                                                 name="type">
                                                 <option selected disabled>--Select Document Type--</option>
                                                 @foreach ($doc_type as $item)
-                                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                                    <option value="{{ $item->name }}">{{ ucwords(str_replace('_', ' ', $item->name))}}</option>
                                                 @endforeach
                                             </select>
                                         </div>

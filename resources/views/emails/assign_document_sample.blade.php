@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Document Assigned</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Document Assigned </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 </head>
 
-<body link="#00a5b5" vlink="#00a5b5" alink="#00a5b5">
-<style>
+<body style="margin: 0; padding: 0;">
+    <style>
+        <style>
     @media only screen and (max-width: 600px) {
 		.main {
 			width: 320px !important;
@@ -45,111 +49,104 @@
 
 	}
 </style>
-    <table class=" main contenttable" align="center" style="font-weight: normal;border-collapse: collapse;border: 0;margin-left: auto;margin-right: auto;padding: 0;font-family: Arial, sans-serif;color: #555559;background-color: white;font-size: 16px;line-height: 26px;width: 600px;">
+    </style>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="70%"
+        style="border-collapse: collapse; border: 30px solid #e7e7e7;">
+        <tbody style="padding:0px 10px; display: block;">
             <tr>
-                <td class="border" style="border-collapse: collapse;border: 1px solid #eeeff0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;">
-                    <table style="font-weight: normal;border-collapse: collapse;border: 0;margin: 0;padding: 0;font-family: Arial, sans-serif;">
+                <td style="padding: 56px 0 24px 26px;height:75px;text-align: center;">
+                    <img src="https://ahobila.kods.app/assets/logo/logo.jpg" style="height:100px;width:55%;">
+                </td>
+            </tr>
+            <tr>
+                <td height="42"
+                    style="padding: 10px 0 4px 24px; color: #000000; font-family: Honeywell Sans Web; font-weight: 800; font-size: 26px;">
+                    <b>Hello, {{ $receiverName }}</b>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text"
+                    style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 24px;">
+                    <div class="mktEditable" id="download_button" style="text-align: center;">
+                        <a style="color:#ffffff; background-color: #ff8300; border: 20px solid #ff8300; border-left: 20px solid #ff8300; border-right: 20px solid #ff8300; border-top: 10px solid #ff8300; border-bottom: 10px solid #ff8300;border-radius: 3px; text-decoration:none;"
+                            href="{{ $verificationUrl }}">Verify and Access Document</a>
+                    </div>
+                </td>
+
+            </tr>
+        <br/>
+            <tr>
+                <td
+                    style="padding:1px 24px 22px; color:#606060; font-size:14px; font-family:  Arial; line-height: 1.5;">
+                    You have requested to access a document provided by Sri Ahobila Mutt.<br />
+                    A One-Time Password (OTP) has been generated. This OTP is time and case sensitive and valid time
+                    sensitive and valid for 24 hours.<br>
+                    {{-- This OTP is time sensitive and valid for 10 minutes. --}}
+                </td>
+
+            </tr>
+            <tr>
+                <td
+                    style="padding:1px 24px 22px; color:#606060; font-size:14px; font-weight: 800; font-family:  Arial; line-height: 1.5;">
+                    Your One Time Password (OTP) is </td>
+            </tr>
+            <tr>
+                <td style="padding: 0px 25px;">
+                    <table border="0" cellpadding="0" cellspacing="0" align="center" class="container">
                         <tr>
-                            <td colspan="4" valign="top" class="image-section" style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;background-color: #fff;border-bottom: 4px solid #00a5b5">
-                                <a href="ahobila.kods.app"><img class="top-image" src="https://ahobila.kods.app/assets/logo/logo.jpg" style="line-height: 1;width: 600px;" alt="Sri AHobila Mutt"></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top" class="side title" style="border-collapse: collapse;border: 0;margin: 0;padding: 20px;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;vertical-align: top;background-color: white;border-top: none;">
-                                <table style="font-weight: normal;border-collapse: collapse;border: 0;margin: 0;padding: 0;font-family: Arial, sans-serif;">
-                                    <tr>
-                                        <td class="head-title" style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 28px;line-height: 34px;font-weight: bold; text-align: center;">
-                                            <div class="mktEditable" id="main_title">
-                                              Document Link and Verification
-                                            </div>
-                                        </td>
-                                    </tr>
-                                 
-                                   
-                                    <tr>
-                                        <td class="top-padding" style="border-collapse: collapse;border: 0;margin: 0;padding: 15px 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 21px;">
-                                            <hr size="1" color="#eeeff0">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text" style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;">
-                                        <div class="mktEditable" id="main_text">
-                                            Hello {{$receiverName}},<br><br>
-    
-                                            A document has been securely shared with you. Please click the link below to verify your identity and gain access to the document.<br><br>
-                                          
-                                        </div>
-                                        </td>
-                                    </tr>
-                                
-                                    <tr>
-                                        <td style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 24px;">
-                                         &nbsp;<br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text" style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 24px;">
-                                        <div class="mktEditable" id="download_button" style="text-align: center;">
-                                            <a style="color:#ffffff; background-color: #ff8300; border: 20px solid #ff8300; border-left: 20px solid #ff8300; border-right: 20px solid #ff8300; border-top: 10px solid #ff8300; border-bottom: 10px solid #ff8300;border-radius: 3px; text-decoration:none;" href="{{ $verificationUrl }}">Verify and Access Document</a>										
-                                        </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="signature" style="border-collapse: collapse;border: 0;margin: 0;padding: 20px 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 24px;text-align: center;">
-                                            <div class="mktEditable" id="signature_text">
-                                                Warm regards,<br>
-                                               Sri AHobila Mutt<br>
-                                               
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        {{-- <tr>
-                            <td style="padding:20px; font-family: Arial, sans-serif; -webkit-text-size-adjust: none;" align="center">
-                                <table>
-                                    <tr>
-                                        <td align="center" style="font-family: Arial, sans-serif; -webkit-text-size-adjust: none; font-size: 16px;">
-                                            <a style="color: #00a5b5;" href="{{system.forwardToFriendLink}}">Forward this Email</a>
-                                            <br/><span style="font-size:10px; font-family: Arial, sans-serif; -webkit-text-size-adjust: none;" >Please only forward this email to colleagues or contacts who will be interested in receiving this email.</span>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr> --}}
-                     											
-                        <tr>
-                            <td valign="top" align="center" style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;">
-                                <table style="font-weight: normal;border-collapse: collapse;border: 0;margin: 0;padding: 0;font-family: Arial, sans-serif;">
-                                    <tr>
-                                        <td align="center" valign="middle" class="social" style="border-collapse: collapse;border: 0;margin: 0;padding: 10px;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;text-align: center;">
-                                            <table style="font-weight: normal;border-collapse: collapse;border: 0;margin: 0;padding: 0;font-family: Arial, sans-serif;">
-                                            
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr bgcolor="#fff" style="border-top: 4px solid #00a5b5;">
-                            <td valign="top" class="footer" style="border-collapse: collapse;border: 0;margin: 0;padding: 0;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 16px;line-height: 26px;background: #fff;text-align: center;">
-                                <table style="font-weight: normal;border-collapse: collapse;border: 0;margin: 0;padding: 0;font-family: Arial, sans-serif;">
-                                    <tr>
-                                        <td class="inside-footer" align="center" valign="middle" style="border-collapse: collapse;border: 0;margin: 0;padding: 20px;-webkit-text-size-adjust: none;color: #555559;font-family: Arial, sans-serif;font-size: 12px;line-height: 16px;vertical-align: middle;text-align: center;width: 580px;">
-    <div id="address" class="mktEditable">
-                                            <b>Sri Ahobila Mutt</b><br>
-                                Town<br>  City <br> State<br>
-                                {{-- <a style="color: #00a5b5;" href="https://www.ahobila.kods.app">Contact Us</a> --}}
-    </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td style="font-size:25px;">
+                                {{ $otp }}
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
-        </table>
-      </body>
+
+            {{-- <tr>
+                <td
+                    style="padding:18px 0px 50px 25px; color:#606060; font-size:14px; font-family:  Arial; line-height: 20px;  text-align: left;">
+                    Need help? Contact  support. <br>
+                    Toll Free No. ##CustomerSupportContact## or<br>
+                    email us at <a href="mailto:##DealerSupportEmail##"
+                        style="color:#0889c4; font-family:  Arial, Helvetica, sans-serif; text-decoration:none">##DealerSupportEmail##</a>
+                    <br><br>
+
+                </td>
+            </tr> --}}
+            <tr bgcolor="#fff" style="border-top: 4px solid #00a5b5;">
+                <td valign="top" class="footer"
+                    style="border-collapse: collapse; border: 0; margin: 0; padding: 0; -webkit-text-size-adjust: none; color: #555559; font-family: Arial, sans-serif; font-size: 16px; line-height: 26px; background: #fff; text-align: left;">
+                    <table
+                        style="font-weight: normal; border-collapse: collapse; border: 0; margin: 0; padding: 0; font-family: Arial, sans-serif;">
+                        <tr>
+                            <td class="inside-footer" align="left" valign="middle"
+                                style="border-collapse: collapse; border: 0; margin: 0; padding: 20px; -webkit-text-size-adjust: none; color: #555559; font-family: Arial, sans-serif; font-size: 12px; line-height: 16px; vertical-align: middle; text-align: left; width: 580px;">
+                                <div id="address" class="mktEditable">
+                                    Warm regards,<br>
+                                    <b>Sri Ahobila Mutt</b> <br> 8-A, 1st St, East Tambaram, Tambaram, Chennai, Tamil Nadu 600059<br>
+                                    {{-- <a style="color: #00a5b5;" href="https://www.ahobila.kods.app">Contact Us</a> --}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+        </tbody>
+        <tr>
+            <td
+                style="padding:28px 0 0; color: #606060; font-family:  Arial; font-size: 12px; background-color: #e7e7e7;">
+                &copy; Sri Ahobila Mutt. All Rights Reserved<br><br>
+                The content of this message, together with any attachments, are intended only for the use of the
+                person(s) to which they are addressed and may contain confidential and/or privileged information.
+                Further, any information herein is confidential and protected by law. It is unlawful for unauthorized
+                persons to use, review, copy, disclose, or disseminate confidential information. If you are not the
+                intended recipient, immediately advise the sender and delete this message and any attachments. Any
+                distribution, or copying of this message, or any attachment, is prohibited.
+            </td>
+        </tr>
+    </table>
+</body>
+
 </html>

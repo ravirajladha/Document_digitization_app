@@ -212,7 +212,7 @@ class BulkUploadService
             // 'town' => $row[22],
             // 'alternate_town' => $row[23],
             'old_locker_number' => $row[25],
-            'physically' => $row[26],
+            'physically' => $row[27],
             'bulk_uploaded' => 1,
             'created_by' => Auth::user()->id,
             'batch_id' => $batchId,

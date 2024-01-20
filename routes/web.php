@@ -52,7 +52,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/get-updated-receiver-types', [Admin::class, 'getUpdatedReceiverTypes'])->name('getUpdatedReceiverTypes');
     Route::post('/add-receiver-type', [Admin::class, 'addReceiverType'])->name('addReceiverType');
     Route::post('/update-receiver-type', [Admin::class, 'updateReceiverType'])->name('updateReceiverType');
-
+//useres//subadmin
+    Route::get('/users', [Admin::class, 'showUsers'])->name('showUsers');
     // New routes for receivers
     Route::get('/receivers', [Admin::class, 'showReceivers'])->name('showReceivers');
     Route::post('/add-receiver', [Admin::class, 'addReceiver'])->name('addReceiver');

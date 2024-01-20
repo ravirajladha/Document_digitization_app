@@ -62,7 +62,8 @@
                                             <div class="row">
                                                 <div class="col-6 border-end">
                                                     <div class="pt-3 pb-3 ps-0 pe-0 text-center">
-                                                        <h4 class="m-1"><span class="counter">-</span></h4>
+           
+            <h4 class="m-1"><span class="counter">{{$receiver_type_count}}</span></h4>
                                                         <p class="m-0">Count</p>
                                                     </div>
                                                 </div>

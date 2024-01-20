@@ -83,12 +83,15 @@ class Receiver_process extends Controller
         $expiresAt = Carbon::now()->addHours(24);
 
         // Create a new document assignment entry
+        $otp = rand(1000, 9999);
+        // dd($otp);
         $assignment = Document_assignment::create([
             'document_type' => $validatedData['document_type'],
             'doc_id' => $validatedData['document_id'],
             'receiver_id' => $validatedData['receiver_id'],
             'receiver_type' => $validatedData['receiver_type'],
             'access_token' => $token,
+            'otp' => $otp,
             'expires_at' => $expiresAt,
             'created_by' => Auth::user()->id,
         ]);
@@ -108,7 +111,7 @@ class Receiver_process extends Controller
             // $verificationUrl = url('/verify-document/' . $token); 
             $verificationUrl = url('/otp/' . $token); 
 
-            Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt,$receiverName));
+            Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt,$receiverName,$otp));
 
             // Redirect with success message
             session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
@@ -165,12 +168,20 @@ class Receiver_process extends Controller
         $filePaths = [];
         foreach ($tableMetadata as $metadata) {
             $columnName = $metadata->column_name;
-            $filePath = DB::table($documentType)->where('id', $assignment->doc_id)->value($columnName);
+            $filePath = DB::table($documentType)->where('doc_id', $assignment->doc_id)->value($columnName);
             if ($filePath) {
                 $filePaths[$metadata->data_type] = $filePath;
             }
+           
         }
+// Retrieve the default PDF file path
+$defaultPdfPath = DB::table($documentType)->where('doc_id', $assignment->doc_id)->value('pdf_file_path');
 
+// Check if default PDF path exists and add it to the file paths array
+if ($defaultPdfPath) {
+    $filePaths['default_pdf'] = $defaultPdfPath;
+}
+// dd($defaultPdfPath);
         // Optionally update the database to indicate that the document has been viewed
         if (is_null($assignment->first_viewed_at)) {
             $assignment->first_viewed_at = now();
@@ -231,25 +242,7 @@ class Receiver_process extends Controller
 
 }
 
-public function verifyOtp1(Request $request, $token)
-{
 
-    dd($request->all());
-    // $inputOtp = $request->input('otp');
-    $inputOtp = '5555';
-    $validOtp = '5555'; // This should be securely retrieved in a real application
-
-    if ($inputOtp === $validOtp) {
-        // Mark the OTP as validated in the session
-        session()->put('otp_validated', $token);
-// dd("otp ");
-        // Redirect to the document viewing page
-        return redirect()->route('showPublicDocument', ['token' => $token]);
-    } else {
-        // If OTP is wrong, redirect back with an error message
-        return redirect()->back()->withErrors(['otp' => 'The OTP entered is incorrect.']);
-    }
-}
 
 
 public function verifyOtp(Request $request, $token)
@@ -271,7 +264,7 @@ public function verifyOtp(Request $request, $token)
         session()->put('otp_validated', $token);
 
         // Clear the OTP from the document_assignment to prevent re-verification
-        $documentAssignment->otp = null;
+        // $documentAssignment->otp = null;
         $documentAssignment->save();
 
         // Redirect to the document viewing page

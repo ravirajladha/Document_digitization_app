@@ -127,7 +127,7 @@
                                 <div id="loader" style="display: none;">
                                     Loading...
                                 </div>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">Save changes</button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Form</button>
                             </div>
                         </form>
                         </div>

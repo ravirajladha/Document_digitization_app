@@ -8,8 +8,8 @@
         <div class="form-group mb-4">
             <label class="form-label" for="username">Email</label>
                {{-- replace the below value, if you need to remove the admin login which i have given directly in the input field to reduce the time of testing.
-        :value="old('email')" --}}
-        <input type="email"  class="form-control" placeholder="Enter email" id="username"  value="admin@gmail.com" name="email" required autofocus autocomplete="username">
+         --}}
+        <input type="email"  class="form-control" placeholder="Enter email" id="username"  :value="old('email')" name="email" required autofocus autocomplete="username">
         <x-input-error :messages="$errors->get('email')" class="mt-2" />
           
         </div>
@@ -17,7 +17,7 @@
             <label class="form-label" for="dlab-password">Password</label>
             <input  type="password"
             name="password"
-            required autocomplete="current-password"  id="dlab-password" class="form-control" value="admin">
+            required autocomplete="current-password"  id="dlab-password" class="form-control" value="*****">
             <span class="show-pass eye">
                 <i class="fa fa-eye-slash"></i>
                 <i class="fa fa-eye"></i>
@@ -32,9 +32,9 @@
                     {{-- <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span> --}}
                 </div>
             </div>
-            <div class="form-group ms-2">
+            {{-- <div class="form-group ms-2">
                 <a href="page-forgot-password.html">Forgot Password?</a>
-            </div>
+            </div> --}}
         </div>
         <div class="text-center">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>

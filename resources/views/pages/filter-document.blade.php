@@ -35,9 +35,9 @@
 
                     <div class="filter cm-content-box box-primary">
                         <div class="content-title SlideToolHeader">
-                            <div class="cpa">
+                      <h4>
                                 Search Document
-                            </div>
+                            </h4>
                             <div class="tools">
                                 <a href="javascript:void(0);" class="expand handle"><i
                                         class="fal fa-angle-down"></i></a>
@@ -47,11 +47,10 @@
                             <div class="card-body">
                                 <form action="{{ url('/') }}/filter-document" method="GET">
                                     <div class="row">
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Select Document Type <span
-                                                    style="color:red;">*</span></label>
+                                        <div class="mb-3 col-md-12">
+                                            <label class="form-label">Select Document Type </label>
                                             <select id="single-select-abc1" class="form-select form-control"
-                                                style="width:100%;" name="type" required>
+                                                style="width:100%;" name="type" >
                                                 <option value="" selected>Select Document Type</option>
                                                 {{-- this option was giving to show all the documents, but due to complexity cant be given now --}}
                                                 {{-- <option value="all" {{ old('type') == 'all' ? 'selected' : '' }}>
@@ -64,7 +63,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-4">
                                             <label class="form-label">Select State </label>
 
                                             <select class="form-select form-control" id="single-select-abc2"
@@ -78,7 +77,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-4">
                                             <label class="form-label">Select District </label>
 
                                             <select class="form-select form-control" id="single-select-abc3"
@@ -93,7 +92,7 @@
                                             </select>
                                         </div>
 
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-4">
                                             <label class="form-label">Select Village </label>
 
                                             <select class="form-select form-control" id="single-select-abc4"
@@ -108,18 +107,8 @@
                                             </select>
 
                                         </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Locker No</label>
-                                            <input type="number" name="locker_no" class="form-control"
-                                                placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Old Locker No</label>
-                                            <input type="number" name="old_locker_no" class="form-control"
-                                                placeholder="Enter Old Locker Number"
-                                                value="{{ old('old_locker_no') }}">
-                                        </div>
-
+                                       
+                                    
                                         {{-- <div class="mb-3 col-md-6">
                                         <label for="pagesRange" class="form-label">Number of Pages (1 -
                                             100)</label>
@@ -130,7 +119,7 @@
                                             class="form-range">
                                         <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
                                     </div> --}}
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-3">
                                             <label class="form-label">Document Date (Start)</label>
                                             <div class="input-hasicon">
                                                 <input name="start_date" type="date"
@@ -139,7 +128,7 @@
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-3">
                                             <label class="form-label">Document Date (End)</label>
                                             <div class="input-hasicon">
                                                 <input name="end_date" type="date"
@@ -148,7 +137,11 @@
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
-
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Locker No</label>
+                                            <input type="number" name="locker_no" class="form-control"
+                                                placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
+                                        </div>
                                         <div class="mb-3 col-md-3 col-xl-3">
                                             <label class="form-label">Minimum Area Size</label>
 
@@ -187,7 +180,7 @@
                                     <div class="card-footer">
                                         <a href="" class="btn-link"></a>
                                         <div class="text-end"><button class="btn btn-secondary"
-                                                type="submit">Filter</button>
+                                                type="submit"><i class="fas fa-filter"></i>&nbsp;Filter</button>
                                         </div>
                                     </div>
 
@@ -198,14 +191,14 @@
                     </div>
                 </div>
             </div>
-        </div>
+    
 
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Document</h4>
-                        <button id="exportButton" class="btn btn-primary float-end">Export as CSV</button>
+                        <button id="exportButton" class="btn btn-primary float-end"><i class="fas fa-file-export"></i>&nbsp;Export</button>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -283,6 +276,7 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
 
 
 
+        </div>
         </div>
     </div>
 

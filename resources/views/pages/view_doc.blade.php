@@ -67,7 +67,7 @@
                                                         </td> --}}
                                                     <th scope="row">{{ $index + 1 }}</th>
                                                     <td scope="row">{{ $item->document_name }}</td>
-                                                    <td scope="row">{{ $item->doc_type }}</td>
+                                                    <td scope="row">{{ ucwords(str_replace('_', ' ', $item->doc_type)) }}</td>
 
                                                     <td>{{ $item->current_village ? $item->current_village : '--' }}
                                                     </td>

@@ -10,7 +10,7 @@
             <div class="page-body">
                 <div class="row page-titles">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Data Set</a></li>
+                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Receivers</a></li>
                     </ol>
                 </div>
@@ -20,12 +20,17 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h4>Receivers</h4>
+                                    <button type="button" class="btn btn-success mb-2 float-end"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i
+                                        class="fas fa-plus-square"></i>&nbsp;Add
+                                    Receiver</button>
+                                </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <button type="button" class="btn btn-success mb-2 float-end"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i
-                                                class="fas fa-plus-square"></i>&nbsp;Add
-                                            Receiver</button>
+                                        {{-- <h4>Receivers</h4> --}}
+                                       
 
                                         {{-- <div class="table-responsive"> --}}
                                         {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
@@ -165,7 +170,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Submit Form</button>
                 </div>
                 </form>
             </div>
@@ -277,7 +282,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">Update changes</button>
                 </div>
             </div>
         </div>
@@ -336,6 +341,8 @@
                     if (response.success) {
                         toastr.success(response.success); // Display success toast
                     }
+                    location.reload(true);
+
                     loadUpdatedReceivers();
                     $('#myAjaxForm')[0].reset();
                 },
@@ -432,6 +439,8 @@
             success: function(response) {
                 $('#exampleModalCenter').modal('hide');
                 toastr.success(response.success);
+                location.reload(true);
+
                 loadUpdatedReceivers(); // Update the receivers list
             },
             error: function(error) {

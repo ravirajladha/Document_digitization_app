@@ -533,14 +533,14 @@ class Admin extends Controller
             'village' => $req->village,
             'alternate_village' => $req->alternate_village,
             'issued_date' => $req->issued_date,
-            'document_sub_type' => $req->document_sub_type,
+            // 'document_sub_type' => $req->document_sub_type,
             'current_town' => $req->current_town,
             'town' => $req->town,
             'alternate_town' => $req->alternate_town,
             'old_locker_number' => $req->old_locker_number,
             'physically' => $req->physically,
-            'status_description' => $req->status_description,
-            'review' => $req->review,
+            // 'status_description' => $req->status_description,
+            // 'review' => $req->review,
             'created_by' => Auth::user()->id,
             'set_id' => $setsAsString,
         ]);
@@ -772,14 +772,14 @@ class Admin extends Controller
             'village' => $req->village,
             'alternate_village' => $req->alternate_village,
             'issued_date' => $req->issued_date,
-            'document_sub_type' => $req->document_sub_type,
+            // 'document_sub_type' => $req->document_sub_type,
             'current_town' => $req->current_town,
             'town' => $req->town,
             'alternate_town' => $req->alternate_town,
             'old_locker_number' => $req->old_locker_number,
             'physically' => $req->physically,
-            'status_description' => $req->status_description,
-            'review' => $req->review,
+            // 'status_description' => $req->status_description,
+            // 'review' => $req->review,
             // 'created_by' => Auth::user()->id,
             'set_id' => $setsAsString,
         ]);
@@ -883,7 +883,7 @@ class Admin extends Controller
 
     public function add_fields_first()
     {
-        $doc_type = Master_doc_type::get();
+        $doc_type = Master_doc_type::orderBy('name')->get();
 
         return view('pages.add_fields_first', ['doc_type' => $doc_type]);
     }
@@ -898,7 +898,7 @@ class Admin extends Controller
 
         // Fetch the column details from `table_metadata` for the given table
         $columnDetails = Table_metadata::where('table_name', $tableName)
-            ->get(['column_name', 'data_type']);
+          ->orderBy('column_name')->get(['column_name', 'data_type']);
 
         // Pass the column details to the view instead of the direct schema columns
         return view('pages.document_field', [
@@ -1049,7 +1049,7 @@ class Admin extends Controller
         $district = $request->input('district');
         $village = $request->input('village');
         $locker_no = $request->input('locker_no');
-        $old_locker_no = $request->input('old_locker_no');
+        // $old_locker_no = $request->input('old_locker_no');
         // $number_of_pages = $request->input('number_of_pages');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
@@ -1063,48 +1063,102 @@ class Admin extends Controller
         // dd($end_date);
         // Flash input to the session
         $request->flash();
-        $doc_types = Master_doc_type::get();
+     
 
         // Get unique values from the state columns
-        $states = Master_doc_data::pluck('state')
-            ->merge(Master_doc_data::pluck('current_state'))
-            ->merge(Master_doc_data::pluck('alternate_state'))
+        // $states = Master_doc_data::pluck('state')
+        //     ->merge(Master_doc_data::pluck('current_state'))
+        //     ->merge(Master_doc_data::pluck('alternate_state'))
+        //     ->unique()
+        //     ->sort()
+        //     ->reject(function ($value) {
+        //         return empty($value);
+        //     }) // Reject empty values
+        //     ->values();
+
+
+            $states = Master_doc_data::pluck('current_state')
+            ->flatMap(function ($item) {
+                // Split the item by comma and trim spaces from each resulting piece
+                return collect(explode(',', $item))->map(function ($i) { 
+                    return Str::of($i)->trim();
+                });
+            })
             ->unique()
             ->sort()
             ->reject(function ($value) {
                 return empty($value);
-            }) // Reject empty values
+            })
             ->values();
-        $districts = Master_doc_data::pluck('district')
-            ->merge(Master_doc_data::pluck('current_district'))
-            ->merge(Master_doc_data::pluck('alternate_district'))
+
+
+
+        // $districts = Master_doc_data::pluck('district')
+        //     ->merge(Master_doc_data::pluck('current_district'))
+        //     ->merge(Master_doc_data::pluck('alternate_district'))
+        //     ->unique()
+        //     ->sort()
+        //     ->reject(function ($value) {
+        //         return empty($value);
+        //     }) // Reject empty values
+        //     ->values();
+
+
+        $districts = Master_doc_data::pluck('current_district')
+            ->flatMap(function ($item) {
+                // Split the item by comma and trim spaces from each resulting piece
+                return collect(explode(',', $item))->map(function ($i) { 
+                    return Str::of($i)->trim();
+                });
+            })
             ->unique()
             ->sort()
             ->reject(function ($value) {
                 return empty($value);
-            }) // Reject empty values
+            })
             ->values();
-        $villages = Master_doc_data::pluck('village')
-            ->merge(Master_doc_data::pluck('current_village'))
-            ->merge(Master_doc_data::pluck('alternate_village'))
+
+
+
+        // $villages = Master_doc_data::pluck('village')
+        //     ->merge(Master_doc_data::pluck('current_village'))
+        //     ->merge(Master_doc_data::pluck('alternate_village'))
+        //     ->unique()
+        //     ->sort()
+        //     ->reject(function ($value) {
+        //         return empty($value);
+        //     }) // Reject empty values
+        //     ->values();
+
+
+            $villages = Master_doc_data::pluck('current_village')
+            ->flatMap(function ($item) {
+                // Split the item by comma and trim spaces from each resulting piece
+                return collect(explode(',', $item))->map(function ($i) { 
+                    return Str::of($i)->trim();
+                });
+            })
             ->unique()
             ->sort()
             ->reject(function ($value) {
                 return empty($value);
-            }) // Reject empty values
+            })
             ->values();
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'old_locker_no', 'start_date', 'end_date','area_range_start','area_range_end','area_unit']);
+
+
+
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date','area_range_start','area_range_end','area_unit']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
 
-        if ($filterSet > 0) {
-            if ($typeId == 'all') {
-                $documents = Master_doc_data::paginate(15); // Adjust the number per page as needed
-            } else {
-                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $old_locker_no, $start_date, $end_date,$area_range_start,$area_range_end,$area_unit);
-            }
-        }
+        // if ($filterSet > 0) {
+        //     if ($typeId == 'all') {
+        //         $documents = Master_doc_data::paginate(15);
+        //     } else {
+                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $start_date, $end_date,$area_range_start,$area_range_end,$area_unit);
+            // }
+        // }
         // dd($documents);
     //    dd($area_unit);
         $data = [
@@ -1124,6 +1178,33 @@ class Admin extends Controller
 
     public function dataSets()
     {
-        return view('pages.data-sets.data-sets');
+        $receiver_type_count = Receiver_type::count();
+        // dd($receiver_type_count);
+        $data = [
+            'receiver_type_count' => $receiver_type_count,
+        ];
+        return view('pages.data-sets.data-sets',$data);
     }
+
+
+
+    public function showUsers()
+    {
+        $data = Receiver::with('receiverType')
+            ->withCount('documentAssignments') // Add the count of document assignments
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $receiverTypes = Receiver_type::all();
+        $documentTypes = Master_doc_type::orderBy('name')->get();
+
+        return view('pages.users', [
+            'data' => $data,
+            'receiverTypes' => $receiverTypes,
+            'documentTypes' => $documentTypes
+
+        ]);
+    }
+
+
 }

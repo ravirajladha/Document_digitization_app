@@ -4,7 +4,7 @@
         <div class="dlabnav">
             <div class="dlabnav-scroll">
 				<ul class="metismenu" id="menu">
-                    <li><a  href="/dashboard" aria-expanded="true">
+                    <li><a  href="/dashboard" aria-expanded="false">
 							<i class="fas fa-home"></i>
 							<span class="nav-text">Dashboard</span>
 						</a>
@@ -13,52 +13,53 @@
                     </li>
                     @if (Auth::user()->type == "admin")
 					<li>
-						<a class="has-arrow" href="javascript:void(0);" aria-expanded="true">
+						<a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
 							<i class="fas fa-clone"></i>
-							<span class="nav-text">Document  <span class="badge badge-xs badge-danger ms-2">New</span></span>
+							<span class="nav-text">Document </span>
 						</a>
-                        <ul aria-expanded="true">
+                        <ul aria-expanded="false">
 							<li><a href="{{ url('/')}}/filter-document">View Documents</a></li>		
 							<li><a href="{{ url('/')}}/add_document_first">Add Document</a></li>	
 							<li><a href="{{ url('/')}}/assign-documents">Assign Document</a></li>		
 							<li><a href="{{ url('/')}}/bulk-upload-master-data">Bulk Upload</a></li>	
 							 <li><a href="{{ url('/')}}/document_type">Document Type</a></li>
-							<li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li>
+							{{-- <li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li> --}}
 							{{-- <li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		 --}}
 							
 							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
 						
 						</ul>
                     </li>
-					{{-- <li><a class="has-arrow " href="javascript:void()" aria-expanded="true">
+					{{-- <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
 						<i class="fas fa-info-circle"></i>
 							<span class="nav-text">Receivers</span>
 						</a>
-                        <ul aria-expanded="true">
+                        <ul aria-expanded="false">
                             <li><a href="{{ url('/')}}/receivers">Add Receiver</a></li>
                            
                          
                         </ul>
                     </li> --}}
 					<li><a  href="{{ url('/')}}/set" aria-expanded="false">
-						<i class="fas fa-user-circle"></i>
+						<i class="fas fa-info-circle"></i>
 							<span class="nav-text">Sets</span>
 						</a>
                     </li>
 
 					<li><a  href="{{ url('/')}}/receivers" aria-expanded="false">
-						<i class="fas fa-user-circle"></i>
+						{{-- <i class="fas fa-user-circle"></i> --}}
+						<i class="fas fa-receipt"></i>
 							<span class="nav-text">Receivers</span>
 						</a>
                     </li>
-					<li><a  href="{{ url('/')}}/receivers" aria-expanded="false">
+					<li><a  href="{{ url('/')}}/users" aria-expanded="false" disabled>
 						<i class="fas fa-user-circle"></i>
 							<span class="nav-text">Users</span>
 						</a>
                     </li>
 				
 					<li><a  href="{{ url('/')}}/compliances" aria-expanded="false">
-						<i class="fas fa-user-circle"></i>
+						<i class="fas fa-procedures"></i>
 							<span class="nav-text">Compliances</span>
 						</a>
                     </li>
@@ -66,51 +67,73 @@
 				
 
 					<li><a  href="{{ url('/')}}/data-sets" aria-expanded="false">
-						<i class="fas fa-info-circle"></i>
+						{{-- <i class="fas fa-scale-balanced"></i> --}}
+						<i class="fas fa-table"></i>
 							<span class="nav-text">Configure</span>
 						</a>
                     </li>
+
+					<li><a  href="{{ url('/')}}/profile" aria-expanded="false">
+						{{-- <i class="fas fa-scale-balanced"></i> --}}
+						<i class="fas fa-tools"></i>
+							<span class="nav-text">Settings</span>
+						</a>
+                    </li>
+{{-- 				
 					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 						@csrf
 					</form>
+					<li><a href="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" aria-expanded="false">
 					
-					<li>
-						<a class="has-arrow" href="javascript:void(0);" aria-expanded="true">
-							<i class="fas fa-clone"></i>
-							<span class="nav-text">Settings  <span class="badge badge-xs badge-danger ms-2">New</span></span>
+						<i class="fas fa-sign-out"></i>
+							<span class="nav-text">Logout</span>
 						</a>
-                        <ul aria-expanded="true">
-							<li><a href="{{ url('/')}}/profile">Profile</a></li>		
+                    </li> --}}
+
+
+					{{-- <li>
+						<a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
+							<i class="fas fa-tools"></i>
+							<span class="nav-text">Settings </span>
+						</a>
+                        <ul aria-expanded="false">
+							<li><a href="{{ url('/')}}/profile">Profile</a></li>	
+							
 							<li><a href="{{ url('/')}}/add_document_first" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>	
 							
+							<li class="nav-item dropdown notification_dropdown">
+								<a class="nav-link bell dz-theme-mode" href="javascript:void(0);">
+									<i id="icon-light" class="fas fa-sun">Day Mode</i> 
+									<i id="icon-dark" class="fas fa-moon">Night Mode</i> 
+								</a>
+							</li>
 							
-							{{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
 						
 						</ul>
-                    </li>
+                    </li> --}}
 
 				
-					<
+				
 
 
 
 					{{-- <li>
-						<a  href="javascript:void(0);" aria-expanded="true">
+						<a  href="javascript:void(0);" aria-expanded="false">
 						
 							&nbsp;
 						</a>
-                        <ul aria-expanded="true">
+                        <ul aria-expanded="false">
 							 <li><a href="{{ url('/')}}/document_type"></a></li>
 							
 						
 						</ul>
                     </li> --}}
                     @else
-                    <li><a class="has-arrow " href="javascript:void()" aria-expanded="true">
+                    <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
 						<i class="fas fa-info-circle"></i>
 							<span class="nav-text">Document</span>
 						</a>
-                        <ul aria-expanded="true">
+                        <ul aria-expanded="false">
                             <li><a href="{{ url('/')}}/reviewer/view_doc_first">View Document</a></li>
                             {{-- <li><a href="edit-profile.html">Edit Profile</a></li>
 							<li><a href="post-details.html">Post Details</a></li>
@@ -149,7 +172,7 @@
 				
 					<div class="d-flex align-items-center justify-content-between mb-3">
 						<div class="side-bar-profile-img">
-							<img src="/assets/images/avatar/1.png" alt="">
+							<img src="/assets/images/avatar/avatar.jpg" alt="">
 						</div>
 						<div class="profile-info1">
 							<h5>{{ Auth::user()->name }}</h5>
@@ -173,8 +196,8 @@
 				</div>
 				<div class="sidebar-footer mt-auto">
 				<div class="copyright">
-					<p>Kods © 2023 All Rights Reserved</p>
-					<p class="fs-12">Made  by Kods</p>
+					{{-- <p>Kods © 2023 All Rights Reserved</p> --}}
+					<a href="https://kodstech.com/" target="_blank"><p class="fs-12">Powered by Kods</p></a>
 				</div>
 				</div>
 

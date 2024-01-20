@@ -10625,7 +10625,7 @@ label {
   z-index: 1;
   position: var(--dz-header-pos);
   padding: 0rem;
-  background: var(--headerbg);
+  background: var(--nav-headbg);
   z-index: 3;
   top: 0;
   width: 100%;
@@ -24914,7 +24914,7 @@ table.dataTable > tbody > tr.child span.dtr-title {
       z-index: -1;
       margin: -0.1875rem;
       border-radius: inherit;
-      background: linear-gradient(to right, #CEA7FF, #1714c9);
+      background: linear-gradient(to right, #CEA7FF, #FFA26D);
       height: 46px;
       width: 46px;
       border-radius: 50px; }
@@ -24927,7 +24927,7 @@ table.dataTable > tbody > tr.child span.dtr-title {
     .side-bar-profile {
       padding: 0 24px; }
       .side-bar-profile .side-bar-profile-img img {
-        margin-right: 13px; } }
+        margin-right: 6px; } }
   @media only screen and (max-width: 87.5rem) {
     .side-bar-profile {
       display: none; } }

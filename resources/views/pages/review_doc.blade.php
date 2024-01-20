@@ -27,7 +27,8 @@
                             </div>
                             <div class="card-body">
 
-                                <table class="table m-2">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-responsive-sm">
                                     <tbody style="padding:0 0 0 0;">
                                         @if ($master_data)
                                             @foreach ($master_data->getAttributes() as $attribute => $value)
@@ -95,6 +96,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
                             </div>
                         </div>
 
@@ -247,7 +249,11 @@
 
 
 
-
+<script>
+    $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
 
                 <div class="row mb-5">
                     <div class="col-lg-12">
@@ -256,9 +262,16 @@
                             {{-- Edit Button --}}
                             @if (Auth::user()->type == 'admin')
                                 <div class="card-header">
-                                    Document Verification <i style="font-size:12px;">Three stage: Pending, Hold,
+                                    {{-- Document Verification <i style="font-size:12px;">Three stages: Pending, Hold,
                                         Approve. To keep the document on hold, message is mandatory. Once approved, the
-                                        document status can't be changed</i>
+                                        document status can't be changed</i> --}}
+<h5>Doc Verification</h5>
+                                        <div class="bootstrap-popover d-inline-block float-end">
+                                            <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Three stages: Pending, Hold,
+                                            Approve. To keep the document on hold, message is mandatory. Once approved, the
+                                            document status can't be changed." title="Verification Guidelines"><i class="fas fa-info-circle"></i></button>
+                                        </div>
+
                                 </div>
                             @endif
 
@@ -314,6 +327,9 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                <div class="card-header">
+                    <h5>Compliances</h5>
+                </div>
 
                 <div class="table-responsive">
                     <table id="example3" class="display" style="min-width: 845px">
@@ -323,8 +339,8 @@
                             <tr>
                                 <th scope="col">Sl no</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Document Name </th>
-                                <th scope="col">Document Type </th>
+                                {{-- <th scope="col">Document Name </th>
+                                <th scope="col">Document Type </th> --}}
                                 <th scope="col">Due Date</th>
                                 <th scope="col">Is Recurring </th>
 
@@ -343,8 +359,8 @@
                                     <th scope="row">{{ $index + 1 }}</th>
 
                                     <td>{{ $item->name }}</td>
-                                    <td>{{ $item->documentType->name }}</td>
-                                    <td>{{ $item->document->name }}</td>
+                                    {{-- <td>{{ $item->documentType->name }}</td>
+                                    <td>{{ $item->document->name }}</td> --}}
                                     <td>{{  date('d-m-Y', strtotime($item->due_date)) }}</td>
                                    
 

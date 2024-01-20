@@ -40,15 +40,15 @@ return new class extends Migration
             $table->string('dry_land')->nullable();
             $table->string('wet_land')->nullable();
             $table->string('garden_land')->nullable();
-            $table->string('document_sub_type')->nullable();
+            // $table->string('document_sub_type')->nullable();
             $table->string('current_town')->nullable();
             $table->string('town')->nullable();
             $table->string('alternate_town')->nullable();
             $table->string('old_locker_number')->nullable();
             $table->string('set_id')->nullable();
             $table->text('physically')->nullable();
-            $table->text('status_description')->nullable();
-            $table->text('review')->nullable();
+            // $table->text('status_description')->nullable();
+            // $table->text('review')->nullable();
             $table->boolean('bulk_uploaded')->default(0); // 0 for inactive, 1 for active
             $table->string('batch_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();

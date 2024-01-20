@@ -10,6 +10,7 @@
             <div class="page-body">
                 <div class="row page-titles">
                     <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Assigned Document</a></li>
 
@@ -129,7 +130,7 @@
                                 <div id="loader" style="display: none;">
                                     Loading...
                                 </div>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">Save changes</button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Form</button>
                             </div>
                         </form>
                         </div>
@@ -144,10 +145,13 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-body">
-                                 
+                                 <div class="card-header">
+                                    <h4>Assigned Documents</h4>
+                                    <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-square-plus"></i>&nbsp;Assign Document</button>
+                                 </div>
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
-                                    <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-square-plus"></i>&nbsp;Assign Document</button>
+                                   
 
                                             <thead>
                                                 <tr>

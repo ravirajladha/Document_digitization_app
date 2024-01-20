@@ -18,8 +18,9 @@
                             </div>
                             <div class="col-12 col-sm-6">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Dynamic Fields</a></li>
+                                    <li class="breadcrumb-item"><a href="/fashboard">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="/add_fields_first">Document Field</a></li>
+                                    <li class="breadcrumb-item active"><a href="javascript:void(0)"> Fields Detail</a></li>
                                 </ol>
                             </div>
                         </div>
@@ -35,7 +36,7 @@
                                     <h4 class="title">Fields Detail</h4>
                                     <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
                                     data-bs-target="#addDocumentTypeModal">
-                                    <i class="fas fa-plus"></i>&nbsp; Add Document Fields
+                                    <i class="fas fa-plus-square"></i>&nbsp; Add Document Fields
                                 </button>
                                 </div>
                                 <div class="card-body">
@@ -53,7 +54,7 @@
                                                 @foreach ($columnDetails as $index => $column)
                                                     <tr>
                                                         <td>{{ $index + 1 }}</td>
-                                                        <td>{{ $column->column_name }}</td>
+                                                        <td>{{ ucwords(str_replace('_', ' ',$column->column_name)) }}</td>
                                                         <td>
                                                             @switch($column->data_type)
                                                                 @case(1)

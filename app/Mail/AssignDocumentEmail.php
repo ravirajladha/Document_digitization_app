@@ -13,18 +13,22 @@ class AssignDocumentEmail extends Mailable
     public $verificationUrl;
     public $expiresAt;
     public $receiverName;
+    public $otp;
 
     /**
      * Create a new message instance.
      *
      * @param string $verificationUrl The URL the user will click to verify and access the document
      * @param string $receiverName The URL the user will click to verify and access the document
+     * @param string $otp The URL the user will click to verify and access the document
      * @param Carbon $expiresAt The expiration time of the verification URL
      */
-    public function __construct($verificationUrl, Carbon $expiresAt)
+    public function __construct($verificationUrl, Carbon $expiresAt,$receiverName,$otp)
     {
         $this->verificationUrl = $verificationUrl;
         $this->expiresAt = $expiresAt;
+        $this->receiverName = $receiverName;
+        $this->otp = $otp;
     }
 
     /**
@@ -39,6 +43,7 @@ class AssignDocumentEmail extends Mailable
                     ->with([
                         'verificationUrl' => $this->verificationUrl,
                         'receiverName' => $this->receiverName,
+                        'otp' => $this->otp,
                         'expiresAt' => $this->expiresAt->format('M d, Y, g:i A') // Custom format// Format the expiration time as needed
                     ]);
     }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Document_assignment extends Model
 {
     use HasFactory;
-    protected $fillable = ['document_type', 'doc_id', 'receiver_id','receiver_type', 'access_token', 'expires_at','created_by'];
+    protected $fillable = ['document_type', 'doc_id','otp', 'receiver_id','receiver_type', 'access_token', 'expires_at','created_by'];
 
     public function receiver()
     {

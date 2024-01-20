@@ -54,14 +54,11 @@
                                         {{-- </div> --}}
                                         
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">Location</label>
-                                            <input type="text" name="location" class="form-control" placeholder="Enter Location">
+                                            <label class="form-label">Document Present At</label>
+                                            <input type="text" name="location" class="form-control" placeholder="Enter Document Present At">
                                         </div>
                                         
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Locker ID</label>
-                                            <input type="number" name="locker_id"  class="form-control" placeholder="Enter Locker ID">
-                                        </div>
+                                   
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Number of Pages</label>
@@ -148,11 +145,11 @@
                                             <input type="date" name="issued_date" class="form-control">
                                         </div>
                                         
-                                        <div class="mb-3 col-md-6">
+                                        {{-- <div class="mb-3 col-md-6">
                                             <label class="form-label">Document Sub Type</label>
                                             <input type="text" name="document_sub_type" class="form-control" placeholder="Enter Document Sub Type">
                                         </div>
-                                        
+                                         --}}
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current Town</label>
                                             <input type="text" name="current_town" class="form-control" placeholder="Enter Current Town">
@@ -167,7 +164,10 @@
                                             <label class="form-label">Alternate Town</label>
                                             <input type="text" name="alternate_town" class="form-control" placeholder="Enter Alternate Town">
                                         </div>
-                                        
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Locker ID</label>
+                                            <input type="number" name="locker_id"  class="form-control" placeholder="Enter Locker ID">
+                                        </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Old Locker Number</label>
                                             <input type="text" name="old_locker_number" class="form-control" placeholder="Enter Old Locker Number">
@@ -176,14 +176,14 @@
                                             <label class="form-label">Physically Checked</label>
                                             <input type="text" name="physically" class="form-control" placeholder="Enter physically">
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        {{-- <div class="mb-3 col-md-6">
                                             <label class="form-label">Status Description</label>
                                             <input type="text" name="status_description" class="form-control" placeholder="Enter status_description ">
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Review</label>
                                             <input type="text" name="review" class="form-control" placeholder="Enter review">
-                                        </div>
+                                        </div> --}}
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Set</label>
                                             <select class="select2-width-75" name="set[]" multiple="multiple" style="width: 75%">

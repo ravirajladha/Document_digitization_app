@@ -48,8 +48,9 @@
                                             </div>
 
                                             <div class="col-xl-5 col-sm-5 ">
-                                             
-                                                <a href="/filter-document" class="btn btn-outline-dark btn-rounded d-block" > <button ><i class="fas fa-search"></i>&ensp;Search Documents</button></a>
+{{--                                              
+                                                <a href="/filter-document" class="btn btn-outline-dark btn-rounded d-block" > <button ><i class="fas fa-search"></i>&ensp;Search Documents</button></a> --}}
+                                                  <a href="/filter-document" ><button class="btn btn-success"><i class="fas fa-search"></i>&ensp;<u>Search Documents</u></button></a>
                                             </div>
                                         </div>
                                     </div>
@@ -132,7 +133,7 @@
 											<div class="card">
 												<div class="card-body card-padding d-flex align-items-center justify-content-between">
 													<div class="w-75">
-														<h4 class="mb-3 text-nowrap">Accepted Documents</h4>
+														<h4 class="mb-3 text-nowrap">Approved Documents</h4>
 														{{-- Assuming you have a way to calculate the progress percentage --}}
 														<div class="progress default-progress">
 															<div class="progress-bar bg-gradient1 progress-animated" style="width: {{ $acceptedProgress }}%; height:8px;" role="progressbar">
@@ -200,17 +201,17 @@ $totalAreaAcres = ($totalAreaFeet / 43560 )+ $getGeographicalCounts['totalAreaAc
                                             <div class="card overflow-hidden">
                                                 <div class="card-body" style="padding:0;">
                                                     <div class="text-center">
-                                                        <div class="row">
+                                                        {{-- <div class="row">
                                                             <div class="col-12 pt-3 pb-3 ">
                                                                 <h3 class="mt-4 mb-1">{{ number_format($totalAreaAcres, 2) }}
                                                                 </h3>
                                                                 <p class="text-muted">Area (In Acres and Cents)</p>
-                                                            </div>
+                                                            </div> --}}
                                                             {{-- <div class="col-6 pt-3 pb-3 ">
                                                                 <h3 class="mt-4 mb-1">{{$getGeographicalCounts['totalAreaFeet']}}</h3>
                                                                 <p class="text-muted">Area {{ $getGeographicalCounts['totalAreaAcre'] }}</p>
                                                             </div> --}}
-                                                        </div>
+                                                        {{-- </div> --}}
                                                         {{-- <div class="profile-photo">
 															<img src="/assets/images/profile/profile.png" width="100" class="img-fluid rounded-circle" alt="">
 														</div> --}}

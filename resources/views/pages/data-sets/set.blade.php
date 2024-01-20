@@ -10,7 +10,8 @@
             <div class="page-body">
                 <div class="row page-titles">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
+                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Set</a></li>
                     </ol>
                 </div>
@@ -21,7 +22,7 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h1 class="title">Sets</h1>
+                                    <h5 class="title">Sets</h5>
                                     <button type="button" class="btn btn-success btn-sm float-end"
                                         data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
                                         <i class="fas fa-plus-square"></i>&nbsp; Add Set
@@ -38,7 +39,7 @@
                                                 <tr>
                                                     <th scope="col">Sl no</th>
                                                     <th scope="col">Name</th>
-                                                    <th scope="col">Count</th>
+                                                    <th scope="col">Number of Documents</th>
                                                     <th scope="col">View Documents</th>
                                                     <th scope="col">Action</th>
                                                 </tr>
@@ -86,7 +87,7 @@
                                                         <button type="button" class="btn btn-danger light"
                                                             data-bs-dismiss="modal">Close</button>
                                                         <button type="button" class="btn btn-primary"
-                                                            onclick="submitUpdateForm()">Save changes</button>
+                                                            onclick="submitUpdateForm()">Submit Form</button>
                                                     </div>
                                                 </div>
                                             </div>

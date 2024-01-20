@@ -60,18 +60,13 @@
                                                         {{-- </div> --}}
 
                                                         <div class="mb-3 col-md-6">
-                                                            <label class="form-label">Location</label>
+                                                            <label class="form-label">Document Present At</label>
                                                             <input type="text" name="location" class="form-control"
-                                                                placeholder="Enter Location"
+                                                                placeholder="Enter Document Present At"
                                                                 value="{{ $document->location }}">
                                                         </div>
 
-                                                        <div class="mb-3 col-md-6">
-                                                            <label class="form-label">Locker ID</label>
-                                                            <input type="number" name="locker_id" class="form-control"
-                                                                placeholder="Enter Locker ID"
-                                                                value="{{ $document->locker_id }}">
-                                                        </div>
+                                                     
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Number of Pages</label>
@@ -151,7 +146,7 @@
                                                             <label class="form-label">Current Taluk</label>
                                                             <input type="text" name="current_taluk"
                                                                 class="form-control" placeholder="Enter Current Taluk"
-                                                                value="{{ $document->locker_id }}">
+                                                                value="{{ $document->current_taluk }}">
                                                         </div>
 
                                                         <div class="mb-3 col-md-6">
@@ -199,13 +194,13 @@
                                                                 value="{{ $document->issued_date }}">
                                                         </div>
 
-                                                        <div class="mb-3 col-md-6">
+                                                        {{-- <div class="mb-3 col-md-6">
                                                             <label class="form-label">Document Sub Type</label>
                                                             <input type="text" name="document_sub_type"
                                                                 class="form-control"
                                                                 placeholder="Enter Document Sub Type"
                                                                 value="{{ $document->document_sub_type }}">
-                                                        </div>
+                                                        </div> --}}
 
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Current Town</label>
@@ -226,7 +221,12 @@
                                                                 class="form-control"
                                                                 placeholder="Enter Alternate Town"value="{{ $document->alternate_town }}">
                                                         </div>
-
+                                                        <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Locker ID</label>
+                                                            <input type="number" name="locker_id" class="form-control"
+                                                                placeholder="Enter Locker ID"
+                                                                value="{{ $document->locker_id }}">
+                                                        </div>
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Old Locker Number</label>
                                                             <input type="text" name="old_locker_number"
@@ -235,12 +235,12 @@
                                                                 placeholder="Enter Old Locker Number">
                                                         </div>
                                                         <div class="mb-3 col-md-6">
-                                                            <label class="form-label">physically</label>
+                                                            <label class="form-label">Physically</label>
                                                             <input type="text" name="physically"
                                                                 class="form-control" placeholder="Enter physically"
                                                                 value="{{ $document->physically }}">
                                                         </div>
-                                                        <div class="mb-3 col-md-6">
+                                                        {{-- <div class="mb-3 col-md-6">
                                                             <label class="form-label">status_description</label>
                                                             <input type="text" name="status_description"
                                                                 class="form-control"
@@ -250,7 +250,7 @@
                                                             <label class="form-label">review</label>
                                                             <input type="text" name="review" class="form-control"
                                                                 placeholder="Enter review"value="{{ $document->review }}">
-                                                        </div>
+                                                        </div> --}}
                                                         @php
                                                             $selectedSets = [];
                                                             if ($document && $document->set_id) {

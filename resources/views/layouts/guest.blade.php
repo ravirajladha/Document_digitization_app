@@ -84,7 +84,7 @@
                     <div class="card mb-0 h-auto">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                <a href="index.html"><img class="logo-auth" style="width: 15rem;" src="/assets/logo/logo.jpg" alt=""></a>
+                                <a href="/"><img class="logo-auth" style="width: 15rem;" src="/assets/logo/logo.jpg" alt=""></a>
                             </div>
                             {{ $slot }}
                             {{-- <h4 class="text-center mb-4">Sign in your account</h4>

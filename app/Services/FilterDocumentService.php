@@ -18,7 +18,7 @@ use Validator;
 class FilterDocumentService
 {
     
-    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$old_locker_no=null,$start_date = null,$end_date =null,$area_range_start=null,$area_range_end=null,$area_unit=null): Collection
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$start_date = null,$end_date =null,$area_range_start=null,$area_range_end=null,$area_unit=null): Collection
     {
         $query = Master_doc_data::query();
 
@@ -28,10 +28,6 @@ class FilterDocumentService
         if ($locker_no) {
             $query->where('locker_id', $locker_no);
         }
-        if ($old_locker_no) {
-            $query->where('old_locker_number', $old_locker_no);
-        }
-    
       
         // dd($start_date);
         if ($start_date && $end_date) {
@@ -49,27 +45,46 @@ class FilterDocumentService
             $end = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay();
             $query->where('issued_date', '<=', $end);
         }
+
         if ($state) {
             $query->where(function ($q) use ($state) {
-                $q->where('state', $state)
-                  ->orWhere('current_state', $state)
-                  ->orWhere('alternate_state', $state);
+                $q->whereRaw("FIND_IN_SET(?, current_state)", [$state]);
             });
         }
         if ($district) {
             $query->where(function ($q) use ($district) {
-                $q->where('district', $district)
-                  ->orWhere('current_district', $district)
-                  ->orWhere('alternate_district', $district);
+                $q->whereRaw("FIND_IN_SET(?, current_district)", [$district]);
             });
         }
         if ($village) {
             $query->where(function ($q) use ($village) {
-                $q->where('village', $village)
-                  ->orWhere('current_village', $village)
-                  ->orWhere('alternate_village', $village);
+                $q->whereRaw("FIND_IN_SET(?, current_village)", [$village]);
             });
         }
+
+//before all the types of villages were comninely searched
+
+        // if ($state) {
+        //     $query->where(function ($q) use ($state) {
+        //         $q->where('state', $state)
+        //           ->orWhere('current_state', $state)
+        //           ->orWhere('alternate_state', $state);
+        //     });
+        // }
+        // if ($district) {
+        //     $query->where(function ($q) use ($district) {
+        //         $q->where('district', $district)
+        //           ->orWhere('current_district', $district)
+        //           ->orWhere('alternate_district', $district);
+        //     });
+        // }
+        // if ($village) {
+        //     $query->where(function ($q) use ($village) {
+        //         $q->where('village', $village)
+        //           ->orWhere('current_village', $village)
+        //           ->orWhere('alternate_village', $village);
+        //     });
+        // }
         if ($area_range_start !== null || $area_range_end !== null) {
             $query->where(function ($q) use ($area_range_start, $area_range_end) {
                 if ($area_range_start !== null) {
@@ -89,6 +104,7 @@ class FilterDocumentService
        
 
         $filteredData = $query->get();
+        // dd($filteredData);
         foreach ($filteredData as $item) {
             $documentType = $item->document_type_name;
     
