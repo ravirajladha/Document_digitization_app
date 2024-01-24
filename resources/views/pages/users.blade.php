@@ -50,16 +50,12 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($data as $index => $item)
+                                                @foreach ($users as $index => $item)
                                                     <tr>
-                                                        <th scope="row">1</th>
-                                                        <td>Test</td>
-                                                        <td>8545858547</td>
-                                               
-                                                        <td>test@gmail.com</td>
-                                                     
-                                                      
-                                                  
+                                                        <th scope="row">{{ $index+1 }}</th>
+                                                        <td>{{ $item->name }}</td>
+                                                        <td>{{ $item->phone }}</td>
+                                                        <td>{{ $item->email }}</td>
                                                     
                                                         <td><span class="badge bg-success">Active</span></td>
 
@@ -119,35 +115,53 @@ color: #333; /* Darker color for module name */
                 </div>
                 <div class="modal-body">
                     <div class="form theme-form projectcreate">
-                        <form id="myAjaxForm" action="" method="POST"
+                        <form  action="{{ url('/') }}/register-user"  method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
                                       
-                                    <div class="col-md-6">
-                                        <label for="receiverName" class="form-label">Name</label>
-                                        <input type="text" class="form-control" name="name" id="receiverName"
-                                            placeholder="Enter  Name">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="receiverEmail" class="form-label">Email</label>
-                                        <input type="email" class="form-control" name="email" id="receiverEmail"
-                                            placeholder="Enter  Email">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="receiverPhone" class="form-label">Phone</label>
-                                        <input type="text" class="form-control" name="phone" id="receiverPhone"
-                                            placeholder="Enter  Phone Number" pattern="\d{0,10}$"
-                                            title="Please enter a valid phone number with up to 10 digits."
-                                            maxlength="10">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="receiverCity" class="form-label">Password</label>
-                                        <input type="password" class="form-control" name="city" id="receiverCity"
-                                            placeholder="Enter Password">
-                                    </div>
+                                       
+                                            <div class="form-group mb-4">
+                                                <label class="form-label" for="username">Username</label>
+                                                <input type="text" class="form-control" placeholder="Enter username" id="username" name="name"
+                                                    :value="old('name')" required autofocus autocomplete="name">
+                                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                    
+                                            </div>
+                                            <div class="form-group mb-4">
+                                                <label class="form-label" for="email">Email</label>
+                                                <input type="email" name="email" :value="old('email')" required autocomplete="username"
+                                                    class="form-control" placeholder="hello@example.com" id="email">
+                                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                            </div>
+                                            <div class="form-group mb-4">
+                                                <label class="form-label" for="email">Phone</label>
+                                                <input type="phone" name="phone" :value="old('phone')" required autocomplete="phone"
+                                                    class="form-control" placeholder="Enter Phone No" id="phone">
+                                                <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                            </div>
+                                            <div class="mb-sm-4 mb-3 position-relative">
+                                                <label class="form-label" for="dlab-password">Password</label>
+                                                <input type="password" name="password" required autocomplete="new-password" id="dlab-password"
+                                                    class="form-control" value="123456">
+                                                <span class="show-pass eye">
+                                                    <i class="fa fa-eye-slash"></i>
+                                                    <i class="fa fa-eye"></i>
+                                                </span>
+                                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                            </div>
+                                            <div class="mb-sm-4 mb-3 position-relative">
+                                                <label class="form-label" for="dlab-password">Confirm Password</label>
+                                                <input type="password" type="password" name="password_confirmation" required autocomplete="new-password"
+                                                    class="form-control" value="123456">
+                                                <span class="show-pass eye">
+                                                    <i class="fa fa-eye-slash"></i>
+                                                    <i class="fa fa-eye"></i>
+                                                </span>
+                                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                            </div>
                            
                               @php
                               $modules = ['Document', 'Bulk Upload', 'Document Field', 'Document Type','Sets', 'Bulk Upload', 'Receivers', 'Users','Compliances','Receiver Type'];
@@ -189,7 +203,7 @@ color: #333; /* Darker color for module name */
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                    <button type="#" class="btn btn-primary">Submit Form</button>
+                    <button type="submit" class="btn btn-primary">Submit Form</button>
                 </div>
                 </form>
             </div>

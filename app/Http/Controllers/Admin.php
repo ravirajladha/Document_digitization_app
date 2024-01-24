@@ -1188,23 +1188,7 @@ class Admin extends Controller
 
 
 
-    public function showUsers()
-    {
-        $data = Receiver::with('receiverType')
-            ->withCount('documentAssignments') // Add the count of document assignments
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $receiverTypes = Receiver_type::all();
-        $documentTypes = Master_doc_type::orderBy('name')->get();
-
-        return view('pages.users', [
-            'data' => $data,
-            'receiverTypes' => $receiverTypes,
-            'documentTypes' => $documentTypes
-
-        ]);
-    }
+  
 
 
 }

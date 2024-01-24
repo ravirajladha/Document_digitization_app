@@ -7,6 +7,8 @@ use App\Http\Controllers\Receiver_process;
 use App\Http\Controllers\Document;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\ComplianceController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,8 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/get-updated-receiver-types', [Admin::class, 'getUpdatedReceiverTypes'])->name('getUpdatedReceiverTypes');
     Route::post('/add-receiver-type', [Admin::class, 'addReceiverType'])->name('addReceiverType');
     Route::post('/update-receiver-type', [Admin::class, 'updateReceiverType'])->name('updateReceiverType');
-//useres//subadmin
-    Route::get('/users', [Admin::class, 'showUsers'])->name('showUsers');
+  
     // New routes for receivers
     Route::get('/receivers', [Admin::class, 'showReceivers'])->name('showReceivers');
     Route::post('/add-receiver', [Admin::class, 'addReceiver'])->name('addReceiver');
@@ -111,11 +112,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/bulk-upload-child-document-data', [Document::class, 'bulkUploadChildDocumentData'])->name('bulkUploadChildDocumentData');
     //otp ccheck
 
-//compliance routes
-Route::get('/compliances', [ComplianceController::class, 'showCompliances'])->name('showCompliances');
-Route::post('/create-compliances', [ComplianceController::class, 'store']);
-Route::post('/status-change-compliance/{id}/{action}', [ComplianceController::class, 'statusChangeCompliance']);
+    //compliance routes
+    Route::get('/compliances', [ComplianceController::class, 'showCompliances'])->name('showCompliances');
+    Route::post('/create-compliances', [ComplianceController::class, 'store']);
+    Route::post('/status-change-compliance/{id}/{action}', [ComplianceController::class, 'statusChangeCompliance']);
 
+    //notifications
+    Route::get('/notifications', [NotificationController::class, 'showNotifications'])->name('showNotifications');
+
+    //user
+      //useres//subadmin
+      Route::get('/users', [UserController::class, 'showUsers'])->name('showUsers');
+    Route::post('/register-user', [UserController::class, 'store'])
+        ->name('store');
 
     // reviewer
     Route::get('/reviewer/index', [Reviewer::class, 'index']);

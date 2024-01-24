@@ -1,3 +1,5 @@
+
+
 <x-app-layout>
 
 
@@ -22,21 +24,8 @@
                                     <div class="card tryal-gradient">
                                         <div class="card-body tryal row">
                                             <div class="col-xl-7 col-sm-7">
-                                                <h2 class="mb-0"><?php
-                                                
-                                                // Get the current hour
-                                                $hour = date('H');
-                                                
-                                                // Determine the correct greeting
-                                                if ($hour < 12) {
-                                                    $greeting = 'Good morning';
-                                                } elseif ($hour < 17) {
-                                                    $greeting = 'Good afternoon';
-                                                } else {
-                                                    $greeting = 'Good evening';
-                                                }
-                                                
-                                                echo $greeting; ?>
+                                                <h2 class="mb-0">
+                                                <?php echo 'Namaskaram'; ?>
                                                 </h2>
 
 
@@ -75,7 +64,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>go
                                         </div>
                                         <div class="col-xl-6 col-xxl-6 col-lg-12 col-sm-12">
                                             <div class="widget-stat card bg-secondary">

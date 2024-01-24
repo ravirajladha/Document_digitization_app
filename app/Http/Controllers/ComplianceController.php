@@ -7,11 +7,20 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Http\Request;
+use App\Services\NotificationService;
 
 class ComplianceController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     public function showCompliances()
     {
+        // dd("test");
         $compliances = Compliance::with([ 'documentType', 'document'])->orderBy('created_at', 'desc')
             ->get();
 
@@ -46,7 +55,7 @@ class ComplianceController extends Controller
         
             $compliance->created_by = Auth::user()->id;
             $compliance->save();
-            $this->createNotification('created', $compliance);
+            $this->notificationService->createComplianceNotification('created', $compliance);
             session()->flash('toastr', ['type' => 'success', 'message' => 'Compliance created successfully.']);
         } catch (Exception $e) {
             // Log the error for debugging
@@ -62,19 +71,19 @@ class ComplianceController extends Controller
     
     public function statusChangeCompliance(Request $request, $id,$action)
     {
-
         $compliance = Compliance::findOrFail($id);
         $compliance->status = $action =="settle" ? 1 : 2;
 
         $compliance->save();
-        $this->createNotification("updated", $compliance);
+        $this->notificationService->createComplianceNotification('updated', $compliance);
+
+        // $this->createNotification("updated", $compliance);
         return response()->json([
 
             'success' => 'Status updated successfully.',
             'newStatus' => $compliance->status
         ]);
     }
-
 
     private function createNotification($type, Compliance $compliance)
     {

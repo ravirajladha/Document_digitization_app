@@ -322,6 +322,49 @@
                 </div>
 
 
+
+                <div class="container-fluid">
+                    <div class="row">
+                        {{-- {{ dd($matchingData) }} --}}
+                        @foreach ($matchingData as $data)
+                            @if (!empty($data))
+                                <div class="col-xl-4 col-lg-12 col-sm-12">
+                                    <div class="card overflow-hidden">
+                                        <div class="text-center p-3 overlay-box "
+                                            style="background-image: url(images/big/img1.jpg);">
+                                            <div class="profile-photo">
+                                                <img src="images/profile/profile.png" width="100"
+                                                    class="img-fluid rounded-circle" alt="">
+                                            </div>
+                                            <h6 class="mt-3 mb-1 text-white">Common Document</h6>
+
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between"><span
+                                                    class="mb-0">Document Name</span> <strong
+                                                    class="text-muted">{{ $data->document_name }} </strong></li>
+                                            <li class="list-group-item d-flex justify-content-between"><span
+                                                    class="mb-0">Document Type</span> <strong
+                                                    class="text-muted">{{ $data->doc_type }} </strong></li>
+                                        </ul>
+                                        <div class="card-footer border-0 mt-0">
+                                            <a href="{{ url('/') }}/review_doc/{{ $data->doc_type }}/{{ $data->id }}"
+                                                target="_blank" type="button"
+                                                class="btn btn-primary btn-block">View</a>
+                                            {{-- <button class="btn btn-primary btn-block">
+                                        <i class="fa fa-bell-o"></i> View							
+                                    </button>							 --}}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                
+                
+                
 {{-- compliance data--}}
 <div class="row">
     <div class="col-sm-12">
@@ -412,46 +455,6 @@
     </div>
 </div>
 {{-- compliance data end --}}
-
-                <div class="container-fluid">
-                    <div class="row">
-                        {{-- {{ dd($matchingData) }} --}}
-                        @foreach ($matchingData as $data)
-                            @if (!empty($data))
-                                <div class="col-xl-4 col-lg-12 col-sm-12">
-                                    <div class="card overflow-hidden">
-                                        <div class="text-center p-3 overlay-box "
-                                            style="background-image: url(images/big/img1.jpg);">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/profile.png" width="100"
-                                                    class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h6 class="mt-3 mb-1 text-white">Common Document</h6>
-
-                                        </div>
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between"><span
-                                                    class="mb-0">Document Name</span> <strong
-                                                    class="text-muted">{{ $data->document_name }} </strong></li>
-                                            <li class="list-group-item d-flex justify-content-between"><span
-                                                    class="mb-0">Document Type</span> <strong
-                                                    class="text-muted">{{ $data->doc_type }} </strong></li>
-                                        </ul>
-                                        <div class="card-footer border-0 mt-0">
-                                            <a href="{{ url('/') }}/review_doc/{{ $data->doc_type }}/{{ $data->id }}"
-                                                target="_blank" type="button"
-                                                class="btn btn-primary btn-block">View</a>
-                                            {{-- <button class="btn btn-primary btn-block">
-                                        <i class="fa fa-bell-o"></i> View							
-                                    </button>							 --}}
-
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
 
             </div>
         </div>

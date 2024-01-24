@@ -41,7 +41,8 @@
                                                         onchange="fetchDocuments(this.value)" required>
                                                         <option value="">Select Document Type</option>
                                                         @foreach ($documentTypes as $type)
-                                                            <option value="{{ $type->id }}">{{ ucwords(str_replace('_', ' ', $type->name)) }}
+                                                            <option value="{{ $type->id }}">
+                                                                {{ ucwords(str_replace('_', ' ', $type->name)) }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -51,7 +52,9 @@
 
                                             <div class="col-md-12">
                                                 <div class="mb-3">
-                                                    <label for="document" class="form-label">Document <i><span  style="font-size:10px;">(Only the approved documents are shown here)</span></i></label>
+                                                    <label for="document" class="form-label">Document <i><span
+                                                                style="font-size:10px;">(Only the approved documents are
+                                                                shown here)</span></i></label>
                                                     <select class="form-control" id="document" name="document_id"
                                                         required>
                                                         <option value="">Select Document</option>
@@ -63,8 +66,8 @@
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="document" class="form-label">Name</label>
-                                                    <input class="form-control" type="text" name="name" placeholder="Enter name for the Compliance" required
-                                                        required>
+                                                    <input class="form-control" type="text" name="name"
+                                                        placeholder="Enter name for the Compliance" required required>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -123,15 +126,15 @@
                                                 <tr>
                                                     <th scope="col">Sl no</th>
                                                     <th scope="col">Name</th>
-                                                    <th scope="col">Document Name </th>
                                                     <th scope="col">Document Type </th>
+                                                    <th scope="col">Document Name </th>
                                                     <th scope="col">Due Date</th>
                                                     <th scope="col">Is Recurring </th>
 
                                                     {{-- <th scope="col">Status </th> --}}
 
                                                     <th scope="col">Action </th>
-                                                 
+
 
 
 
@@ -139,19 +142,20 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($compliances as $index => $item)
-                                                <tr data-item-id="{{ $item->id }}">
+                                                    <tr data-item-id="{{ $item->id }}">
                                                         <th scope="row">{{ $index + 1 }}</th>
 
                                                         <td>{{ $item->name }}</td>
-                                                        <td>{{  ucwords(str_replace('_', ' ',$item->documentType->name)) }}</td>
+                                                        <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
+                                                        </td>
                                                         <td>{{ $item->document->name }}</td>
-                                                        <td>{{  date('d-m-Y', strtotime($item->due_date)) }}</td>
-                                                       
+                                                        <td>{{ date('d-m-Y', strtotime($item->due_date)) }}</td>
+
 
                                                         <td> {!! $item->is_recurring
                                                             ? '<span class="badge bg-success">Yes</span>'
                                                             : '<span class="badge bg-warning text-dark">Not</span>' !!}</td>
-                                                       {{-- <td class="status-cell">
+                                                        {{-- <td class="status-cell">
                                                             @switch($item->status)
                                                                 @case(0)
                                                                     <span class="badge bg-warning text-dark">Pending</span>
@@ -164,28 +168,29 @@
                                                                     @break
                                                             @endswitch
                                                         </td> --}}
-                                                
+
                                                         <!-- ... other cells ... -->
-                                                        <td class="action-cell">
+                                                        <td class="action-cell" style="padding:0 0">
                                                             <!-- Action buttons based on status -->
-                                                            @if($item->status == 0) <!-- Show buttons only if status is Pending -->
+                                                            @if ($item->status == 0)
+                                                                <!-- Show buttons only if status is Pending -->
                                                                 <button class="btn btn-sm btn-success toggle-status"
-                                                                        data-id="{{ $item->id }}"
-                                                                        data-action="settle"><i class="fas fa-thumbs-up"></i></button>
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-action="settle"><i
+                                                                        class="fas fa-thumbs-up"></i></button>
                                                                 <button class="btn btn-sm btn-danger toggle-status"
-                                                                        data-id="{{ $item->id }}"
-                                                                        data-action="cancel"><i class="fas fa-cancel"></i></button>
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-action="cancel"><i
+                                                                        class="fas fa-cancel"></i></button>
                                                             @elseif($item->status == 1)
-                                                            <span class="badge bg-success">Settled</span>
-                                                            @elseif($item->status ==2)
-                                                            <span class="badge bg-danger">Cancelled</span>
-
+                                                                <span class="badge bg-success">Settled</span>
+                                                            @elseif($item->status == 2)
+                                                                <span class="badge bg-danger">Cancelled</span>
                                                             @else
-                                                            <span class="badge bg-success">Unknown data</span>
-
-@endif
+                                                                <span class="badge bg-success">Unknown data</span>
+                                                            @endif
                                                         </td>
-                                                      
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -210,32 +215,30 @@
 <script>
     // Fetch documents based on the selected document type
     function fetchDocuments(documentTypeId) {
-    $.ajax({
-        url: '/get-documents/' + documentTypeId,
-        type: 'GET',
-        success: function(response) {
-            var documentSelect = $('#document');
-            documentSelect.empty();
-            
-            // Check if the response has documents
-            if (response.documents && response.documents.length > 0) {
-                $.each(response.documents, function(key, document) {
-                    documentSelect.append(new Option(document.name, document.id));
-                });
-            } else {
-                // If there are no documents, show an alert and add a default 'No documents' option
-                alert('No documents available for this document type.');
-                documentSelect.append(new Option('No documents available', ''));
+        $.ajax({
+            url: '/get-documents/' + documentTypeId,
+            type: 'GET',
+            success: function(response) {
+                var documentSelect = $('#document');
+                documentSelect.empty();
+
+                // Check if the response has documents
+                if (response.documents && response.documents.length > 0) {
+                    $.each(response.documents, function(key, document) {
+                        documentSelect.append(new Option(document.name, document.id));
+                    });
+                } else {
+                    // If there are no documents, show an alert and add a default 'No documents' option
+                    alert('No documents available for this document type.');
+                    documentSelect.append(new Option('No documents available', ''));
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle any Ajax errors here
+                alert('An error occurred while fetching the documents.');
             }
-        },
-        error: function(xhr, status, error) {
-            // Handle any Ajax errors here
-            alert('An error occurred while fetching the documents.');
-        }
-    });
-}
-
-
+        });
+    }
 </script>
 
 <script>
@@ -249,87 +252,83 @@
         });
     });
 </script>
-    <script>
-        document.querySelectorAll('.toggle-status').forEach(button => {
-            button.addEventListener('click', function() {
-                const itemId = this.getAttribute('data-id');
-                const action = this.getAttribute('data-action');
-    // console.log(itemId);
-                Swal.fire({
-                    title: `Are you sure you want to ${action} this item?`,
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, do it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Perform the action (e.g., sending AJAX request to the server)
-                        // Replace `your_route_here` with the actual route
-                        // Add necessary data or headers as per your requirement
-                        fetch(`/status-change-compliance/${itemId}/${action}`, {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    status: action
-                                })
+<script>
+    document.querySelectorAll('.toggle-status').forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-id');
+            const action = this.getAttribute('data-action');
+            // console.log(itemId);
+            Swal.fire({
+                title: `Are you sure you want to ${action} this item?`,
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, do it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Perform the action (e.g., sending AJAX request to the server)
+                    // Replace `your_route_here` with the actual route
+                    // Add necessary data or headers as per your requirement
+                    fetch(`/status-change-compliance/${itemId}/${action}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                status: action
                             })
-                            .then(response => response.json())
-                            .then(data => {
-                                Swal.fire(
-                                    'Updated!',
-                                    `The item has been ${action}ed.`,
-                                    'success'
-                                );
-                                updateTableRow(itemId, data.newStatus);
-                                // Optionally, refresh the page or update the DOM as needed
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire(
+                                'Updated!',
+                                `The item has been ${action}ed.`,
+                                'success'
+                            );
+                            updateTableRow(itemId, data.newStatus);
+                            // Optionally, refresh the page or update the DOM as needed
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
             })
         });
     });
-
-
-
 </script>
 <script>
     //just after any ajax changes is made,this will udpate the table
     function updateTableRow(itemId, newStatus) {
         console.log(itemId);
-    const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
-    const statusCell = row.querySelector('.status-cell');
-    const actionCell = row.querySelector('.action-cell');
+        const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
+        const statusCell = row.querySelector('.status-cell');
+        const actionCell = row.querySelector('.action-cell');
 
-    // Update the status cell based on the new status
-    switch (newStatus) {
-        case 0: // Pending
-            // statusCell.innerHTML = '<span class="badge bg-warning text-dark">Pending</span>';
-            actionCell.innerHTML = `
+        // Update the status cell based on the new status
+        switch (newStatus) {
+            case 0: // Pending
+                // statusCell.innerHTML = '<span class="badge bg-warning text-dark">Pending</span>';
+                actionCell.innerHTML = `
                 <button class="btn btn-sm btn-success toggle-status"
                         data-id="${itemId}"
                         data-action="settle"><i class="fas fa-thumbs-up"></i></button>
                 <button class="btn btn-sm btn-danger toggle-status"
                         data-id="${itemId}"
                         data-action="cancel"><i class="fas fa-plus-cancel"></i></button>`;
-            break;
-        case 1: // Settled
-            // statusCell.innerHTML = '<span class="badge bg-success">Settled</span>';
-            actionCell.innerHTML = '<span class="badge bg-success">Settled</span>'; // Remove action buttons
-            break;
-        case 2: // Cancelled
-            // statusCell.innerHTML = '<span class="badge bg-danger">Cancelled</span>';
-            actionCell.innerHTML = '<span class="badge bg-danger">Cancelled</span>'; // Remove action buttons
-            break;
-        default:
-            console.error('Unknown status');
+                break;
+            case 1: // Settled
+                // statusCell.innerHTML = '<span class="badge bg-success">Settled</span>';
+                actionCell.innerHTML = '<span class="badge bg-success">Settled</span>'; // Remove action buttons
+                break;
+            case 2: // Cancelled
+                // statusCell.innerHTML = '<span class="badge bg-danger">Cancelled</span>';
+                actionCell.innerHTML = '<span class="badge bg-danger">Cancelled</span>'; // Remove action buttons
+                break;
+            default:
+                console.error('Unknown status');
+        }
     }
-}
-
 </script>
