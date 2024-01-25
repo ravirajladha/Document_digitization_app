@@ -163,12 +163,14 @@ return [
         /*
          * Application Service Providers...
          */
+        // Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Spatie\Activitylog\ActivitylogServiceProvider::class,
+        // Spatie\Activitylog\ActivitylogServiceProvider::class,
+
     ])->toArray(),
 
     /*

@@ -30,6 +30,15 @@ class DatabaseSeeder extends Seeder
             'type' => 'admin',
             // Add other fields as necessary
         ]);
+
+        User::create([
+            'name' => ' User1', // Replace with the new user's name
+            'email' => 'user1@gmail.com', // Replace with the new user's email
+            'password' => Hash::make('admin'), // Replace 'password' with the desired password
+            'type' => 'user', // or any other type if applicable
+            // Add other fields as necessary
+        ]);
+
         Set::create([
             'name' => 'set1',
             'created_by' => 1, // or appropriate user ID if necessary

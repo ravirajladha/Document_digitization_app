@@ -11,7 +11,7 @@
                        
 
                     </li>
-                    @if (Auth::user()->type == "admin")
+                    {{-- @if (Auth::user()->type == "admin") --}}
 					<li>
 						<a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
 							<i class="fas fa-clone"></i>
@@ -128,26 +128,7 @@
 						
 						</ul>
                     </li> --}}
-                    @else
-                    <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
-						<i class="fas fa-info-circle"></i>
-							<span class="nav-text">Document</span>
-						</a>
-                        <ul aria-expanded="false">
-                            <li><a href="{{ url('/')}}/reviewer/view_doc_first">View Document</a></li>
-                            {{-- <li><a href="edit-profile.html">Edit Profile</a></li>
-							<li><a href="post-details.html">Post Details</a></li>
-                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
-                                <ul aria-expanded="false">
-                                    <li><a href="email-compose.html">Compose</a></li>
-                                    <li><a href="email-inbox.html">Inbox</a></li>
-                                    <li><a href="email-read.html">Read</a></li>
-                                </ul>
-                            </li> --}}
-                         
-                        </ul>
-                    </li>
-                   @endif
+                    
                    
                  
                 </ul>

@@ -70,7 +70,7 @@ class Admin extends Controller
     }
 
 
-    public function set()
+    public function viewSet()
     {
         $data = Set::all();
 
@@ -103,7 +103,7 @@ class Admin extends Controller
         ]);
     }
 
-    public function documentsForSet($setId)
+    public function viewDocumentsForSet($setId)
     {
         $get_set_detail  = Set::where('id',$setId)->first();
         // dd($get_set_detail);
@@ -184,7 +184,7 @@ class Admin extends Controller
         }
     }
 
-    public function getUpdatedSets()
+    public function viewUpdatedSets()
     {
         $sets = Set::get(); // Assuming Set is your model name
         return response()->json($sets);
@@ -474,14 +474,14 @@ class Admin extends Controller
         session()->flash('toastr', ['type' => 'success', 'message' => 'Fields added successfully.']);
         return redirect('/document_field' . '?type=' . $type)->with('success', 'Columns added successfully.');
     }
-    public function add_document_first()
-    {
-        $doc_type = Master_doc_type::orderBy('name')->get();
-        $sets = Set::get();
-        $states = State::all();
+    // public function add_document_first()
+    // {
+    //     $doc_type = Master_doc_type::orderBy('name')->get();
+    //     $sets = Set::get();
+    //     $states = State::all();
 
-        return view('pages.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
-    }
+    //     return view('pages.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
+    // }
 
 
     public function add_document_data(Request $req)

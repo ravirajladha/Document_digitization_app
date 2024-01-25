@@ -37,8 +37,8 @@
 
     <!-- FAVICONS ICON -->
     <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
-    <link href="vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
     
 </head>
 
@@ -51,6 +51,13 @@
                         <h1 class="error-text  font-weight-bold">403</h1>
                         <h4><i class="fa fa-times-circle text-danger"></i> Forbidden Error!</h4>
                         <p>You do not have permission to view this resource.</p>
+                        @if(session('code'))
+    <h1>Error {{ session('code') }}</h1>
+@endif
+
+@if(session('error'))
+    <p>{{ session('error') }}</p>
+@endif
 						<div>
                             <a class="btn btn-primary" href="/">Back to Home</a>
                         </div>
@@ -63,10 +70,10 @@
 	Scripts
 ***********************************-->
 <!-- Required vendors -->
-<script src="vendor/global/global.min.js"></script>
-<script src="vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
-<script src="js/custom.min.js"></script>
-<script src="js/dlabnav-init.js"></script>
+<script src="/assets/vendor/global/global.min.js"></script>
+<script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+<script src="/assets/js/custom.min.js"></script>
+<script src="/assets/js/dlabnav-init.js"></script>
 
 
 </body>
