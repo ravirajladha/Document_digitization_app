@@ -2,7 +2,7 @@
 
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar/>
 <style>
     .centered-container {
     /* min-height: 100vh; */

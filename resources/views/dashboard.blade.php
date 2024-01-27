@@ -4,7 +4,9 @@
 
 
     <x-header />
-    @include('layouts.sidebar')
+ 
+
+    <x-sidebar/>
 
 
 
@@ -35,12 +37,14 @@
 
 
                                             </div>
+                                            @if($user && $user->hasPermission('Filter Document'))
 
                                             <div class="col-xl-5 col-sm-5 ">
 {{--                                              
                                                 <a href="/filter-document" class="btn btn-outline-dark btn-rounded d-block" > <button ><i class="fas fa-search"></i>&ensp;Search Documents</button></a> --}}
                                                   <a href="/filter-document" ><button class="btn btn-success"><i class="fas fa-search"></i>&ensp;<u>Search Documents</u></button></a>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -293,12 +297,15 @@ $totalAreaAcres = ($totalAreaFeet / 43560 )+ $getGeographicalCounts['totalAreaAc
                                                         <h5 class="mb-0 font-w600">{{ $total }}</h5>
                                                     </div>
                                                 </div>
+                                                
+                                            @if($user && $user->hasPermission('View Document Types'))
                                                 <div class="card-footer border-0 pt-0">
                                                     <a href="/document_type"
                                                         class="btn btn-outline-primary btn-rounded d-block">View
                                                         Documents</a>
 
                                                 </div>
+                                                @endif
                                             </div>
                                         </div>
                                         {{-- <div class="col-xl-6 col-xxl-12 col-sm-6">

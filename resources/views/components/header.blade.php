@@ -1,3 +1,8 @@
+
+@php
+$user = Auth::user();
+@endphp
+
 <div class="nav-header">
     <a href="/dashboard" class="brand-logo">
 		<img class="logo-abbr" width="100%" height="55" src="/assets/logo/logo.jpg" alt="Your Logo">
@@ -90,7 +95,7 @@
                             <i id="icon-dark" class="fas fa-moon"></i>
                         </a>
                     </li> --}}
-             
+                    @if($user && $user->hasPermission('View Notifications'))
                     <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,6 +106,10 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <div id="DZ_W_Notification1" class="widget-media dlab-scroll p-3" style="height:380px;">
+                 
+                  
+
+
                                 <ul class="timeline">
 									{{-- <h6 class="mb-1">No Notifications Present</h6> --}}
 									@foreach ($notifications as $item)
@@ -154,10 +163,11 @@
                                     </li> --}}
                                  
                                 </ul>
+                          
                             </div>
                             <a class="all-notification" href="/notifications">See all notifications <i class="ti-arrow-end"></i></a>
                         </div>
-                    </li>
+                    </li>      @endif
                     {{-- <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link bell-link " href="javascript:void(0);">
                         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -238,11 +248,12 @@
                             <img src="/assets/images/avatar/avatar.jpg" width="56" alt="">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
+                    @if($user && $user->hasPermission('View Profile'))
                             <a href="/profile" class="dropdown-item ai-icon">
                                 <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                 <span class="ms-2">Settings </span>
                             </a>
-                          
+                          @endif
                             {{-- <a href="email-inbox.html" class="dropdown-item ai-icon">
                                 <svg id="icon-inbox" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                 <span class="ms-2">Inbox </span>

@@ -2,7 +2,7 @@
     {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -15,7 +15,7 @@
                     </ol>
                 </div>
 
-             
+
                 <!-- Button trigger modal -->
                 {{-- <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Modal centered</button> --}}
                 <!-- Modal -->
@@ -43,17 +43,17 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="title">Receiver Type</h4>
-                                    <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
-                                    data-bs-target="#addDocumentTypeModal1">
-                                    <i class="fas fa-plus"></i>&nbsp; Add Receiver Type
-                                </button>
+                                    <button type="button" class="btn btn-success btn-sm float-end"
+                                        data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal1">
+                                        <i class="fas fa-plus"></i>&nbsp; Add Receiver Type
+                                    </button>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
                                         {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
                                         <table id="example3" class="display">
-                                           
+
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
@@ -70,7 +70,8 @@
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModalCenter"
                                                                 data-set-id="{{ $item->id }}"
-                                                                data-set-name="{{ $item->name }}">Edit</button></td>
+                                                                data-set-name="{{ $item->name }}"><i
+                                                                    class="fas fa-pencil"></i>&nbsp;Edit</button></td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -108,7 +109,7 @@
                                             </div>
                                         </div>
 
-                                        {{-- modal end --}}
+                                    
                                     </div>
                                 </div>
                             </div>
@@ -119,48 +120,49 @@
             </div>
         </div>
     </div>
-   <!-- Modal -->
-   <div class="modal fade" id="addDocumentTypeModal1" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
-   aria-hidden="true">
-   <div class="modal-dialog">
-       <div class="modal-content">
-           <div class="modal-header">
-               <h5 class="modal-title" id="addDocumentTypeModalLabel">Add Recceiver Type</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-           </div>
-           <form id="myAjaxForm" action="{{ url('/') }}/add-receiver-type" method="POST"
-           enctype="multipart/form-data">
-           @csrf
-           <div class="modal-body">
-                               <div class="form theme-form projectcreate">
-                                   <div class="row">
-                                       <div class="col-md-12">
-                                           <div class="mb-3">
-                                               <label for="exampleInputEmail1" class="form-label">Receiver Type
-                                               </label>
-                                               <input type="text" class="form-control" name="name"
-                                                   id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                   placeholder="Enter Set Name">
-                                           </div>
-                                       </div>
-                                       <div class="card-footer">
-                                           <a href="" class="btn-link"></a>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="addDocumentTypeModal1" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDocumentTypeModalLabel">Add Recceiver Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="myAjaxForm" action="{{ url('/') }}/add-receiver-type" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form theme-form projectcreate">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Receiver Type
+                                        </label>
+                                        <input type="text" class="form-control" name="name"
+                                            id="exampleInputEmail1" aria-describedby="emailHelp"
+                                            placeholder="Enter Set Name">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="" class="btn-link"></a>
 
-                                           <button class="btn btn-secondary" type="submit">Submit</button>
-                                       </div>
-                                   </div>
-                               </div>
-                               </div>
-               
-       </form>
-       </div>
-   </div>
-</div>
+                                    <button class="btn btn-secondary" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
     @include('layouts.footer')
 
 
 </x-app-layout>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
 <script>
     $(document).ready(function() {
@@ -181,6 +183,8 @@
                     if (response.success) {
                         toastr.success(response.success); // Display success toast
                     }
+                    location.reload(true);
+
                     loadUpdatedSets();
                     $('#myAjaxForm')[0].reset();
                 },
@@ -240,6 +244,8 @@
             success: function(response) {
                 // Handle success (e.g., close modal, show message, update table)
                 toastr.success(response.success);
+                location.reload(true);
+
                 loadUpdatedSets();
             },
             error: function(error) {

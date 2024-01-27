@@ -2,7 +2,7 @@
 
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar/>
 
     <div class="content-body default-height">
         <!-- row -->
@@ -147,7 +147,10 @@
                                 <div class="card-body">
                                  <div class="card-header">
                                     <h4>Assigned Documents</h4>
+                                    @if($user && $user->hasPermission('Assign Document'))
+
                                     <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-square-plus"></i>&nbsp;Assign Document</button>
+                                    @endif
                                  </div>
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
@@ -164,8 +167,10 @@
 
                                                     <th scope="col">Accepted </th>
                                                     <th scope="col">Status </th>
-                                                    <th scope="col">Action </th>
+                                    @if($user && $user->hasPermission('Update Document Assignment Status'))
 
+                                                    <th scope="col">Action </th>
+@endif
 
 
                                                 </tr>
@@ -189,7 +194,7 @@
                                                         <td> {!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
-
+                                    @if($user && $user->hasPermission('Update Document Assignment Status'))
                                                         <td>
                                                             @if ($item->status)
                                                                 <button class="btn btn-sm btn-danger toggle-status"
@@ -201,7 +206,7 @@
                                                                     data-status="{{ $item->status }}">Activate</button>
                                                             @endif
                                                         </td>
-
+@endif
 
 
 

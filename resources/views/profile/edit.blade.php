@@ -11,7 +11,7 @@
     <x-app-layout>
 
         <x-header/>
-        @include('layouts.sidebar')
+        <x-sidebar/>
     
         <div class="content-body default-height">
             <!-- row -->
@@ -43,6 +43,8 @@
                 </div>
             </div>
             </div>
+            @if($user && $user->hasPermission('Update Profile'))
+
                 <div class="container-fluid">
                     <div class="row">
     
@@ -56,7 +58,7 @@
                 </div>
             </div>
             </div>
-
+@endif
            
             {{-- <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">

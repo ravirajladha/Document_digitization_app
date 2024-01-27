@@ -2,7 +2,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -23,10 +23,12 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="title">Sets</h5>
-                                    <button type="button" class="btn btn-success btn-sm float-end"
-                                        data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
-                                        <i class="fas fa-plus-square"></i>&nbsp; Add Set
-                                    </button>
+                                    @if ($user && $user->hasPermission('Add Sets'))
+                                        <button type="button" class="btn btn-success btn-sm float-end"
+                                            data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
+                                            <i class="fas fa-plus-square"></i>&nbsp; Add Set
+                                        </button>
+                                    @endif
                                 </div>
                                 <div class="card-body">
 
@@ -40,8 +42,12 @@
                                                     <th scope="col">Sl no</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Number of Documents</th>
-                                                    <th scope="col">View Documents</th>
-                                                    <th scope="col">Action</th>
+                                                    @if ($user && $user->hasPermission('View Documents from Sets'))
+                                                        <th scope="col">View Documents</th>
+                                                    @endif
+                                                    @if ($user && $user->hasPermission('Update Sets'))
+                                                        <th scope="col">Action</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -49,13 +55,23 @@
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
                                                         <td>{{ $item->name }}</td>
-                                                        <td>{{ $setCounts[$item->id] ?? 0 }}</td> <!-- Display the count for each set -->
-                                                        <td><a href="/documents-for-set/{{ $item->id }}"><button class="btn btn-primary edit-btn" ><i class="fas fa-eye"></i>&nbsp;View</button></a></td>
-                                                        <td> <button class="btn btn-primary edit-btn"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#exampleModalCenter"
-                                                                data-set-id="{{ $item->id }}"
-                                                                data-set-name="{{ $item->name }}"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>
+                                                        <td>{{ $setCounts[$item->id] ?? 0 }}</td>
+                                                        <!-- Display the count for each set -->
+                                                        @if ($user && $user->hasPermission('View Documents from Sets'))
+                                                            <td><a href="/documents-for-set/{{ $item->id }}"><button
+                                                                        class="btn btn-primary edit-btn"><i
+                                                                            class="fas fa-eye"></i>&nbsp;View</button></a>
+                                                            </td>
+                                                        @endif
+                                                        @if ($user && $user->hasPermission('Update Sets'))
+                                                            <td> <button class="btn btn-primary edit-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModalCenter"
+                                                                    data-set-id="{{ $item->id }}"
+                                                                    data-set-name="{{ $item->name }}"><i
+                                                                        class="fas fa-pencil"></i>&nbsp;Edit</button>
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -136,7 +152,7 @@
 
 
 </x-app-layout>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 <!-- Latest compiled and minified jQuery -->
 {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 
@@ -175,26 +191,29 @@
 
 
     function loadUpdatedSets() {
-    $.ajax({
-        url: '/get-updated-sets',
-        type: 'GET',
-        success: function(sets) {
-            var newTableContent = '';
-            $.each(sets, function(index, set) {
-                // Assuming 'set.count' is the property that has the count for each set
-                // and 'set.id' is the property that contains the set ID.
-                newTableContent += '<tr>' +
-                    '<th scope="row">' + (index + 1) + '</th>' +
-                    '<td>' + set.name + '</td>' +
-                    '<td>' + (set.count ?? 0) + '</td>' + // Display the count for each set
-                    '<td><a href="/documents-for-set/' + set.id + '"><button class="btn btn-primary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
-                    '<td> <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-set-id="' + set.id + '" data-set-name="' + set.name + '"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>' +
-                    '</tr>';
-            });
-            $('#example3 tbody').html(newTableContent);
-        }
-    });
-}
+        $.ajax({
+            url: '/get-updated-sets',
+            type: 'GET',
+            success: function(sets) {
+                var newTableContent = '';
+                $.each(sets, function(index, set) {
+                    // Assuming 'set.count' is the property that has the count for each set
+                    // and 'set.id' is the property that contains the set ID.
+                    newTableContent += '<tr>' +
+                        '<th scope="row">' + (index + 1) + '</th>' +
+                        '<td>' + set.name + '</td>' +
+                        '<td>' + (set.count ?? 0) + '</td>' + // Display the count for each set
+                        '<td><a href="/documents-for-set/' + set.id +
+                        '"><button class="btn btn-primary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
+                        '<td> <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-set-id="' +
+                        set.id + '" data-set-name="' + set.name +
+                        '"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>' +
+                        '</tr>';
+                });
+                $('#example3 tbody').html(newTableContent);
+            }
+        });
+    }
 
     //set modal update
     $(document).ready(function() {

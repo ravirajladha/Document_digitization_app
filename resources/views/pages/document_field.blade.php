@@ -2,7 +2,7 @@
 
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar/>
 
     <div class="content-body default-height">
         <!-- row -->
@@ -34,10 +34,13 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="title">Fields Detail</h4>
+                                    @if($user && $user->hasPermission('Add Document Fields'))
+
                                     <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
                                     data-bs-target="#addDocumentTypeModal">
                                     <i class="fas fa-plus-square"></i>&nbsp; Add Document Fields
                                 </button>
+                                @endif
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">

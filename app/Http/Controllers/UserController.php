@@ -16,22 +16,28 @@ use Illuminate\Http\RedirectResponse;
 class UserController extends Controller
 {
 
-    public function showUsers()
+    public function showUsers($userId = null)
     {
-        $users = User::where('type', "user") // Add the count of document assignments
+        $editUser = null;
+        if ($userId) {
+            $editUser = User::with('permissions')->findOrFail($userId);
+        }
+    
+        $users = User::where('type', "user")
             ->orderBy('created_at', 'desc')
             ->get();
-
-            $permissions = Permission::select('id', 'name', 'display_name', 'action')
+    
+        $permissions = Permission::select('id', 'name', 'display_name', 'action')
             ->orderByRaw("FIELD(action, '1', '2', '3')") // Order by the sequence of actions
             ->get();
-// dd($permissions);
+    
         return view('pages.users.users', [
             'users' => $users,
             'permissions' => $permissions,
+            'editUser' => $editUser, // Pass the user to be edited, if any
         ]);
     }
-
+    
 
     public function store(Request $request): RedirectResponse
 {
@@ -50,7 +56,15 @@ class UserController extends Controller
         'password' => Hash::make($request->password),
         'type' => "user", // Set user type as 'user'
     ]);
-    $permissionIds = $request->input('permissions', []);
+
+    $requestedPermissions = $request->input('permissions', []);
+
+    // Convert the permission IDs to a simple array
+    $permissionIds = array_keys($requestedPermissions);
+
+
+
+   
     // dd($permissionIds, $user->id);
     // $assign_permission = $this->assignPermissions($permissionIds, $user->id);
     // return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -71,20 +85,15 @@ class UserController extends Controller
 
 public function assignPermissions($permissions, $userId)
 {
-    $user = User::findOrFail($userId); // Find the user or fail
-    
-    // Start a transaction to ensure all operations are done atomically
+    $user = User::findOrFail($userId);
     DB::beginTransaction();
     
     try {
         // Remove any existing permissions
         $user->permissions()->detach();
 
-        // Loop through each permission and add it to the user_has_permissions table
-        foreach ($permissions as $permissionId) {
-            // Insert each permission individually
-            $user->permissions()->attach($permissionId);
-        }
+        // Attach the new permissions
+        $user->permissions()->attach($permissions);
 
         // Commit the transaction
         DB::commit();
@@ -118,43 +127,58 @@ public function edit($id)
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-    
+        try {
         // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|integer',
+            'phone' => 'required|digits_between:10,15',
             'email' => [
                 'required',
                 'string',
-                'lowercase',
                 'email',
                 'max:255',
                 Rule::unique(User::class)->ignore($user->id),
             ],
-            // Make the password optional and only validate if it's provided
-            'password' => $request->filled('password') ? ['confirmed', Rules\Password::defaults()] : '',
+            // Validate password if it's filled, and ensure it matches the confirmation and meets length requirements
+            // 'password' => [
+            //     'sometimes',
+                
+            //     'confirmed',
+            //     'min:8',
+            //     'max:20'
+            // ],
+            
         ]);
     
+
+        $requestedPermissions = $request->input('permissions', []);
+
+        // Convert the permission IDs to a simple array
+        $permissionIds = array_keys($requestedPermissions);
+
+
         // Update the user's information
         $user->name = $validatedData['name'];
         $user->phone = $validatedData['phone'];
-        $user->email = $validatedData['email'];
+        $user->email = strtolower($validatedData['email']); // Store the email in lowercase
     
         // If a new password was provided, hash and update it
-        if ($request->filled('password')) {
+        if ($request->filled('password') == $request->filled('password_confirmation')) {
             $user->password = Hash::make($request->password);
         }
+        $assign_permission = $this->assignPermissions($permissionIds, $user->id);
     
         $user->save();
     
-        // Update the user's permissions
-        if ($request->has('permissions')) {
-            $permissionIds = $request->input('permissions');
-            $this->assignPermissions($permissionIds, $user->id);
-        }
-    
+    } catch (\Illuminate\Validation\ValidationException $exception) {
+        // Redirect to the edit route with the input except the password and with errors
+        return redirect()->route('users.edit', ['user' => $id])
+                         ->withErrors($exception->validator)
+                         ->withInput($request->except('password'));
+    }
+
         // Redirect back with a success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
-
+    
 }

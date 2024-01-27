@@ -53,5 +53,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Permission::class, 'user_has_permissions');
     }
 
+// In User model
+public function hasPermission($permissionName)
+{
+    if ($this->type === 'admin') {
+        return true;
+    }
+
+    return $this->permissions()
+                ->where('display_name', $permissionName)
+                ->exists();
+}
 
 }

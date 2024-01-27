@@ -2,7 +2,7 @@
 
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -24,43 +24,55 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="title">Document Type</h4>
-                                    <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal"
-                                    data-bs-target="#addDocumentTypeModal">
-                                    <i class="fas fa-plus-square"></i>&nbsp; Add Document Type
-                                </button>
+                                    @if ($user && $user->hasPermission('Add Document Types'))
+                                        <button type="button" class="btn btn-success btn-sm float-end"
+                                            data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
+                                            <i class="fas fa-plus-square"></i>&nbsp; Add Document Type
+                                        </button>
+                                    @endif
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        
+
                                         <table id="example3" class="display" style="min-width: 845px">
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
                                                     <th scope="col">Document type</th>
                                                     <th scope="col">Number of Documents </th>
-                                                    <th scope="col">View Documents </th>
-                                                    <th scope="col">Action </th>
+                                                    @if ($user && $user->hasPermission('View Documents By Doc Type'))
+                                                        <th scope="col">View Documents </th>
+                                                    @endif
+
+                                                    @if ($user && $user->hasPermission('View Document Fields'))
+                                                        <th scope="col">Action </th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($doc_types as $index => $item)
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
-                                                        <td>{{  ucwords(str_replace('_', ' ', $item->name)) }}</td>
+                                                        <td>{{ ucwords(str_replace('_', ' ', $item->name)) }}</td>
                                                         <td>{{ isset($doc_counts[$item->id]) ? $doc_counts[$item->id] : 0 }}
                                                         </td>
-                                                        <td>
-                                                        <a href="/view_doc/{{ $item->name }}"><button
-                                                                class="btn btn-primary btn-sm"><i
-                                                                    class="fas fa-eye"></i>&nbsp;View</button></a>
-                                                        </td>
-                                                        <td>
-                                                            <a href="/document_field/{{ $item->name }}"><button
-                                                                    class="btn btn-success btn-sm"><i
-                                                                        class="fas fa-plus-square"></i>&nbsp;Add
-                                                                    Field</button></a>
+                                                        @if ($user && $user->hasPermission('View Documents By Doc Type'))
+                                                            <td>
+                                                                <a href="/view_doc/{{ $item->name }}"><button
+                                                                        class="btn btn-primary btn-sm"><i
+                                                                            class="fas fa-eye"></i>&nbsp;View</button></a>
+                                                            </td>
+                                                        @endif
+                                                        @if ($user && $user->hasPermission('View Document Fields'))
 
-                                                        </td>
+                                                            <td>
+                                                                <a href="/document_field/{{ $item->name }}"><button
+                                                                        class="btn btn-success btn-sm"><i
+                                                                            class="fas fa-plus-square"></i>&nbsp;Add
+                                                                        Field</button></a>
+
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>

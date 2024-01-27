@@ -1,6 +1,11 @@
         <!--**********************************
             Sidebar start
         ***********************************-->
+        @php
+$user = Auth::user();
+@endphp
+
+
         <div class="dlabnav">
             <div class="dlabnav-scroll">
 				<ul class="metismenu" id="menu">
@@ -12,17 +17,33 @@
 
                     </li>
                     {{-- @if (Auth::user()->type == "admin") --}}
+                    @if($user &&( $user->hasPermission('Filter Document') || $user->hasPermission('Add Basic Document Form') || $user->hasPermission('View Assigned Documents') || $user->hasPermission('View Bulk Upload') || $user->hasPermission('View Profile') || $user->hasPermission('View Document Types ')) )
 					<li>
 						<a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
 							<i class="fas fa-clone"></i>
 							<span class="nav-text">Document </span>
 						</a>
                         <ul aria-expanded="false">
+                    @if($user && $user->hasPermission('Filter Document'))
+
 							<li><a href="{{ url('/')}}/filter-document">View Documents</a></li>		
+                            @endif
+                    @if($user && $user->hasPermission('Add Basic Document Form'))
+
 							<li><a href="{{ url('/')}}/add_document_first">Add Document</a></li>	
-							<li><a href="{{ url('/')}}/assign-documents">Assign Document</a></li>		
-							<li><a href="{{ url('/')}}/bulk-upload-master-data">Bulk Upload</a></li>	
+                            @endif
+                    @if($user && $user->hasPermission('View Assigned Documents'))
+
+							<li><a href="{{ url('/')}}/assign-documents">Assign Document</a></li>	
+                            @endif	
+                    @if($user && $user->hasPermission('View Bulk Upload'))
+
+							<li><a href="{{ url('/')}}/bulk-upload-master-data">Bulk Upload</a></li>
+                            @endif	
+                    @if($user && $user->hasPermission('View Document Types '))
+
 							 <li><a href="{{ url('/')}}/document_type">Document Type</a></li>
+                             @endif
 							{{-- <li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li> --}}
 							{{-- <li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		 --}}
 							
@@ -30,6 +51,7 @@
 						
 						</ul>
                     </li>
+                    @endif
 					{{-- <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
 						<i class="fas fa-info-circle"></i>
 							<span class="nav-text">Receivers</span>
@@ -40,11 +62,14 @@
                          
                         </ul>
                     </li> --}}
+                    @if($user && $user->hasPermission('View Sets'))
 					<li><a  href="{{ url('/')}}/set" aria-expanded="false">
 						<i class="fas fa-info-circle"></i>
 							<span class="nav-text">Sets</span>
 						</a>
                     </li>
+@endif
+@if($user && $user->hasPermission('View Receivers'))
 
 					<li><a  href="{{ url('/')}}/receivers" aria-expanded="false">
 						{{-- <i class="fas fa-user-circle"></i> --}}
@@ -52,18 +77,24 @@
 							<span class="nav-text">Receivers</span>
 						</a>
                     </li>
+                    @endif
+@if($user && $user->hasPermission('View Users'))
+
 					<li><a  href="{{ url('/')}}/users" aria-expanded="false" disabled>
 						<i class="fas fa-user-circle"></i>
 							<span class="nav-text">Users</span>
 						</a>
                     </li>
+@if($user && $user->hasPermission('View Compliances'))
 				
+                    @endif
 					<li><a  href="{{ url('/')}}/compliances" aria-expanded="false">
 						<i class="fas fa-procedures"></i>
 							<span class="nav-text">Compliances</span>
 						</a>
                     </li>
-				
+                    @endif
+@if($user && $user->hasPermission('Configure'))
 				
 
 					<li><a  href="{{ url('/')}}/data-sets" aria-expanded="false">
@@ -72,6 +103,8 @@
 							<span class="nav-text">Configure</span>
 						</a>
                     </li>
+                    @endif
+@if($user && $user->hasPermission('View Profile'))
 
 					<li><a  href="{{ url('/')}}/profile" aria-expanded="false">
 						{{-- <i class="fas fa-scale-balanced"></i> --}}
@@ -79,6 +112,7 @@
 							<span class="nav-text">Settings</span>
 						</a>
                     </li>
+                    @endif
 {{-- 				
 					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 						@csrf

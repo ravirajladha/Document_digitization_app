@@ -2,7 +2,7 @@
 
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar/>
 
     <div class="content-body default-height">
         <!-- row -->
@@ -118,10 +118,12 @@
 
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
+                                            @if($user && $user->hasPermission('Add Compliances'))
+
                                             <button type="button" class="btn btn-success mb-2 float-end btn-sm"
                                                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
                                                     class="fas fa-square-plus"></i>&nbsp;Add Compliance</button>
-
+@endif
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
@@ -132,9 +134,9 @@
                                                     <th scope="col">Is Recurring </th>
 
                                                     {{-- <th scope="col">Status </th> --}}
-
+                                                    @if($user && $user->hasPermission('Update Compliances Status'))
                                                     <th scope="col">Action </th>
-
+@endif
 
 
 
@@ -170,6 +172,8 @@
                                                         </td> --}}
 
                                                         <!-- ... other cells ... -->
+                                            @if($user && $user->hasPermission('Update Compliances Status'))
+
                                                         <td class="action-cell" style="padding:0 0">
                                                             <!-- Action buttons based on status -->
                                                             @if ($item->status == 0)
@@ -190,7 +194,7 @@
                                                                 <span class="badge bg-success">Unknown data</span>
                                                             @endif
                                                         </td>
-
+@endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>

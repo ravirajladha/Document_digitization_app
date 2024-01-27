@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar/>
     <div class="content-body default-height">
         <!-- row -->
         <div class="container-fluid">

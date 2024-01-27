@@ -3,7 +3,7 @@
     <x-header />
 
 
-    @include('layouts.sidebar')
+    <x-sidebar/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
     {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
@@ -220,7 +220,10 @@
                                         <th scope="col">District</th>
 
                                         <th scope="col">Status</th>
+                                        @if($user && $user->hasPermission('Main Document View '))
+
                                         <th scope="col">Action</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -252,6 +255,7 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
                                                     {{ $statusText }}
                                                 </span>
                                             </td>
+                                            @if($user && $user->hasPermission('Main Document View '))
 
                                             <td>
                                                 <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"
@@ -260,7 +264,7 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
                                                     {{ $item->status_id == 1 ? 'View' : 'Review' }}
                                                 </a>
                                             </td>
-
+@endif
 
                                         </tr>
                                     @endforeach

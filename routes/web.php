@@ -49,7 +49,6 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
 
     // Route::get('/set', [Admin::class, 'set'])->name('set');
     Route::get('/set', [Admin::class, 'viewSet'])->name('sets.view');
-    Route::get('/documents-for-set/{setId}', [Admin::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
     Route::get('/get-updated-sets', [Admin::class, 'viewUpdatedSets'])->name('sets.viewUpdated');
     Route::post('/add_set', [Admin::class, 'addSet'])->name('sets.add');
     Route::post('/update-set', [Admin::class, 'updateSet'])->name('sets.update');
@@ -90,26 +89,24 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
     //document type
     Route::get('/document_type', [Admin::class, 'document_type'])->name('document_types.index');
     Route::post('/add_document_type', [Admin::class, 'addDocumentType'])->name('document_types.store');
-    Route::get('/view_doc_first', [Admin::class, 'view_doc_first'])
-    ->name('documents.view.first');
-    Route::get('/get-all-documents-type', [Admin::class, 'getAllDocumentsType'])
-    ->name('documents.types.all');
+  
+    // Route::get('/get-all-documents-type', [Admin::class, 'getAllDocumentsType'])
+    // ->name('documents.types.all');
     //documents field (dynamic column)
-    Route::get('/add_fields_first', [Admin::class, 'add_fields_first'])->name('fields.create_first_step');
+    // Route::get('/add_fields_first', [Admin::class, 'add_fields_first'])->name('fields.create_first_step');
     Route::post('/add_document_field', [Admin::class, 'add_document_field'])->name('document_fields.store');
-    Route::get('/document_field/{table?}', [Admin::class, 'document_field'])->name('document_fields.edit');
+    Route::get('/document_field/{table?}', [Admin::class, 'document_field'])->name('document_fields.view');
 
     //documents
 
-    Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])
-        ->name('documents.getByType');
+  
     Route::post('/add_document', [Admin::class, 'add_document'])
         ->name('documents.store');
 
     // Route::post('/add-basic-detail-to-master-doc-data', [Admin::class, 'addBasicDetailToMasterDocData'])
     //     ->name('master_documents.addBasicDetail');
-    // Route::get('/add_document_first', [Admin::class, 'add_document_first'])
-    //     ->name('documents.create_first_step');
+    Route::get('/add_document_first', [Admin::class, 'add_document_first'])
+        ->name('documents.add_document_first');
 
     // Route::get('/add_document_first', [Admin::class, 'add_document_first'])
     //     ->middleware('checkuserpermission:add_document_first') 
@@ -136,9 +133,16 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
         ->name('documents.basic_detail.edit');
     Route::post('/update_document', [Admin::class, 'update_document'])
         ->name('documents.updateStatus');
+
+        //view documents
     Route::get('/filter-document', [Admin::class, 'filterDocument'])
         ->name('documents.filter');
-   
+        // Route::get('/view_doc_first', [Admin::class, 'view_doc_first'])
+        // ->name('documents.view.first');
+        Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])
+        ->name('documents.getByType');
+        Route::get('/documents-for-set/{setId}', [Admin::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
+
 
     //data sets
     Route::get('/data-sets', [Admin::class, 'dataSets'])->name('configure');
@@ -168,11 +172,23 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
     //useres//subadmin
     Route::get('/users', [UserController::class, 'showUsers'])
         ->name('users.index');
+
+
+
     Route::post('/register-user', [UserController::class, 'store'])
         ->name('users.store');
+// Display the edit form
 
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
+Route::get('/users/{user}/edit', [UserController::class, 'showUsers'])->name('users.edit');
+
+// Process the update form submission
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+
+
+
+
+//         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+// Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 
 

@@ -2,7 +2,7 @@
     {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
     <x-header />
-    @include('layouts.sidebar')
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -22,15 +22,18 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4>Receivers</h4>
-                                    <button type="button" class="btn btn-success mb-2 float-end"
-                                    data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i
-                                        class="fas fa-plus-square"></i>&nbsp;Add
-                                    Receiver</button>
+
+                                    @if ($user && $user->hasPermission('Add Receivers'))
+                                        <button type="button" class="btn btn-success mb-2 float-end"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i
+                                                class="fas fa-plus-square"></i>&nbsp;Add
+                                            Receiver</button>
+                                    @endif
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         {{-- <h4>Receivers</h4> --}}
-                                       
+
 
                                         {{-- <div class="table-responsive"> --}}
                                         {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
@@ -47,8 +50,12 @@
                                                     <th scope="col">Count</th>
                                                     <th scope="col">View</th>
                                                     <th scope="col">Status</th>
-                                                    <th scope="col">Action</th>
-                                                    <th scope="col">Assign Document</th>
+                                                    @if ($user && $user->hasPermission('Update Receivers'))
+                                                        <th scope="col">Action</th>
+                                                    @endif
+                                                    @if ($user && $user->hasPermission('Assign Document'))
+                                                        <th scope="col">Assign Document</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -62,38 +69,41 @@
                                                         <td>{{ optional($item->receiverType)->name }}</td>
                                                         <td> {{ $item->document_assignments_count }}
                                                         </td>
-                                                        <td> <a
-                                                                href="/user-assign-documents/{{ $item->id }}"><u><b><span class="badge bg-secondary">{{ $item->document_assignments_count }}</span></b></u></a>
+                                                        <td> <a href="/user-assign-documents/{{ $item->id }}"><u><b><span
+                                                                            class="badge bg-secondary">{{ $item->document_assignments_count }}</span></b></u></a>
                                                         </td>
                                                         <td>{!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
 
                                                         <!-- Assuming you have a relation to get the receiver type name -->
-                                                        <td>
-                                                            <button class="btn btn-primary btn-sm edit-btn"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#exampleModalCenter"
-                                                                data-receiver-id="{{ $item->id }}"
-                                                                data-receiver-name="{{ $item->name }}"
-                                                                data-receiver-phone="{{ $item->phone }}"
-                                                                data-receiver-city="{{ $item->city }}"
-                                                                data-receiver-email="{{ $item->email }}"
-                                                                data-receiver-type-id="{{ $item->receiver_type_id }}"
-                                                                data-receiver-status="{{ $item->status }}"><i
-                                                                    class="fas fa-pencil-square"></i>&nbsp;Edit</button>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-success btn-sm assign-doc-btn"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#assignDocumentModal"
-                                                                data-receiver-id="{{ $item->id }}"
-                                                                data-receiver-type-id="{{ $item->receiver_type_id }}"><i
-                                                                    class="fas fa-plus-square"></i>&nbsp;Assign
+                                                        @if ($user && $user->hasPermission('Update Receivers'))
+                                                            <td>
+                                                                <button class="btn btn-primary btn-sm edit-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModalCenter"
+                                                                    data-receiver-id="{{ $item->id }}"
+                                                                    data-receiver-name="{{ $item->name }}"
+                                                                    data-receiver-phone="{{ $item->phone }}"
+                                                                    data-receiver-city="{{ $item->city }}"
+                                                                    data-receiver-email="{{ $item->email }}"
+                                                                    data-receiver-type-id="{{ $item->receiver_type_id }}"
+                                                                    data-receiver-status="{{ $item->status }}"><i
+                                                                        class="fas fa-pencil-square"></i>&nbsp;Edit</button>
+                                                            </td>
+                                                        @endif
+                                                        @if ($user && $user->hasPermission('Assign Document'))
+                                                            <td>
+                                                                <button class="btn btn-success btn-sm assign-doc-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#assignDocumentModal"
+                                                                    data-receiver-id="{{ $item->id }}"
+                                                                    data-receiver-type-id="{{ $item->receiver_type_id }}"><i
+                                                                        class="fas fa-plus-square"></i>&nbsp;Assign
                                                                 </button>
 
-                                                        </td>
-
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -124,7 +134,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form theme-form projectcreate">
-                        <form id="myAjaxForm" action="{{ route('addReceiver') }}" method="POST"
+                        <form id="myAjaxForm" action="{{ route('receivers.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="row">
@@ -214,7 +224,9 @@
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="document" class="form-label">Document <i><span  style="font-size:10px;">(Only the approved documents are shown here.)</span></i></label>
+                                <label for="document" class="form-label">Document <i><span
+                                            style="font-size:10px;">(Only the approved documents are shown
+                                            here.)</span></i></label>
                                 <select class="form-control" id="document" name="document_id" required>
                                     <option value="">Select Document</option>
                                     <!-- Options will be populated based on Document Type selection -->
@@ -282,7 +294,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">Update changes</button>
+                    <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">Update
+                        changes</button>
                 </div>
             </div>
         </div>
@@ -382,8 +395,9 @@
 
                         '<td>' + receiver.receiver_type_name + '</td>' +
                         '<td>' + receiver.document_assignments_count + '</td>' +
-  '<td><a href="/user-assign-documents/' + receiver.id + '"><u><b><span class="badge bg-secondary">' + 
-  receiver.document_assignments_count + '</span></b></u></a></td>' +
+                        '<td><a href="/user-assign-documents/' + receiver.id +
+                        '"><u><b><span class="badge bg-secondary">' +
+                        receiver.document_assignments_count + '</span></b></u></a></td>' +
 
                         '<td>' + statusBadge + '</td>' +
                         // Make sure you have the receiver type name available
@@ -451,30 +465,30 @@
     }
 
     function fetchDocuments(documentTypeId) {
-    $.ajax({
-        url: '/get-documents/' + documentTypeId,
-        type: 'GET',
-        success: function(response) {
-            var documentSelect = $('#document');
-            documentSelect.empty();
-            
-            // Check if the response has documents
-            if (response.documents && response.documents.length > 0) {
-                $.each(response.documents, function(key, document) {
-                    documentSelect.append(new Option(document.name, document.id));
-                });
-            } else {
-                // If there are no documents, show an alert and add a default 'No documents' option
-                alert('No documents available for this document type.');
-                documentSelect.append(new Option('No documents available', ''));
+        $.ajax({
+            url: '/get-documents/' + documentTypeId,
+            type: 'GET',
+            success: function(response) {
+                var documentSelect = $('#document');
+                documentSelect.empty();
+
+                // Check if the response has documents
+                if (response.documents && response.documents.length > 0) {
+                    $.each(response.documents, function(key, document) {
+                        documentSelect.append(new Option(document.name, document.id));
+                    });
+                } else {
+                    // If there are no documents, show an alert and add a default 'No documents' option
+                    alert('No documents available for this document type.');
+                    documentSelect.append(new Option('No documents available', ''));
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle any Ajax errors here
+                alert('An error occurred while fetching the documents.');
             }
-        },
-        error: function(xhr, status, error) {
-            // Handle any Ajax errors here
-            alert('An error occurred while fetching the documents.');
-        }
-    });
-}
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         const assignDocButtons = document.querySelectorAll('.assign-doc-btn');

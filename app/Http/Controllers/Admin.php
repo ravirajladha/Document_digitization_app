@@ -62,12 +62,12 @@ class Admin extends Controller
         return view('pages.document_type', ['doc_types' => $doc_types, 'doc_counts' => $doc_counts]);
     }
 
-    public function getAllDocumentsType()
-    {
-        $doc_types = Master_doc_type::all();
+    // public function getAllDocumentsType()
+    // {
+    //     $doc_types = Master_doc_type::all();
 
-        return view('components.header', ['doc_types' => $doc_types]);
-    }
+    //     return view('components.header', ['doc_types' => $doc_types]);
+    // }
 
 
     public function viewSet()
@@ -474,14 +474,14 @@ class Admin extends Controller
         session()->flash('toastr', ['type' => 'success', 'message' => 'Fields added successfully.']);
         return redirect('/document_field' . '?type=' . $type)->with('success', 'Columns added successfully.');
     }
-    // public function add_document_first()
-    // {
-    //     $doc_type = Master_doc_type::orderBy('name')->get();
-    //     $sets = Set::get();
-    //     $states = State::all();
+    public function add_document_first()
+    {
+        $doc_type = Master_doc_type::orderBy('name')->get();
+        $sets = Set::get();
+        $states = State::all();
 
-    //     return view('pages.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
-    // }
+        return view('pages.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
+    }
 
 
     public function add_document_data(Request $req)
@@ -881,12 +881,12 @@ class Admin extends Controller
         return view('pages.view_doc', ['documents' => $documents, 'tableName' => $tableName]);
     }
 
-    public function add_fields_first()
-    {
-        $doc_type = Master_doc_type::orderBy('name')->get();
+    // public function add_fields_first()
+    // {
+    //     $doc_type = Master_doc_type::orderBy('name')->get();
 
-        return view('pages.add_fields_first', ['doc_type' => $doc_type]);
-    }
+    //     return view('pages.add_fields_first', ['doc_type' => $doc_type]);
+    // }
     public function document_field(Request $req, $table = null)
     {
         $doc_types = Master_doc_type::all();
