@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => ' User1', // Replace with the new user's name
             'email' => 'user1@gmail.com', // Replace with the new user's email
+            'phone' => '9099669988', // Replace with the new user's email
             'password' => Hash::make('admin'), // Replace 'password' with the desired password
             'type' => 'user', // or any other type if applicable
             // Add other fields as necessary

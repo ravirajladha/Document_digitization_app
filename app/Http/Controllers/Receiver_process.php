@@ -86,6 +86,9 @@ class Receiver_process extends Controller
             'receiver_id' => 'required', // Assuming receivers table exists
             'receiver_type' => 'required', // Assuming receivers table exists
         ]);
+
+ 
+
         $location = $request->location;
         // Generate a unique token with the current timestamp
         $timestamp = Carbon::now()->timestamp;
@@ -110,19 +113,25 @@ class Receiver_process extends Controller
             $receiver = Receiver::findOrFail($validatedData['receiver_id']);
             $receiverEmail = $receiver->email; // Assuming the 'email' column exists in the receivers table
             $receiverName = $receiver->name; // Assuming the 'email' column exists in the receivers table
-            
-            $this->notificationService->createDocumentAssignmentNotification('assigned', $assignment);
-            if (!$receiverEmail) {
-                // Handle the case where the email is not set
+ $verificationUrl = url('/otp/' . $token);
+            // $this->notificationService->createDocumentAssignmentNotification('assigned', $assignment);
+            // if (!$receiverEmail) {
+               
+            //     session()->flash('toastr', ['type' => 'error', 'message' => 'Receiver email not found.']);
+            //     return redirect('/assign-documents');
+            // }
+
+          
+            // $verificationUrl = url('/otp/' . $token);
+
+            // Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt, $receiverName, $otp));
+
+
+            if ($this->sendAssignmentEmail($receiverEmail, $verificationUrl, $expiresAt, $receiverName, $otp)) {
+                session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
+            } else {
                 session()->flash('toastr', ['type' => 'error', 'message' => 'Receiver email not found.']);
-                return redirect('/assign-documents');
             }
-
-            // Continue with sending the email
-            // $verificationUrl = url('/verify-document/' . $token); 
-            $verificationUrl = url('/otp/' . $token);
-
-            Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt, $receiverName, $otp));
 
             // Redirect with success message
             session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
@@ -146,8 +155,25 @@ class Receiver_process extends Controller
         }
     }
 
+
+    public function sendAssignmentEmail($receiverEmail, $verificationUrl, $expiresAt, $receiverName, $otp)
+{
+    if (!$receiverEmail) {
+        // Handle the case where the email is not set
+             session()->flash('toastr', ['type' => 'error', 'message' => 'Receiver email not found.']);
+                return redirect('/assign-documents');
+    }
+
+    Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt, $receiverName, $otp));
+    return true;
+}
+
+
+
     public function showPublicDocument($token)
     {
+
+
         // dd("adfsdf");
         if (session()->has('otp_validated') && session()->get('otp_validated') === $token) {
             // Clear the OTP validation from the session so it's required next time
@@ -160,6 +186,7 @@ class Receiver_process extends Controller
             // dd($assignment->receiver->status);
             if (!$assignment || $assignment->receiver->status != '1') {
                 // dd("here");
+                $this->notificationService->createDocumentAssignmentNotification('denied', $assignment);
 
                 abort(404, 'Document not found, link has expired, or receiver is inactive.');
             }
@@ -199,6 +226,7 @@ class Receiver_process extends Controller
             $assignment->view_count = $assignment->view_count + 1; // Increment the view count
             $assignment->save();
 
+            $this->notificationService->createDocumentAssignmentNotification('accessed', $assignment);
 
             // Serve the document details to a view
             return view('emails.show', [
@@ -206,24 +234,72 @@ class Receiver_process extends Controller
                 'documentName' => $documentData->name,
             ]);
         } else {
+            // Initialize $assignment to null
+            $assignment = Document_assignment::where('access_token', $token)
+                ->where('expires_at', '>', now())
+                ->where('status', '1')
+                ->first();
+            if ($assignment) {
+                $this->notificationService->createDocumentAssignmentNotification('denied', $assignment);
+            }
             return redirect()->route('otp.form', ['token' => $token]);
         }
     }
 
+//so, on changing the status new email will be sent with new otp and xpiry time
+
     public function toggleStatus(Request $request, $id)
     {
         $assignment = Document_assignment::findOrFail($id);
-        $assignment->status = !$assignment->status; // Toggle the status
-        $this->notificationService->createDocumentAssignmentNotification('updated', $assignment);
-
-        $assignment->save();
-
-        return response()->json([
-
-            'success' => 'Document assigned successfully.',
-            'newStatus' => $assignment->status
-        ]);
+    
+        // Deactivate the assignment
+        if ($assignment->status) {
+            $assignment->status = 0;
+            $assignment->save();
+            session()->flash('toastr', ['type' => 'error', 'message' => 'Document assignment deactivated successfully.']);
+            return redirect()->back()->with('success', 'Document assignment deactivated successfully.');
+        }
+    
+        // Reactivate the assignment - update OTP and expiry
+        else {
+            $newOtp = rand(1000, 9999); // Generate a new OTP
+            $assignment->otp = $newOtp;
+            $assignment->expires_at = Carbon::now()->addHours(24); // Set new expiry
+            $assignment->status = true; // Set status to active
+            $assignment->save();
+    
+            // Fetch receiver details
+            $receiver = Receiver::findOrFail($assignment->receiver_id);
+            $receiverEmail = $receiver->email;
+            $receiverName = $receiver->name;
+            $verificationUrl = url('/otp/' . $assignment->access_token);
+            $expiresAt = $assignment->expires_at;
+    
+            // Send the email
+            $this->sendAssignmentEmail($receiverEmail, $verificationUrl, $expiresAt, $receiverName, $newOtp);
+    
+            session()->flash('toastr', ['type' => 'success', 'message' => 'Document assignment reactivated with a new OTP and extended expiry time.']);
+            return redirect()->back()->with('success', 'Document assignment reactivated with a new 24-hour expiry.');
+        }
     }
+    
+
+
+//old function, when the assignment was activateo or deactivated thorugh ajax call, but after that  new email need to be sent was told to activate
+    // public function toggleStatus(Request $request, $id)
+    // {
+    //     $assignment = Document_assignment::findOrFail($id);
+    //     $assignment->status = !$assignment->status; // Toggle the status
+    //     // $this->notificationService->createDocumentAssignmentNotification('updated', $assignment);
+
+    //     $assignment->save();
+
+    //     return response()->json([
+
+    //         'success' => 'Document assigned successfully.',
+    //         'newStatus' => $assignment->status
+    //     ]);
+    // }
 
     public function showOtpForm($token)
     {

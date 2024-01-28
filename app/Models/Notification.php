@@ -16,6 +16,12 @@ class Notification extends Model
     {
         return $this->belongsTo(Compliance::class, 'compliance_id');
     }
+    // In your Notification model
+    public function masterDocData()
+    {
+        return $this->belongsTo(Master_doc_data::class, 'doc_id', 'id');
+    }
+
 
     // public function document()
     // {

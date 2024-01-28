@@ -258,12 +258,17 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
                                             @if($user && $user->hasPermission('Main Document View '))
 
                                             <td>
-                                                <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"
-                                                    type="button" class="btn btn-primary">
-
-                                                    {{ $item->status_id == 1 ? 'View' : 'Review' }}
+                                               
+                                                  
+                                                    @if ($item->status_id == 1)
+                                                    <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"   type="button" class="btn btn-primary">  <i class="fas fa-eye"></i> View
+                                                    @else
+                                                    <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"    type="button" class="btn btn-secondary">  <i class=" fas fa-list-check"></i> Review
+                                                    @endif
                                                 </a>
                                             </td>
+                                            
+                                      
 @endif
 
                                         </tr>

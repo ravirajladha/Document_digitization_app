@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable(); 
             $table->unsignedBigInteger('compliance_id')->nullable(); 
             $table->unsignedBigInteger('document_assignment_id')->nullable(); 
+            $table->unsignedBigInteger('doc_id')->nullable(); 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
         

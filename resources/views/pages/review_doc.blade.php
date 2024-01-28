@@ -339,10 +339,10 @@
                                     <div class="card overflow-hidden">
                                         <div class="text-center p-3 overlay-box "
                                             style="background-image: url(images/big/img1.jpg);">
-                                            <div class="profile-photo">
+                                            {{-- <div class="profile-photo">
                                                 <img src="images/profile/profile.png" width="100"
                                                     class="img-fluid rounded-circle" alt="">
-                                            </div>
+                                            </div> --}}
                                             <h6 class="mt-3 mb-1 text-white">Common Document</h6>
 
                                         </div>
@@ -375,12 +375,12 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="card-header">
+                                <div class="card-header" style="padding:0 0 0 0">
                                     <h5>Compliances</h5>
                                 </div>
 
-                                <div class="table-responsive">
-                                    <table id="example3" class="display" style="min-width: 845px">
+                                <div class="table-responsive" style="padding:7px;">
+                                    <table id="example3" class="display" style="min-width: 845px;" >
 
 
                                         <thead>

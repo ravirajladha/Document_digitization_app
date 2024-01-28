@@ -14,6 +14,8 @@ class Master_doc_data extends Model
     public function documentType()
     {
         return $this->belongsTo('App\Models\Master_doc_type', 'document_type');
+    // return $this->belongsTo(Master_doc_data::class, 'document_type');
+
     }
 }
 

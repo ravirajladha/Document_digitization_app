@@ -2,7 +2,7 @@
 
 
     <x-header />
-    <x-sidebar/>
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -118,12 +118,11 @@
 
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
-                                            @if($user && $user->hasPermission('Add Compliances'))
-
-                                            <button type="button" class="btn btn-success mb-2 float-end btn-sm"
-                                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
-                                                    class="fas fa-square-plus"></i>&nbsp;Add Compliance</button>
-@endif
+                                            @if ($user && $user->hasPermission('Add Compliances'))
+                                                <button type="button" class="btn btn-success mb-2 float-end btn-sm"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
+                                                        class="fas fa-square-plus"></i>&nbsp;Add Compliance</button>
+                                            @endif
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
@@ -134,9 +133,9 @@
                                                     <th scope="col">Is Recurring </th>
 
                                                     {{-- <th scope="col">Status </th> --}}
-                                                    @if($user && $user->hasPermission('Update Compliances Status'))
-                                                    <th scope="col">Action </th>
-@endif
+                                                    @if ($user && $user->hasPermission('Update Compliances Status'))
+                                                        <th scope="col">Action </th>
+                                                    @endif
 
 
 
@@ -172,29 +171,29 @@
                                                         </td> --}}
 
                                                         <!-- ... other cells ... -->
-                                            @if($user && $user->hasPermission('Update Compliances Status'))
-
-                                                        <td class="action-cell" style="padding:0 0">
-                                                            <!-- Action buttons based on status -->
-                                                            @if ($item->status == 0)
-                                                                <!-- Show buttons only if status is Pending -->
-                                                                <button class="btn btn-sm btn-success toggle-status"
-                                                                    data-id="{{ $item->id }}"
-                                                                    data-action="settle"><i
-                                                                        class="fas fa-thumbs-up"></i></button>
-                                                                <button class="btn btn-sm btn-danger toggle-status"
-                                                                    data-id="{{ $item->id }}"
-                                                                    data-action="cancel"><i
-                                                                        class="fas fa-cancel"></i></button>
-                                                            @elseif($item->status == 1)
-                                                                <span class="badge bg-success">Settled</span>
-                                                            @elseif($item->status == 2)
-                                                                <span class="badge bg-danger">Cancelled</span>
-                                                            @else
-                                                                <span class="badge bg-success">Unknown data</span>
-                                                            @endif
-                                                        </td>
-@endif
+                                                        @if ($user && $user->hasPermission('Update Compliances Status'))
+                                                            <td class="action-cell" style="padding:0 0">
+                                                                <!-- Action buttons based on status -->
+                                                                @if ($item->status == 0)
+                                                                    <!-- Show buttons only if status is Pending -->
+                                                                    <button
+                                                                        class="btn btn-sm btn-success toggle-status"
+                                                                        data-id="{{ $item->id }}"
+                                                                        data-action="settle"><i
+                                                                            class="fas fa-thumbs-up"></i></button>
+                                                                    <button class="btn btn-sm btn-danger toggle-status"
+                                                                        data-id="{{ $item->id }}"
+                                                                        data-action="cancel"><i
+                                                                            class="fas fa-cancel"></i></button>
+                                                                @elseif($item->status == 1)
+                                                                    <span class="badge bg-success">Settled</span>
+                                                                @elseif($item->status == 2)
+                                                                    <span class="badge bg-danger">Cancelled</span>
+                                                                @else
+                                                                    <span class="badge bg-success">Unknown data</span>
+                                                                @endif
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -292,6 +291,8 @@
                                 `The item has been ${action}ed.`,
                                 'success'
                             );
+                // location.reload(true);
+
                             updateTableRow(itemId, data.newStatus);
                             // Optionally, refresh the page or update the DOM as needed
                         })

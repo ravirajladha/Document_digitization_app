@@ -115,15 +115,23 @@ $user = Auth::user();
 									@foreach ($notifications as $item)
 									{{-- <option value="{{ $item->name }}">{{ $item->name }}</option> --}}
 									<li>
+                                        <a  href="/notifications" >
 									<div class="timeline-panel">
+                                        @if($item->compliance_id !=null)
 										<div class="media me-2 media-info">
 											CMP
 										</div>
+                                        @else
+                                        <div class="media me-2 media-info">
+											REC
+										</div>
+                                        @endif
 										<div class="media-body">
 											<h6 class="mb-1">{{ $item->message }}</h6>
 											<small class="d-block">{{ $item->created_at }}</small>
 										</div>
 									</div>
+                                </a> 
 								</li>
 								@endforeach
                                     {{-- <li>

@@ -2,7 +2,7 @@
 
 
     <x-header />
-    <x-sidebar/>
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -50,10 +50,10 @@
 								</div>
 							</div>
 							</div> --}}
-					
 
-                  <!-- Modal -->
-                  <div class="modal fade" id="exampleModalCenter">
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -62,77 +62,79 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                
-                               <div class="form theme-form projectcreate">
-                                <form id="myAjaxForm" action="{{ url('/') }}/assign-documents-to-receiver" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="documentType" class="form-label">Document
-                                    Type</label>
-                                <select class="form-control" id="documentType"
-                                    name="document_type" onchange="fetchDocuments(this.value)"
-                                    required>
-                                    <option value="">Select Document Type</option>
-                                    @foreach ($documentTypes as $type)
-                                        <option value="{{ $type->id }}">{{  ucwords(str_replace('_', ' ', $type->name)) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <input type="hidden"  name="location" value="all">
 
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="document" class="form-label">Document <i><span  style="font-size:10px;">(Only the approved documents are shown here.)</span></i></label>
-                                <select class="form-control" id="document" name="document_id"
-                                    required>
-                                    <option value="">Select Document</option>
-                                    <!-- Options will be populated based on Document Type selection -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="receiverType" class="form-label">Receiver
-                                    Type</label>
-                                <select class="form-control" id="receiverType"
-                                    name="receiver_type" onchange="fetchReceivers(this.value)"
-                                    required>
-                                    <option value="">Select Receiver Type</option>
-                                    @foreach ($receiverTypes as $type)
-                                        <option value="{{ $type->id }}">{{ $type->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="receiver" class="form-label">Receiver</label>
-                                <select class="form-control" id="receiver" name="receiver_id"
-                                    required>
-                                    <option value="">Select Receiver</option>
-                                    <!-- Options will be populated based on Receiver Type selection -->
-                                </select>
-                            </div>
-                        </div>
-                     
-                    </div>
-                             
-                               </div>
+                                <div class="form theme-form projectcreate">
+                                    <form id="myAjaxForm" action="{{ url('/') }}/assign-documents-to-receiver"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label for="documentType" class="form-label">Document
+                                                        Type</label>
+                                                    <select class="form-control" id="documentType" name="document_type"
+                                                        onchange="fetchDocuments(this.value)" required>
+                                                        <option value="">Select Document Type</option>
+                                                        @foreach ($documentTypes as $type)
+                                                            <option value="{{ $type->id }}">
+                                                                {{ ucwords(str_replace('_', ' ', $type->name)) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="location" value="all">
+
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label for="document" class="form-label">Document <i><span
+                                                                style="font-size:10px;">(Only the approved documents are
+                                                                shown here.)</span></i></label>
+                                                    <select class="form-control" id="document" name="document_id"
+                                                        required>
+                                                        <option value="">Select Document</option>
+                                                        <!-- Options will be populated based on Document Type selection -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label for="receiverType" class="form-label">Receiver
+                                                        Type</label>
+                                                    <select class="form-control" id="receiverType" name="receiver_type"
+                                                        onchange="fetchReceivers(this.value)" required>
+                                                        <option value="">Select Receiver Type</option>
+                                                        @foreach ($receiverTypes as $type)
+                                                            <option value="{{ $type->id }}">{{ $type->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label for="receiver" class="form-label">Receiver</label>
+                                                    <select class="form-control" id="receiver" name="receiver_id"
+                                                        required>
+                                                        <option value="">Select Receiver</option>
+                                                        <!-- Options will be populated based on Receiver Type selection -->
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger light"
+                                    data-bs-dismiss="modal">Close</button>
                                 <div id="loader" style="display: none;">
                                     Loading...
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="submitBtn">Submit Form</button>
                             </div>
-                        </form>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -145,16 +147,17 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-body">
-                                 <div class="card-header">
-                                    <h4>Assigned Documents</h4>
-                                    @if($user && $user->hasPermission('Assign Document'))
-
-                                    <button type="button" class="btn btn-success mb-2 float-end btn-sm"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">    <i class="fas fa-square-plus"></i>&nbsp;Assign Document</button>
-                                    @endif
-                                 </div>
+                                    <div class="card-header">
+                                        <h4>Assigned Documents</h4>
+                                        @if ($user && $user->hasPermission('Assign Document'))
+                                            <button type="button" class="btn btn-success mb-2 float-end btn-sm"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
+                                                    class="fas fa-square-plus"></i>&nbsp;Assign Document</button>
+                                        @endif
+                                    </div>
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
-                                   
+
 
                                             <thead>
                                                 <tr>
@@ -165,12 +168,11 @@
                                                     <th scope="col">Document Type </th>
                                                     <th scope="col">Expires At </th>
 
-                                                    <th scope="col">Accepted </th>
+                                                    <th scope="col">Email Viewed </th>
                                                     <th scope="col">Status </th>
-                                    @if($user && $user->hasPermission('Update Document Assignment Status'))
-
-                                                    <th scope="col">Action </th>
-@endif
+                                                    @if ($user && $user->hasPermission('Update Document Assignment Status'))
+                                                        <th scope="col">Action </th>
+                                                    @endif
 
 
                                                 </tr>
@@ -181,12 +183,11 @@
                                                         <th scope="row">{{ $index + 1 }}</th>
                                                         <td>{{ $item->receiver->name }}</td>
                                                         <td>{{ $item->receiverType->name }}</td>
-                                                        <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}</td>
-                                                        <td>{{ $item->document->name   }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($item->expires_at)->format('M d, Y, g:i A') }}</td>
-
-
-
+                                                        <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
+                                                        </td>
+                                                        <td>{{ $item->document->name }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($item->expires_at)->format('M d, Y, g:i A') }}
+                                                        </td>
 
                                                         <td> {!! $item->first_viewed_at
                                                             ? '<span class="badge bg-success">Yes</span>'
@@ -194,25 +195,31 @@
                                                         <td> {!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
-                                    @if($user && $user->hasPermission('Update Document Assignment Status'))
+                                                        {{-- @if ($user && $user->hasPermission('Update Document Assignment Status'))
+                                                            <td>
+                                                                @if ($item->status)
+                                                                    <button class="btn btn-sm btn-danger toggle-status"
+                                                                        data-id="{{ $item->id }}"
+                                                                        data-status="{{ $item->status }}">Deactivate</button>
+                                                                @else
+                                                                    <button
+                                                                        class="btn btn-sm btn-success toggle-status"
+                                                                        data-id="{{ $item->id }}"
+                                                                        data-status="{{ $item->status }}">Activate</button>
+                                                                @endif
+                                                            </td>
+                                                        @endif --}}
+                                                        @if ($user && $user->hasPermission('Update Document Assignment Status'))
                                                         <td>
-                                                            @if ($item->status)
-                                                                <button class="btn btn-sm btn-danger toggle-status"
-                                                                    data-id="{{ $item->id }}"
-                                                                    data-status="{{ $item->status }}">Deactivate</button>
-                                                            @else
-                                                                <button class="btn btn-sm btn-success toggle-status"
-                                                                    data-id="{{ $item->id }}"
-                                                                    data-status="{{ $item->status }}">Activate</button>
-                                                            @endif
+                                                            <form method="POST" action="{{ route('documents.assigned.toggleStatus', $item->id) }}">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-sm {{ $item->status ? 'btn-danger' : 'btn-success' }}">
+                                                                    {{ $item->status ? 'Deactivate' : 'Activate' }}
+                                                                </button>
+                                                            </form>
                                                         </td>
-@endif
-
-
-
-                                                        {{-- <td>
-                                                    <a href="/document_field/{{ $item->name  }}"><button class="btn btn-success">Add Field</button></a>
-                                                    <a href="/view_doc/{{ $item->name  }}"><button class="btn btn-primary">View</button></a></td> --}}
+                                                    @endif
+                                                    
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -235,30 +242,30 @@
 <script>
     // Fetch documents based on the selected document type
     function fetchDocuments(documentTypeId) {
-    $.ajax({
-        url: '/get-documents/' + documentTypeId,
-        type: 'GET',
-        success: function(response) {
-            var documentSelect = $('#document');
-            documentSelect.empty();
-            
-            // Check if the response has documents
-            if (response.documents && response.documents.length > 0) {
-                $.each(response.documents, function(key, document) {
-                    documentSelect.append(new Option(document.name, document.id));
-                });
-            } else {
-                // If there are no documents, show an alert and add a default 'No documents' option
-                alert('No documents available for this document type.');
-                documentSelect.append(new Option('No documents available', ''));
+        $.ajax({
+            url: '/get-documents/' + documentTypeId,
+            type: 'GET',
+            success: function(response) {
+                var documentSelect = $('#document');
+                documentSelect.empty();
+
+                // Check if the response has documents
+                if (response.documents && response.documents.length > 0) {
+                    $.each(response.documents, function(key, document) {
+                        documentSelect.append(new Option(document.name, document.id));
+                    });
+                } else {
+                    // If there are no documents, show an alert and add a default 'No documents' option
+                    alert('No documents available for this document type.');
+                    documentSelect.append(new Option('No documents available', ''));
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle any Ajax errors here
+                alert('An error occurred while fetching the documents.');
             }
-        },
-        error: function(xhr, status, error) {
-            // Handle any Ajax errors here
-            alert('An error occurred while fetching the documents.');
-        }
-    });
-}
+        });
+    }
     // Fetch receivers based on the selected receiver type
 
 
@@ -308,7 +315,7 @@
                         if (data.success) {
                             toastr.success(
                                 `Document has been ${data.newStatus ? 'activated' : 'deactivated'}.`
-                                );
+                            );
 
                             // Update button class, text, and data-status attribute
                             this.setAttribute('data-status', data.newStatus ? '1' : '0');
@@ -343,11 +350,11 @@
     document.addEventListener('DOMContentLoaded', function() {
         var form = document.getElementById('myAjaxForm');
         var submitBtn = document.getElementById('submitBtn');
-    
+
         form.addEventListener('submit', function() {
             // Disable the submit button
             submitBtn.disabled = true;
         });
     });
-    </script>
-    <script></script>
+</script>
+

@@ -167,7 +167,7 @@
 
 
                                                     <div class="col-md-12 my-auto">
-                                                        <div class="text-end"><button class="btn btn-secondary"
+                                                        <div class="text-end"><button class="btn btn-success"
                                                                 type="submit">Submit</button>
                                                         </div>
                                                     </div>

@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment,Compliance,Notification};
+
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Notification};
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;  
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,23 +21,24 @@ class ComplianceController extends Controller
 
     public function showCompliances()
     {
+        // dd(Auth::user()->id);
         // dd("test");
-        $compliances = Compliance::with([ 'documentType', 'document'])->orderBy('created_at', 'desc')
+        $compliances = Compliance::with(['documentType', 'document'])->orderBy('created_at', 'desc')
             ->get();
 
         $documentTypes = Master_doc_type::orderBy('name')->get();
-        
+
 
         return view('pages.compliances', [
             'compliances' => $compliances,
             'documentTypes' => $documentTypes,
-       
+
         ]);
     }
 
     public function store(Request $request)
     {
-  
+
         try {
             $validatedData = $request->validate([
                 'document_type' => 'required|exists:master_doc_types,id',
@@ -45,37 +47,58 @@ class ComplianceController extends Controller
                 'due_date' => 'required|date',
                 'is_recurring' => 'sometimes|boolean'
             ]);
-    
+
             $compliance = new Compliance();
             $compliance->document_type = $validatedData['document_type'];
             $compliance->doc_id = $validatedData['document_id'];
             $compliance->name = $validatedData['name'];
             $compliance->due_date = $validatedData['due_date'];
             $compliance->is_recurring = $request->has('is_recurring') ? 1 : 0;
-        
+
             $compliance->created_by = Auth::user()->id;
             $compliance->save();
-            $this->notificationService->createComplianceNotification('created', $compliance);
+            // $this->notificationService->createComplianceNotification('created', $compliance);
             session()->flash('toastr', ['type' => 'success', 'message' => 'Compliance created successfully.']);
         } catch (Exception $e) {
             // Log the error for debugging
             logger()->error('Error in creating compliance: ' . $e->getMessage());
-    
+
             // Flash error message to session
             session()->flash('toastr', ['type' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
         }
-    
+
         return back();
     }
 
-    
-    public function statusChangeCompliance(Request $request, $id,$action)
-    {
-        $compliance = Compliance::findOrFail($id);
-        $compliance->status = $action =="settle" ? 1 : 2;
 
+    public function statusChangeCompliance(Request $request, $id, $action)
+    {
+        // \Log::info('Status change requested for compliance ID: ' . $id . ' with action: ' . $action);
+
+        $compliance = Compliance::findOrFail($id);
+        $compliance->status = $action == "settle" ? 1 : 2;
+        // if ($compliance->status == 1 && $compliance->is_recurring) {
+       
+        //         // Create a new Compliance object
+        //         $newCompliance = new Compliance();
+        
+        //         // Set attributes for the new Compliance object from the original
+        //         $newCompliance->name = $compliance->name;
+        //         $newCompliance->document_type = $compliance->document_type;
+        //         $newCompliance->doc_id = $compliance->doc_id;
+        //         $newCompliance->due_date = $compliance->due_date->addYear();
+        //         $newCompliance->status = 0; // Assuming 'pending' is a valid status
+        //         $newCompliance->is_recurring = $compliance->is_recurring;
+        //         $newCompliance->created_by = 1; 
+        
+        //         // Save the new Compliance object
+        //         $newCompliance->save();
+         
+        // }
         $compliance->save();
-        $this->notificationService->createComplianceNotification('updated', $compliance);
+        
+   
+        // $this->notificationService->createComplianceNotification('updated', $compliance);
 
         // $this->createNotification("updated", $compliance);
         return response()->json([
@@ -85,22 +108,22 @@ class ComplianceController extends Controller
         ]);
     }
 
+
+
+
     private function createNotification($type, Compliance $compliance)
     {
-        if($type=="created"){
-        $message = "A compliance has been {$type} named {$compliance->name}";
-
-        }elseif($type="updated"){
-            if($compliance->status==1){
+        if ($type == "created") {
+            $message = "A compliance has been {$type} named {$compliance->name}";
+        } elseif ($type = "updated") {
+            if ($compliance->status == 1) {
                 $status = "Settled";
-            }else{
+            } else {
                 $status = "Cancelled";
-
             }
-        $message = "A compliance has been {$type} named {$compliance->name} with {$status} ";
-
+            $message = "A compliance has been {$type} named {$compliance->name} with {$status} ";
         }
-        
+
         Notification::create([
             'type' => $type,
             'message' => $message,
@@ -108,8 +131,4 @@ class ComplianceController extends Controller
             'created_by' => Auth::user()->id
         ]);
     }
-
-
-
-
 }

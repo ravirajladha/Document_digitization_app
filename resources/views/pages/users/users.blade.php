@@ -128,7 +128,9 @@
 
 
                                             <div class="mb-3">
-                                                <label for="receiverType" class="form-label">Permissions & Role</label>
+                                                {{-- <label for="receiverType" class="form-label">Permissions & Role</label> --}}
+                                                <label class="form-label" for="password_confirmation">Permissions & Role</label>
+
                                                 <div class="table-responsive">
                                                     <table class="table  table-responsive-sm">
                                                         <tbody style="padding:0 0 0 0;">

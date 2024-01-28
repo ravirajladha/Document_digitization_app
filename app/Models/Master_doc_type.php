@@ -12,6 +12,7 @@ class Master_doc_type extends Model
     public function masterDocDatas()
     {
         return $this->hasMany('App\Models\Master_doc_data', 'document_type');
+
     }
 
 }
