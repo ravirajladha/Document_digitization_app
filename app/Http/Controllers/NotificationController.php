@@ -7,60 +7,52 @@ use App\Models\{Receiver, Notification};
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
+
 class NotificationController extends Controller
 {
-
-    public function showNotifications1()
-    {
-        // dd("test");
-        Notification::query()->update(['is_read' => 1]);
-        $notifications = Notification::with(['compliance'])->orderBy('created_at', 'desc')
-            ->get();
-        // dd($notificatons);
-        return view('pages.notifications', [
-            'notifications' => $notifications,
-
-
-        ]);
-    }
+    // Default type based on permission
 
     public function showNotifications(Request $request)
     {
         Notification::query()->update(['is_read' => 1]);
-    
-        $type = $request->query('type');
+        
+        $user = Auth::user();
         $notificationsQuery = Notification::with('masterDocData'); // Eager loading the relation
     
-        if ($type == 'compliance') {
+        // Determine which types of notifications the user is allowed to view
+        $canViewCompliance = $user->hasPermission('View Compliance Notifications');
+        $canViewRecipient = $user->hasPermission('View Recipient Notifications');
+    
+        // Determine the default type based on permission
+        $defaultType = null;
+        if ($canViewCompliance) {
+            $defaultType = 'compliance';
+        } elseif ($canViewRecipient) {
+            $defaultType = 'document_assignment';
+        }
+    
+        // Get the requested type, or the default if none is requested
+        $type = $request->query('type', $defaultType);
+    
+        // Apply the filtering based on the type and permission
+        if ($type === 'compliance' && $canViewCompliance) {
             $notificationsQuery->whereNotNull('compliance_id');
-        } elseif ($type == 'document_assignment') {
+        } elseif ($type === 'document_assignment' && $canViewRecipient) {
             $notificationsQuery->whereNotNull('document_assignment_id');
+        } else {
+            // If the user has neither permission or the type is not recognized, don't load any notifications
+            $notificationsQuery->whereRaw('1 = 0'); // This will return an empty collection
         }
     
         $notifications = $notificationsQuery->orderBy('created_at', 'desc')->get();
     
-
-        foreach ($notifications as $notification) {
-            $tableName = $notification->masterDocData->document_type_name;
-    
-            // Check if the table exists
-            if (Schema::hasTable($tableName)) {
-                // Assuming 'doc_id' is a column in your dynamic table
-                $relatedRecord = DB::table($tableName)->where('doc_id', $notification->doc_id)->first();
-    
-                if ($relatedRecord) {
-                    // Attach the id from the dynamic table to the notification
-                    $notification->dynamic_id = $relatedRecord->id;
-                }
-            }
-        }
-
-
-        // Uncomment this to debug
-        // dd($notifications);
+        // Process the notifications as needed (e.g., attaching dynamic_id)
+        // ...
     
         return view('pages.notifications', [
             'notifications' => $notifications,
+            // Pass additional data as needed
         ]);
     }
     

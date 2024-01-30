@@ -261,7 +261,7 @@
 
 @if($user && $user->hasPermission('Update Document Status'))
 
-                <div class="row mb-5">
+                <div class="row mb-2">
                     <div class="col-lg-12">
                         <div class="card">
 
@@ -462,12 +462,8 @@
 
             </div>
         </div>
-
     </div>
-
-
     @include('layouts.footer')
-
 
 </x-app-layout>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

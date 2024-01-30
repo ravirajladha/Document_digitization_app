@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        //the below function checks and notificy the user if any compliances are under 30 days
+        //the below function checks and notifiy the user if any compliances are under 30 days
         $schedule->call(function () {
          
             $notificationService = resolve('App\Services\NotificationService');
@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         foreach ($upcomingCompliances as $compliance) {
             $notificationService->createComplianceNotification('upcoming', $compliance, $systemUserId);
         }
-    })->daily();
+    })->everyMinute();
     // })->daily();
 //the below function created new compliances, if its recurring on the last day of the due_date
 
@@ -54,8 +54,6 @@ class Kernel extends ConsoleKernel
             }
         }
     })->daily();
-
-
 
     }
 

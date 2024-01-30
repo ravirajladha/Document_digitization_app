@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use App\Models\Master_doc_type;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class Header extends Component
 {
@@ -26,15 +27,28 @@ class Header extends Component
      */
     public function __construct()
     {
-        // $this->doc_types = \App\Models\Master_doc_type::all();
         $this->doc_types = Master_doc_type::all();
-        $this->notifications = Notification::latest()->take(5)->get();
-        $this->notificationsCount = Notification::where('is_read', 0)->count();
+        
+        // Assuming 'View Compliance Notifications' and 'View Document Assignment Notifications' are your permission names
+        $user = Auth::user();
+        $notificationsQuery = Notification::latest();
 
+        if ($user->hasPermission('View Compliance Notifications') && $user->hasPermission('View Recipient Notifications')) {
+            // User has both permissions; no additional filtering is needed
+        } elseif ($user->hasPermission('View Compliance Notifications')) {
+            $notificationsQuery->whereNotNull('compliance_id');
+        } elseif ($user->hasPermission('View Recipient Notifications')) {
+            $notificationsQuery->whereNotNull('document_assignment_id');
+        } else {
+            // User has neither permission; you might want to handle this scenario
+            $notificationsQuery = $notificationsQuery->where('id', 0); // No notifications
+        }
+
+        $this->notifications = $notificationsQuery->take(5)->get();
+        $this->notificationsCount = $notificationsQuery->where('is_read', 0)->count();
     }
-
     /**
-     * Get the view / contents that represent the component.
+ * Get the view / contents that represent the component.
      *
      * @return \Illuminate\Contracts\View\View|string
      */

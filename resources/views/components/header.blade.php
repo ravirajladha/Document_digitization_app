@@ -95,7 +95,7 @@ $user = Auth::user();
                             <i id="icon-dark" class="fas fa-moon"></i>
                         </a>
                     </li> --}}
-                    @if($user && $user->hasPermission('View Notifications'))
+                    @if($user && ($user->hasPermission('View Compliance Notifications') || $user->hasPermission('View Recipient Notifications')))
                     <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

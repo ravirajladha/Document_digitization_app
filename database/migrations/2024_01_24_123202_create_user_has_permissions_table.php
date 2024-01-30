@@ -13,15 +13,19 @@ return new class extends Migration
     {
         Schema::create('user_has_permissions', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('permission_id');
-
+            $table->string('permission_display_name'); // Use string type for permission display_name
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
+            // Create a foreign key relationship based on the permission display_name
+            $table->foreign('permission_display_name')->references('display_name')->on('permissions')->onDelete('cascade');
 
-            $table->primary(['user_id', 'permission_id']);
+            // Set the primary key for the table
+            $table->primary(['user_id', 'permission_display_name']);
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down()
     {
         Schema::dropIfExists('user_has_permissions');

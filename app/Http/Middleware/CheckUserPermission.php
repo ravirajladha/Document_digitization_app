@@ -40,7 +40,7 @@ class CheckUserPermission
 
         // If the route exists, check if the user has the permission
         $hasPermission = DB::table('user_has_permissions')
-            ->join('permissions', 'permissions.id', '=', 'user_has_permissions.permission_id')
+            ->join('permissions', 'permissions.display_name', '=', 'user_has_permissions.permission_display_name')
             ->where('user_has_permissions.user_id', $user->id)
             ->where('permissions.name', $routeName)
             ->exists();

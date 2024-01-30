@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Services\DocumentTableService;
-use Illuminate\Support\Facades\View;
+use Blade;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use App\Services\DocumentTableService;
+use Illuminate\Support\ServiceProvider;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -38,5 +40,11 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('permissions', collect());
             }
         });
+
+
+          // Define a Blade directive for generating permission checkboxes
+
     }
 }
+
+ 

@@ -27,22 +27,31 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-body">
-                                  
-                                    
+
+
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
                                             {{-- <button type="button" class="btn btn-success mb-2 float-end btn-sm"
                                                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
                                                     class="fas fa-square-plus"></i>&nbsp;Notifications</button> --}}
-                                                    <span style="float-end btn-sm" >
-                                                        <label for="notificationType">Filter by Notification Type:</label>
-                                                        <select id="notificationType" class="form-select mb-3" style="width:15%;" onchange="filterNotifications()">
-                                                            <option value="all">All</option>
-                                                            <option value="compliance">Compliance</option>
-                                                            <option value="document_assignment">Recipient</option>
-                                                        </select>
-                                                        
-                                                    </span>
+                                            <span style="float-end btn-sm">
+                                                <label for="notificationType">Filter by Notification Type:</label>
+                                                <select id="notificationType" class="form-select mb-3"
+                                                    style="width:15%;" onchange="filterNotifications()">
+                                                    @if ($user && $user->hasPermission('View Compliance Notifications'))
+                                                        <option
+                                                            value="compliance"{{ request('type') === 'compliance' ? ' selected' : '' }}>
+                                                            Compliance</option>
+                                                        @if ($user->hasPermission('View Recipient Notifications'))
+                                                            <option
+                                                                value="document_assignment"{{ request('type') === 'document_assignment' ? ' selected' : '' }}>
+                                                                Recipient</option>
+                                                        @endif
+                                                    @elseif ($user && $user->hasPermission('View Recipient Notifications'))
+                                                        <option value="document_assignment" selected>Recipient</option>
+                                                    @endif
+                                                </select>
+                                            </span>
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl no</th>
@@ -56,12 +65,14 @@
                                                     <tr data-item-id="{{ $item->id }}">
                                                         <th scope="row">{{ $index + 1 }}</th>
                                                         <td>{{ $item->message }}</td>
-                                                       
+
                                                         <td>{{ date('d-m-Y H:i:s', strtotime($item->created_at)) }}</td>
                                                         <td>
                                                             @if (isset($item->dynamic_id))
-                                                                <a href="{{ route('documents.review', ['table' => $item->masterDocData->document_type_name, 'id' => $item->dynamic_id]) }}">
-                                                                    <button type="button" class="btn btn-success mb-2  btn-sm">
+                                                                <a
+                                                                    href="{{ route('documents.review', ['table' => $item->masterDocData->document_type_name, 'id' => $item->dynamic_id]) }}">
+                                                                    <button type="button"
+                                                                        class="btn btn-success mb-2  btn-sm">
                                                                         <i class="fas fa-eye"></i>
                                                                     </button>
                                                                 </a>

@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-header />
-    <x-sidebar/>
+    <x-sidebar />
 
     <div class="content-body default-height">
         <!-- row -->
@@ -24,7 +24,11 @@
                             <div class="filter cm-content-box box-primary">
                                 <div class="content-title SlideToolHeader">
                                     <h4>
-                                        @if (isset($editUser)) Update User @else Add User @endif
+                                        @if (isset($editUser))
+                                            Update User
+                                        @else
+                                            Add User
+                                        @endif
                                     </h4>
                                     <div class="tools">
                                         <a href="javascript:void(0);" class="expand handle"><i
@@ -35,72 +39,85 @@
                                     <div class="card-body">
 
                                         @if (isset($editUser))
-                                        <form action="{{ route('users.update', $editUser->id) }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                    @else
-                                        <form action="{{ url('/register-user') }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                    @endif
-                                    
+                                            <form action="{{ route('users.update', $editUser->id) }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                @method('PUT')
+                                            @else
+                                                <form action="{{ url('/register-user') }}" method="POST"
+                                                    enctype="multipart/form-data">
+                                                    @csrf
+                                        @endif
+
                                         <div class="row">
                                             {{-- Username field --}}
                                             <div class="form-group mb-4 col-md-4 col-xl-4">
                                                 <label class="form-label" for="username">Username</label>
-                                                <input type="text" class="form-control" placeholder="Enter username" id="username" name="name"
-                                                       value="{{ old('name', isset($editUser) ? $editUser->name : '') }}" required autofocus autocomplete="name">
+                                                <input type="text" class="form-control" placeholder="Enter username"
+                                                    id="username" name="name"
+                                                    value="{{ old('name', isset($editUser) ? $editUser->name : '') }}"
+                                                    required autofocus autocomplete="name">
                                                 @error('name')
-                                                <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                    
+
                                             {{-- Email field --}}
                                             <div class="form-group mb-4 col-md-4 col-xl-4">
                                                 <label class="form-label" for="email">Email</label>
-                                                <input type="email" name="email" class="form-control" placeholder="hello@example.com" id="email"
-                                                       value="{{ old('email', isset($editUser) ? $editUser->email : '') }}" required autocomplete="username">
+                                                <input type="email" name="email" class="form-control"
+                                                    placeholder="hello@example.com" id="email"
+                                                    value="{{ old('email', isset($editUser) ? $editUser->email : '') }}"
+                                                    required autocomplete="username">
                                                 @error('email')
-                                                <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                    
+
                                             {{-- Phone field --}}
                                             <div class="form-group mb-4 col-md-4 col-xl-4">
                                                 <label class="form-label" for="usersPhone">Phone</label>
-                                                <input type="text" class="form-control" id="usersPhone" name="phone"
-                                                       placeholder="Enter Receiver's Phone Number" pattern="\d{0,10}"
-                                                       title="Please enter a valid phone number with up to 10 digits."
-                                                       value="{{ old('phone', isset($editUser) ? $editUser->phone : '') }}" maxlength="10">
+                                                <input type="text" class="form-control" id="usersPhone"
+                                                    name="phone" placeholder="Enter Receiver's Phone Number"
+                                                    pattern="\d{0,10}"
+                                                    title="Please enter a valid phone number with up to 10 digits."
+                                                    value="{{ old('phone', isset($editUser) ? $editUser->phone : '') }}"
+                                                    maxlength="10">
                                                 @error('phone')
-                                                <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                    
+
                                             {{-- Password fields --}}
                                             {{-- Note: Password fields should not be pre-populated for security reasons --}}
                                             <div class="mb-sm-4 mb-3 position-relative col-md-12 col-xl-12">
                                                 <label class="form-label" for="dlab-password">Password</label>
-                                                <input type="password" name="password"  @if (!isset($editUser)) required @endif autocomplete="new-password" id="dlab-password" class="form-control">
+                                                <input type="password" name="password"
+                                                    @if (!isset($editUser)) required @endif
+                                                    autocomplete="new-password" id="dlab-password" class="form-control">
                                                 <span class="show-pass eye">
                                                     <i class="fa fa-eye-slash"></i>
                                                     <i class="fa fa-eye"></i>
                                                 </span>
                                                 @error('password')
-                                                <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="mb-sm-4 mb-3 position-relative col-md-12 col-xl-12">
-                                                <label class="form-label" for="password_confirmation">Confirm Password</label>
-                                                <input type="password" name="password_confirmation"  @if (!isset($editUser)) required @endif autocomplete="new-password" class="form-control">
+                                                <label class="form-label" for="password_confirmation">Confirm
+                                                    Password</label>
+                                                <input type="password" name="password_confirmation"
+                                                    @if (!isset($editUser)) required @endif
+                                                    autocomplete="new-password" class="form-control">
                                                 <span class="show-pass eye">
                                                     <i class="fa fa-eye-slash"></i>
                                                     <i class="fa fa-eye"></i>
                                                 </span>
                                                 @error('password_confirmation')
-                                                <div class="alert alert-danger">{{ $message  }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                                {{-- <div class="mb-sm-4 mb-3 position-relative">
+                                            {{-- <div class="mb-sm-4 mb-3 position-relative">
                                                     <div class="mb-4">
                                                         <h4 class="card-title">Permissions</h4>
                                                         <p>The selected page and operations will be allowed for the
@@ -120,289 +137,284 @@
                                                     </select>
                                                     <x-input-error :messages="$errors->get('permission')" class="mt-2" />
                                                 </div> --}}
+                                        </div>
+
+
+{{-- {{ dd($editUser) }} --}}
+
+@endif
+
+                                        <div class="mb-3">
+                                            {{-- <label for="receiverType" class="form-label">Permissions & Role</label> --}}
+                                            <label class="form-label" for="password_confirmation">Permissions &
+                                                Role</label>
+
+                                            <div class="table-responsive">
+                                                <table class="table  table-responsive-sm">
+                                                    <tbody style="padding:0 0 0 0;">
+                                                        @php
+$userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck('display_name')->toArray() : [];
+@endphp
+
+{{-- Ensure the function is declared once outside of any conditional blocks --}}
+@if (!function_exists('generatePermissionCheckbox'))
+@php
+    function generatePermissionCheckbox($permissionsDisplayNames, $permissionDisplayName) {
+        $isChecked = in_array($permissionDisplayName, $permissionsDisplayNames) ? 'checked' : '';
+        echo '<input type="checkbox" class="form-check-input" name="permissions[' . $permissionDisplayName . ']" value="' . $permissionDisplayName . '" ' . $isChecked . '>';
+    }
+@endphp
+                                                        <tr>
+                                                            <th>Module</th>
+                                                            <th>Create</th>
+                                                            <th>Read</th>
+                                                            <th>Update</th>
+                                                            <th>Update Status</th>
+                                                        </tr>
+                                                        <tr>
+
+                                                            {{-- {{ $permissions }} --}}
+                                                        <tr>
+                                                            <td class="module-name">Document</td>
+                                                            <td>
+                                                                
+
+@php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Basic Document Form') @endphp                         
+
+
+                                                            </td>
+                                                            <td>
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Main Document View') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Basic Document Detail') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Status') @endphp
+
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="module-name">Document Type</td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Document Types') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Types') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Document Field</td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Document Fields') @endphp
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Fields') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Bulk Upload</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Bulk Upload') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Sets</td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Sets') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Sets') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sets') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Receivers</td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Receivers') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Receivers') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Receivers') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Assign Document</td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Assignment Status') @endphp
+
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Compliances</td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Compliances') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliances') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliances Status') @endphp
+
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Configure</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Configure') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">Profile</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Profile') @endphp
+
+                                                            </td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Profile') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        {{-- <tr>
+                                                            <td class="module-name">Notifications</td>
+                                                            <td></td>
+                                                            <td>
+                                                                <input type="checkbox" class="form-check-input"
+                                                                    name="permissions[29]" value="29"
+                                                                    @if (isset($editUser) && $editUser->permissions->contains('id', 29)) checked @endif>
+ @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Notifications') @endphp
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr> --}}
+                                                        <tr>
+                                                            <td class="module-name">Filter Doc</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Filter Document') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">View Documents By Document Type
+                                                            </td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Documents by Document Type') @endphp
+
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="module-name">View Documents from Sets</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Documents from Sets') @endphp
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">View Compliances Notification</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliance Notifications') @endphp
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="module-name">View Receipients Notification</td>
+                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Recipient Notifications') @endphp
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
                                             </div>
-
-
-
-
-
-
-                                            <div class="mb-3">
-                                                {{-- <label for="receiverType" class="form-label">Permissions & Role</label> --}}
-                                                <label class="form-label" for="password_confirmation">Permissions & Role</label>
-
-                                                <div class="table-responsive">
-                                                    <table class="table  table-responsive-sm">
-                                                        <tbody style="padding:0 0 0 0;">
-                                                            <tr>
-                                                                <th>Module</th>
-                                                                <th>Create</th>
-                                                                <th>Read</th>
-                                                                <th>Update</th>
-                                                                <th>Update Status</th>
-                                                            </tr>
-                                                            <tr>
-
-{{-- {{ $permissions }} --}}
-                                                            <tr>
-                                                                <td class="module-name">Document</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[4]" value="4"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 4)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[3]" value="3"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 3)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[5]" value="5"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 5)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[6]" value="6"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 6)) checked @endif>
-
-                                                                </td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td class="module-name">Document Type</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[21]" value="21"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 21)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[20]" value="20"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 20)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Document Field</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[23]" value="23"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 23)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[22]" value="22"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 22)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Bulk Upload</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[25]" value="25"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 25)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Sets</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[8]" value="8"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 8)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[7]" value="7"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 7)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[9]" value="9"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 9)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Receivers</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[15]" value="15"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 15)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[14]" value="14"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 14)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[16]" value="16"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 16)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Assign Document</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[19]" value="19"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 19)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[19]" value="19"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 19)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[18]" value="18"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 18)) checked @endif>
-
-                                                                </td>
-
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Compliances</td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[27]" value="27"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 27)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[26]" value="26"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 26)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[28]" value="28"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 28)) checked @endif>
-
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Configure</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[24]" value="24"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 24)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Profile</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[1]" value="1"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 1)) checked @endif>
-
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[6]" value="6"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 6)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Notifications</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[29]" value="29"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 29)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">Filter Doc</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[10]" value="10"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 10)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">View Documents By Document Type</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[12]" value="12"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 12)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">View Documents from Sets</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[13]" value="13"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 13)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="module-name">View Documents from Sets</td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="form-check-input"
-                                                                        name="permissions[13]" value="13"
-                                                                        @if (isset($editUser) && $editUser->permissions->contains('id', 13)) checked @endif>
-
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-
-                                                            </tr>
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+                                        </div>
 
 
 
@@ -411,7 +423,7 @@
                                 <div class="card-footer">
                                     <a href="" class="btn-link"></a>
                                     <div class="text-end"><button class="btn btn-success" type="submit"><i
-                                                class="fas fa-filter"></i>&nbsp;Submit</button>
+                                                class="fas fa-check"></i>&nbsp;Submit</button>
                                     </div>
                                 </div>
                                 </form>

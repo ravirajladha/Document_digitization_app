@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('display_name');
+            $table->string('display_name')->unique(); // Ensure display_name is unique
+            
             $table->integer('action');
             // $table->unsignedBigInteger('created_by');
          
-
             // $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
           
             $table->timestamps();

@@ -56,7 +56,7 @@
                                                         <td>{{ ucwords(str_replace('_', ' ', $item->name)) }}</td>
                                                         <td>{{ isset($doc_counts[$item->id]) ? $doc_counts[$item->id] : 0 }}
                                                         </td>
-                                                        @if ($user && $user->hasPermission('View Documents By Doc Type'))
+                                                        @if ($user && $user->hasPermission('View Documents by Document Type'))
                                                             <td>
                                                                 <a href="/view_doc/{{ $item->name }}"><button
                                                                         class="btn btn-primary btn-sm"><i

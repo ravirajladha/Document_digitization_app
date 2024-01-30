@@ -48,10 +48,43 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'user_has_permissions');
-    }
+    // public function permissions()
+    // {
+    //     return $this->belongsToMany(Permission::class, 'user_has_permissions');
+    // }
+
+    // User model
+
+// In User model
+// public function permissions()
+// {
+//     return $this->belongsToMany(Permission::class, 'user_has_permissions', 'user_id', 'permission_display_name', 'display_name');
+// }
+
+
+// In your User model
+// public function permissions()
+// {
+//     return $this->belongsToMany(Permission::class, 'user_has_permissions', 'user_id', 'permission_display_name', 'display_name');
+// }
+
+
+
+
+// User model
+public function permissions()
+{
+    return $this->belongsToMany(
+        Permission::class,
+        'user_has_permissions', // Pivot table
+        'user_id', // Foreign key on the pivot table for the user
+        'permission_display_name', // Foreign key on the pivot table for the permission
+        'id', // Local key on the users table
+        'display_name' // Local key on the permissions table
+    );
+}
+
+
 
 // In User model
 public function hasPermission($permissionName)
@@ -64,5 +97,13 @@ public function hasPermission($permissionName)
                 ->where('display_name', $permissionName)
                 ->exists();
 }
+
+
+
+
+
+// User model
+
+
 
 }
