@@ -5,14 +5,17 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Arr;
+
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-  
+
     /**
      * The attributes that are mass assignable.
      *
@@ -48,62 +51,52 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // public function permissions()
-    // {
-    //     return $this->belongsToMany(Permission::class, 'user_has_permissions');
-    // }
-
     // User model
+    public function permissions()
+    {
+        return $this->belongsToMany(
+            Permission::class,
+            'user_has_permissions', // Pivot table
+            'user_id', // Foreign key on the pivot table for the user
+            'permission_display_name', // Foreign key on the pivot table for the permission
+            'id', // Local key on the users table
+            'display_name'
 
-// In User model
-// public function permissions()
-// {
-//     return $this->belongsToMany(Permission::class, 'user_has_permissions', 'user_id', 'permission_display_name', 'display_name');
-// }
-
-
-// In your User model
-// public function permissions()
-// {
-//     return $this->belongsToMany(Permission::class, 'user_has_permissions', 'user_id', 'permission_display_name', 'display_name');
-// }
-
-
-
-
-// User model
-public function permissions()
-{
-    return $this->belongsToMany(
-        Permission::class,
-        'user_has_permissions', // Pivot table
-        'user_id', // Foreign key on the pivot table for the user
-        'permission_display_name', // Foreign key on the pivot table for the permission
-        'id', // Local key on the users table
-        'display_name' // Local key on the permissions table
-    );
-}
-
-
-
-// In User model
-public function hasPermission($permissionName)
-{
-    if ($this->type === 'admin') {
-        return true;
+        );
     }
 
-    return $this->permissions()
-                ->where('display_name', $permissionName)
-                ->exists();
-}
+    public function hasPermission($permissionName)
+    {
+        if ($this->type === 'admin') {
+            return true;
+        }
+
+        return $this->permissions()
+            ->where('display_name', $permissionName)
+            ->exists();
+    }
 
 
 
+    protected static function boot()
+    {
+        parent::boot();
+    
+        static::updating(function ($model) {
+            $original = $model->getOriginal();
+            $changes = $model->getDirty();
+$changes = Arr::only($model->getDirty(), array_keys($model->getOriginal()));
+$changes = Arr::except($model->getDirty(), ['updated_at']);
 
-
-// User model
-
-
+            // Log the original values and the changed values
+            Log::channel('useractivity')->info('Record Updated', [
+                'user_id' => auth()->id(),
+                'model_id' => $model->id,
+                'changes' => json_encode($changes),
+                'original_values' => $original,
+            ]);
+        });
+    }
+    
 
 }

@@ -260,11 +260,16 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
                                             <td>
                                                
                                                   
-                                                    @if ($item->status_id == 1)
-                                                    <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"   type="button" class="btn btn-primary">  <i class="fas fa-eye"></i> View
-                                                    @else
-                                                    <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}"    type="button" class="btn btn-secondary">  <i class=" fas fa-list-check"></i> Review
-                                                    @endif
+                                                @if ($item->status_id == 1)
+                                                <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}" style="padding: 0.25rem 0.5rem; font-size: 0.65rem;" class="btn btn-primary">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                            @else
+                                                <a href="{{ url('/') }}/review_doc/{{ $item->document_type_name }}/{{ $item->tableId }}" style="padding: 0.25rem 0.5rem; font-size: 0.65rem;" class="btn btn-secondary">
+                                                    <i class="fas fa-list-check"></i> Review
+                                                </a>
+                                            @endif
+                                            
                                                 </a>
                                             </td>
                                             

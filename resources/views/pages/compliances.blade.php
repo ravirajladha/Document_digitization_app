@@ -33,6 +33,7 @@
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
+                                              {{--
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="documentType" class="form-label">Document
@@ -49,8 +50,9 @@
                                                 </div>
                                             </div>
 
+                                            
 
-                                            <div class="col-md-12">
+                                           <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="document" class="form-label">Document <i><span
                                                                 style="font-size:10px;">(Only the approved documents are
@@ -58,11 +60,13 @@
                                                     <select class="form-control" id="document" name="document_id"
                                                         required>
                                                         <option value="">Select Document</option>
-                                                        <!-- Options will be populated based on Document Type selection -->
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
+ --}}
 
+ <x-document-type-select />
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="document" class="form-label">Name</label>
@@ -180,10 +184,10 @@
                                                                         class="btn btn-sm btn-success toggle-status"
                                                                         data-id="{{ $item->id }}"
                                                                         data-action="settle"><i
-                                                                            class="fas fa-thumbs-up"></i></button>
+                                                                            class="fas fa-thumbs-up" title="Click to Settle the Compliances"></i></button>
                                                                     <button class="btn btn-sm btn-danger toggle-status"
                                                                         data-id="{{ $item->id }}"
-                                                                        data-action="cancel"><i
+                                                                        data-action="cancel" title="Click to Cancel the Compliances"><i
                                                                             class="fas fa-cancel"></i></button>
                                                                 @elseif($item->status == 1)
                                                                     <span class="badge bg-success">Settled</span>

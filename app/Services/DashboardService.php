@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment};
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment,User};
 
 use App\Models\Doc_type;
 
@@ -33,6 +33,8 @@ class DashboardService
         $acceptedCounts = []; //to get the accepted doc
         $notAcceptedCounts = []; // to get the pending doc
         $holdedCounts = []; // to get the pending doc
+        $userCounts = 0;
+       $userCounts =  User::where('type', "user")->count();
         foreach ($docTypes as $docType) {
             $existsInMasterDocData = Master_doc_data::where('document_type_name', $docType)->exists();
             if ($existsInMasterDocData && Schema::hasTable($docType)) {
@@ -65,7 +67,7 @@ class DashboardService
         $total_document_type = count($chartLabels);
 
         $colors = $this->generateColorPalette(count($chartLabels));
-        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts', 'holdedCounts', 'total_document_type');
+        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts', 'holdedCounts', 'total_document_type','userCounts');
     }
     private function generateColorPalette($numColors)
     {

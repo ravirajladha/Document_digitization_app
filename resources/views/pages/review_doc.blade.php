@@ -21,7 +21,7 @@
                                 <h4 class="card-title">Data</h4>
                                 {{-- @if (Auth::user()->type == 'admin') --}}
 
-                                @if ($user && $user->hasPermission('Update Basic Document Detail'))
+                                @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id!=1)
                                     <a class="btn btn-primary float-end"
                                         href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
                                         rel="noopener noreferrer">Edit</a>

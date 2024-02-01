@@ -153,7 +153,7 @@
                                                         </span>
                                                         <div class="media-body text-white text-end">
                                                             <p class="mb-1">Total Users</p>
-                                                            <h3 class="text-white">0</h3>
+                                                            <h3 class="text-white">{{ $documentTypeWiseCounts['userCounts'] }}</h3>
                                                         </div>
                                                     </div>
                                                 </div>

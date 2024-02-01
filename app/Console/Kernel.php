@@ -31,29 +31,49 @@ class Kernel extends ConsoleKernel
         foreach ($upcomingCompliances as $compliance) {
             $notificationService->createComplianceNotification('upcoming', $compliance, $systemUserId);
         }
-    })->everyMinute();
-    // })->daily();
-//the below function created new compliances, if its recurring on the last day of the due_date
+    })->daily();
+    
+//the below function created new compliances, if the status is settled.
 
     $schedule->call(function () {
         $today = Carbon::today();
+        // Select compliances with status 1 and due date less than or equal to today
         $compliances = Compliance::where('due_date', '<=', $today)
                                  ->where('is_recurring', 1)
+                                 ->where('status', 1)
                                  ->get();
-
+    
         foreach ($compliances as $compliance) {
-            // Only create a new compliance if the current one is due and is marked as recurring
-            if ($compliance->due_date->isToday() && $compliance->is_recurring) {
+            // Only create a new compliance if the current one is due, is marked as recurring, and has a status of 1
+             if ($compliance->due_date <= $today && $compliance->is_recurring && $compliance->status == 1) {
+                // If the due date has passed, replicate and create a new compliance for the next period
                 $newCompliance = $compliance->replicate(['id']); // Exclude id when replicating
-                $newCompliance->due_date = $compliance->due_date->addYear();
+                $newCompliance->due_date = $today->addYear(); // Set the new due date from today
                 $newCompliance->status = 0; // Set to pending or your default status
                 $newCompliance->save();
-
-                // Optionally, you can call a method to create a notification about this new compliance
-                // $notificationService->createComplianceNotification('renewed', $newCompliance, $systemUserId);
+    
+                // Update the current compliance to indicate it's been processed for recurrence
+          
+                $compliance->status = 3; // Assuming 3 indicates processed status, which should not be repeated in the future
+                $compliance->save();
             }
         }
     })->daily();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 

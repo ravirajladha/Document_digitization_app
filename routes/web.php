@@ -139,9 +139,13 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
         ->name('documents.filter');
     // Route::get('/view_doc_first', [Admin::class, 'view_doc_first'])
     // ->name('documents.view.first');
+    Route::get('/documents-for-set/{setId}', [Admin::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
+
+    //ajax call to get the documen from doc_type
     Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])
         ->name('documents.getByType');
-    Route::get('/documents-for-set/{setId}', [Admin::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
+
+    Route::get('/api/fetch/{type}/{id}', [Document::class, 'fetchData']);
 
 
     //data sets

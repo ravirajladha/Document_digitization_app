@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Log;
+use App\Models\Set;
+use App\Models\State;
 use Illuminate\Http\Request;
 use App\Models\Master_doc_data;
 use App\Models\Master_doc_type;
-use App\Models\State;
-use App\Models\Set;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Services\BulkUploadService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+
 class Document extends Controller
 {
     protected $bulkUploadService;
@@ -92,7 +95,70 @@ class Document extends Controller
      
     }
 
+    public function fetchData(Request $request, $type, $id)
+{
+    $query = DB::table('Master_doc_datas');
+    \Log::info('Received type:', ['type' => $type]);
+    \Log::info('Received id:', ['id' => $id]);
+    \Log::info('Received doc_type_id:', ['doc_type_id' => $request->query('doc_type_id')]); // Use query() method
+    switch ($type) {
+        case 'states':
+            $data = $query->where('document_type', $id)
+                          ->distinct()
+                          ->get(['current_state as name']); // Get unique states for the document type
+                        
 
+            break;
+        case 'districts':
+            $docTypeId = $request->query('doc_type_id');
+            if (is_null($docTypeId)) {
+                \Log::warning('doc_type_id is missing for districts request.');
+                return response()->json(['error' => 'Document type ID is required'], 400);
+            }
+
+            $data = $query->where('document_type', $request->doc_type_id)
+                          ->where('current_state', $id) // $id here is the state name passed from the frontend
+                          ->distinct()
+                          ->get(['current_district as name']); // Get unique districts
+            break;
+        case 'villages':
+            $data = $query->where('document_type', $request->doc_type_id)
+                          ->where('current_state', $request->state_name)
+                          ->where('current_district', $id) // $id here is the district name passed from the frontend
+                          ->distinct()
+                          ->get(['current_village as name']); // Get villages
+
+                          $villageNames = $data->flatMap(function ($item) {
+                            return explode(',', $item->name); // Split by comma and return the parts
+                        })->unique()->values()->all();
+                    
+                        $results = collect($villageNames)->map(function ($name) {
+                            return ['id' => $name, 'name' => $name];
+                        });
+                    
+                        return response()->json($results);
+
+            break;
+        case 'documents':
+            $data = $query->where('document_type', $request->doc_type_id)
+                          ->where('current_state', $request->state_name)
+                          ->where('current_district', $request->district_name)
+                          ->where('current_village', 'like', '%' . $id . '%')
+                          ->where('status_id', 1) // $id here is the village name passed from the frontend
+                          ->get(['name as name']); // Get documents
+            break;
+        default:
+            return response()->json([]);
+    }
+    \Log::info('Data being returned:', ['data' => $data]);
+    $results = $data->map(function ($item) {
+        return ['id' => $item->name, 'name' => $item->name];
+    });
+
+    return response()->json($results);
+}
+
+    
    
   
 }

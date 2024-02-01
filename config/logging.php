@@ -63,6 +63,15 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'days' => 30, // Retain logs for 14 days
+        ],
+
+        //this is a custom laravel log to track the user is going on which page.
+        'useractivity' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/user_activity.log'),
+            'level' => 'info',
+            'days' => 14, // Retain logs for 14 days
         ],
 
         'daily' => [

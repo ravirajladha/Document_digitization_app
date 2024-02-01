@@ -76,12 +76,12 @@ class Admin extends Controller
 
         // Initialize an empty array to hold the counts
         $setCounts = [];
-    
+
         // Retrieve all set_id entries that are not null
         $setIds = DB::table('master_doc_datas')
             ->whereNotNull('set_id')
             ->get(['set_id']);
-    
+
         // Loop through each set_id entry, decode it, and count the occurrences
         foreach ($setIds as $setIdEntry) {
             $idsArray = json_decode($setIdEntry->set_id, true); // Decode JSON string to PHP array
@@ -94,8 +94,8 @@ class Admin extends Controller
                 }
             }
         }
-    
-    
+
+
         // Pass the counts and the set data to the view
         return view('pages.data-sets.set', [
             'data' => $data,
@@ -105,34 +105,34 @@ class Admin extends Controller
 
     public function viewDocumentsForSet($setId)
     {
-        $get_set_detail  = Set::where('id',$setId)->first();
+        $get_set_detail  = Set::where('id', $setId)->first();
         // dd($get_set_detail);
         // Retrieve all distinct document_type_names (child table names) where the set_id is present
         $documentTypes = DB::table('master_doc_datas')
-                            ->select('document_type_name')
-                            ->whereRaw("JSON_CONTAINS(set_id, '\"$setId\"')")
-                            ->distinct()
-                            ->orderBy('document_type_name', 'asc')
-                            ->pluck('document_type_name');
+            ->select('document_type_name')
+            ->whereRaw("JSON_CONTAINS(set_id, '\"$setId\"')")
+            ->distinct()
+            ->orderBy('document_type_name', 'asc')
+            ->pluck('document_type_name');
 
-    
+
         $documentsDetails = collect();
-    
+
         // For each document type name, get the associated documents from the child table
         foreach ($documentTypes as $documentType) {
             if (Schema::hasTable($documentType)) {
                 // Get the documents from the child table where their doc_id matches an id in master_doc_data
                 $documents = DB::table($documentType)
-                                ->join('master_doc_datas', 'master_doc_datas.id', '=', "$documentType.doc_id")
-                                ->whereRaw("JSON_CONTAINS(master_doc_datas.set_id, '\"$setId\"')")
-                                ->select("$documentType.*") // Select all columns from the child table
-                                ->get();
-    
+                    ->join('master_doc_datas', 'master_doc_datas.id', '=', "$documentType.doc_id")
+                    ->whereRaw("JSON_CONTAINS(master_doc_datas.set_id, '\"$setId\"')")
+                    ->select("$documentType.*") // Select all columns from the child table
+                    ->get();
+
                 // Merge the documents into the documentsDetails collection
                 $documentsDetails = $documentsDetails->merge($documents);
             }
         }
-    // dd($documentsDetails);
+        // dd($documentsDetails);
         // Pass the documents details to the view
         return view('pages.documents-for-set', [
             'documentsDetails' => $documentsDetails,
@@ -713,7 +713,7 @@ class Admin extends Controller
         // If the status is 'Hold', add additional fields for the message and timestamp
 
         if ($status == 2) { // Assuming '2' represents the 'Hold' status
-       
+
             $updateDataMaster['rejection_timestamp'] = now(); // Set the current timestamp
         }
         // dd($message);
@@ -721,6 +721,14 @@ class Admin extends Controller
             // Update with hold reason if provided
             $updateDataMaster['rejection_message'] = $message;
         }
+
+
+        // Get the ID of the currently authenticated user
+        $userId = auth()->id(); // or Auth::id() if you are using the Facade
+
+        // Include the user ID in the update data for the master document table
+        $updateDataMaster['updated_by'] = $userId;
+
         // Update the status in the master document table using the doc_id from the individual document
         Master_doc_data::where('id', $document->doc_id)->update($updateDataMaster);
 
@@ -898,7 +906,7 @@ class Admin extends Controller
 
         // Fetch the column details from `table_metadata` for the given table
         $columnDetails = Table_metadata::where('table_name', $tableName)
-          ->orderBy('column_name')->get(['column_name', 'data_type']);
+            ->orderBy('column_name')->get(['column_name', 'data_type']);
 
         // Pass the column details to the view instead of the direct schema columns
         return view('pages.document_field', [
@@ -923,21 +931,39 @@ class Admin extends Controller
         // }
 
     }
+
+    //  * Edit Document Basic Details
+    //  * 
+    //  * Retrieves and displays the editing interface for basic details of a specific document.
+    //  * This function checks if the requested document exists and verifies its status before proceeding.
+    //  * Only documents with a status other than 1 are accessible; otherwise, a 403 Forbidden error is returned.
+    //  * 
+    //  * @param int $id The unique identifier of the document to be edited.
+    //  * @return \Illuminate\Http\Response Returns a view with the document's basic details for editing if the document exists and is accessible.
+    //  * If the document's status_id is 1 or if the document does not exist, it returns a 403 Forbidden error page.
+   
     public function edit_document_basic_detail($id)
     {
-        // dd(Auth::user()->type);
-        //here, id is the doc_id for the respective table
+        // Retrieve the document by id
         $document = Master_doc_data::where('id', $id)->first();
+
+        // If document not found or status_id is 1, show error page
+        if (!$document || $document->status_id == 1) {
+            // Use abort(404) if you want a "Not Found" response
+            // or abort(403) for a "Forbidden" response, depending on your preference
+            return abort(403); // Or use abort(404) for a "Not Found" response
+        }
+
+        // Proceed if document exists and status_id is not 1
         $states = State::all();
-        // if($document->status == 0 && Auth::user()->type==="admin"){
         $sets = Set::all();
-        // $document = DB::table($tableName)->where('id',$id)->first();
-        // dd($document);
-        return view('pages.edit_document_first', ['document' => $document, 'sets' => $sets, 'states' => $states]);
-        // }
 
+        return view('pages.edit_document_first', [
+            'document' => $document,
+            'sets' => $sets,
+            'states' => $states
+        ]);
     }
-
 
     // public function update_document_status(Request $req){
     // $id = $req->id;
@@ -958,23 +984,6 @@ class Admin extends Controller
     // return redirect('/reviewer/view_doc'.'/'.$tableName)->with('success', 'Document updated successfully');
     // }
 
-
-
-    public function review_doc1($table, $id)
-    {
-        $tableName = $table;
-        if (Schema::hasTable($tableName)) {
-            $columns = Schema::getColumnListing($tableName);
-        }
-        $field_types = DB::table($tableName)->where('id', 1)->first();
-        $document = DB::table($tableName)->where('id', $id)->first();
-        $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
-        
-        // dd($document);
-        // dd( ['columns' => $columns, 'field_types' => $field_types, 'document' => $document, 'tableName' => $tableName, 'id' => $id,'master_data' => $get_document_master_data]);
-        return view('pages.review_doc', ['columns' => $columns, 'field_types' => $field_types, 'document' => $document, 'tableName' => $tableName, 'id' => $id, 'master_data' => $get_document_master_data]);
-    }
-
     public function review_doc($table, $id)
     {
         $tableName = $table;
@@ -983,9 +992,9 @@ class Admin extends Controller
                 ->get()
                 ->keyBy('column_name'); // This will help you to easily find metadata by column name.
         }
-// dd($id);
+        // dd($id);
         $document = DB::table($tableName)->where('id', $id)->first();
-// dd($document);
+        // dd($document);
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
 
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
@@ -1006,8 +1015,6 @@ class Admin extends Controller
 
         //  dd($masterDataEntries);
 
-
-
         $matchingData[] = null;
         foreach ($masterDataEntries as $entry) {
 
@@ -1026,8 +1033,8 @@ class Admin extends Controller
             }
         }
         //    dd($matchingData);
-        $compliances = Compliance::with([ 'documentType', 'document'])->where('doc_id',$document->doc_id)->orderBy('created_at', 'desc')
-        ->get();
+        $compliances = Compliance::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
+            ->get();
         return view('pages.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,
@@ -1063,7 +1070,6 @@ class Admin extends Controller
         // dd($end_date);
         // Flash input to the session
         $request->flash();
-     
 
         // Get unique values from the state columns
         // $states = Master_doc_data::pluck('state')
@@ -1077,10 +1083,10 @@ class Admin extends Controller
         //     ->values();
 
 
-            $states = Master_doc_data::pluck('current_state')
+        $states = Master_doc_data::pluck('current_state')
             ->flatMap(function ($item) {
                 // Split the item by comma and trim spaces from each resulting piece
-                return collect(explode(',', $item))->map(function ($i) { 
+                return collect(explode(',', $item))->map(function ($i) {
                     return Str::of($i)->trim();
                 });
             })
@@ -1107,7 +1113,7 @@ class Admin extends Controller
         $districts = Master_doc_data::pluck('current_district')
             ->flatMap(function ($item) {
                 // Split the item by comma and trim spaces from each resulting piece
-                return collect(explode(',', $item))->map(function ($i) { 
+                return collect(explode(',', $item))->map(function ($i) {
                     return Str::of($i)->trim();
                 });
             })
@@ -1131,10 +1137,10 @@ class Admin extends Controller
         //     ->values();
 
 
-            $villages = Master_doc_data::pluck('current_village')
+        $villages = Master_doc_data::pluck('current_village')
             ->flatMap(function ($item) {
                 // Split the item by comma and trim spaces from each resulting piece
-                return collect(explode(',', $item))->map(function ($i) { 
+                return collect(explode(',', $item))->map(function ($i) {
                     return Str::of($i)->trim();
                 });
             })
@@ -1147,7 +1153,7 @@ class Admin extends Controller
 
 
 
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date','area_range_start','area_range_end','area_unit']);
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
@@ -1156,11 +1162,11 @@ class Admin extends Controller
         //     if ($typeId == 'all') {
         //         $documents = Master_doc_data::paginate(15);
         //     } else {
-                $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $start_date, $end_date,$area_range_start,$area_range_end,$area_unit);
-            // }
+        $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit);
+        // }
         // }
         // dd($documents);
-    //    dd($area_unit);
+        //    dd($area_unit);
         $data = [
             'documents' => $documents,
             'doc_type' => Master_doc_type::orderBy('name')->get(),
@@ -1183,12 +1189,6 @@ class Admin extends Controller
         $data = [
             'receiver_type_count' => $receiver_type_count,
         ];
-        return view('pages.data-sets.data-sets',$data);
+        return view('pages.data-sets.data-sets', $data);
     }
-
-
-
-  
-
-
 }

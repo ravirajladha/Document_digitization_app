@@ -54,7 +54,7 @@ class BulkUploadService
                 yield $line;
             }
         })
-            ->skip(1) // Skip the header of the CSV file.
+            ->skip(2) // Skip the header of the CSV file.
             ->chunk(10000) // Process in chunks of 1000 rows.
             ->each(function ($chunk) use (&$stats, $batchId) {
                 // Prepare an array to hold all rows for batch insertion.
@@ -153,7 +153,7 @@ class BulkUploadService
         return $dynamicStats;
     }
 
-
+//the dates were not added properly in the excel, so the function convertes into formatted
     protected function processRow($row, $batchId)
     {
 
