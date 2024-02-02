@@ -1,14 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin;
-use App\Http\Controllers\Reviewer;
-use App\Http\Controllers\Receiver_process;
 use App\Http\Controllers\Document;
-use App\Http\Controllers\Dashboard;
-use App\Http\Controllers\ComplianceController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\NotificationController;
+
+use App\Http\Controllers\{NotificationController,ReceiverController,DocumentController,SetController,UserController,ComplianceController,Dashboard,Receiver_process,ProfileController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,30 +41,30 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
 
     // set view
 
-    // Route::get('/set', [Admin::class, 'set'])->name('set');
-    Route::get('/set', [Admin::class, 'viewSet'])->name('sets.view');
-    Route::get('/get-updated-sets', [Admin::class, 'viewUpdatedSets'])->name('sets.viewUpdated');
-    Route::post('/add_set', [Admin::class, 'addSet'])->name('sets.add');
-    Route::post('/update-set', [Admin::class, 'updateSet'])->name('sets.update');
+    // Route::get('/set', [DocumentController::class, 'set'])->name('set');
+    Route::get('/set', [SetController::class, 'viewSet'])->name('sets.view');
+    Route::get('/get-updated-sets', [SetController::class, 'viewUpdatedSets'])->name('sets.viewUpdated');
+    Route::post('/add_set', [SetController::class, 'addSet'])->name('sets.add');
+    Route::post('/update-set', [SetController::class, 'updateSet'])->name('sets.update');
 
     //receiver type
 
-    Route::get('/receiver-type', [Admin::class, 'receiverType'])->name('receiverTypes.view');
+    Route::get('/receiver-type', [ReceiverController::class, 'receiverType'])->name('receiverTypes.view');
     //ajax response (read)
-    Route::get('/get-updated-receiver-types', [Admin::class, 'getUpdatedReceiverTypes'])->name('receiverTypes.updated');
-    Route::post('/add-receiver-type', [Admin::class, 'addReceiverType'])->name('receiverTypes.add');
-    Route::post('/update-receiver-type', [Admin::class, 'updateReceiverType'])->name('receiverTypes.update');
+    Route::get('/get-updated-receiver-types', [ReceiverController::class, 'getUpdatedReceiverTypes'])->name('receiverTypes.updated');
+    Route::post('/add-receiver-type', [ReceiverController::class, 'addReceiverType'])->name('receiverTypes.add');
+    Route::post('/update-receiver-type', [ReceiverController::class, 'updateReceiverType'])->name('receiverTypes.update');
 
     // receivers
-    Route::get('/receivers', [Admin::class, 'showReceivers'])
+    Route::get('/receivers', [ReceiverController::class, 'showReceivers'])
         ->name('receivers.index');
-    Route::post('/add-receiver', [Admin::class, 'addReceiver'])
+    Route::post('/add-receiver', [ReceiverController::class, 'addReceiver'])
         ->name('receivers.store');
-    Route::post('/update-receiver', [Admin::class, 'updateReceiver'])
+    Route::post('/update-receiver', [ReceiverController::class, 'updateReceiver'])
         ->name('receivers.update');
     Route::get('/get-receivers/{typeId}', [Receiver_process::class, 'getReceiversByType'])
         ->name('receivers.byType');
-    Route::get('/get-updated-receivers', [Admin::class, 'getUpdatedReceivers'])
+    Route::get('/get-updated-receivers', [ReceiverController::class, 'getUpdatedReceivers'])
         ->name('receivers.updated');
 
 
@@ -87,59 +81,54 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
         ->name('documents.assign.toReceiver');
 
     //document type
-    Route::get('/document_type', [Admin::class, 'document_type'])->name('document_types.index');
-    Route::post('/add_document_type', [Admin::class, 'addDocumentType'])->name('document_types.store');
+    Route::get('/document_type', [DocumentController::class, 'document_type'])->name('document_types.index');
+    Route::post('/add_document_type', [DocumentController::class, 'addDocumentType'])->name('document_types.store');
 
-    // Route::get('/get-all-documents-type', [Admin::class, 'getAllDocumentsType'])
+    // Route::get('/get-all-documents-type', [DocumentController::class, 'getAllDocumentsType'])
     // ->name('documents.types.all');
     //documents field (dynamic column)
-    // Route::get('/add_fields_first', [Admin::class, 'add_fields_first'])->name('fields.create_first_step');
-    Route::post('/add_document_field', [Admin::class, 'add_document_field'])->name('document_fields.store');
-    Route::get('/document_field/{table?}', [Admin::class, 'document_field'])->name('document_fields.view');
+    // Route::get('/add_fields_first', [DocumentController::class, 'add_fields_first'])->name('fields.create_first_step');
+    Route::post('/add_document_field', [DocumentController::class, 'add_document_field'])->name('document_fields.store');
+    Route::get('/document_field/{table?}', [DocumentController::class, 'document_field'])->name('document_fields.view');
 
     //documents
-
-
-    Route::post('/add_document', [Admin::class, 'add_document'])
+    Route::post('/add_document', [DocumentController::class, 'add_document'])
         ->name('documents.store');
 
-    // Route::post('/add-basic-detail-to-master-doc-data', [Admin::class, 'addBasicDetailToMasterDocData'])
+    // Route::post('/add-basic-detail-to-master-doc-data', [DocumentController::class, 'addBasicDetailToMasterDocData'])
     //     ->name('master_documents.addBasicDetail');
-    Route::get('/add_document_first', [Admin::class, 'add_document_first'])
+    Route::get('/add_document_first', [DocumentController::class, 'add_document_first'])
         ->name('documents.add_document_first');
 
-    // Route::get('/add_document_first', [Admin::class, 'add_document_first'])
+    // Route::get('/add_document_first', [DocumentController::class, 'add_document_first'])
     //     ->middleware('checkuserpermission:add_document_first') 
     //     ->name('add_document_first');
 
 
-    Route::get('/review_doc/{table}/{id}', [Admin::class, 'review_doc'])
+    Route::get('/review_doc/{table}/{id}', [DocumentController::class, 'review_doc'])
         ->name('documents.review');
-    Route::post('/add-document-data', [Admin::class, 'add_document_data'])
+    Route::post('/add-document-data', [DocumentController::class, 'add_document_data'])
         ->name('documents.data.add');
-    Route::put('/update-first-document-data/{id}', [Admin::class, 'updateFirstDocumentData'])
+    Route::put('/update-first-document-data/{id}', [DocumentController::class, 'updateFirstDocumentData'])
         ->name('documents.data.first.update');
-    Route::get('/document-creation-continue', [Admin::class, 'documentCreationContinue'])
+    Route::get('/document-creation-continue', [DocumentController::class, 'documentCreationContinue'])
         ->name('documents.creation.continue');
 
-    // Route::get('/view_doc_first_submit', [Admin::class, 'view_doc_first_submit'])
-    //     ->name('documents.view.first.submit');
-    // Route::get('/view_doc/{table}', [Admin::class, 'view_doc'])
-    //     ->name('documents.view');
+  
 
-    // Route::get('/edit_document/{table}/{id}', [Admin::class, 'edit_document'])
+    // Route::get('/edit_document/{table}/{id}', [DocumentController::class, 'edit_document'])
     //     ->name('documents.edit');
-    Route::get('/edit_document_basic_detail/{id}', [Admin::class, 'edit_document_basic_detail'])
+    Route::get('/edit_document_basic_detail/{id}', [DocumentController::class, 'edit_document_basic_detail'])
         ->name('documents.basic_detail.edit');
-    Route::post('/update_document', [Admin::class, 'update_document'])
+    Route::post('/update_document', [DocumentController::class, 'update_document'])
         ->name('documents.updateStatus');
 
     //view documents
-    Route::get('/filter-document', [Admin::class, 'filterDocument'])
+    Route::get('/filter-document', [DocumentController::class, 'filterDocument'])
         ->name('documents.filter');
-    // Route::get('/view_doc_first', [Admin::class, 'view_doc_first'])
+    // Route::get('/view_doc_first', [DocumentController::class, 'view_doc_first'])
     // ->name('documents.view.first');
-    Route::get('/documents-for-set/{setId}', [Admin::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
+    Route::get('/documents-for-set/{setId}', [SetController::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
 
     //ajax call to get the documen from doc_type
     Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])
@@ -149,7 +138,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
 
 
     //data sets
-    Route::get('/data-sets', [Admin::class, 'dataSets'])->name('configure');
+    Route::get('/data-sets', [DocumentController::class, 'configure'])->name('configure');
 
     //bulk upload documents 
     Route::get('/bulk-upload-master-data', [Document::class, 'bulkUploadMasterData'])
@@ -166,7 +155,9 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
         ->name('compliances.store');
     Route::post('/status-change-compliance/{id}/{action}', [ComplianceController::class, 'statusChangeCompliance'])
         ->name('compliances.status_change');
-
+        //to change the status of is recurring of the COompliances
+        Route::post('/toggle-compliances-is-recurring/{id}', [ComplianceController::class, 'toggleIsRecurring'])
+        ->name('compliances.isRecurring.toggle');
 
     //notifications
     Route::get('/notifications', [NotificationController::class, 'showNotifications'])

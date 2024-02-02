@@ -2,19 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Set;
-use App\Models\Receiver_type;
-use App\Models\User;
-use App\Models\State;
-use App\Models\Receiver;
-use App\Models\Doc_type;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\Master_doc_data;
 
-use App\Models\Master_doc_type;
-use App\Models\Compliance;
-use App\Models\Table_metadata;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Services\DocumentTableService;
 use App\Services\FilterDocumentService;
-use App\Services\DocumentService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
@@ -31,8 +20,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set,State};
+
+
 // use Illuminate\Database\Eloquent\Collection::paginate;
-class Admin extends Controller
+class DocumentController extends Controller
 {
     protected $filterdocumentService;
 
@@ -62,289 +54,9 @@ class Admin extends Controller
         return view('pages.document_type', ['doc_types' => $doc_types, 'doc_counts' => $doc_counts]);
     }
 
-    // public function getAllDocumentsType()
-    // {
-    //     $doc_types = Master_doc_type::all();
+   
 
-    //     return view('components.header', ['doc_types' => $doc_types]);
-    // }
-
-
-    public function viewSet()
-    {
-        $data = Set::all();
-
-        // Initialize an empty array to hold the counts
-        $setCounts = [];
-
-        // Retrieve all set_id entries that are not null
-        $setIds = DB::table('master_doc_datas')
-            ->whereNotNull('set_id')
-            ->get(['set_id']);
-
-        // Loop through each set_id entry, decode it, and count the occurrences
-        foreach ($setIds as $setIdEntry) {
-            $idsArray = json_decode($setIdEntry->set_id, true); // Decode JSON string to PHP array
-            if (is_array($idsArray)) { // Ensure it's an array
-                foreach ($idsArray as $setId) {
-                    if (!isset($setCounts[$setId])) {
-                        $setCounts[$setId] = 0;
-                    }
-                    $setCounts[$setId]++;
-                }
-            }
-        }
-
-
-        // Pass the counts and the set data to the view
-        return view('pages.data-sets.set', [
-            'data' => $data,
-            'setCounts' => $setCounts
-        ]);
-    }
-
-    public function viewDocumentsForSet($setId)
-    {
-        $get_set_detail  = Set::where('id', $setId)->first();
-        // dd($get_set_detail);
-        // Retrieve all distinct document_type_names (child table names) where the set_id is present
-        $documentTypes = DB::table('master_doc_datas')
-            ->select('document_type_name')
-            ->whereRaw("JSON_CONTAINS(set_id, '\"$setId\"')")
-            ->distinct()
-            ->orderBy('document_type_name', 'asc')
-            ->pluck('document_type_name');
-
-
-        $documentsDetails = collect();
-
-        // For each document type name, get the associated documents from the child table
-        foreach ($documentTypes as $documentType) {
-            if (Schema::hasTable($documentType)) {
-                // Get the documents from the child table where their doc_id matches an id in master_doc_data
-                $documents = DB::table($documentType)
-                    ->join('master_doc_datas', 'master_doc_datas.id', '=', "$documentType.doc_id")
-                    ->whereRaw("JSON_CONTAINS(master_doc_datas.set_id, '\"$setId\"')")
-                    ->select("$documentType.*") // Select all columns from the child table
-                    ->get();
-
-                // Merge the documents into the documentsDetails collection
-                $documentsDetails = $documentsDetails->merge($documents);
-            }
-        }
-        // dd($documentsDetails);
-        // Pass the documents details to the view
-        return view('pages.documents-for-set', [
-            'documentsDetails' => $documentsDetails,
-            'setId' => $setId,
-            'get_set_detail' => $get_set_detail,
-        ]);
-    }
-
-
-    public function addSet(Request $request)
-    {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required|string|max:255|unique:sets', // Unique validation rule added
-        ]);
-
-        // Check for duplicate set name
-        $existingSet = Set::where('name', $request->name)->first();
-
-        if ($existingSet) {
-            return response()->json(['error' => 'Set name already exists.'], 422); // Return error response for duplicate name
-        }
-
-        // Create a new set
-        $set = new Set;
-        $set->name = $request->name;
-        $set->created_by =  Auth::user()->id;
-        // Save the set to the database
-        $set->save();
-
-        return response()->json(['success' => 'Set added successfully.']);
-    }
-
-    public function updateSet(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:sets,id',
-            'name' => 'required|string|max:255', // Validation rules as per your requirements
-        ]);
-
-        try {
-            $set = Set::findOrFail($request->id);
-            $set->name = $request->name;
-            $set->save();
-
-            return response()->json(['success' => 'Set updated successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while updating the set.'], 500);
-        }
-    }
-
-    public function viewUpdatedSets()
-    {
-        $sets = Set::get(); // Assuming Set is your model name
-        return response()->json($sets);
-    }
-
-    //receiver types function
-    public function receiverType()
-    {
-        $data = Receiver_type::get();
-        return view('pages.data-sets.receiver-type', ['data' => $data]);
-    }
-
-    public function addReceiverType(Request $request)
-    {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required|string|max:255|unique:receiver_types', // Adjust the table name as needed
-        ]);
-
-        // Create a new receiver type
-        $receiverType = new Receiver_type;
-        $receiverType->name = $request->name;
-        // Assign other fields as necessary
-        $receiverType->created_by =  Auth::user()->id;
-        // Save the receiver type to the database
-        $receiverType->save();
-
-        return response()->json(['success' => 'Receiver type added successfully.']);
-    }
-
-    public function updateReceiverType(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:receiver_types,id',
-            'name' => 'required|string|max:255', // Validation rules as per your requirements
-        ]);
-
-        try {
-            $receiverType = Receiver_type::findOrFail($request->id);
-            $receiverType->name = $request->name;
-            // Update other fields as necessary
-
-            $receiverType->save();
-
-            return response()->json(['success' => 'Receiver type updated successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while updating the receiver type.'], 500);
-        }
-    }
-    public function getUpdatedReceiverTypes()
-    {
-        $receiverTypes = Receiver_type::get(); // Assuming ReceiverType is your model name
-        return response()->json($receiverTypes);
-    }
-    //receivers
-    public function showReceivers()
-    {
-        $data = Receiver::with('receiverType')
-            ->withCount('documentAssignments') // Add the count of document assignments
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $receiverTypes = Receiver_type::all();
-        $documentTypes = Master_doc_type::orderBy('name')->get();
-
-        return view('pages.receivers', [
-            'data' => $data,
-            'receiverTypes' => $receiverTypes,
-            'documentTypes' => $documentTypes
-
-        ]);
-    }
-
-
-    public function getUpdatedReceivers()
-    {
-        // Fetch receivers with the receiver type name
-        $receivers = Receiver::with('receiverType')
-            ->withCount('documentAssignments') // Add the count of document assignments
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        // Transform the data to include the receiver type name
-        $receivers = $receivers->map(function ($receiver) {
-            return [
-                'id' => $receiver->id,
-                'name' => $receiver->name,
-                'phone' => $receiver->phone,
-                'city' => $receiver->city,
-                'email' => $receiver->email,
-                'status' => $receiver->status,
-                'receiver_type_name' => optional($receiver->receiverType)->name, // Get the name from the relationship
-                'document_assignments_count' => $receiver->document_assignments_count, // Get the name from the relationship
-            ];
-        });
-
-        return response()->json($receivers);
-    }
-
-
-    public function addReceiver(Request $request)
-    {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|size:10|regex:/^\d{10}$/',
-            'email' => 'required|string|email|max:255|unique:receivers,email',
-            'city' => 'required|string|max:255',
-            'receiver_type_id' => 'required|exists:receiver_types,id',
-        ]);
-
-        // Create a new receiver
-        $receiver = new Receiver;
-        $receiver->name = $request->name;
-        $receiver->phone = $request->phone;
-        $receiver->email = $request->email;
-        $receiver->city = $request->city;
-        $receiver->receiver_type_id = $request->receiver_type_id;
-        $receiver->created_by = Auth::user()->id; // or Auth::user()->id;
-        $receiver->save();
-
-        // Return a JSON response indicating success
-        return response()->json(['success' => 'Receiver added successfully.']);
-    }
-
-    public function updateReceiver(Request $request)
-    {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:receivers,id',
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:receivers,email,' . $request->id, // Ensure email is unique except for the current receiver
-            'city' => 'required|string|max:255',
-            'receiver_type_id' => 'required|exists:receiver_types,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        try {
-            $receiver = Receiver::findOrFail($request->id);
-            $receiver->name = $request->name;
-            $receiver->phone = $request->phone;
-            $receiver->email = $request->email;
-            $receiver->city = $request->city;
-            $receiver->status = $request->status;
-            $receiver->receiver_type_id = $request->receiver_type_id;
-            // Add any additional fields you want to update here
-
-            $receiver->save();
-
-            return response()->json(['success' => 'Receiver updated successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while updating the receiver.'], 500);
-        }
-    }
-
-
+   
 
     public function addDocumentType(Request $req, DocumentTableService $documentTypeService)
     {
@@ -364,54 +76,6 @@ class Admin extends Controller
             session()->flash('toastr', ['type' => 'warning', 'message' => 'Duplicate Document Type Found']);
 
             return redirect('/document_type')->with('error', 'Table already exists.');
-        }
-    }
-
-    public function add_document_field_old(Request $req)
-    {
-        $type = $req->type;
-        // $fields = explode(',', $req->fields);
-        $fields = $req->fields;
-        $fieldType = $req->field_type; // Assuming field_types is a single value
-
-        // Check if the table with the given type name exists
-        if (Schema::hasTable($type)) {
-            Schema::table($type, function (Blueprint $table) use ($type, $fields, $fieldType) {
-                // Loop through the fields array and add columns with the specified field type
-                foreach ($fields as $field) {
-                    $columns = Schema::getColumnListing($type);
-                    // dd(in_array($field, $columns));
-                    if (in_array($field, $columns)) {
-                        return redirect('/document_field' . '?type=' . $type)->with('failed', 'Columns already exist.');
-                    }
-                    $columnName = strtolower(str_replace(' ', '_', $field));
-                    $table->text($columnName)->nullable();
-                }
-            });
-
-            // Create an associative array to specify the columns and their new values
-            $updateData = [];
-            // dd($fields);
-            foreach ($fields as $field) {
-                $columnName = strtolower(str_replace(' ', '_', $field));
-                $updateData[$columnName] = $fieldType; // Replace 'column1' and 'new_value1' with your column and value
-            }
-            $document = DB::table($type)->where('id', 1)->first();
-            if (!$document) {
-                $insertData = array_merge(['id' => 1], $updateData); // Set 'id' to 1 or your desired ID
-                DB::table($type)->insert($insertData);
-            } else {
-                DB::table($type)->where('id', 1)->update($updateData);
-            }
-            session()->flash('toastr', ['type' => 'success', 'message' => 'Fields added Successfully']);
-
-            return redirect('/document_field' . '?type=' . $type)->with('success', 'Columns added successfully.');
-            // return redirect()->route('document_field', ['table' => $type])->with('success', 'Columns added successfully, and the first row is updated/inserted.');
-
-        } else {
-            session()->flash('toastr', ['type' => 'success', 'message' => 'Table does not exist or duplicate column found.']);
-
-            return redirect('/document_field' . '/' . $type)->with('error', 'Table does not exist.');
         }
     }
 
@@ -652,37 +316,6 @@ class Admin extends Controller
 
         return redirect('/review_doc/' . $tableName . '/' . $documentId);
     }
-
-    public function update_document1(Request $req)
-    {
-        $id = $req->id;
-        $tableName = $req->type;
-        if (Schema::hasTable($tableName)) {
-            $columns = Schema::getColumnListing($tableName);
-        }
-
-        $document =  DB::table($tableName)->where('id', $id)->first();
-
-        if (!$document) {
-            // Handle the case where the document doesn't exist
-            return redirect()->back()->withErrors(['error' => 'Document not found']);
-        }
-
-        $updateData = ['status' => 1]; // Assuming 'status' is the column name
-        $updateData1 = ['status_id' => 1]; // Assuming 'status' is the column name
-
-        // Update the record in the individual document table
-        DB::table($tableName)->where('id', $id)->update($updateData);
-
-        // Update the status in the master document table using the doc_id from the individual document
-        Master_doc_data::where('id', $document->doc_id)->update($updateData1);
-        session()->flash('toastr', ['type' => 'success', 'message' => 'Document updated successfully']);
-
-        // Redirect back with a success message or to a different page
-        return redirect('/review_doc/' . $tableName . '/' . $id)->with('success', 'Document updated successfully');
-    }
-
-
     public function update_document(Request $req)
     {
         $id = $req->id;
@@ -808,9 +441,6 @@ class Admin extends Controller
         // Redirect to the view with the updated data
         $document_data = DB::table($tableName)->where('doc_id', $doc_id)->first();
 
-
-
-
         return $this->documentCreationContinue(new Request([
             // 'columns' => $columns,
             // 'document' => $document,
@@ -819,82 +449,17 @@ class Admin extends Controller
             'document_data' => $document_data
         ]));
 
-
-        // return view('pages.document-creation-continue', [
-        //     'columns' => $columns,
-        //     'document' => $document,
-        //     'table_name' => $tableName,
-        //     'doc_id' => $doc_id,
-        //     'document_data' => $document_data
-        // ]);
     }
 
 
     public function view_doc_first()
     {
-
         $doc_type = Master_doc_type::get();
 
         return view('pages.view_doc_first', ['doc_type' => $doc_type]);
     }
 
-    public function view_doc_first_submit(Request $req)
-    {
-        $tableName = $req->type;
 
-        // Check if the table exists in the database
-        if (!Schema::hasTable($tableName)) {
-            session()->flash('toastr', ['type' => 'warning', 'message' => 'No such document found']);
-            return redirect('/filter-document');
-            // return redirect()->back()->with('error', 'Table does not exist.');
-        }
-
-        $document = DB::table($tableName)->get();
-
-        // Check if the table has any data
-        if ($document->isEmpty()) {
-            session()->flash('toastr', ['type' => 'warning', 'message' => 'No such document found']);
-
-            return redirect()->back()->with('error', 'No data available in the selected table.');
-        }
-
-        $columns = Schema::getColumnListing($tableName);
-
-        // If everything is fine, redirect to the review page
-        return redirect('/view_doc' . '/' . $tableName);
-    }
-
-
-
-    public function view_doc($tableName)
-    {
-        $documents = DB::table($tableName)->get();
-
-        // Loop through each document to get the doc_id and run the query
-        foreach ($documents as $document) {
-            $doc_id = $document->doc_id;
-
-            // Retrieve the Master_doc_data based on the doc_id
-            $master_doc_data = Master_doc_data::where("id", $doc_id)->first();
-
-            // Merge $master_doc_data into $document
-            if ($master_doc_data) {
-                $document->child_table_id = $document->id;
-                foreach ($master_doc_data->getAttributes() as $attribute => $value) {
-                    $document->{$attribute} = $value;
-                }
-            }
-        }
-
-        return view('pages.view_doc', ['documents' => $documents, 'tableName' => $tableName]);
-    }
-
-    // public function add_fields_first()
-    // {
-    //     $doc_type = Master_doc_type::orderBy('name')->get();
-
-    //     return view('pages.add_fields_first', ['doc_type' => $doc_type]);
-    // }
     public function document_field(Request $req, $table = null)
     {
         $doc_types = Master_doc_type::all();
@@ -915,22 +480,7 @@ class Admin extends Controller
         ]);
     }
 
-    public function edit_document($table, $id)
-    {
-        // dd(Auth::user()->type);
-        $tableName = $table;
-        $document = DB::table($tableName)->where('id', $id)->first();
-        // if($document->status == 0 && Auth::user()->type==="admin"){
-        if (Schema::hasTable($tableName)) {
-            $columns = Schema::getColumnListing($tableName);
-        }
-        $field_types = DB::table($tableName)->where('id', 1)->first();
-        // $document = DB::table($tableName)->where('id',$id)->first();
-        // dd($document);
-        return view('pages.edit_doc', ['columns' => $columns, 'field_types' => $field_types, 'document' => $document, 'table_name' => $tableName, 'id' => $id]);
-        // }
-
-    }
+ 
 
     //  * Edit Document Basic Details
     //  * 
@@ -964,25 +514,6 @@ class Admin extends Controller
             'states' => $states
         ]);
     }
-
-    // public function update_document_status(Request $req){
-    // $id = $req->id;
-    // $tableName = $req->type;
-    // if (Schema::hasTable($tableName)) {
-    //     $columns = Schema::getColumnListing($tableName);
-    // }
-
-    // $document =  DB::table($tableName)->where('id', $id)->first();
-
-    // $updateData = [];
-    // $updateData['status'] = 1;
-
-    // // Update the record in the database based on the $id (assuming an 'id' column is used for record identification)
-    // DB::table($tableName)->where('id', $id)->update($updateData);
-
-    // // Redirect back with a success message or to a different page
-    // return redirect('/reviewer/view_doc'.'/'.$tableName)->with('success', 'Document updated successfully');
-    // }
 
     public function review_doc($table, $id)
     {
@@ -1182,7 +713,7 @@ class Admin extends Controller
         return view('pages.filter-document', $data);
     }
 
-    public function dataSets()
+    public function configure()
     {
         $receiver_type_count = Receiver_type::count();
         // dd($receiver_type_count);

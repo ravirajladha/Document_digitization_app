@@ -12,7 +12,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Assigned Document</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Assign Document</a></li>
 
                     </ol>
                 </div>
@@ -68,7 +68,8 @@
                                         method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <input type="hidden" name="location" value="all">
+                                            {{-- <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="documentType" class="form-label">Document
                                                         Type</label>
@@ -83,7 +84,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="location" value="all">
+                                           
 
                                             <div class="col-md-12">
                                                 <div class="mb-3">
@@ -93,10 +94,12 @@
                                                     <select class="form-control" id="document" name="document_id"
                                                         required>
                                                         <option value="">Select Document</option>
-                                                        <!-- Options will be populated based on Document Type selection -->
+                                                    
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div> --}}
+                                            <x-document-type-select />
+
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="receiverType" class="form-label">Receiver
@@ -195,21 +198,8 @@
                                                         <td> {!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
+
                                                         {{-- @if ($user && $user->hasPermission('Update Document Assignment Status'))
-                                                            <td>
-                                                                @if ($item->status)
-                                                                    <button class="btn btn-sm btn-danger toggle-status"
-                                                                        data-id="{{ $item->id }}"
-                                                                        data-status="{{ $item->status }}">Deactivate</button>
-                                                                @else
-                                                                    <button
-                                                                        class="btn btn-sm btn-success toggle-status"
-                                                                        data-id="{{ $item->id }}"
-                                                                        data-status="{{ $item->status }}">Activate</button>
-                                                                @endif
-                                                            </td>
-                                                        @endif --}}
-                                                        @if ($user && $user->hasPermission('Update Document Assignment Status'))
                                                         <td>
                                                             <form method="POST" action="{{ route('documents.assigned.toggleStatus', $item->id) }}">
                                                                 @csrf
@@ -218,9 +208,18 @@
                                                                 </button>
                                                             </form>
                                                         </td>
-                                                    @endif
-                                                    
-                                                    </tr>
+                                                    @endif --}}
+                                                        @if ($user && $user->hasPermission('Update Document Assignment Status'))
+                                                            <td>
+                                                                <button type="button"
+                                                                    class="btn btn-sm {{ $item->status ? 'btn-danger' : 'btn-success' }}"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#confirmationModal"
+                                                                    data-action="{{ route('documents.assigned.toggleStatus', $item->id) }}">
+                                                                    {{ $item->status ? 'Deactivate' : 'Activate' }}
+                                                                </button>
+                                                            </td>
+                                                        @endif
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -239,36 +238,30 @@
 
 
 </x-app-layout>
+
+
+
+
+<div class="modal fade" id="confirmationModal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to <span id="actionType">activate/deactivate</span> this document assignment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    // Fetch documents based on the selected document type
-    function fetchDocuments(documentTypeId) {
-        $.ajax({
-            url: '/get-documents/' + documentTypeId,
-            type: 'GET',
-            success: function(response) {
-                var documentSelect = $('#document');
-                documentSelect.empty();
-
-                // Check if the response has documents
-                if (response.documents && response.documents.length > 0) {
-                    $.each(response.documents, function(key, document) {
-                        documentSelect.append(new Option(document.name, document.id));
-                    });
-                } else {
-                    // If there are no documents, show an alert and add a default 'No documents' option
-                    alert('No documents available for this document type.');
-                    documentSelect.append(new Option('No documents available', ''));
-                }
-            },
-            error: function(xhr, status, error) {
-                // Handle any Ajax errors here
-                alert('An error occurred while fetching the documents.');
-            }
-        });
-    }
-    // Fetch receivers based on the selected receiver type
-
-
     function fetchReceivers(receiverTypeId) {
         $.ajax({
             url: '/get-receivers/' + receiverTypeId,
@@ -291,61 +284,7 @@
         });
     }
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const buttons = document.querySelectorAll('.toggle-status');
-        buttons.forEach(button => {
-            button.addEventListener('click', function() {
-                const itemId = this.getAttribute('data-id');
-                const currentStatus = this.getAttribute('data-status') === '1';
 
-                fetch(`/toggle-assigned-document-status/${itemId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector(
-                                'meta[name="csrf-token"]').getAttribute('content'),
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            status: !currentStatus
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            toastr.success(
-                                `Document has been ${data.newStatus ? 'activated' : 'deactivated'}.`
-                            );
-
-                            // Update button class, text, and data-status attribute
-                            this.setAttribute('data-status', data.newStatus ? '1' : '0');
-                            if (data.newStatus) {
-                                this.classList.remove('btn-success');
-                                this.classList.add('btn-danger');
-                                this.textContent = 'Deactivate';
-                            } else {
-                                this.classList.remove('btn-danger');
-                                this.classList.add('btn-success');
-                                this.textContent = 'Activate';
-                            }
-
-                            // Update the status badge
-                            const statusCell = this.closest('tr').querySelector(
-                                'td:nth-last-child(2)');
-                            statusCell.innerHTML = data.newStatus ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-warning text-dark">Inactive</span>';
-                        } else {
-                            toastr.error('Failed to change status.');
-                        }
-                    })
-                    .catch(error => {
-                        toastr.error('An error occurred while changing status.');
-                    });
-            });
-        });
-    });
-</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var form = document.getElementById('myAjaxForm');
@@ -358,3 +297,25 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#confirmationModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var action = button.data('action'); // Extract info from data-* attributes
+            var actionType = button.text().trim();
+            var modal = $(this);
+
+            // Update the modal's content.
+            modal.find('.modal-body #actionType').text(actionType.toLowerCase());
+            modal.find('#confirmBtn').off('click').on('click', function() {
+                // Get CSRF token from meta tag
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // Submit the form with the action set to the button's data-action attribute
+                $('<form method="POST" action="' + action + '">' +
+                    '<input type="hidden" name="_token" value="' + csrfToken + '">' +
+                    '</form>').appendTo('body').submit(); +
+                '<input type="hidden" name="_method" value="POST">'
+            });
+        });
+    });
+</script>

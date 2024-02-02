@@ -309,7 +309,12 @@ $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck(
                                                                 @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliances') @endphp
 
                                                             </td>
-                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliance Recurring Status') @endphp
+
+                                                            </td>
+                                                          
                                                             <td>
 
                                                                 @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliances Status') @endphp

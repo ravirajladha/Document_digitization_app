@@ -1,30 +1,62 @@
-<div>
-    <select id="documentType" name="document_type" onchange="updateSelections('documentType', this.value)">
-        <option value="">Select Document Type</option>
-        @foreach ($documentTypes as $type)
-            <option value="{{ $type->id }}">{{ ucwords(str_replace('_', ' ', $type->name)) }}</option>
-        @endforeach
-    </select>
-
-    <select id="state" name="state_name" disabled onchange="updateSelections('state', this.value)">
-        <option value="">Select State</option>
-        <!-- Options will be populated dynamically -->
-    </select>
-
-    <select id="district" name="district_name" disabled onchange="updateSelections('district', this.value)">
-        <option value="">Select District</option>
-        <!-- Options will be populated dynamically -->
-    </select>
-    <select id="village" name="village_name" disabled onchange="updateSelections('village', this.value)">
-        <option value="">Select village</option>
-        <!-- Options will be populated dynamically -->
-    </select>
-
-    <select id="document" name="document_id" disabled>
-        <option value="">Select Document</option>
-        <!-- Options will be populated dynamically -->
-    </select>
+<div class="col-md-6">
+    <div class="mb-3">
+        <label for="documentType" class="form-label">Document Type</label>
+        <select class="form-control" id="documentType" name="document_type" onchange="updateSelections('documentType', this.value)" required>
+            <option value="">Select Document Type</option>
+            @foreach ($documentTypes as $type)
+                <option value="{{ $type->id }}">{{ ucwords(str_replace('_', ' ', $type->name)) }}</option>
+                {{-- <option value="{{ $type->id }}">{{  $type->id }}</option> --}}
+            @endforeach
+        </select>
+    </div>
 </div>
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label for="state" class="form-label">State</label>
+        <select class="form-control" id="state" name="state_name" disabled onchange="updateSelections('state', this.value)" required>
+            <option value="">Select State</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label for="district" class="form-label">District</label>
+        <select class="form-control" id="district" name="district_name" disabled onchange="updateSelections('district', this.value)" required>
+            <option value="">Select District</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="mb-3">
+        <label for="village" class="form-label">Village</label>
+        <select class="form-control" id="village" name="village_name" disabled onchange="updateSelections('village', this.value)" required>
+            <option value="">Select Village</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="mb-3">
+        <label for="document" class="form-label">Document </label> 
+        <div class="bootstrap-popover d-inline-block float-end">
+            <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body"
+                data-bs-toggle="popover" data-bs-placement="top"
+                data-bs-content="The document name gets filter on select of Document Type -> State -> District -> Village and the Document should be approved. "
+                title="Document Name Mandatory"><i class="fas fa-info-circle"></i></button>
+        </div>
+        <select class="form-control" id="document" name="document_id" disabled required>
+            <option value="">Select Document</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+</div>
+
 
 <script>
     function updateSelections(type, value) {
@@ -85,12 +117,6 @@
 
         // Append additional data to the URL as query parameters if needed
 
-
-
-
-
-
-
         let queryString = '';
         if (Object.keys(additionalData).length > 0) {
             queryString = Object.keys(additionalData).map(key => {
@@ -128,7 +154,6 @@
         dropdown.disabled = true; // Disable dropdown
     }
 
-
     function populateDropdown(targetId, data) {
         const dropdown = document.getElementById(targetId);
         dropdown.innerHTML = `<option value="">Select ${targetId.charAt(0).toUpperCase() + targetId.slice(1)}</option>`;
@@ -137,25 +162,29 @@
             alert('No documents available for the selected criteria.');
             return;
         }
-
-
+console.log(targetId);
         data.forEach(item => {
             // If the item has a comma, split it into separate villages
+            if (item && item.name) {
             if (item.name.includes(',')) {
                 let villages = item.name.split(',');
                 villages.forEach(village => {
                     dropdown.innerHTML +=
                     `<option value="${village.trim()}">${village.trim()}</option>`;
                 });
-            } else {
+            } else if(targetId=="document") {
+                console.log("here" ,item.document_id );
+                dropdown.innerHTML += `<option value="${item.document_id}">${item.name}</option>`;
+            }else{
+                console.log("here1" ,item.name );
                 dropdown.innerHTML += `<option value="${item.name}">${item.name}</option>`;
+                
             }
+        }
         });
 
         dropdown.disabled = false; // Enable dropdown
     }
-
-
 
     // Call this function when the document is loaded or when a specific action occurs
     function initializeSelections() {

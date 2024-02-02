@@ -22,14 +22,15 @@ class Document extends Controller
         $this->bulkUploadService = $bulkUploadService;
     }
 
-    public function getDocumentsByType($typeId) {
+    public function getDocumentsByType($typeId)
+    {
         $documents = Master_doc_data::where('document_type', $typeId)->where('status_id', 1)->get();
         return response()->json(['documents' => $documents]);
     }
 
     public function bulkUploadMasterData()
     {
-   
+
         $doc_type = Master_doc_type::get();
         $sets = Set::get();
         $states = State::all();
@@ -44,29 +45,29 @@ class Document extends Controller
             'document' => 'required|file|mimes:csv,txt',
         ]);
 
-        
+
         $path = $request->file('document')->getRealPath();
-        $stats =$this->bulkUploadService->handleUpload($path);
-   
+        $stats = $this->bulkUploadService->handleUpload($path);
+
 
         // Format your message
         $message = "Total rows processed: {$stats['total']},";
         $message .= "Inserted: {$stats['inserted']},";
-        $message .= "Updated: {$stats['updated']}"; 
+        $message .= "Updated: {$stats['updated']}";
         // dd($message);
         try {
             // Call the service to handle the file upload.
-          
+
 
             session()->flash('toastr.type', 'success');
             session()->flash('toastr.message', $message);
-            
+
             // Redirect with a success message.
             return redirect()->back();
         } catch (\Exception $e) {
             session()->flash('toastr.type', 'error');
             session()->flash('toastr.message', 'Failed to upload documents: ' . $e->getMessage());
-            
+
             return redirect()->back();
         }
     }
@@ -85,80 +86,81 @@ class Document extends Controller
 
         // $path = $request->file('document')->getRealPath();
         // dd($path);
-        $stats =$this->bulkUploadService->handleChildUpload($path);
+        $stats = $this->bulkUploadService->handleChildUpload($path);
         session()->flash('toastr.type', 'success');
         session()->flash('toastr.message', "Data uploaded successfully.");
-        
+
         // Redirect with a success message.
         return redirect()->back();
-
-     
     }
 
     public function fetchData(Request $request, $type, $id)
-{
-    $query = DB::table('Master_doc_datas');
-    \Log::info('Received type:', ['type' => $type]);
-    \Log::info('Received id:', ['id' => $id]);
-    \Log::info('Received doc_type_id:', ['doc_type_id' => $request->query('doc_type_id')]); // Use query() method
-    switch ($type) {
-        case 'states':
-            $data = $query->where('document_type', $id)
-                          ->distinct()
-                          ->get(['current_state as name']); // Get unique states for the document type
-                        
+    {
+        $query = DB::table('Master_doc_datas');
+        \Log::info('Received type:', ['type' => $type]);
+        \Log::info('Received id:', ['id' => $id]);
+        \Log::info('Received doc_type_id:', ['doc_type_id' => $request->query('doc_type_id')]); // Use query() method
+        switch ($type) {
+            case 'states':
+                $data = $query->where('document_type', $id)
+                    ->distinct()
+                    ->get(['current_state as name']); // Get unique states for the document type
 
-            break;
-        case 'districts':
-            $docTypeId = $request->query('doc_type_id');
-            if (is_null($docTypeId)) {
-                \Log::warning('doc_type_id is missing for districts request.');
-                return response()->json(['error' => 'Document type ID is required'], 400);
-            }
 
-            $data = $query->where('document_type', $request->doc_type_id)
-                          ->where('current_state', $id) // $id here is the state name passed from the frontend
-                          ->distinct()
-                          ->get(['current_district as name']); // Get unique districts
-            break;
-        case 'villages':
-            $data = $query->where('document_type', $request->doc_type_id)
-                          ->where('current_state', $request->state_name)
-                          ->where('current_district', $id) // $id here is the district name passed from the frontend
-                          ->distinct()
-                          ->get(['current_village as name']); // Get villages
+                break;
+            case 'districts':
+                $docTypeId = $request->query('doc_type_id');
+                if (is_null($docTypeId)) {
+                    \Log::warning('doc_type_id is missing for districts request.');
+                    return response()->json(['error' => 'Document type ID is required'], 400);
+                }
 
-                          $villageNames = $data->flatMap(function ($item) {
-                            return explode(',', $item->name); // Split by comma and return the parts
-                        })->unique()->values()->all();
-                    
-                        $results = collect($villageNames)->map(function ($name) {
-                            return ['id' => $name, 'name' => $name];
-                        });
-                    
-                        return response()->json($results);
+                $data = $query->where('document_type', $request->doc_type_id)
+                    ->where('current_state', $id) // $id here is the state name passed from the frontend
+                    ->distinct()
+                    ->get(['current_district as name']); // Get unique districts
+                break;
+            case 'villages':
+                $data = $query->where('document_type', $request->doc_type_id)
+                    ->where('current_state', $request->state_name)
+                    ->where('current_district', $id) // $id here is the district name passed from the frontend
+                    ->distinct()
+                    ->get(['current_village as name']); // Get villages
 
-            break;
-        case 'documents':
-            $data = $query->where('document_type', $request->doc_type_id)
-                          ->where('current_state', $request->state_name)
-                          ->where('current_district', $request->district_name)
-                          ->where('current_village', 'like', '%' . $id . '%')
-                          ->where('status_id', 1) // $id here is the village name passed from the frontend
-                          ->get(['name as name']); // Get documents
-            break;
-        default:
-            return response()->json([]);
+                $villageNames = $data->flatMap(function ($item) {
+                    return explode(',', $item->name); // Split by comma and return the parts
+                })->unique()->values()->all();
+
+                $results = collect($villageNames)->map(function ($name) {
+                    return ['id' => $name, 'name' => $name];
+                });
+
+                return response()->json($results);
+
+                break;
+            case 'documents':
+                $data = $query->where('document_type', $request->doc_type_id)
+                    ->where('current_state', $request->state_name)
+                    ->where('current_district', $request->district_name)
+                    ->where('current_village', 'like', '%' . $id . '%')
+                    ->where('status_id', 1)
+                    ->get(['id as document_id', 'name as name']);
+
+
+                $results = $data->map(function ($item) {
+                    return ['document_id' => $item->document_id, 'name' => $item->name];
+                });
+                return response()->json($results);
+
+                break;
+            default:
+                return response()->json([]);
+        }
+        \Log::info('Data being returned:', ['data' => $data]);
+        $results = $data->map(function ($item) {
+            return ['id' => $item->name, 'name' => $item->name];
+        });
+
+        return response()->json($results);
     }
-    \Log::info('Data being returned:', ['data' => $data]);
-    $results = $data->map(function ($item) {
-        return ['id' => $item->name, 'name' => $item->name];
-    });
-
-    return response()->json($results);
-}
-
-    
-   
-  
 }

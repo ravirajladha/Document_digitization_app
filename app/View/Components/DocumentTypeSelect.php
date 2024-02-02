@@ -16,9 +16,12 @@ class DocumentTypeSelect extends Component
 
     public function __construct()
     {
-        $this->documentTypes = Master_doc_type::all(); // Fetch all document types
+        // $this->documentTypes = Master_doc_type::all();
+        $this->documentTypes = Master_doc_type::orderBy('name')->get();
+      
+        // Fetch all document types
     }
-
+  
 
     /**
      * Get the view / contents that represent the component.

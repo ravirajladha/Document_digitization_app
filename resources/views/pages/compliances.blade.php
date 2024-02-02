@@ -33,7 +33,7 @@
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
-                                              {{--
+                                            {{--
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="documentType" class="form-label">Document
@@ -66,7 +66,7 @@
                                             </div>
  --}}
 
- <x-document-type-select />
+                                            <x-document-type-select />
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="document" class="form-label">Name</label>
@@ -104,7 +104,7 @@
                                 <div id="loader" style="display: none;">
                                     Loading...
                                 </div>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Form</button>
+                                <button type="submit" class="btn btn-success" id="submitBtn">Submit Form</button>
                             </div>
                             </form>
                         </div>
@@ -135,14 +135,14 @@
                                                     <th scope="col">Document Name </th>
                                                     <th scope="col">Due Date</th>
                                                     <th scope="col">Is Recurring </th>
-
+                                                    
                                                     {{-- <th scope="col">Status </th> --}}
                                                     @if ($user && $user->hasPermission('Update Compliances Status'))
-                                                        <th scope="col">Action </th>
+                                                    <th scope="col">Submit </th>
                                                     @endif
-
-
-
+                                                    @if ($user && $user->hasPermission('Update Compliance Recurring Status'))
+                                                    <th scope="col">Is Recurring Action</th>
+@endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -156,10 +156,9 @@
                                                         <td>{{ $item->document->name }}</td>
                                                         <td>{{ date('d-m-Y', strtotime($item->due_date)) }}</td>
 
-
                                                         <td> {!! $item->is_recurring
                                                             ? '<span class="badge bg-success">Yes</span>'
-                                                            : '<span class="badge bg-warning text-dark">Not</span>' !!}</td>
+                                                            : '<span class="badge bg-danger">No</span>' !!}</td>
                                                         {{-- <td class="status-cell">
                                                             @switch($item->status)
                                                                 @case(0)
@@ -173,32 +172,39 @@
                                                                     @break
                                                             @endswitch
                                                         </td> --}}
-
                                                         <!-- ... other cells ... -->
+
                                                         @if ($user && $user->hasPermission('Update Compliances Status'))
                                                             <td class="action-cell" style="padding:0 0">
                                                                 <!-- Action buttons based on status -->
                                                                 @if ($item->status == 0)
-                                                                    <!-- Show buttons only if status is Pending -->
-                                                                    <button
-                                                                        class="btn btn-sm btn-success toggle-status"
-                                                                        data-id="{{ $item->id }}"
-                                                                        data-action="settle"><i
-                                                                            class="fas fa-thumbs-up" title="Click to Settle the Compliances"></i></button>
-                                                                    <button class="btn btn-sm btn-danger toggle-status"
-                                                                        data-id="{{ $item->id }}"
-                                                                        data-action="cancel" title="Click to Cancel the Compliances"><i
-                                                                            class="fas fa-cancel"></i></button>
+                                                                <!-- Show buttons only if status is Pending -->
+                                                                <button class="btn btn-sm btn-success toggle-status"
+                                                                data-id="{{ $item->id }}"
+                                                                data-action="settle"><i class="fas fa-thumbs-up"
+                                                                title="Click to Settle the Compliances"></i></button>
+                                                                <button class="btn btn-sm btn-danger toggle-status"
+                                                                data-id="{{ $item->id }}"
+                                                                data-action="cancel"
+                                                                title="Click to Cancel the Compliances"><i
+                                                                class="fas fa-cancel"></i></button>
                                                                 @elseif($item->status == 1)
-                                                                    <span class="badge bg-success">Settled</span>
+                                                                <span class="badge bg-success" title="Click to Settle the Compliance Status">Settled</span>
                                                                 @elseif($item->status == 2)
-                                                                    <span class="badge bg-danger">Cancelled</span>
+                                                                <span class="badge bg-danger" title="Click to Cancel the Compliance Status">Cancelled</span>
                                                                 @else
-                                                                    <span class="badge bg-success">Unknown data</span>
+                                                                <span class="badge bg-success">Unknown data</span>
                                                                 @endif
                                                             </td>
-                                                        @endif
-                                                    </tr>
+                                                            @endif
+                                                            @if ($user && $user->hasPermission('Update Compliance Recurring Status'))
+                                                            <td>
+                                                                <button type="button" title="{{  $item->is_recurring ? 'Click to disable the recurring status of the Compliance' : 'Click to activate the Recurring Status of the Compliance' }}"  class="btn btn-sm {{ $item->is_recurring ? 'btn-danger' : 'btn-success' }}" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-action="{{ route('compliances.isRecurring.toggle', $item->id) }}">
+                                                                    {{ $item->is_recurring ? 'Deactivate' : 'Activate' }}
+                                                                </button>
+                                                            </td>
+                                                            @endif
+                                                        </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -213,6 +219,25 @@
         </div>
     </div>
 
+    {{-- modal starts for making the is_recurring of the complainces activate and deactivate --}}
+    <div class="modal fade" id="confirmationModal" >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">Confirm Action</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to <span id="actionType">activate/deactivate</span> this compliances Is Recurring Status?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
     @include('layouts.footer')
 
 
@@ -295,7 +320,7 @@
                                 `The item has been ${action}ed.`,
                                 'success'
                             );
-                // location.reload(true);
+                            // location.reload(true);
 
                             updateTableRow(itemId, data.newStatus);
                             // Optionally, refresh the page or update the DOM as needed
@@ -341,3 +366,29 @@
         }
     }
 </script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#confirmationModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var action = button.data('action'); // Extract info from data-* attributes
+            var actionType = button.text().trim();
+            var modal = $(this);
+
+            // Update the modal's content.
+            modal.find('.modal-body #actionType').text(actionType.toLowerCase());
+            modal.find('#confirmBtn').off('click').on('click', function() {
+                // Get CSRF token from meta tag
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // Submit the form with the action set to the button's data-action attribute
+                $('<form method="POST" action="' + action + '">' +
+                    '<input type="hidden" name="_token" value="' + csrfToken + '">' +
+                    '</form>').appendTo('body').submit(); +
+                '<input type="hidden" name="_method" value="POST">'
+            });
+        });
+    });
+</script>
+

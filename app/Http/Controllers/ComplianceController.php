@@ -38,6 +38,7 @@ class ComplianceController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
 
         try {
             $validatedData = $request->validate([
@@ -111,24 +112,28 @@ class ComplianceController extends Controller
 
 
 
-    private function createNotification($type, Compliance $compliance)
+  
+    public function toggleIsRecurring(Request $request, $id)
     {
-        if ($type == "created") {
-            $message = "A compliance has been {$type} named {$compliance->name}";
-        } elseif ($type = "updated") {
-            if ($compliance->status == 1) {
-                $status = "Settled";
-            } else {
-                $status = "Cancelled";
-            }
-            $message = "A compliance has been {$type} named {$compliance->name} with {$status} ";
+        $compliance = Compliance::findOrFail($id);
+    
+        // Deactivate the compliance
+        if ($compliance->is_recurring) {
+            $compliance->is_recurring = 0;
+            $compliance->save();
+            session()->flash('toastr', ['type' => 'error', 'message' => 'Compliance recurring deactivated successfully.']);
+            return redirect()->back()->with('success', 'Compliance deactivated successfully.');
         }
-
-        Notification::create([
-            'type' => $type,
-            'message' => $message,
-            'compliance_id' => $compliance->id,
-            'created_by' => Auth::user()->id
-        ]);
+    
+        // Reactivate the compliance - update OTP and expiry
+        else {
+           
+            $compliance->is_recurring = 1; // Set status to active
+            $compliance->save();
+    
+            session()->flash('toastr', ['type' => 'success', 'message' => 'Compliance recurring reactivated successfully.']);
+            return redirect()->back()->with('success', 'Compliance recurring reactivated successfully.');
+        }
     }
+
 }

@@ -150,6 +150,7 @@ class DatabaseSeeder extends Seeder
             
             ['name' => 'notifications.compliances', 'display_name' => 'View Compliance Notifications', 'action' => 2],
             ['name' => 'notifications.recipients', 'display_name' => 'View Recipient Notifications', 'action' => 2],
+            ['name' => 'compliances.isRecurring.toggle', 'display_name' => 'Update Compliance Recurring Status', 'action' => 3],
         ];
 
    
