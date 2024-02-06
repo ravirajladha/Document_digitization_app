@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Document;
 
-use App\Http\Controllers\{NotificationController,ReceiverController,DocumentController,SetController,UserController,ComplianceController,Dashboard,Receiver_process,ProfileController};
+use App\Http\Controllers\{NotificationController,ReceiverController,DocumentController,SetController,UserController,ComplianceController,Dashboard,Receiver_process,ProfileController,FilterDocumentController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +30,7 @@ Route::post('/verify-document/{token}', [Receiver_process::class, 'verifyOtp'])-
 Route::post('/send-otp', [Receiver_process::class, 'sendOTP'])->name('otp.send');
 
 
-Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function () {
+Route::middleware(['auth', 'verified', 'checkuserpermission','xss-protection'])->group(function () {
     Route::get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -90,7 +90,8 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
     // Route::get('/add_fields_first', [DocumentController::class, 'add_fields_first'])->name('fields.create_first_step');
     Route::post('/add_document_field', [DocumentController::class, 'add_document_field'])->name('document_fields.store');
     Route::get('/document_field/{table?}', [DocumentController::class, 'document_field'])->name('document_fields.view');
-
+//update dynamic document field name
+Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 'updateDocumentFieldName'])->name('updateDocumentFieldName.update');
     //documents
     Route::post('/add_document', [DocumentController::class, 'add_document'])
         ->name('documents.store');
@@ -124,7 +125,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission'])->group(function (
         ->name('documents.updateStatus');
 
     //view documents
-    Route::get('/filter-document', [DocumentController::class, 'filterDocument'])
+    Route::get('/filter-document', [FilterDocumentController::class, 'filterDocument'])
         ->name('documents.filter');
     // Route::get('/view_doc_first', [DocumentController::class, 'view_doc_first'])
     // ->name('documents.view.first');

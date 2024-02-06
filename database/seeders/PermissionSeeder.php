@@ -83,6 +83,7 @@ class PermissionSeeder extends Seeder
             // ['name' => 'fields.create_first_step', 'display_name' => 'View Document Fields ', 'action' => 2],
             ['name' => 'document_fields.view', 'display_name' => 'View Document Fields', 'action' => 2],
             ['name' => 'document_fields.store', 'display_name' => 'Add Document Fields', 'action' => 1],
+            ['name' => 'updateDocumentFieldName.update', 'display_name' => 'Update Document Fields', 'action' => 3],
 
             //configure
             ['name' => 'configure', 'display_name' => 'Configure', 'action' => 2],

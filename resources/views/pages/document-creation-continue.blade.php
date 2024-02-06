@@ -35,7 +35,7 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h3>Document Type: {{ $table_name }}</h3>
+                                            <h3>Document Type: {{ ucwords(str_replace('_', ' ', $table_name)) }}</h3>
                                             <div class="form theme-form projectcreate">
                                                 <div class="row">
                                                     <input type="hidden" value="{{ $table_name }}" name="type">

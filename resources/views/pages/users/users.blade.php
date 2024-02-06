@@ -225,7 +225,11 @@ $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck(
                                                                 @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Fields') @endphp
 
                                                             </td>
-                                                            <td></td>
+                                                            <td>
+
+                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Fields') @endphp
+
+                                                            </td>
                                                             <td></td>
                                                         </tr>
                                                         <tr>

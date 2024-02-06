@@ -14,7 +14,7 @@
                         <div class="row page-titles">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0)">Basic Fields Detail</a>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">Basic Document Form</a>
                                 </li>
                             </ol>
                         </div>
@@ -33,20 +33,35 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="basic-form">
-                                              
+                                                @if ($errors->any())
+                                                <div class="alert alert-danger">
+                                                    <ul>
+                                                        @foreach ($errors->all() as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                            
                                                     <input type="number" name="id" class="form-control"
                                                         value="{{ $document->id }}" hidden>
 
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Select Type *</label>
-                                                            <select class="form-select form-control"
-                                                                aria-label="Default select example" name="type"
-                                                                required>
+                                                         
 
-                                                                <option value="{{ $document->document_type_name }}">
-                                                                    {{ $document->document_type_name }}</option>
+                                                            <select class="form-select form-control" aria-label="Default select example" name="type" required disabled>
+                                                                @foreach ($doc_type as $item)
+                                                                    <option value="{{ $item->id }}|{{ $item->name }}" {{ $document->document_type == $item->id ? 'selected' : '' }}>
+                                                                        {{ ucWords(str_replace('_', ' ', $item->name)) }}
+                                                                    </option>
+                                                                @endforeach
                                                             </select>
+                                                            
+<!-- Hidden input to store the actual value since the select is disabled -->
+<input type="hidden" name="type" value="{{ $document->document_type }}|{{ $document->document_type_name }}">
+                                                            
                                                         </div>
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Name</label>

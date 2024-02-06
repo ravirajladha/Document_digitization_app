@@ -34,6 +34,16 @@
                               
 
                                     <div class="row">
+                                        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Select Document Type <span
                                                 class="text-danger">*</span></label>
@@ -69,7 +79,7 @@
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Current State</label>
                                             <select id="single-select-abc2" name="current_state"  class="default-select form-control ">
-                                                <option selected disabled>Choose State...</option>
+                                                <option selected disabled >Choose State...</option>
                                                 @foreach($states as $state)
                                                 <option value="{{ $state->name }}">{{ $state->name }}</option>
                                             @endforeach

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('master_doc_datas', function (Blueprint $table) {
             $table->id();
-            $table->string('temp_id')->unique()->nullable();
+            $table->string('temp_id')->nullable();
             $table->string('name')->nullable();
             $table->string('location')->nullable();
             $table->unsignedBigInteger('locker_id')->nullable();

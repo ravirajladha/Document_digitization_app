@@ -27,6 +27,19 @@
 
                     </div>
                 </div>
+                @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+
             
                 <div class="container-fluid">
                     <div class="row">
@@ -51,6 +64,10 @@
                                                     <th scope="col">Sl No.</th>
                                                     <th scope="col">Field name</th>
                                                     <th scope="col">Field type</th>
+                                    @if($user && $user->hasPermission('Update Document Fields'))
+
+                                                    <th scope="col">Action</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -88,6 +105,14 @@
                                                                     Unknown
                                                             @endswitch
                                                         </td>
+                                    @if($user && $user->hasPermission('Update Document Fields'))
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                                    data-bs-target="#editFieldNameModal{{ $column->column_name }}">
+                                                                    <i class="fas fa-pencil-square"></i>&nbsp;  Edit
+                                                            </button>
+                                                        </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -102,6 +127,40 @@
             </div>
         </div>
     </div>
+
+
+    @foreach ($columnDetails as $index => $column)
+    <!-- Edit Field Name Modal -->
+    <div class="modal fade" id="editFieldNameModal{{  $column->column_name }}" tabindex="-1" aria-labelledby="editFieldNameModalLabel{{ $column->column_name }}"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFieldNameModalLabel{{  $column->column_name }}">Edit Field Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Include the table name in the form action -->
+                <form action="{{ url('/') }}/edit_document_field/{{ $tableName }}/{{  $column->column_name }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="fieldName" class="form-label">New Field Name  <span class="text-danger">*</span></span></label>
+                            <input type="text" class="form-control" name="newFieldName"
+                                   id="fieldName" placeholder="Enter New Field Name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
+    
+
 
      <!-- Modal -->
      <div class="modal fade" id="addDocumentTypeModal" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
@@ -118,15 +177,15 @@
                  value="{{ ucwords($tableName) }}">
                  <div class="modal-body">
                       <div class="mb-3">
-                            <label for="documentType" class="form-label">Fields Name</label>
+                            <label for="documentType" class="form-label">Fields Name  <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="fields[]"
                             id="exampleInputEmail1" aria-describedby="emailHelp"
                             placeholder="Enter Field Name" required>
                         </div>
                       <div class="mb-3">
-                            <label for="documentType" class="form-label">Field Type</label>
+                            <label for="documentType" class="form-label">Field Type  <span class="text-danger">*</span></label>
                             <select class="form-select form-control"
-                            aria-label="Default select example" name="field_type">
+                            aria-label="Default select example" name="field_type" required>
                             <option selected disabled>--Select Any--</option>
                             <option value="1">Text</option>
                             <option value="2">Number</option>
