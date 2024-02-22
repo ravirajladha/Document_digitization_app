@@ -10,8 +10,9 @@
             <div class="row page-titles">
 
                 <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                    <li class="breadcrumb-item "><a href="javascript:void(0)">View Document</a></li>
+                    <li class="breadcrumb-item "><a href="/filter-document">View Document</a></li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">All Document</a></li>
                 </ol>
 
@@ -23,7 +24,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">View Documents for set: {{ $get_set_detail->name }} </h4>
+                                <h4 class="card-title">View Documents for Set: {{ $get_set_detail->name }} </h4>
                             
                             </div>
                             <div class="card-body">
@@ -38,7 +39,7 @@
                                                         <label class="form-check-label" for="checkAll"></label>
                                                     </div>
                                                 </th> --}}
-                                                <th scope="col">Sl no</th>
+                                                <th scope="col">Sl. No.</th>
                                                 <th scope="col">Document Name</th>
                                                 <th scope="col">Document Type</th>
                                                

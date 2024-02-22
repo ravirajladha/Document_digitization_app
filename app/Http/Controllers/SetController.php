@@ -13,7 +13,8 @@ class SetController extends Controller
 {
     public function viewSet()
     {
-        $data = Set::all();
+        $data = Set::orderBy('created_at', 'desc')->get();
+        
 
         // Initialize an empty array to hold the counts
         $setCounts = [];
@@ -38,7 +39,7 @@ class SetController extends Controller
 
 
         // Pass the counts and the set data to the view
-        return view('pages.data-sets.set', [
+        return view('pages.set', [
             'data' => $data,
             'setCounts' => $setCounts
         ]);

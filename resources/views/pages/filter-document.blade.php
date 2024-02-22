@@ -138,7 +138,7 @@
                                             </div>
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">Locker No</label>
+                                            <label class="form-label">Locker Number</label>
                                             <input type="number" name="locker_no" class="form-control"
                                                 placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
                                         </div>
@@ -213,7 +213,7 @@
                                                         <label class="form-check-label" for="checkAll"></label>
                                                     </div>
                                                 </th> --}}
-                                        <th scope="col">Sl no</th>
+                                        <th scope="col">Sl. No.</th>
                                         <th scope="col">Document Name</th>
                                         <th scope="col">Document Type</th>
                                         <th scope="col">Village</th>

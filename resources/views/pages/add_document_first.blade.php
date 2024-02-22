@@ -14,8 +14,9 @@
         <div class="page-body">
             <div class="row page-titles">
                 <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Basic Fields Detail</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Basic Document Form</a></li>
                 </ol>
             </div>
     </div>
@@ -56,8 +57,9 @@
                                         </select>
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label">Name</label>
-                                            <input type="text" name="name" class="form-control" placeholder="Enter Name">
+                                            <label class="form-label">Name <span
+                                                class="text-danger">*</span></label>
+                                            <input type="text" name="name" class="form-control" placeholder="Enter Name" required>
                                         </div>
                                         {{-- <div class="mb-3 col-md-6"> --}}
                                             {{-- <label class="form-label">Temp Id</label> --}}

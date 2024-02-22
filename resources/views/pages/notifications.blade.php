@@ -54,7 +54,7 @@
                                             </span>
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Notificattion </th>
                                                     <th scope="col"> Date</th>
                                                     <th scope="col">View Document </th>

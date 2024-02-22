@@ -61,7 +61,7 @@
                                         <table id="example3" class="display" style="min-width: 845px">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl No.</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Field name</th>
                                                     <th scope="col">Field type</th>
                                     @if($user && $user->hasPermission('Update Document Fields'))
@@ -145,9 +145,14 @@
                     @method('PUT')
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="fieldName" class="form-label">New Field Name  <span class="text-danger">*</span></span></label>
+                            <label for="fieldName" class="form-label">Update Field Name  <span class="text-danger">*</span></span></label>  <div class="bootstrap-popover d-inline-block float-end mb-2">
+                                <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body"
+                                    data-bs-toggle="popover" data-bs-placement="top"
+                                    data-bs-content="Provide the Document Field without any space, sepereated thorugh underscore. It would work other way, but, mostly preferred without space."
+                                    title="Verification Guidelines"><i class="fas fa-info-circle"></i></button>
+                            </div>
                             <input type="text" class="form-control" name="newFieldName"
-                                   id="fieldName" placeholder="Enter New Field Name" required>
+                                   id="fieldName" placeholder="Enter Updated Field Name" value="{{  $column->column_name }}" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -184,8 +189,7 @@
                         </div>
                       <div class="mb-3">
                             <label for="documentType" class="form-label">Field Type  <span class="text-danger">*</span></label>
-                            <select class="form-select form-control"
-                            aria-label="Default select example" name="field_type" required>
+                            <select class="form-select form-control" aria-label="Default select example" name="field_type" required>
                             <option selected disabled>--Select Any--</option>
                             <option value="1">Text</option>
                             <option value="2">Number</option>

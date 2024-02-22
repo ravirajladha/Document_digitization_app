@@ -129,7 +129,7 @@
                                             @endif
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Document Type </th>
                                                     <th scope="col">Document Name </th>

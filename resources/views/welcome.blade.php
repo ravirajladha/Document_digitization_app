@@ -28,7 +28,7 @@
             <div class="form-group mb-sm-4 mb-1">
                 <div class="form-check custom-checkbox ms-1">
                     <input id="remember_me" type="checkbox"  class="form-check-input" id="basic_checkbox_1" name="remember" >
-                    <label class="form-check-label" for="basic_checkbox_1">Remember my preference</label>
+                    <label class="form-check-label" for="basic_checkbox_1">Remember me</label>
                     {{-- <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span> --}}
                 </div>
             </div>

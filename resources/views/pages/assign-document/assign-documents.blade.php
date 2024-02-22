@@ -164,7 +164,7 @@
 
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Receiver Name</th>
                                                     <th scope="col">Receiver Type</th>
                                                     <th scope="col">Document Name </th>

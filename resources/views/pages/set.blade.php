@@ -10,7 +10,7 @@
             <div class="page-body">
                 <div class="row page-titles">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
 
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Set</a></li>
                     </ol>
@@ -39,7 +39,7 @@
 
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Number of Documents</th>
                                                     @if ($user && $user->hasPermission('View Documents from Sets'))
@@ -54,12 +54,12 @@
                                                 @foreach ($data as $index => $item)
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
-                                                        <td>{{ $item->name }}</td>
+                                                        <td>{{ucwords($item->name) }}</td>
                                                         <td>{{ $setCounts[$item->id] ?? 0 }}</td>
                                                         <!-- Display the count for each set -->
                                                         @if ($user && $user->hasPermission('View Documents from Sets'))
                                                             <td><a href="/documents-for-set/{{ $item->id }}"><button
-                                                                        class="btn btn-primary edit-btn"><i
+                                                                        class="btn btn-secondary edit-btn"><i
                                                                             class="fas fa-eye"></i>&nbsp;View</button></a>
                                                             </td>
                                                         @endif
@@ -91,10 +91,11 @@
                                                         <!-- Update Form -->
                                                         <form id="updateSetForm">
                                                             <div class="mb-3">
-                                                                <label for="setName" class="form-label">Set
-                                                                    Name</label>
+                                                                <label for="setName" class="form-label">Update Set
+                                                                    Name&nbsp;<span
+                                                                    class="text-danger">*</span></label>
                                                                 <input type="text" class="form-control"
-                                                                    id="setName" name="name">
+                                                                    id="setName" name="name" required>
                                                                 <input type="hidden" id="setId" name="id">
                                                             </div>
                                                         </form>
@@ -133,9 +134,10 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="documentType" class="form-label">Set</label>
+                            <label for="documentType" class="form-label">Enter Set Name&nbsp;<span
+                                class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="name" id="exampleInputEmail1"
-                                aria-describedby="emailHelp" placeholder="Enter Set Name">
+                                aria-describedby="emailHelp" placeholder="Enter Set Name" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -176,6 +178,8 @@
                         toastr.success(response.success); // Display success toast
                     }
                     loadUpdatedSets();
+                location.reload(true);
+                    
                     $('#myAjaxForm')[0].reset();
                 },
                 error: function(error) {
@@ -204,7 +208,7 @@
                         '<td>' + set.name + '</td>' +
                         '<td>' + (set.count ?? 0) + '</td>' + // Display the count for each set
                         '<td><a href="/documents-for-set/' + set.id +
-                        '"><button class="btn btn-primary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
+                        '"><button class="btn btn-secondary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
                         '<td> <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-set-id="' +
                         set.id + '" data-set-name="' + set.name +
                         '"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>' +
@@ -242,6 +246,8 @@
             success: function(response) {
                 // Handle success (e.g., close modal, show message, update table)
                 toastr.success(response.success);
+                location.reload(true);
+
                 loadUpdatedSets();
             },
             error: function(error) {

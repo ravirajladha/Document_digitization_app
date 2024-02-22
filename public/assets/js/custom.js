@@ -239,6 +239,16 @@
 			}
 		});
 	}
+	// var handleshowPass1 = function(){
+	// 	jQuery('.show-pass1').on('click',function(){
+	// 		jQuery(this).toggleClass('active');
+	// 		if(jQuery('#dlab-password1').attr('type') == 'password'){
+	// 			jQuery('#dlab-password1').attr('type','text');
+	// 		}else if(jQuery('#dlab-password1').attr('type') == 'text'){
+	// 			jQuery('#dlab-password1').attr('type','password');
+	// 		}
+	// 	});
+	// }
 	
 	var heartBlast = function (){
 		$(".heart").on("click", function() {
@@ -469,7 +479,8 @@
 			handleChatbox();
 			handleBtnNumber();
 			handleDzChatUser();
-			handleshowPass();
+			// handleshowPass();
+			// handleshowPass1();
 			heartBlast();
 			handleLightgallery();
 			handleCustomFileInput();

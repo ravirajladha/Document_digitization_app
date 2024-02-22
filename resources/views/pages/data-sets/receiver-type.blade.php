@@ -56,7 +56,7 @@
 
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Action</th>
                                                 </tr>

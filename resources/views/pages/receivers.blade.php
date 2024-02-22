@@ -41,15 +41,15 @@
 
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Phone</th>
                                                     <th scope="col">City</th>
                                                     <th scope="col">Email Id</th>
                                                     <th scope="col">Type</th>
-                                                    <th scope="col">Count</th>
-                                                    <th scope="col">View</th>
+                                                    <th scope="col">No. of Document</th>
                                                     <th scope="col">Status</th>
+                                                    <th scope="col">View Assigned Documents</th>
                                                     @if ($user && $user->hasPermission('Update Receivers'))
                                                         <th scope="col">Action</th>
                                                     @endif
@@ -69,17 +69,18 @@
                                                         <td>{{ optional($item->receiverType)->name }}</td>
                                                         <td> {{ $item->document_assignments_count }}
                                                         </td>
-                                                        <td> <a href="/user-assign-documents/{{ $item->id }}"><u><b><span
-                                                                            class="badge bg-secondary">{{ $item->document_assignments_count }}</span></b></u></a>
-                                                        </td>
+                                                     
                                                         <td>{!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
-
+   <td> <a href="/user-assign-documents/{{ $item->id }}" title="View Assigned Documents"><u><b><span
+    class="btn btn-secondary btn-sm edit-btn"><i
+    class="fas fa-eye"></i></span></b></u></a>
+</td>
                                                         <!-- Assuming you have a relation to get the receiver type name -->
                                                         @if ($user && $user->hasPermission('Update Receivers'))
                                                             <td>
-                                                                <button class="btn btn-primary btn-sm edit-btn"
+                                                                <button title="Edit Reciever" class="btn btn-primary btn-sm edit-btn"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#exampleModalCenter"
                                                                     data-receiver-id="{{ $item->id }}"
@@ -89,17 +90,17 @@
                                                                     data-receiver-email="{{ $item->email }}"
                                                                     data-receiver-type-id="{{ $item->receiver_type_id }}"
                                                                     data-receiver-status="{{ $item->status }}"><i
-                                                                        class="fas fa-pencil-square"></i>&nbsp;Edit</button>
+                                                                        class="fas fa-pencil-square"></i>&nbsp;</button>
                                                             </td>
                                                         @endif
                                                         @if ($user && $user->hasPermission('Assign Document'))
                                                             <td>
-                                                                <button class="btn btn-success btn-sm assign-doc-btn"
+                                                                <button class="btn btn-success btn-sm assign-doc-btn" title="Assign Document to the Receiver"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#assignDocumentModal"
                                                                     data-receiver-id="{{ $item->id }}"
                                                                     data-receiver-type-id="{{ $item->receiver_type_id }}"><i
-                                                                        class="fas fa-plus-square"></i>&nbsp;Assign
+                                                                        class="fas fa-plus-square"></i>&nbsp;
                                                                 </button>
 
                                                             </td>
@@ -140,30 +141,35 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="receiverName" class="form-label">Name</label>
+                                        <label for="receiverName" class="form-label">Name&nbsp;<span
+                                            class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="name" id="receiverName"
                                             placeholder="Enter Receiver's Name">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="receiverEmail" class="form-label">Email</label>
+                                        <label for="receiverEmail" class="form-label">Email&nbsp;<span
+                                            class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="email" id="receiverEmail"
                                             placeholder="Enter Receiver's Email">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="receiverPhone" class="form-label">Phone</label>
+                                        <label for="receiverPhone" class="form-label">Phone&nbsp;<span
+                                            class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="phone" id="receiverPhone"
                                             placeholder="Enter Receiver's Phone Number" pattern="\d{0,10}$"
                                             title="Please enter a valid phone number with up to 10 digits."
                                             maxlength="10">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="receiverCity" class="form-label">City</label>
+                                        <label for="receiverCity" class="form-label">City&nbsp;<span
+                                            class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="city" id="receiverCity"
                                             placeholder="Enter Receiver's City">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverType" class="form-label">Receiver
-                                            Type</label>
+                                            Type&nbsp;<span
+                                            class="text-danger">*</span></label>
                                         <select class="form-control" id="receiverType" name="receiver_type_id">
                                             <option selected value="">Select Receiver Type</option>
                                             @foreach ($receiverTypes as $type)
@@ -383,9 +389,9 @@
             success: function(receivers) {
                 var newTableContent = '';
                 var assignDocButton =
-                    '<button class="btn btn-success assign-doc-btn" data-bs-toggle="modal" data-bs-target="#assignDocumentModal" data-receiver-id="' +
+                    '<button title="Assign Document to the Receiver" class="btn btn-success assign-doc-btn" data-bs-toggle="modal" data-bs-target="#assignDocumentModal" data-receiver-id="' +
                     receiver.id + '" data-receiver-type-id="' + receiver.receiver_type_id +
-                    '"><i class="fas fa-plus-square"></i>&nbsp;Assign</button>';
+                    '"><i class="fas fa-plus-square"></i>&nbsp;</button>';
                 $.each(receivers, function(index, receiver) {
                     var statusBadge = receiver.status ?
                         '<span class="badge bg-success">Active</span>' :
@@ -399,18 +405,18 @@
 
                         '<td>' + receiver.receiver_type_name + '</td>' +
                         '<td>' + receiver.document_assignments_count + '</td>' +
-                        '<td><a href="/user-assign-documents/' + receiver.id +
-                        '"><u><b><span class="badge bg-secondary">' +
-                        receiver.document_assignments_count + '</span></b></u></a></td>' +
+                      
 
                         '<td>' + statusBadge + '</td>' +
+                        '<td><a title="View Assigned Documents" href="/user-assign-documents/' + receiver.id +
+                        '"><u><b><span class="badge bg-secondary"><i class="fas fa-eye"></i> </span></b></u></a></td>' +
                         // Make sure you have the receiver type name available
-                        '<td><Button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-receiver-id="' +
+                        '<td><Button title="Edit Receiver" class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-receiver-id="' +
                         receiver.id + '" data-receiver-name="' + receiver.name +
                         '" data-receiver-phone="' + receiver.phone + '" data-receiver-city="' +
                         receiver.city + '" data-receiver-email="' + receiver.email +
                         '" data-receiver-type-id="' + receiver.receiver_type_id +
-                        '" data-receiver-status="' + receiver.status + '">Edit</Button></td>' +
+                        '" data-receiver-status="' + receiver.status + '"><i class="fas fa-pencil-square"></i></Button></td>' +
 
                         '<td>' + assignDocButton + '</td>' +
 

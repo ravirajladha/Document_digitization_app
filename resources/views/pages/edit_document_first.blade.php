@@ -64,9 +64,10 @@
                                                             
                                                         </div>
                                                         <div class="mb-3 col-md-6">
-                                                            <label class="form-label">Name</label>
+                                                            <label class="form-label">Name <span
+                                                                class="text-danger">*</span></label>
                                                             <input type="text" name="name" class="form-control"
-                                                                placeholder="Enter Name" value="{{ $document->name }}">
+                                                                placeholder="Enter Name" value="{{ $document->name }}" required>
                                                         </div>
                                                         {{-- <div class="mb-3 col-md-6">
                                                             <label class="form-label">Temp id</label> --}}

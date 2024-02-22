@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
+
 use Illuminate\Http\Request;
+use App\Services\DocumentService;
 
+// use Illuminate\Validation\Validator;
+// use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-// use Illuminate\Validation\Validator;
-// use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Services\DocumentTableService;
-
-use App\Services\DocumentService;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Session;
-use Carbon\Carbon;
 
+use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Migrations\Migration;
@@ -71,65 +72,8 @@ class DocumentController extends Controller
         }
     }
 
-    public function add_document_field(Request $req)
-    {
-        $type = strtolower($req->type);
-        $fields = $req->fields; // Array of fields
-        $fieldType = $req->field_type; // Array of field types corresponding to the fields
-        $duplicateColumns = [];
-        $documentType = Master_doc_type::where('name', $type)->first();
-        $table_id = $documentType->id;
-        // Check if the table with the given type name exists
-        if (!Schema::hasTable($type) && !$documentType->id) {
-            session()->flash('toastr', ['type' => 'warning', 'message' => 'Table does not exist.']);
-            return redirect('/document_field')->with('error', 'Table does not exist.');
-        }
 
-        $columns = Schema::getColumnListing($type);
-
-        // Check for duplicate column names before attempting to add them
-        foreach ($fields as $index => $field) {
-            $columnName = strtolower(str_replace(' ', '_', $field));
-            if (in_array($columnName, $columns)) {
-                $duplicateColumns[] = $columnName;
-            }
-        }
-
-        // If there are duplicate columns, return with an error message
-        if (!empty($duplicateColumns)) {
-            $duplicates = implode(', ', $duplicateColumns);
-            session()->flash('toastr', ['type' => 'error', 'message' => "Duplicate columns: {$duplicates}."]);
-            return redirect('/document_field' . '?type=' . $type)->with('error', "Duplicate columns: {$duplicates}.");
-        }
-
-
-        // Add columns to the table and record them in table_metadata
-        Schema::table($type, function (Blueprint $table) use ($type, $fields, $fieldType, $table_id) {
-            foreach ($fields as $index => $field) {
-                $columnName = strtolower(str_replace(' ', '_', $field));
-                $columns = Schema::getColumnListing($type);
-                if (!in_array($columnName, $columns)) {
-                    // Add the column to the actual table
-                    $table->text($columnName)->nullable();
-
-                    // Insert the new column details into table_metadata
-                    Table_metadata::insert([
-                        'table_name' => $type,
-                        'table_id' => $table_id,
-                        'column_name' => $columnName,
-
-                        'data_type' => $fieldType[$index], // Assuming fieldType is an array
-                        'created_by' => Auth::user()->id,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                }
-            }
-        });
-
-        session()->flash('toastr', ['type' => 'success', 'message' => 'Fields added successfully.']);
-        return redirect('/document_field' . '?type=' . $type)->with('success', 'Columns added successfully.');
-    }
+    
 
     public function add_document_first()
     {
@@ -374,17 +318,84 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
             'columnDetails' => $columnDetails,
         ]);
     }
-
+    public function add_document_field(Request $req)
+    {
+        $type = strtolower($req->type);
+        $fields = $req->fields; // Array of fields
+        $fieldType = $req->field_type; // Array of field types corresponding to the fields
+        $duplicateColumns = [];
+        $documentType = Master_doc_type::where('name', $type)->lockForUpdate()->first(); // Lock the row for update
+        $table_id = $documentType->id;
+    
+        if (!Schema::hasTable($type) && !$documentType->id) {
+            session()->flash('toastr', ['type' => 'warning', 'message' => 'Table does not exist.']);
+            return redirect('/document_field')->with('error', 'Table does not exist.');
+        }
+    
+        $columns = Schema::getColumnListing($type);
+        $existingMetadataColumns = Table_metadata::where('table_name', $type)->pluck('column_name')->toArray();
+        $allExistingColumns = array_merge($columns, $existingMetadataColumns);
+    
+        foreach ($fields as $index => $field) {
+            $columnName = strtolower(str_replace(' ', '_', $field));
+            if (in_array($columnName, $allExistingColumns)) {
+                $duplicateColumns[] = $columnName;
+            }
+        }
+    
+        if (!empty($duplicateColumns)) {
+            $duplicates = implode(', ', $duplicateColumns);
+            session()->flash('toastr', ['type' => 'error', 'message' => "Duplicate columns: {$duplicates}."]);
+            return redirect('/document_field' . '?type=' . $type)->with('error', "Duplicate columns: {$duplicates}.");
+        }
+    
+        // Perform the schema changes outside of a transaction
+        Schema::table($type, function (Blueprint $table) use ($type, $fields, $fieldType, $table_id, $allExistingColumns) {
+            foreach ($fields as $index => $field) {
+                $columnName = strtolower(str_replace(' ', '_', $field));
+                if (!in_array($columnName, $allExistingColumns)) {
+                    $table->text($columnName)->nullable();
+                }
+            }
+        });
+    
+        // Begin the transaction for metadata insertion
+        DB::beginTransaction();
+        try {
+            foreach ($fields as $index => $field) {
+                $columnName = strtolower(str_replace(' ', '_', $field));
+                if (!in_array($columnName, $allExistingColumns)) {
+                    // Insert the new column details into table_metadata within the transaction
+                    Table_metadata::insert([
+                        'table_name' => $type,
+                        'table_id' => $table_id,
+                        'column_name' => $columnName,
+                        'data_type' => $fieldType[$index],
+                        'created_by' => Auth::user()->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            DB::commit(); // Only commit the metadata transactions
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            return redirect('/document_field' . '?type=' . $type)->with('error', 'An error occurred while adding fields.');
+        }
+    
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Fields added successfully.']);
+        return redirect('/document_field' . '?type=' . $type)->with('success', 'Columns added successfully.');
+    }
+    
     public function updateDocumentFieldName(Request $request, $tableName, $oldColumnName) {
         // Validate the request
         $validated = $request->validate([
             'newFieldName' => 'required|string|max:255',
         ]);
     
-        // Replace spaces with underscores in the new field name
-        $validated['newFieldName'] = str_replace(' ', '_', $validated['newFieldName']);
-        // dd( $validated['newFieldName']);
-        // Check if the table and old column exist
+        $newColumnName = str_replace(' ', '_', $validated['newFieldName']);
+    
         if (!Schema::hasTable($tableName)) {
             return back()->with('error', 'Table does not exist.');
         }
@@ -393,47 +404,43 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
             return back()->with('error', 'Column does not exist.');
         }
     
-        // Retrieve the column type and other attributes here.
-        $columnType = $this->getColumnType($tableName, $oldColumnName);
-    
-        // Use Laravel's DB transaction method to encapsulate the operations
-        try {
-            DB::transaction(function () use ($tableName, $oldColumnName, $validated, $columnType) {
-                // Rename the column
-                DB::statement("ALTER TABLE `$tableName` CHANGE `$oldColumnName` `{$validated['newFieldName']}` $columnType");
-                
-                // Update the column name in table_metadata
-                Table_metadata::where('table_name', $tableName)
-                              ->where('column_name', $oldColumnName)
-                              ->update(['column_name' => $validated['newFieldName']]);
-            });
-        
-            return back()->with('success', 'Field name updated successfully.');
-        } catch (\Exception $e) {
-            return back()->with('success', 'Field name updated successfully.');
-
-            // return back()->with('error', 'An error occurred while updating the field name. ' . $e->getMessage());
+        if (Schema::hasColumn($tableName, $newColumnName)) {
+            return back()->with('error', 'New column name already exists.');
         }
     
-        return back()->with('success', 'Field name updated successfully.');
+        $columnType = $this->getColumnType($tableName, $oldColumnName);
+    
+        try {
+            // Log::info('Preparing to rename column in table ' . $tableName);
+    
+            // Rename the column outside of transaction due to possible implicit commit
+            DB::statement("ALTER TABLE `$tableName` CHANGE `$oldColumnName` `$newColumnName` $columnType");
+    
+            // Log::info('Starting transaction for table ' . $tableName);
+            DB::beginTransaction();
+    
+            // Update metadata within the transaction
+            Table_metadata::where('table_name', $tableName)
+                          ->where('column_name', $oldColumnName)
+                          ->update(['column_name' => $newColumnName]);
+    
+            DB::commit();
+            // Log::info('Transaction committed for table ' . $tableName);
+    
+            return back()->with('success', 'Field name updated successfully.');
+        } catch (\Exception $e) {
+            // Only roll back if a transaction is active
+            if (DB::transactionLevel() > 0) {
+                Log::error('Rolling back transaction for table ' . $tableName);
+                DB::rollBack();
+            }
+    
+            // Log::error('Error while renaming column in table ' . $tableName . ': ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while updating the field name. ' . $e->getMessage());
+        }
     }
     
-        // try {
-        //     DB::transaction(function () use ($tableName, $oldColumnName, $validated, $columnType) {
-        //         // Rename the column
-        //         DB::statement("ALTER TABLE `$tableName` CHANGE `$oldColumnName` `{$validated['newFieldName']}` $columnType");
-                
-        //         // Update the column name in table_metadata
-        //         Table_metadata::where('table_name', $tableName)
-        //                       ->where('column_name', $oldColumnName)
-        //                       ->update(['column_name' => $validated['newFieldName']]);
-        //     });
-        
-        //     return back()->with('success', 'Field name updated successfully.');
-        // } catch (\Exception $e) {
-        //     return back()->with('error', 'An error occurred while updating the field name. ' . $e->getMessage());
-        // }
-        
+    
     
     
     private function getColumnType($tableName, $columnName) {
@@ -551,32 +558,24 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         $document = DB::table($tableName)->where('id', $id)->first();
         // dd($document);
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
-
+// Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
-
-        // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
         $set_ids = array_map('strval', $set_ids);
-        // dd($set_ids);
         $masterDataEntries = Master_doc_data::all()->filter(function ($entry) use ($set_ids, $document) {
             $entrySetIds = json_decode($entry->set_id, true);
-
             // Check if $entrySetIds is an array
             if (!is_array($entrySetIds)) {
                 $entrySetIds = []; // Assign an empty array if it's not already an array
             }
-
             return count(array_intersect($set_ids, $entrySetIds)) > 0 && $entry->id != $document->doc_id;
         });
 
         //  dd($masterDataEntries);
-
         $matchingData[] = null;
         foreach ($masterDataEntries as $entry) {
-
-            $tableName = $entry->document_type_name;
-
+            $tableName1 = $entry->document_type_name;
             // Fetch data from the respective table using doc_id
-            $data = DB::table($tableName)
+            $data = DB::table($tableName1)
                 ->where('doc_id', $entry->id)
                 ->first();
 
@@ -590,6 +589,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         //    dd($matchingData);
         $compliances = Compliance::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
             ->get();
+          
         return view('pages.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,

@@ -159,7 +159,7 @@
         dropdown.innerHTML = `<option value="">Select ${targetId.charAt(0).toUpperCase() + targetId.slice(1)}</option>`;
 
         if (data.length === 0 && targetId === 'document') {
-            alert('No documents available for the selected criteria.');
+            alert('No approved documents available for the selected criteria.');
             return;
         }
 console.log(targetId);

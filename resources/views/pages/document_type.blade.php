@@ -37,7 +37,7 @@
                                         <table id="example3" class="display" style="min-width: 845px">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Document type</th>
                                                     <th scope="col">Number of Documents </th>
                                                     @if ($user && $user->hasPermission('View Documents By Doc Type'))
@@ -58,7 +58,7 @@
                                                         </td>
                                                         @if ($user && $user->hasPermission('View Documents by Document Type'))
                                                             <td>
-                                                                <a href="/view_doc/{{ $item->name }}"><button
+                                                                <a href="/filter-document?type={{ $item->id }}"><button
                                                                         class="btn btn-primary btn-sm"><i
                                                                             class="fas fa-eye"></i>&nbsp;View</button></a>
                                                             </td>

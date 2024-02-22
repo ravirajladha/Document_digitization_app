@@ -93,13 +93,17 @@ class Document extends Controller
         // Redirect with a success message.
         return redirect()->back();
     }
-
+//this function fetches the documents a/c to the doc_type->state->district->village->doc_id
+//comment out the log for the mannual check below
+//used for assign document, compliances and in receivers to assign doc
+//component created for this function as document-type-select
     public function fetchData(Request $request, $type, $id)
     {
-        $query = DB::table('Master_doc_datas');
-        \Log::info('Received type:', ['type' => $type]);
-        \Log::info('Received id:', ['id' => $id]);
-        \Log::info('Received doc_type_id:', ['doc_type_id' => $request->query('doc_type_id')]); // Use query() method
+        
+        $query = DB::table('master_doc_datas');
+        // \Log::info('Received type:', ['type' => $type]);
+        // \Log::info('Received id:', ['id' => $id]);
+        // \Log::info('Received doc_type_id:', ['doc_type_id' => $request->query('doc_type_id')]); // Use query() method
         switch ($type) {
             case 'states':
                 $data = $query->where('document_type', $id)
@@ -111,7 +115,7 @@ class Document extends Controller
             case 'districts':
                 $docTypeId = $request->query('doc_type_id');
                 if (is_null($docTypeId)) {
-                    \Log::warning('doc_type_id is missing for districts request.');
+                    // \Log::warning('doc_type_id is missing for districts request.');
                     return response()->json(['error' => 'Document type ID is required'], 400);
                 }
 
@@ -156,7 +160,7 @@ class Document extends Controller
             default:
                 return response()->json([]);
         }
-        \Log::info('Data being returned:', ['data' => $data]);
+        // \Log::info('Data being returned:', ['data' => $data]);
         $results = $data->map(function ($item) {
             return ['id' => $item->name, 'name' => $item->name];
         });

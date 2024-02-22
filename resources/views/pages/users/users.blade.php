@@ -58,7 +58,7 @@
                                                     value="{{ old('name', isset($editUser) ? $editUser->name : '') }}"
                                                     required autofocus autocomplete="name">
                                                 @error('name')
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger mt-2">{{ $message }}</div>
                                                 @enderror
                                             </div>
 
@@ -70,7 +70,7 @@
                                                     value="{{ old('email', isset($editUser) ? $editUser->email : '') }}"
                                                     required autocomplete="username">
                                                 @error('email')
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger mt-2">{{ $message }}</div>
                                                 @enderror
                                             </div>
 
@@ -83,8 +83,9 @@
                                                     title="Please enter a valid phone number with up to 10 digits."
                                                     value="{{ old('phone', isset($editUser) ? $editUser->phone : '') }}"
                                                     maxlength="10">
+
                                                 @error('phone')
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger mt-2 ">{{ $message }}</div>
                                                 @enderror
                                             </div>
 
@@ -92,6 +93,15 @@
                                             {{-- Note: Password fields should not be pre-populated for security reasons --}}
                                             <div class="mb-sm-4 mb-3 position-relative col-md-12 col-xl-12">
                                                 <label class="form-label" for="dlab-password">Password</label>
+                                                <div class="bootstrap-popover d-inline-block float-end mb-2">
+                                                    <button type="button" class="btn btn-primary btn-sm px-4 "
+                                                        data-bs-container="body" data-bs-toggle="popover"
+                                                        data-bs-placement="top"
+                                                        data-bs-content="The password must be of 8 letters."
+                                                        title="Password Guidelines"><i
+                                                            class="fas fa-info-circle"></i></button>
+                                                </div>
+
                                                 <input type="password" name="password"
                                                     @if (!isset($editUser)) required @endif
                                                     autocomplete="new-password" id="dlab-password" class="form-control">
@@ -100,21 +110,21 @@
                                                     <i class="fa fa-eye"></i>
                                                 </span>
                                                 @error('password')
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger mt-2">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="mb-sm-4 mb-3 position-relative col-md-12 col-xl-12">
-                                                <label class="form-label" for="password_confirmation">Confirm
+                                                <label class="form-label" for="dlab-password1">Confirm
                                                     Password</label>
                                                 <input type="password" name="password_confirmation"
                                                     @if (!isset($editUser)) required @endif
-                                                    autocomplete="new-password" class="form-control">
-                                                <span class="show-pass eye">
+                                                    autocomplete="new-password"  id="dlab-password1" class="form-control">
+                                                <span class="show-pass1 eye">
                                                     <i class="fa fa-eye-slash"></i>
                                                     <i class="fa fa-eye"></i>
                                                 </span>
                                                 @error('password_confirmation')
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger mt-2">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             {{-- <div class="mb-sm-4 mb-3 position-relative">
@@ -140,9 +150,9 @@
                                         </div>
 
 
-{{-- {{ dd($editUser) }} --}}
+                                        {{-- {{ dd($editUser) }} --}}
 
-@endif
+                                        @endif
 
                                         <div class="mb-3">
                                             {{-- <label for="receiverType" class="form-label">Permissions & Role</label> --}}
@@ -153,205 +163,206 @@
                                                 <table class="table  table-responsive-sm">
                                                     <tbody style="padding:0 0 0 0;">
                                                         @php
-$userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck('display_name')->toArray() : [];
-@endphp
+                                                            $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck('display_name')->toArray() : [];
+                                                        @endphp
 
-{{-- Ensure the function is declared once outside of any conditional blocks --}}
-@if (!function_exists('generatePermissionCheckbox'))
-@php
-    function generatePermissionCheckbox($permissionsDisplayNames, $permissionDisplayName) {
-        $isChecked = in_array($permissionDisplayName, $permissionsDisplayNames) ? 'checked' : '';
-        echo '<input type="checkbox" class="form-check-input" name="permissions[' . $permissionDisplayName . ']" value="' . $permissionDisplayName . '" ' . $isChecked . '>';
-    }
-@endphp
-                                                        <tr>
-                                                            <th>Module</th>
-                                                            <th>Create</th>
-                                                            <th>Read</th>
-                                                            <th>Update</th>
-                                                            <th>Update Status</th>
-                                                        </tr>
-                                                        <tr>
+                                                        {{-- Ensure the function is declared once outside of any conditional blocks --}}
+                                                        @if (!function_exists('generatePermissionCheckbox'))
+                                                            @php
+                                                                function generatePermissionCheckbox($permissionsDisplayNames, $permissionDisplayName)
+                                                                {
+                                                                    $isChecked = in_array($permissionDisplayName, $permissionsDisplayNames) ? 'checked' : '';
+                                                                    echo '<input type="checkbox" class="form-check-input" name="permissions[' . $permissionDisplayName . ']" value="' . $permissionDisplayName . '" ' . $isChecked . '>';
+                                                                }
+                                                            @endphp
+                                                            <tr>
+                                                                <th>Module</th>
+                                                                <th>Create</th>
+                                                                <th>Read</th>
+                                                                <th>Update</th>
+                                                                <th>Update Status</th>
+                                                            </tr>
+                                                            <tr>
 
-                                                            {{-- {{ $permissions }} --}}
-                                                        <tr>
-                                                            <td class="module-name">Document</td>
-                                                            <td>
-                                                                
-
-@php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Basic Document Form') @endphp                         
+                                                                {{-- {{ $permissions }} --}}
+                                                            <tr>
+                                                                <td class="module-name">Document</td>
+                                                                <td>
 
 
-                                                            </td>
-                                                            <td>
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Main Document View') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Basic Document Form') @endphp
 
-                                                            </td>
-                                                            <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Basic Document Detail') @endphp
+                                                                </td>
+                                                                <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Main Document View') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Status') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Basic Document Detail') @endphp
 
-                                                            </td>
-                                                        </tr>
+                                                                </td>
+                                                                <td>
 
-                                                        <tr>
-                                                            <td class="module-name">Document Type</td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Status') @endphp
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Document Types') @endphp
+                                                                </td>
+                                                            </tr>
 
-                                                            </td>
-                                                            <td>
+                                                            <tr>
+                                                                <td class="module-name">Document Type</td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Types') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Document Types') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Document Field</td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Document Fields') @endphp
-                                                            </td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Types') @endphp
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Fields') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Document Field</td>
+                                                                <td>
 
-                                                            </td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Document Fields') @endphp
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Fields') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Document Fields') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Bulk Upload</td>
-                                                            <td></td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Bulk Upload') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Fields') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Sets</td>
-                                                            <td>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Bulk Upload</td>
+                                                                <td></td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Sets') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Bulk Upload') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Sets</td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Sets') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Sets') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sets') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Sets') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Receivers</td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Receivers') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sets') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Receivers</td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Receivers') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Receivers') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Receivers') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Receivers') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Assign Document</td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Receivers') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Assign Document</td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Assignment Status') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
 
-                                                            </td>
+                                                                </td>
+                                                                <td></td>
+                                                                <td>
 
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Compliances</td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Assignment Status') @endphp
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Compliances') @endphp
+                                                                </td>
 
-                                                            </td>
-                                                            <td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Compliances</td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliances') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Compliances') @endphp
 
-                                                            </td>
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliance Recurring Status') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliances') @endphp
 
-                                                            </td>
-                                                          
-                                                            <td>
+                                                                </td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliances Status') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliance Recurring Status') @endphp
 
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Configure</td>
-                                                            <td></td>
-                                                            <td>
+                                                                </td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Configure') @endphp
+                                                                <td>
 
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">Profile</td>
-                                                            <td></td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliances Status') @endphp
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Profile') @endphp
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Configure</td>
+                                                                <td></td>
+                                                                <td>
 
-                                                            </td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Configure') @endphp
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Profile') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Profile</td>
+                                                                <td></td>
+                                                                <td>
 
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                        {{-- <tr>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Profile') @endphp
+
+                                                                </td>
+                                                                <td>
+
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Profile') @endphp
+
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {{-- <tr>
                                                             <td class="module-name">Notifications</td>
                                                             <td></td>
                                                             <td>
@@ -363,62 +374,64 @@ $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck(
                                                             <td></td>
                                                             <td></td>
                                                         </tr> --}}
-                                                        <tr>
-                                                            <td class="module-name">Filter Doc</td>
-                                                            <td></td>
-                                                            <td>
+                                                            <tr>
+                                                                <td class="module-name">Filter Doc</td>
+                                                                <td></td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Filter Document') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Filter Document') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">View Documents By Document Type
-                                                            </td>
-                                                            <td></td>
-                                                            <td>
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">View Documents By Document Type
+                                                                </td>
+                                                                <td></td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Documents by Document Type') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Documents by Document Type') @endphp
 
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
 
-                                                        <tr>
-                                                            <td class="module-name">View Documents from Sets</td>
-                                                            <td></td>
-                                                            <td>
+                                                            <tr>
+                                                                <td class="module-name">View Documents from Sets</td>
+                                                                <td></td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Documents from Sets') @endphp
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">View Compliances Notification</td>
-                                                            <td></td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Documents from Sets') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">View Compliances Notification
+                                                                </td>
+                                                                <td></td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliance Notifications') @endphp
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="module-name">View Receipients Notification</td>
-                                                            <td></td>
-                                                            <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Compliance Notifications') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">View Receipients Notification
+                                                                </td>
+                                                                <td></td>
+                                                                <td>
 
-                                                                @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Recipient Notifications') @endphp
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Recipient Notifications') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
 
-                                                        </tr>
+                                                            </tr>
 
                                                     </tbody>
                                                 </table>
@@ -466,7 +479,7 @@ $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck(
 
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Sl no</th>
+                                                    <th scope="col">Sl. No.</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Phone</th>
 
@@ -532,6 +545,11 @@ $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck(
             color: #333;
             /* Darker color for module name */
         }
+
+        .fa-eye {
+    display: none;
+}
+
     </style>
 
     {{-- add receiver modal form starts --}}
@@ -597,11 +615,34 @@ $modules = ['Document', 'Bulk Upload', 'Document Field', 'Document Type','Sets',
       </div>
        --}}
 
-<script>
-    $("#single-select-abc1").select2();
-
-    $(".single-select-abc1-placeholder").select2({
-        placeholder: "Select Permissions",
-        allowClear: true
-    });
-</script>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+       <script>
+       $(document).ready(function() {
+           // Toggle visibility for the first password field
+           $('#dlab-password + .show-pass').on('click', function() {
+               togglePasswordVisibility('#dlab-password', $(this));
+           });
+       
+           // Toggle visibility for the confirm password field
+           $('#dlab-password1 + .show-pass1').on('click', function() {
+               togglePasswordVisibility('#dlab-password1', $(this));
+           });
+       
+           function togglePasswordVisibility(inputSelector, toggleSpan) {
+               let input = $(inputSelector);
+               let eyeSlash = toggleSpan.find('.fa-eye-slash');
+               let eye = toggleSpan.find('.fa-eye');
+       
+               if (input.attr('type') === 'password') {
+                   input.attr('type', 'text');
+                   eyeSlash.hide();
+                   eye.show();
+               } else {
+                   input.attr('type', 'password');
+                   eye.show();
+                   eyeSlash.hide();
+               }
+           }
+       });
+       </script>
+       

@@ -49,7 +49,7 @@
 
         <div class="flex items-center gap-4 mt-4">
             {{-- <x-primary-button>{{ __('Save') }}</x-primary-button> --}}
-            <button type="submit" class="btn btn-primary">Next</button>
+            <button type="submit" class="btn btn-primary">Save</button>
             @if (session('status') === 'profile-updated')
                 <p
                     x-data="{ show: true }"

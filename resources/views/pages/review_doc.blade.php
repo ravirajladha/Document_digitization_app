@@ -9,6 +9,8 @@
         <div class="container-fluid">
             <div class="row page-titles">
                 <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Details</a></li>
                 </ol>
@@ -19,9 +21,9 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Data</h4>
-                                {{-- @if (Auth::user()->type == 'admin') --}}
 
-                                @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id!=1)
+
+                                @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
                                     <a class="btn btn-primary float-end"
                                         href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
                                         rel="noopener noreferrer">Edit</a>
@@ -43,7 +45,6 @@
                                                             $attribute == 'set_id' ||
                                                             $attribute == 'batch_id' ||
                                                             $attribute == 'document_type' ||
-                                                            // $attribute == 'rejection_message' ||
                                                             $attribute == 'rejection_timestamp' ||
                                                             $attribute == 'bulk_uploaded' ||
                                                             $attribute == 'physically' ||
@@ -77,7 +78,7 @@
                                             <tr style="height: 20px;"></tr>
 
                                             @foreach ($columnMetadata as $meta)
-                                                {{-- {{ dd($meta) }} --}}
+
                                                 @if (!in_array($meta->column_name, ['id', 'created_at', 'updated_at', 'status']))
                                                     @if (!in_array($meta->data_type, [3, 4, 6]))
                                                         @php
@@ -87,7 +88,6 @@
 
 
                                                         @if ($value !== null)
-                                                            {{-- Add this check --}}
                                                             <tr style="padding:0 0 0 0;">
                                                                 <th style="padding: 5px;">{{ $columnName }}</th>
                                                                 <td style="padding: 5px;">{{ $value }}</td>
@@ -103,63 +103,6 @@
                         </div>
 
                     </div>
-                    {{-- <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3>File</h3>
-                                <div class="row">
-                                    @php $counter = 0; @endphp
-                                    @foreach ($columnMetadata as $column)
-                                        @if (!($column->column_name == 'id' || $column->column_name == 'created_at' || $column->column_name == 'updated_at' || $column->column_name == 'status'))
-                                            @php
-                                                $columnName = ucWords(str_replace('_', ' ', $column->column_name));
-                                                $defaultImagePath = asset('/assets/sample/image.jpg'); 
-                                                $defaultPdfPath = asset('/assets/sample/pdf.pdf'); 
-                                                $defaultVideoPath = asset('/assets/sample/video.mp4');  
-                                            @endphp
-                                            @if ($column->data_type == 3 || $column->data_type == 4 || $column->data_type == 6)
-                                                <h4 class="mt-2">{{ $columnName }}</h4>
-                                                @php $counter++; @endphp
-                                            @endif
-                                            @if ($column->data_type == 3)
-                                                <img src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}"
-                                                    alt="{{ $columnName }}" oncontextmenu="return false;">
-                                                @php $counter++; @endphp
-                                            @elseif($column->data_type == 4)
-                                                <div class="pointer-events: auto;">
-                                                    <iframe
-                                                        src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
-                                                        width="100%" height="600"
-                                                        oncontextmenu="return false;"></iframe>
-                                                </div>
-                                             
-                                                @php $counter++; @endphp
-                                            @elseif($column->data_type == 6)
-                                                <video width="100%" height="500" controls controlsList="nodownload">
-                                                    <source
-                                                        src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultVideoPath }}"
-                                                        type="video/mp4">
-                                                    Your browser does not support the video tag.
-                                                </video>
-
-                                                @php $counter++; @endphp
-                                            @endif
-                                        @endif
-                                    @endforeach
-                                    @if ($counter == 0)
-                                        <div class="col-lg-12">
-                                            <p>No files to display.</p>
-                                        </div>
-                                    @endif
-                                </div>
-
-                            </div>
-                        </div>
-                    </div> --}}
-
-
-
-
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
@@ -243,91 +186,78 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
-
                 </div>
-
-
-
-
                 <script>
                     $(function() {
                         $('[data-toggle="tooltip"]').tooltip()
                     })
                 </script>
 
-@if($user && $user->hasPermission('Update Document Status'))
+                @if ($user && $user->hasPermission('Update Document Status'))
 
-                <div class="row mb-2">
-                    <div class="col-lg-12">
-                        <div class="card">
-
-
-
-                            <div class="card-header">
-
-                                <h5>Doc Verification</h5>
-                                <div class="bootstrap-popover d-inline-block float-end">
-                                    <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body"
-                                        data-bs-toggle="popover" data-bs-placement="top"
-                                        data-bs-content="Three stages: Pending, Hold,
+                    <div class="row mb-2">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Doc Verification</h5>
+                                    <div class="bootstrap-popover d-inline-block float-end">
+                                        <button type="button" class="btn btn-primary btn-sm px-4 "
+                                            data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top"
+                                            data-bs-content="Three stages: Pending, Hold,
                                             Approve. To keep the document on hold, message is mandatory. Once approved, the
                                             document status can't be changed."
-                                        title="Verification Guidelines"><i class="fas fa-info-circle"></i></button>
+                                            title="Verification Guidelines"><i class="fas fa-info-circle"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    {{-- Status Form --}}
+                                    @if ($document->status == 0 || $document->status == 2)
+                                        <form action="{{ url('/') }}/update_document" method="post"
+                                            class="mb-3">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $document->id }}">
+                                            <input type="hidden" name="type" value="{{ $tableName }}">
+                                            <div class="form-group">
+                                                <select id="single-select" name="status"
+                                                    onchange="handleStatusChange(this)" class="form-select">
+                                                    <option value="0"
+                                                        {{ $document->status == 0 ? 'selected' : '' }}>
+                                                        Pending</option>
+                                                    <option value="1">Approve</option>
+                                                    <option value="2"
+                                                        {{ $document->status == 2 ? 'selected' : '' }}>
+                                                        Hold</option>
+                                                </select>
+                                                <input type="hidden" id="holdReason" name="holdReason">
+
+                                            </div>
+                                        </form>
+                                    @else
+                                        <div class="alert alert-success">
+                                            <strong>Approved</strong>
+
+                                        </div>
+                                    @endif
+
+                                    {{-- Rejection Message --}}
+                                    @if ($document->status == 2 && $master_data->rejection_message)
+                                        <div class="alert alert-warning">
+                                            <strong>Hold Reason:</strong> {{ $master_data->rejection_message }}
+                                            <div><small>{{ $master_data->rejection_timestamp }}</small></div>
+                                        </div>
+                                    @elseif($document->status == 0)
+                                        <div class="alert alert-primary">
+                                            <strong>Status : Pending</strong>
+
+                                        </div>
+                                    @endif
                                 </div>
 
                             </div>
-
-
-                            <div class="card-body">
-                                {{-- Status Form --}}
-                                @if ($document->status == 0 || $document->status == 2)
-                                    <form action="{{ url('/') }}/update_document" method="post" class="mb-3">
-                                        @csrf
-                                        <input type="hidden" name="id" value="{{ $document->id }}">
-                                        <input type="hidden" name="type" value="{{ $tableName }}">
-
-                                        <div class="form-group">
-                                            <select id="single-select" name="status"
-                                                onchange="handleStatusChange(this)" class="form-select">
-                                                <option value="0" {{ $document->status == 0 ? 'selected' : '' }}>
-                                                    Pending</option>
-                                                <option value="1">Approve</option>
-                                                <option value="2" {{ $document->status == 2 ? 'selected' : '' }}>
-                                                    Hold</option>
-                                            </select>
-                                            <input type="hidden" id="holdReason" name="holdReason">
-
-                                        </div>
-                                    </form>
-                                @else
-                                    <div class="alert alert-success">
-                                        <strong>Approved</strong>
-
-                                    </div>
-                                @endif
-
-                                {{-- Rejection Message --}}
-                                @if ($document->status == 2 && $master_data->rejection_message)
-                                    <div class="alert alert-warning">
-                                        <strong>Hold Reason:</strong> {{ $master_data->rejection_message }}
-                                        <div><small>{{ $master_data->rejection_timestamp }}</small></div>
-                                    </div>
-                                @elseif($document->status == 0)
-                                    <div class="alert alert-primary">
-                                        <strong>Status : Pending</strong>
-
-                                    </div>
-                                @endif
-                            </div>
-
                         </div>
                     </div>
-                </div>
-@endif
+                @endif
 
 
                 <div class="container-fluid">
@@ -335,7 +265,7 @@
                         {{-- {{ dd($matchingData) }} --}}
                         @foreach ($matchingData as $data)
                             @if (!empty($data))
-                                <div class="col-xl-4 col-lg-12 col-sm-12">
+                                <div class="col-xl-6 col-lg-12 col-sm-12">
                                     <div class="card overflow-hidden">
                                         <div class="text-center p-3 overlay-box "
                                             style="background-image: url(images/big/img1.jpg);">
@@ -380,12 +310,12 @@
                                 </div>
 
                                 <div class="table-responsive" style="padding:7px;">
-                                    <table id="example3" class="display" style="min-width: 845px;" >
+                                    <table id="example3" class="display" style="min-width: 845px;">
 
 
                                         <thead>
                                             <tr>
-                                                <th scope="col">Sl no</th>
+                                                <th scope="col">Sl. No.</th>
                                                 <th scope="col">Name</th>
                                                 {{-- <th scope="col">Document Name </th>
                                 <th scope="col">Document Type </th> --}}
@@ -415,21 +345,7 @@
                                                     <td> {!! $item->is_recurring
                                                         ? '<span class="badge bg-success">Yes</span>'
                                                         : '<span class="badge bg-warning text-dark">Not</span>' !!}</td>
-                                                    {{-- <td class="status-cell">
-                                        @switch($item->status)
-                                            @case(0)
-                                                <span class="badge bg-warning text-dark">Pending</span>
-                                                @break
-                                            @case(1)
-                                                <span class="badge bg-success">Settled</span>
-                                                @break
-                                            @case(2)
-                                                <span class="badge bg-danger">Cancelled</span>
-                                                @break
-                                        @endswitch
-                                    </td> --}}
-
-                                                    <!-- ... other cells ... -->
+                                        
                                                     <td class="action-cell">
                                                         <!-- Action buttons based on status -->
                                                         @if ($item->status == 0)

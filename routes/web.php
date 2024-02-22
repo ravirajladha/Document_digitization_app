@@ -19,8 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
         return view('welcome');
-    });
+    })->name('welcome');
 });
+
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
@@ -105,7 +106,6 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
     //     ->middleware('checkuserpermission:add_document_first') 
     //     ->name('add_document_first');
 
-
     Route::get('/review_doc/{table}/{id}', [DocumentController::class, 'review_doc'])
         ->name('documents.review');
     Route::post('/add-document-data', [DocumentController::class, 'add_document_data'])
@@ -116,7 +116,6 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
         ->name('documents.creation.continue');
 
   
-
     // Route::get('/edit_document/{table}/{id}', [DocumentController::class, 'edit_document'])
     //     ->name('documents.edit');
     Route::get('/edit_document_basic_detail/{id}', [DocumentController::class, 'edit_document_basic_detail'])

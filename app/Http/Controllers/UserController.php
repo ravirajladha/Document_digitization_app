@@ -42,7 +42,8 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|integer',
+            'phone' => 'required|integer|digits:10',
+
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => 'required',
@@ -56,11 +57,6 @@ class UserController extends Controller
             'type' => "user", // Set user type as 'user'
         ]);
 
-     
-
-     
-    
-
         $requestedPermissions = $request->input('permissions', []);
         $permissionNames = array_keys($requestedPermissions);
         // dd($permissionNames);
@@ -71,6 +67,8 @@ class UserController extends Controller
             // Attempt to assign permissions
            
             $assign_permission = $this->assignPermissions($permissionNames, $user->id);
+            session()->flash('toastr', ['type' => 'success', 'message' => 'User created successfully.']);
+
             // If successful, redirect with a success message
             return redirect()->route('users.index')->with('success', 'User created and permissions assigned successfully.');
         } catch (\Throwable $th) {
@@ -81,76 +79,6 @@ class UserController extends Controller
     }
 
 
-
-
-    public function assignPermissionqs($permissionNames, $userId)
-{
-    $user = User::findOrFail($userId);
-
-    DB::beginTransaction();
-
-    try {
-        // Remove any existing permissions
-        $user->permissions()->detach();
-
-        // Get all permissions to verify that the provided names are valid
-        $allPermissions = Permission::pluck('name')->toArray();
-
-        // Filter out any invalid permission names
-        $validPermissionNames = array_intersect($permissionNames, $allPermissions);
-
-        // Attach the new permissions using their names
-        foreach ($validPermissionNames as $permissionName) {
-            $user->permissions()->attach(Permission::where('name', $permissionName)->first());
-        }
-
-        DB::commit();
-        return true;
-    } catch (\Throwable $th) {
-        DB::rollBack();
-        report($th);
-        throw $th;
-    }
-}
-
-
-
-public function assignPermissions($permissionNames, $userId)
-{
-    // dd($permissionNames,$userId);
-    $user = User::findOrFail($userId);
-
-    DB::beginTransaction();
-
-    try {
-        // Remove any existing permissions
-        $user->permissions()->detach();
-
-        // Get the permissions by display_name
-        $permissions = Permission::whereIn('display_name', $permissionNames)->get(['display_name']);
-
-        // Check if the permissions were found
-        if ($permissions->count() !== count($permissionNames)) {
-            throw new \Exception("One or more permissions could not be found.");
-        }
-
-        // Attach the new permissions using their display names
-        foreach ($permissions as $permission) {
-            $user->permissions()->attach($permission->display_name);
-        }
-
-        DB::commit();
-    } catch (\Throwable $th) {
-        DB::rollBack();
-        report($th); // Make sure to log the exception
-        throw $th;
-    }
-}
-
-
-
-
-
     // Update the specified user in storage
     public function update(Request $request, $id)
     {
@@ -159,7 +87,8 @@ public function assignPermissions($permissionNames, $userId)
             // Validate the request data
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'phone' => 'required|digits_between:10,15',
+                'phone' => 'required|integer|digits:10',
+
                 'email' => [
                     'required',
                     'string',
@@ -197,6 +126,8 @@ public function assignPermissions($permissionNames, $userId)
             }
 
             $user->save();
+            session()->flash('toastr', ['type' => 'success', 'message' => 'User updated successfully.']);
+
         } catch (\Illuminate\Validation\ValidationException $exception) {
             // Redirect to the edit route with the input except the password and with errors
             return redirect()->route('users.edit', ['user' => $id])
@@ -207,4 +138,37 @@ public function assignPermissions($permissionNames, $userId)
         // Redirect back with a success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
+    public function assignPermissions($permissionNames, $userId)
+{
+    // dd($permissionNames,$userId);
+    $user = User::findOrFail($userId);
+
+    DB::beginTransaction();
+
+    try {
+        // Remove any existing permissions
+        $user->permissions()->detach();
+
+        // Get the permissions by display_name
+        $permissions = Permission::whereIn('display_name', $permissionNames)->get(['display_name']);
+
+        // Check if the permissions were found
+        if ($permissions->count() !== count($permissionNames)) {
+            throw new \Exception("One or more permissions could not be found.");
+        }
+
+        // Attach the new permissions using their display names
+        foreach ($permissions as $permission) {
+            $user->permissions()->attach($permission->display_name);
+        }
+
+        DB::commit();
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        report($th); // Make sure to log the exception
+        throw $th;
+    }
+}
+
+
 }
