@@ -15,6 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+//to run the deleteoldlogs file , a command has been created
+        $schedule->command('logs:delete-old')->daily();
+
         // $schedule->command('inspire')->hourly();
         //the below function checks and notifiy the user if any compliances are under 30 days
         $schedule->call(function () {

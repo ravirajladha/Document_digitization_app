@@ -30,7 +30,16 @@
                                 @endif
                             </div>
                             <div class="card-body">
+                                <style>
+                                    .table-responsive {
+                                        width: 100%;
+                                        /* Adjust the width as needed */
+                                    }
 
+                                    .table {
+                                        overflow-x: auto;
+                                    }
+                                </style>
                                 <div class="table-responsive">
                                     <table class="table table-striped table-responsive-sm">
                                         <tbody style="padding:0 0 0 0;">
@@ -66,7 +75,7 @@
                                                             }
 
                                                         @endphp
-                                                        <tr style="padding:0 0 0 0;">
+                                                        <tr style="white-space: nowrap; overflow: hidden;">
                                                             <th style="padding: 5px;">
                                                                 {{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
                                                             <td style="padding: 5px;">{{ $value }}</td>
@@ -82,7 +91,9 @@
                                                 @if (!in_array($meta->column_name, ['id', 'created_at', 'updated_at', 'status']))
                                                     @if (!in_array($meta->data_type, [3, 4, 6]))
                                                         @php
-                                                            $columnName = ucWords(str_replace('_', ' ', $meta->column_name));
+                                                            $columnName = ucWords(
+                                                                str_replace('_', ' ', $meta->column_name),
+                                                            );
                                                             $value = $document->{$meta->column_name} ?? null;
                                                         @endphp
 
@@ -155,7 +166,9 @@
                                     @if ($document->pdf_file_path)
                                         @php
                                             // Get the file extension
-                                            $extension = strtolower(pathinfo($document->pdf_file_path, PATHINFO_EXTENSION));
+                                            $extension = strtolower(
+                                                pathinfo($document->pdf_file_path, PATHINFO_EXTENSION),
+                                            );
                                         @endphp
 
                                         @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']))
@@ -345,7 +358,7 @@
                                                     <td> {!! $item->is_recurring
                                                         ? '<span class="badge bg-success">Yes</span>'
                                                         : '<span class="badge bg-warning text-dark">Not</span>' !!}</td>
-                                        
+
                                                     <td class="action-cell">
                                                         <!-- Action buttons based on status -->
                                                         @if ($item->status == 0)

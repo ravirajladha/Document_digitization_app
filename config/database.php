@@ -40,6 +40,7 @@ return [
             'url' => env('DATABASE_URL'),
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
+            'log' => true, 
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
@@ -58,6 +59,8 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            'log' => true, 
+            'log_queries' => true,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],

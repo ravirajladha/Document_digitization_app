@@ -15,10 +15,12 @@ return new class extends Migration
 
 Schema::create('log_changes', function (Blueprint $table) {
     $table->id();
-    $table->unsignedBigInteger('user_id');
+    $table->unsignedBigInteger('user_id')->nullable();
     $table->string('model_type');
     $table->unsignedBigInteger('model_id');
-    $table->json('changes');
+    $table->text('changes');
+    $table->text('action');
+    $table->text('original_values')->nullable();
     $table->timestamps();
 
     $table->foreign('user_id')->references('id')->on('users');

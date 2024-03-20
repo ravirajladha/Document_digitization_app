@@ -134,8 +134,8 @@
   --dz-side-ico-height: auto;
   --dz-side-ico-width: auto;
   --dz-side-sub_nav-padding: .4rem 1rem .4rem 4rem;
-  --dz-side-sub_nav-size: 0.85rem;
-  --dz-head-title-size: 1.25rem;
+  --dz-side-sub_nav-size: 1rem;
+  --dz-head-title-size: 1.50rem;
   --dz-side-menu-direction: column;
   --dz-side-menu-padding: 0 0;
   --dz-side-profile: block;
@@ -364,8 +364,8 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: "Roboto", sans-serif;
-  --bs-body-font-size: 0.875rem;
-  --bs-body-font-weight: 400;
+  --bs-body-font-size: 4.5rem;
+  --bs-body-font-weight: 650;
   --bs-body-line-height: 1.5;
   --bs-body-color: #9da1a5;
   --bs-body-color-rgb: 157, 161, 165;

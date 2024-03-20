@@ -110,6 +110,15 @@ class Document extends Controller
                     ->distinct()
                     ->get(['current_state as name']); // Get unique states for the document type
 
+                    foreach ($data as $state) {
+                        $approved_documents_count = DB::table('master_doc_datas')
+                            ->where('document_type', $id)
+                            ->where('current_state', $state->name)
+                            ->where('status_id', 1)
+                            ->count();
+        
+                        $state->approved_documents = $approved_documents_count;
+                    }
 
                 break;
             case 'districts':
@@ -123,21 +132,54 @@ class Document extends Controller
                     ->where('current_state', $id) // $id here is the state name passed from the frontend
                     ->distinct()
                     ->get(['current_district as name']); // Get unique districts
+
+                    foreach ($data as $district) {
+                        $approved_documents_count = DB::table('master_doc_datas')
+                            ->where('document_type', $request->doc_type_id)
+                            ->where('current_state', $id)
+                            ->where('current_district', $district->name)
+                            ->where('status_id', 1)
+                            ->count();
+        
+                        $district->approved_documents = $approved_documents_count;
+                    }
+
                 break;
-            case 'villages':
-                $data = $query->where('document_type', $request->doc_type_id)
-                    ->where('current_state', $request->state_name)
-                    ->where('current_district', $id) // $id here is the district name passed from the frontend
-                    ->distinct()
-                    ->get(['current_village as name']); // Get villages
-
-                $villageNames = $data->flatMap(function ($item) {
-                    return explode(',', $item->name); // Split by comma and return the parts
-                })->unique()->values()->all();
-
-                $results = collect($villageNames)->map(function ($name) {
-                    return ['id' => $name, 'name' => $name];
-                });
+                case 'villages':
+                    $data = $query->where('document_type', $request->doc_type_id)
+                        ->where('current_state', $request->state_name)
+                        ->where('current_district', $id) // $id here is the district name passed from the frontend
+                        ->distinct()
+                        ->get(['current_village as name']); // Get villages
+                
+                    $results = [];
+                
+                    // Iterate over each village
+                    foreach ($data as $village) {
+                        // Split village names separated by commas
+                        $villageNames = explode(',', $village->name);
+                
+                        // Iterate over each split village name
+                        foreach ($villageNames as $villageName) {
+                            // Trim excess spaces
+                            $villageName = trim($villageName);
+                
+                            // Count approved documents for each village name
+                            $approved_documents_count = DB::table('master_doc_datas')
+                                ->where('document_type', $request->doc_type_id)
+                                ->where('current_state', $request->state_name)
+                                ->where('current_district', $id)
+                                ->where('current_village', 'like', '%' . $villageName . '%')
+                                ->where('status_id', 1)
+                                ->count();
+                
+                            // Add village name and approved document count to results
+                            $results[] = [
+                                'name' => $villageName,
+                                'approved_documents' => $approved_documents_count
+                            ];
+                        }
+                    }
 
                 return response()->json($results);
 
@@ -150,19 +192,17 @@ class Document extends Controller
                     ->where('status_id', 1)
                     ->get(['id as document_id', 'name as name']);
 
-
                 $results = $data->map(function ($item) {
                     return ['document_id' => $item->document_id, 'name' => $item->name];
                 });
                 return response()->json($results);
-
                 break;
             default:
                 return response()->json([]);
         }
         // \Log::info('Data being returned:', ['data' => $data]);
         $results = $data->map(function ($item) {
-            return ['id' => $item->name, 'name' => $item->name];
+            return ['id' => $item->name, 'name' => $item->name ,'approved_documents'=> $item->approved_documents];
         });
 
         return response()->json($results);

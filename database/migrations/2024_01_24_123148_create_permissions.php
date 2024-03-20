@@ -15,7 +15,6 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('display_name')->unique(); // Ensure display_name is unique
-            
             $table->integer('action');
             // $table->unsignedBigInteger('created_by');
          

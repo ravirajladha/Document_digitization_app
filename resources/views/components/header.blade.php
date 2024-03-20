@@ -115,7 +115,12 @@ $user = Auth::user();
 									@foreach ($notifications as $item)
 									{{-- <option value="{{ $item->name }}">{{ $item->name }}</option> --}}
 									<li>
+                                        @if($item->compliance_id !=null)
                                         <a  href="/notifications" >
+                                            @else
+                                        <a  href="/notifications?type=document_assignment" >
+                                            @endif
+
 									<div class="timeline-panel">
                                         @if($item->compliance_id !=null)
 										<div class="media me-2 media-info">
@@ -264,7 +269,6 @@ $user = Auth::user();
                                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a1.998 1.998 0 1 1-2.829 2.829l-.06-.06a1.65 1.65 0 0 0-1.82.33h-2.8a1.65 1.65 0 0 0-1.82-.33l-.06.06a1.998 1.998 0 1 1-2.829-2.829l.06-.06a1.65 1.65 0 0 0-.33-1.82v-2.8a1.65 1.65 0 0 0 .33-1.82l-.06-.06a1.998 1.998 0 1 1 2.829-2.829l.06.06a1.65 1.65 0 0 0 1.82-.33h2.8a1.65 1.65 0 0 0 1.82.33l.06-.06a1.998 1.998 0 1 1 2.829 2.829l-.06.06a1.65 1.65 0 0 0 .33 1.82v2.8z"></path>
                                 </svg>
                                 <span class="ms-2">Settings</span>
-                                
                             </a>
                           @endif
                             {{-- <a href="email-inbox.html" class="dropdown-item ai-icon">

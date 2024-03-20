@@ -36,7 +36,7 @@ class FilterDocumentController extends Controller
     public function filterDocument(Request $request)
     {
         $documents = collect();
-
+// dd($request->all());
         $typeId = $request->input('type');
         // $numberOfPages = $request->input('number_of_pages');
         $state = $request->input('state');
@@ -125,18 +125,20 @@ class FilterDocumentController extends Controller
 
 
         $villages = Master_doc_data::pluck('current_village')
-            ->flatMap(function ($item) {
-                // Split the item by comma and trim spaces from each resulting piece
-                return collect(explode(',', $item))->map(function ($i) {
-                    return Str::of($i)->trim();
-                });
-            })
-            ->unique()
-            ->sort()
-            ->reject(function ($value) {
-                return empty($value);
-            })
-            ->values();
+        ->flatMap(function ($item) {
+            // Split the item by comma and trim spaces from each resulting piece
+            return collect(explode(',', $item))->map(function ($i) {
+                // Trim spaces after exploding
+                return Str::of($i)->trim();
+            });
+        })
+        ->unique()
+        ->sort()
+        ->reject(function ($value) {
+            return empty($value);
+        })
+        ->values();
+    
 
 
 

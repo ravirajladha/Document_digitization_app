@@ -151,6 +151,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'notifications.compliances', 'display_name' => 'View Compliance Notifications', 'action' => 2],
             ['name' => 'notifications.recipients', 'display_name' => 'View Recipient Notifications', 'action' => 2],
             ['name' => 'compliances.isRecurring.toggle', 'display_name' => 'Update Compliance Recurring Status', 'action' => 3],
+        
+            ['name' => 'logs.action-logs', 'display_name' => 'Action Logs', 'action' => 2],
+            ['name' => 'logs.http-request-logs', 'display_name' => 'Http Request Logs', 'action' => 2],
+            
+            ['name' => 'soldLand.view', 'display_name' => 'View Sold Land', 'action' => 2],
+            ['name' => 'soldLand.store', 'display_name' => 'Add Sold Land', 'action' => 1],
+            ['name' => 'soldLand.update', 'display_name' => 'Update Sold Land', 'action' => 3],
         ];
 
    

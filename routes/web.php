@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Document;
 
-use App\Http\Controllers\{NotificationController,ReceiverController,DocumentController,SetController,UserController,ComplianceController,Dashboard,Receiver_process,ProfileController,FilterDocumentController};
+use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, Dashboard, Receiver_process, ProfileController, FilterDocumentController, LogController, SoldLandController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-// Route::view('/error/500', 'error')->name('error');
+
+Route::view('/error/403', 'error.403')->name('error');
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {
         return view('welcome');
@@ -31,7 +32,7 @@ Route::post('/verify-document/{token}', [Receiver_process::class, 'verifyOtp'])-
 Route::post('/send-otp', [Receiver_process::class, 'sendOTP'])->name('otp.send');
 
 
-Route::middleware(['auth', 'verified', 'checkuserpermission','xss-protection'])->group(function () {
+Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 'LogHttpRequest'])->group(function () {
     Route::get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -91,8 +92,8 @@ Route::middleware(['auth', 'verified', 'checkuserpermission','xss-protection'])-
     // Route::get('/add_fields_first', [DocumentController::class, 'add_fields_first'])->name('fields.create_first_step');
     Route::post('/add_document_field', [DocumentController::class, 'add_document_field'])->name('document_fields.store');
     Route::get('/document_field/{table?}', [DocumentController::class, 'document_field'])->name('document_fields.view');
-//update dynamic document field name
-Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 'updateDocumentFieldName'])->name('updateDocumentFieldName.update');
+    //update dynamic document field name
+    Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 'updateDocumentFieldName'])->name('updateDocumentFieldName.update');
     //documents
     Route::post('/add_document', [DocumentController::class, 'add_document'])
         ->name('documents.store');
@@ -115,7 +116,7 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
     Route::get('/document-creation-continue', [DocumentController::class, 'documentCreationContinue'])
         ->name('documents.creation.continue');
 
-  
+
     // Route::get('/edit_document/{table}/{id}', [DocumentController::class, 'edit_document'])
     //     ->name('documents.edit');
     Route::get('/edit_document_basic_detail/{id}', [DocumentController::class, 'edit_document_basic_detail'])
@@ -125,7 +126,7 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
 
     //view documents
     Route::get('/filter-document', [FilterDocumentController::class, 'filterDocument'])
-        ->name('documents.filter');
+        ->name('documents.review');
     // Route::get('/view_doc_first', [DocumentController::class, 'view_doc_first'])
     // ->name('documents.view.first');
     Route::get('/documents-for-set/{setId}', [SetController::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
@@ -155,8 +156,8 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
         ->name('compliances.store');
     Route::post('/status-change-compliance/{id}/{action}', [ComplianceController::class, 'statusChangeCompliance'])
         ->name('compliances.status_change');
-        //to change the status of is recurring of the COompliances
-        Route::post('/toggle-compliances-is-recurring/{id}', [ComplianceController::class, 'toggleIsRecurring'])
+    //to change the status of is recurring of the COompliances
+    Route::post('/toggle-compliances-is-recurring/{id}', [ComplianceController::class, 'toggleIsRecurring'])
         ->name('compliances.isRecurring.toggle');
 
     //notifications
@@ -168,8 +169,6 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
     Route::get('/users', [UserController::class, 'showUsers'])
         ->name('users.index');
 
-
-
     Route::post('/register-user', [UserController::class, 'store'])
         ->name('users.store');
     // Display the edit form
@@ -179,17 +178,28 @@ Route::put('/edit_document_field/{tableName}/{id}', [DocumentController::class, 
     // Process the update form submission
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
-
-
-
     //         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     // Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 
+    Route::get('/sold-land', [SoldLandController::class, 'view'])->name('soldLand.view');
+    Route::get('/sold-land-actions', [SoldLandController::class, 'add'])->name('soldLand.add');
+    //show single page
+    Route::get('/sold-land/{soldLand}/edit', [SoldLandController::class, 'edit'])->name('soldLand.edit');
+    //add sold land details
+    Route::post('/add-sold-land', [SoldLandController::class, 'store'])->name('soldLand.store');
+
+    //single sold land details
+    Route::get('/sold-land/{soldLand}', [SoldLandController::class, 'show'])->name('soldLand.show');
+    //update
+    Route::post('/sold-land/{soldLand}', [SoldLandController::class, 'update'])->name('soldLand.update');
+    //add or updatebulk upload 
+    Route::post('/bulk-upload-sold-land-data', [SoldLandController::class, 'bulkUploadSoldLandData'])
+        ->name('sold_land.bulk_upload');
 
 
+    Route::get('/action-logs', [LogController::class, 'actionLogsIndex'])->name('logs.action-logs');
+    Route::get('/http-request-logs', [LogController::class, 'httpRequestLogs'])->name('logs.http-request-logs');
 });
-
-
 
 require __DIR__ . '/auth.php';

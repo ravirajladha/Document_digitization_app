@@ -1,24 +1,25 @@
-<?php 
+<?php
 // File: app/Services/DocumentTableService.php
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\Doc_type;
-use App\Models\Master_doc_type;
-use App\Models\Master_doc_data;
-use Carbon\Carbon;
-
 use Validator;
+use Carbon\Carbon;
+use App\Models\Doc_type;
+use App\Models\Master_doc_data;
+use App\Models\Master_doc_type;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Eloquent\Collection;
 
 class FilterDocumentService
 {
-    
-    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null,$locker_no=null,$start_date = null,$end_date =null,$area_range_start=null,$area_range_end=null,$area_unit=null): Collection
+
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null, $locker_no = null, $start_date = null, $end_date = null, $area_range_start = null, $area_range_end = null, $area_unit = null): Collection
     {
         $query = Master_doc_data::query();
 
@@ -28,7 +29,7 @@ class FilterDocumentService
         if ($locker_no) {
             $query->where('locker_id', $locker_no);
         }
-      
+
         // dd($start_date);
         if ($start_date && $end_date) {
             // Convert dates to Carbon instances to ensure correct format and handle any timezone issues
@@ -58,11 +59,12 @@ class FilterDocumentService
         }
         if ($village) {
             $query->where(function ($q) use ($village) {
-                $q->whereRaw("FIND_IN_SET(?, current_village)", [$village]);
+                $q->whereRaw("FIND_IN_SET(?, REPLACE(current_village, ' ', ''))", [$village]);
             });
         }
 
-//before all the types of villages were comninely searched
+
+        //before all the types of villages were comninely searched
 
         // if ($state) {
         //     $query->where(function ($q) use ($state) {
@@ -85,29 +87,159 @@ class FilterDocumentService
         //           ->orWhere('alternate_village', $village);
         //     });
         // }
+        // if ($area_range_start !== null || $area_range_end !== null) {
+        //     $query->where(function ($q) use ($area_range_start, $area_range_end) {
+        //         if ($area_range_start !== null) {
+        //             $q->where('area', '>=', $area_range_start);
+        //         }
+        //         if ($area_range_end !== null) {
+        //             $q->where('area', '<=', $area_range_end);
+        //         }
+        //     });
+        // }
+
+
+        // if ($area_unit !== null) {
+        //     $query->where('unit', $area_unit);
+        // }
+        $area_range_start  = intval($area_range_start);
+        $area_range_end  = intval($area_range_end);
+
         if ($area_range_start !== null || $area_range_end !== null) {
-            $query->where(function ($q) use ($area_range_start, $area_range_end) {
-                if ($area_range_start !== null) {
-                    $q->where('area', '>=', $area_range_start);
-                }
-                if ($area_range_end !== null) {
-                    $q->where('area', '<=', $area_range_end);
+            $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
+                // dd(gettype($area_range_start));
+                // if ($area_range_start !== null) {
+                //     $q->where('area', '>=', $area_range_start);
+                // }
+                // if ($area_range_end !== null) {
+                //     $q->where('area', '<=', ($area_range_end));
+                // }
+                // dd($area_unit);
+                // Filter by area unit if provided
+                if ($area_unit) {
+                    if ($area_unit === 'Acres') {
+                        
+                        // dd($area_range_start,$area_range_end);
+                        // Search for both acres and cents
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'acres and cents')
+                                ->where('area', '>=', $area_range_start)
+                                ->where('area', '<=', $area_range_end);
+                        });
+                        // Convert acres to square feet and search
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'Square Feet')
+                                ->where('area', '>=', $area_range_start * 43560)
+                                ->where('area', '<=', $area_range_end * 43560);
+                        });
+                    } elseif ($area_unit === 'Square Feet') {
+                        // Search for square feet
+                        // dd(22);
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'Square Feet')
+                                ->where('area', '>=', $area_range_start)
+                                ->where('area', '<=', $area_range_end);
+                        });
+                        // Convert square feet to acres and cents and search
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'acres and cents')
+                                ->where('area', '>=', $area_range_start / 43560)
+                                ->where('area', '<=', $area_range_end / 43560);
+                        });
+                    }
                 }
             });
         }
-    
-        // Area unit type filter
-        if ($area_unit !== null) {
-            $query->where('unit', $area_unit);
-        }
-        // return $query->get();
-       
+        
+
+
+
+        // if ($area_range_start !== null || $area_range_end !== null) {
+        //     $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
+        //         // Filter by area unit if provided
+        //         if ($area_unit) {
+        //             if ($area_unit === 'Acres') {
+        //                 // Convert square feet to acres and apply the filter
+        //                 $q->where(function ($q) use ($area_range_start, $area_range_end) {
+        //                     $q->where('unit', 'square feet')
+        //                         ->where('area', '>=', $area_range_start / 43560)
+        //                         ->where('area', '<=', $area_range_end / 43560);
+        //                 });
+        //                 $q->where(function ($q) use ($area_range_start, $area_range_end) {
+        //                     $q->where('unit', 'acres and cents')
+        //                         ->where('area', '>=', $area_range_start)
+        //                         ->where('area', '<=', $area_range_end);
+        //                 });
+        //             } elseif ($area_unit === 'Square Feet') {
+        //                 // Convert acres to square feet and apply the filter
+        //                 $q->where(function ($q) use ($area_range_start, $area_range_end) {
+        //                     $q->where('unit', 'acres and cents')
+        //                         ->where('area', '>=', $area_range_start * 43560)
+        //                         ->where('area', '<=', $area_range_end * 43560);
+        //                 });
+        //                 $q->where(function ($q) use ($area_range_start, $area_range_end) {
+        //                     $q->where('unit', 'square feet')
+        //                         ->where('area', '>=', $area_range_start)
+        //                         ->where('area', '<=', $area_range_end);
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
+
+        
+        
+// if ($area_range_start !== null || $area_range_end !== null) {
+//     $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
+//         // Filter by area unit if provided
+//         if ($area_unit) {
+//             if ($area_unit === 'Acres') {
+//                 // Convert square feet to acres and apply the filter
+//                 $q->where(function ($q) use ($area_range_start, $area_range_end) {
+                  
+
+//                         $q->where('unit', 'acres and cents')
+//                         ->where('area', '>=', $area_range_start)
+//                         ->where('area', '<=', $area_range_end);
+
+
+//                 })
+//                 ->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+//                     $q->where('unit', 'square feet')
+//                     ->where('area', '>=', $area_range_start / 43560)
+//                     ->where('area', '<=', $area_range_end / 43560);
+//                 });
+//             } elseif ($area_unit === 'Square Feet') {
+//                 // Convert acres to square feet and apply the filter
+//                 $q->where(function ($q) use ($area_range_start, $area_range_end) {
+//                     $q->where('unit', 'acres and cents')
+//                         ->where('area', '>=', $area_range_start * 43560)
+//                         ->where('area', '<=', $area_range_end * 43560);
+//                 })
+//                 ->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+//                     $q->where('unit', 'square feet')
+//                         ->where('area', '>=', $area_range_start)
+//                         ->where('area', '<=', $area_range_end);
+//                 });
+//             }
+//         }
+//     });
+// }
+
+
+
+        // \Illuminate\Support\Facades\Log::info('Generated SQL Query: ' . $query->toSql());
+
+
+        Log::info('Generated SQL Query: ' . $query->toSql());
+
 
         $filteredData = $query->get();
         // dd($filteredData);
+        // dd($filteredData);
         foreach ($filteredData as $item) {
             $documentType = $item->document_type_name;
-    
+
             // Determine the corresponding table name based on documentType
             $tableName = $documentType;
             // Query the corresponding table using masterDocId
@@ -115,24 +247,21 @@ class FilterDocumentService
                 ->where('doc_id', $item->id)
                 ->orderBy('document_name')
                 ->first();
-    
+
             // Attach tableId to the $item
-            $item->tableId = $tableEntry ? $tableEntry->id : null;
+            // $item->tableId = $tableEntry ? $tableEntry->id : null;
         }
-    
+
         return $filteredData;
-
-
-
     }
 
     public function fetchDataForFilter($masterDocId)
     {
         // Step 1: Fetch document_type and id from master_doc_data table
         $masterDocData = DB::table('master_doc_data')
-                           ->select('document_type', 'id')
-                           ->where('id', $masterDocId)
-                           ->first();
+            ->select('document_type', 'id')
+            ->where('id', $masterDocId)
+            ->first();
 
         if (!$masterDocData) {
             // Handle error: Master document data not found
@@ -143,9 +272,9 @@ class FilterDocumentService
 
         // Step 2: Determine table_name based on document_type
         $masterDocTypeData = DB::table('master_doc_type')
-                               ->select('name')
-                               ->where('id', $masterDocId)
-                               ->first();
+            ->select('name')
+            ->where('id', $masterDocId)
+            ->first();
 
         if (!$masterDocTypeData) {
             // Handle error: Master document type data not found
@@ -153,12 +282,12 @@ class FilterDocumentService
         }
 
         $tableName = $masterDocTypeData->name;
-dd($tableName);
+
         // Step 3 & 4: Fetch id from the corresponding table
         $docData = DB::table($tableName)
-                     ->select('id')
-                     ->where('doc_id', $masterDocId) // Assuming doc_id in the corresponding table corresponds to master_doc_data id
-                     ->get();
+            ->select('id')
+            ->where('doc_id', $masterDocId) // Assuming doc_id in the corresponding table corresponds to master_doc_data id
+            ->get();
 
         if ($docData->isEmpty()) {
             // Handle error: No matching data found
@@ -175,7 +304,4 @@ dd($tableName);
             'ids' => $ids,
         ];
     }
-
 }
-
-?>

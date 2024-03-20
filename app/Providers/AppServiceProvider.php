@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use App\Services\DocumentTableService;
 use Illuminate\Support\ServiceProvider;
+use App\Models\User;
+use App\Models\Set;
+use App\Observers\GlobalModelObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,13 +28,28 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
+
+        // Inside AppServiceProvider's boot method
+        //Get all the post, update and delete through globalobservice from all the models
+        $namespace = 'App\\Models'; // Define the namespace where your models are located
+        $path = app_path('Models'); // Define the path to your models
+
+        $files = \File::allFiles($path);
+        foreach ($files as $file) {
+            $class = $namespace . '\\' . $file->getBasename('.php');
+            if (is_subclass_of($class, 'Illuminate\Database\Eloquent\Model')) {
+                $class::observe(GlobalModelObserver::class);
+            }
+        }
+
+
         View::composer('*', function ($view) {
             $user = Auth::user();
             // Pass the user to the view
             $view->with('user', $user);
-    
+
             if ($user) {
                 // Assuming your User model has a permissions() relationship defined
                 $permissions = $user->permissions()->pluck('display_name'); // Use 'name' if you want to use the permission names
@@ -40,11 +59,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('permissions', collect());
             }
         });
-
-
-          // Define a Blade directive for generating permission checkboxes
+        // Define a Blade directive for generating permission checkboxes
 
     }
 }
-
- 

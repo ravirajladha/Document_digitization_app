@@ -21,7 +21,7 @@
                             <div class="col-12 col-sm-6">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
-                                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Add Document1</a>
+                                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Add Document</a>
                                     </li>
                                 </ol>
                             </div>

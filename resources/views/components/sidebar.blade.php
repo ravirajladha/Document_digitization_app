@@ -19,7 +19,7 @@
                     {{-- @if (Auth::user()->type == 'admin') --}}
                     @if (
                         $user &&
-                            ($user->hasPermission('Filter Document') ||
+                            ($user->hasPermission('Main Document View') ||
                                 $user->hasPermission('Add Basic Document Form') ||
                                 $user->hasPermission('View Assigned Documents') ||
                                 $user->hasPermission('View Bulk Upload') ||
@@ -31,7 +31,7 @@
                                 <span class="nav-text">Document </span>
                             </a>
                             <ul aria-expanded="false">
-                                @if ($user && $user->hasPermission('Filter Document'))
+                                @if ($user && $user->hasPermission('Main Document View'))
                                     <li><a href="{{ url('/') }}/filter-document">View Documents</a></li>
                                 @endif
                                 @if ($user && $user->hasPermission('Add Basic Document Form'))
@@ -64,6 +64,13 @@
                          
                         </ul>
                     </li> --}}
+                    @if ($user && $user->hasPermission('View Sold Land'))
+                        <li><a href="{{ url('/') }}/sold-land" aria-expanded="false">
+                                <i class="fas fa-landmark"></i>
+                                <span class="nav-text">Sold Lands</span>
+                            </a>
+                        </li>
+                    @endif
                     @if ($user && $user->hasPermission('View Sets'))
                         <li><a href="{{ url('/') }}/set" aria-expanded="false">
                                 <i class="fas fa-info-circle"></i>
@@ -101,14 +108,46 @@
                             </a>
                         </li>
                     @endif
-                    @if ($user && $user->hasPermission('View Profile'))
-                        <li><a href="{{ url('/') }}/profile" aria-expanded="false">
-                                {{-- <i class="fas fa-scale-balanced"></i> --}}
-                                <i class="fas fa-tools"></i>
-                                <span class="nav-text">Settings</span>
-                            </a>
-                        </li>
-                    @endif
+
+
+
+
+                    <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
+                            <i class="fas fa-tools"></i>
+                            <span class="nav-text">Settings</span>
+                        </a>
+
+                        <ul aria-expanded="false">
+                            @if ($user && $user->hasPermission('View Profile'))
+                                <li><a href="{{ url('/') }}/profile">Profile</a></li>
+                            @endif
+                            @if ($user && ($user->hasPermission('Http Request Logs') || $user->hasPermission('Action Logs')))
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Logs</a>
+                                    <ul aria-expanded="false">
+                                        <li><a href="/action-logs">Action Logs</a></li>
+                                        <li><a href="/http-request-logs">Http Request Logs</a></li>
+
+                                    </ul>
+                                </li>
+                            @endif
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                            </form>
+                            <li><a href="javascript:void()" aria-expanded="false"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                    aria-expanded="false">
+
+                                    {{-- <i class="fas fa-sign-out"></i> --}}
+                                    <span class="nav-text">Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+
+
+
                     {{-- 				
 					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 						@csrf
@@ -173,7 +212,7 @@
                         overflow-y: auto;
                     }
                 </style>
-                <div class="sidebar-container d-flex flex-column sidebar-footer">
+                <div class="sidebar-container d-flex flex-column sidebar-footer progress-info">
                     <div class="sidebar-content overflow-auto sidebar-footer">
                         <div class="side-bar-profile sidebar-footer">
 
@@ -202,7 +241,7 @@
                     </div>
                 </div>
                 <div class="sidebar-footer mt-auto">
-                    
+
                     <div class="copyright">
                         {{-- <p>Kods © 2023 All Rights Reserved</p> --}}
                         <a href="https://kodstech.com/" target="_blank">

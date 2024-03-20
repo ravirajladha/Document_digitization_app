@@ -45,7 +45,7 @@ class UserController extends Controller
             'phone' => 'required|integer|digits:10',
 
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'string', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'], // Add regex rule for password strength
             'password_confirmation' => 'required',
         ]);
 
@@ -94,7 +94,15 @@ class UserController extends Controller
                     'string',
                     'email',
                     'max:255',
+                    
                     Rule::unique(User::class)->ignore($user->id),
+                ],
+                'password' => [
+                    'nullable',
+                    'confirmed',
+                    'min:8',
+                    'max:20',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
                 ],
                 // Validate password if it's filled, and ensure it matches the confirmation and meets length requirements
                 // 'password' => [

@@ -61,11 +61,17 @@ class BulkUploadService
                 $rowsToInsert = [];
 
                 foreach ($chunk as $row) {
-
+                    // Trim leading and trailing spaces from each element in the row
+                    $trimmedRow = array_map('trim', $row);
+                    // Check for scripts or potentially harmful content
+                    if ($this->containsScript($trimmedRow)) {
+                        // Log or handle the detection of harmful content
+                        continue; // Skip this row
+                    }
                     // Apply your validation and logic here.
-                    if ($row[6]) {
+                    if ($trimmedRow[6]) {
 
-                        $processedRow = $this->processRow($row, $batchId);
+                        $processedRow = $this->processRow($trimmedRow, $batchId);
                     } else {
                         $stats['not_used']++;
                     }
@@ -99,6 +105,16 @@ class BulkUploadService
         return $stats;
     }
 
+    // Function to check if a row contains script or potentially harmful content
+    private function containsScript($row)
+    {
+        foreach ($row as $value) {
+            if (preg_match('/<\s*script\s*>/', $value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     protected function insertIntoDynamicTables($batchId)
     {
@@ -153,10 +169,12 @@ class BulkUploadService
         return $dynamicStats;
     }
 
-//the dates were not added properly in the excel, so the function convertes into formatted
+    //the dates were not added properly in the excel, so the function convertes into formatted
+
+
+    //   child bulk upload start
     protected function processRow($row, $batchId)
     {
-
         $dateFormats = ['d-m-Y', 'd/m/Y'];
         $formattedDate = null;
         foreach ($dateFormats as $format) {
@@ -167,62 +185,68 @@ class BulkUploadService
                 // Catch the exception and continue trying other formats
             }
         }
-
+    
         // Assign a code based on the unit
-        $unit = strtolower(trim($row[21]));
-        $unitCode = null;
-        if (strpos($unit, 'acres') !== false) {
-            $unitCode = 1;
-        } elseif (strpos($unit, 'square') !== false) {
-            $unitCode = 2;
-        }
-        // Transform the row to your needs.
-        $documentType = $this->documentTableService->createDocumentType($row[6]);
-        return [
+        // $unit = strtolower(trim($row[21]));
+        // $unitCode = null;
+        // if (strpos($unit, 'acres') !== false) {
+        //     $unitCode = 1;
+        // } elseif (strpos($unit, 'square') !== false) {
+        //     $unitCode = 2;
+        // }
+        $document_type_name = strtolower(str_replace(' ', '_', $row[6]));
+    
+        // Find existing record by temp_id
+        $existingRecord = Master_doc_data::where('temp_id', $row[1])->first();
+    
+        // Prepare data for insertion or update
+        $data = [
             'temp_id' => $row[1],
             'name' => $row[2],
             'location' => $row[3],
-            'locker_id' =>  isset($row[4]) ? (int) $row[4] : null,
+            'locker_id' => isset($row[4]) ? (int) $row[4] : null,
             'number_of_page' => isset($row[5]) ? (int) $row[5] : null,
-            'document_type' => $documentType->id,
-            'document_type_name' => $row[6],
-            'current_state' => $row[7],
-            'state' => $row[8],
-            'alternate_state' => $row[9],
-            'current_district' => $row[10],
-            'district' => $row[11],
-            'alternate_district' => $row[12],
-            'current_taluk' => $row[13],
-            'taluk' => $row[14],
-            'alternate_taluk' => $row[15],
-            'current_village' => $row[16],
-            'village' => $row[17],
-            'alternate_village' => $row[18],
-
+            'document_type_name' => $document_type_name,
+            'current_state' => isset($row[7]) && !empty(trim($row[7])) ? $row[7] : 'N/A',
+            'state' => isset($row[8]) && !empty(trim($row[8])) ? $row[8] : 'N/A',
+            'alternate_state' => isset($row[9]) && !empty(trim($row[9])) ? $row[9] : 'N/A',
+            'current_district' =>isset($row[10]) && !empty(trim($row[10])) ? $row[10] : 'N/A',
+            'district' => isset($row[11]) && !empty(trim($row[11])) ? $row[11] : 'N/A',
+            'alternate_district' =>  isset($row[12]) && !empty(trim($row[12])) ? $row[12] : 'N/A',
+            'current_taluk' => isset($row[13]) && !empty(trim($row[13])) ? $row[13] : 'N/A',
+            'taluk' => isset($row[14]) && !empty(trim($row[14])) ? $row[14] : 'N/A',
+            'alternate_taluk' =>isset($row[15]) && !empty(trim($row[15])) ? $row[15] : 'N/A',
+            'current_village' => isset($row[16]) && !empty(trim($row[16])) ? $row[16] : 'N/A',
+            'village' => isset($row[17]) && !empty(trim($row[17])) ? $row[17] : 'N/A',
+            'alternate_village' =>isset($row[18]) && !empty(trim($row[18])) ? $row[18] : 'N/A',
             'issued_date' => $formattedDate,
             'area' => $row[20],
-            'unit' => $unitCode,
+            'unit' =>  strtolower(trim($row[21])),
             'dry_land' => $row[22],
             'wet_land' => $row[23],
             'garden_land' => $row[24],
-
-
-            // 'document_sub_type' => $row[20],
-            // 'current_town' => $row[21],
-            // 'town' => $row[22],
-            // 'alternate_town' => $row[23],
             'old_locker_number' => $row[25],
             'physically' => $row[27],
             'bulk_uploaded' => 1,
             'created_by' => Auth::user()->id,
             'batch_id' => $batchId,
-
-            // ... add more fields as necessary
         ];
+    
+        if ($existingRecord) {
+            // If record exists, update it
+            //updating the document_type_name will give error, as it will search for the document_type and the table too on view document page
+            unset($data['document_type_name']);
+            $existingRecord->update($data);
+        } else {
+            // If record does not exist, create it
+            $documentType = $this->documentTableService->createDocumentType($document_type_name);
+            $data['document_type'] = $documentType->id;
+            Master_doc_data::create($data);
+        }
+    
+        return null; // Return null to indicate no new row to be inserted
     }
-
-    //   child bulk upload start
-
+    
     public function handleChildUpload($path)
     {
         $collections = Excel::toCollection(null, $path);
@@ -260,7 +284,6 @@ class BulkUploadService
             // ... other stats
         ];
     }
-
 
     protected function mapRowToTableColumns($headers, $row, $docId, $tableName)
     {

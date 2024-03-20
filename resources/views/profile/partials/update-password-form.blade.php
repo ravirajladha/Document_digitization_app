@@ -16,6 +16,14 @@
         <div class="mt-2">
             <x-input-label for="update_password_current_password" :value="__('Current Password')" />
             <x-text-input id="update_password_current_password" name="current_password" type="password" class="form-control"  autocomplete="current-password" />
+            <div class="bootstrap-popover d-inline-block float-end mt-1 mb-1">
+                <button type="button" class="btn btn-primary btn-sm px-4 "
+                    data-bs-container="body" data-bs-toggle="popover"
+                    data-bs-placement="top"
+                    data-bs-content="The password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, and 1 numeric digit."
+                    title="Password Guidelines"><i
+                        class="fas fa-info-circle"></i></button>
+            </div>
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
         </div>
 

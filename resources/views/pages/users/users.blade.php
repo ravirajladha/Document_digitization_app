@@ -1,7 +1,31 @@
 <x-app-layout>
     <x-header />
     <x-sidebar />
+    <style>
+        /* Style for bigger and darker checkbox */
+        .form-check-input-custom {
+            width: 20px;
+            /* Adjust the width as needed */
+            height: 20px;
+            /* Adjust the height as needed */
+            background-color: #f2eaea;
+            /* Darker background color */
+            border: 4px solid #050404;
+            /* Darker border color */
+            border-radius: 9px;
+            /* Rounded corners */
+            cursor: pointer;
+            /* Show pointer cursor on hover */
+        }
 
+        /* Style for checkbox label */
+        .checkbox-label {
+            margin-left: 5px;
+            /* Adjust margin as needed */
+            color: #333;
+            /* Text color */
+        }
+    </style>
     <div class="content-body default-height">
         <!-- row -->
         <div class="container-fluid">
@@ -97,7 +121,7 @@
                                                     <button type="button" class="btn btn-primary btn-sm px-4 "
                                                         data-bs-container="body" data-bs-toggle="popover"
                                                         data-bs-placement="top"
-                                                        data-bs-content="The password must be of 8 letters."
+                                                        data-bs-content="The password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, and 1 numeric digit."
                                                         title="Password Guidelines"><i
                                                             class="fas fa-info-circle"></i></button>
                                                 </div>
@@ -105,10 +129,10 @@
                                                 <input type="password" name="password"
                                                     @if (!isset($editUser)) required @endif
                                                     autocomplete="new-password" id="dlab-password" class="form-control">
-                                                <span class="show-pass eye">
+                                                {{-- <span class="show-pass eye">
                                                     <i class="fa fa-eye-slash"></i>
                                                     <i class="fa fa-eye"></i>
-                                                </span>
+                                                </span> --}}
                                                 @error('password')
                                                     <div class="alert alert-danger mt-2">{{ $message }}</div>
                                                 @enderror
@@ -118,7 +142,8 @@
                                                     Password</label>
                                                 <input type="password" name="password_confirmation"
                                                     @if (!isset($editUser)) required @endif
-                                                    autocomplete="new-password"  id="dlab-password1" class="form-control">
+                                                    autocomplete="new-password" id="dlab-password1"
+                                                    class="form-control">
                                                 <span class="show-pass1 eye">
                                                     <i class="fa fa-eye-slash"></i>
                                                     <i class="fa fa-eye"></i>
@@ -154,6 +179,9 @@
 
                                         @endif
 
+
+
+
                                         <div class="mb-3">
                                             {{-- <label for="receiverType" class="form-label">Permissions & Role</label> --}}
                                             <label class="form-label" for="password_confirmation">Permissions &
@@ -163,16 +191,33 @@
                                                 <table class="table  table-responsive-sm">
                                                     <tbody style="padding:0 0 0 0;">
                                                         @php
-                                                            $userPermissionsDisplayNames = isset($editUser) ? $editUser->permissions->pluck('display_name')->toArray() : [];
+                                                            $userPermissionsDisplayNames = isset($editUser)
+                                                                ? $editUser->permissions
+                                                                    ->pluck('display_name')
+                                                                    ->toArray()
+                                                                : [];
                                                         @endphp
 
                                                         {{-- Ensure the function is declared once outside of any conditional blocks --}}
                                                         @if (!function_exists('generatePermissionCheckbox'))
                                                             @php
-                                                                function generatePermissionCheckbox($permissionsDisplayNames, $permissionDisplayName)
-                                                                {
-                                                                    $isChecked = in_array($permissionDisplayName, $permissionsDisplayNames) ? 'checked' : '';
-                                                                    echo '<input type="checkbox" class="form-check-input" name="permissions[' . $permissionDisplayName . ']" value="' . $permissionDisplayName . '" ' . $isChecked . '>';
+                                                                function generatePermissionCheckbox(
+                                                                    $permissionsDisplayNames,
+                                                                    $permissionDisplayName,
+                                                                ) {
+                                                                    $isChecked = in_array(
+                                                                        $permissionDisplayName,
+                                                                        $permissionsDisplayNames,
+                                                                    )
+                                                                        ? 'checked'
+                                                                        : '';
+                                                                    echo '<input type="checkbox" class="form-check-input form-check-input-custom" name="permissions[' .
+                                                                        $permissionDisplayName .
+                                                                        ']" value="' .
+                                                                        $permissionDisplayName .
+                                                                        '" ' .
+                                                                        $isChecked .
+                                                                        '>';
                                                                 }
                                                             @endphp
                                                             <tr>
@@ -252,6 +297,15 @@
 
                                                                 </td>
                                                                 <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="module-name">Sold Land</td>
+                                                                <td>@php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add Sold Land') @endphp</td>
+                                                                <td>
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Sold Land') @endphp
+                                                                </td>
+                                                                <td>  @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sold Land') @endphp</td>
                                                                 <td></td>
                                                             </tr>
                                                             <tr>
@@ -547,9 +601,8 @@
         }
 
         .fa-eye {
-    display: none;
-}
-
+            display: none;
+        }
     </style>
 
     {{-- add receiver modal form starts --}}
@@ -615,34 +668,33 @@ $modules = ['Document', 'Bulk Upload', 'Document Field', 'Document Type','Sets',
       </div>
        --}}
 
-       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-       <script>
-       $(document).ready(function() {
-           // Toggle visibility for the first password field
-           $('#dlab-password + .show-pass').on('click', function() {
-               togglePasswordVisibility('#dlab-password', $(this));
-           });
-       
-           // Toggle visibility for the confirm password field
-           $('#dlab-password1 + .show-pass1').on('click', function() {
-               togglePasswordVisibility('#dlab-password1', $(this));
-           });
-       
-           function togglePasswordVisibility(inputSelector, toggleSpan) {
-               let input = $(inputSelector);
-               let eyeSlash = toggleSpan.find('.fa-eye-slash');
-               let eye = toggleSpan.find('.fa-eye');
-       
-               if (input.attr('type') === 'password') {
-                   input.attr('type', 'text');
-                   eyeSlash.hide();
-                   eye.show();
-               } else {
-                   input.attr('type', 'password');
-                   eye.show();
-                   eyeSlash.hide();
-               }
-           }
-       });
-       </script>
-       
+{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  --}}
+<script>
+    $(document).ready(function() {
+        // Toggle visibility for the first password field
+        $('#dlab-password + .show-pass').on('click', function() {
+            togglePasswordVisibility('#dlab-password', $(this));
+        });
+
+        // Toggle visibility for the confirm password field
+        $('#dlab-password1 + .show-pass1').on('click', function() {
+            togglePasswordVisibility('#dlab-password1', $(this));
+        });
+
+        function togglePasswordVisibility(inputSelector, toggleSpan) {
+            let input = $(inputSelector);
+            let eyeSlash = toggleSpan.find('.fa-eye-slash');
+            let eye = toggleSpan.find('.fa-eye');
+
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                eyeSlash.hide();
+                eye.show();
+            } else {
+                input.attr('type', 'password');
+                eye.show();
+                eyeSlash.hide();
+            }
+        }
+    });
+</script>

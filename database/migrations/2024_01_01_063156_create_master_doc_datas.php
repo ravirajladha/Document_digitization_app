@@ -35,7 +35,7 @@ return new class extends Migration
             $table->date('issued_date')->nullable();
          
 
-            $table->integer('unit')->nullable();
+            $table->string('unit')->nullable();
             $table->string('area')->nullable();
             $table->string('dry_land')->nullable();
             $table->string('wet_land')->nullable();

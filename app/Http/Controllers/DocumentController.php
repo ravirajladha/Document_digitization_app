@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Migrations\Migration;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set,State};
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set,State,DocumentStatusLog};
 
 
 // use Illuminate\Database\Eloquent\Collection::paginate;
@@ -214,6 +214,19 @@ class DocumentController extends Controller
 
         // Update the status in the master document table using the doc_id from the individual document
         Master_doc_data::where('id', $document->doc_id)->update($updateDataMaster);
+       $master_data   =  Master_doc_data::where('id', $id)->first();
+
+//this log was necessary, as the reviewer was starting the review. so for the backup, the status has been recorded in the database.
+        $logData = [
+            'document_id' => $document->doc_id,
+            'status' => $status,
+            'message' => $message ?? null,
+            'created_by' => $userId,
+            'temp_id' => $master_data->temp_id ?? null,// Assuming temp_id is retrieved from $document
+        ];
+    
+        DocumentStatusLog::create($logData);
+
 
         session()->flash('toastr', ['type' => 'success', 'message' => 'Document status updated successfully']);
 
@@ -285,10 +298,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         'id' => $result['id'],
         'document_data' => $result['document_data'],
     ]));
-
 }
-
-
 
     public function view_doc_first()
     {
