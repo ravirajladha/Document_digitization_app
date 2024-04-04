@@ -22,7 +22,7 @@ class UserController extends Controller
         if ($userId) {
             $editUser = User::with('permissions')->findOrFail($userId);
         }
-
+// dd($editUser);
         $users = User::where('type', "user")
             ->orderBy('created_at', 'desc')
             ->get();
@@ -47,6 +47,7 @@ class UserController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', 'string', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'], // Add regex rule for password strength
             'password_confirmation' => 'required',
+            'status' => 'required|in:0,1',
         ]);
 
         $user = User::create([
@@ -55,6 +56,7 @@ class UserController extends Controller
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'type' => "user", // Set user type as 'user'
+            'status' => $request->status, // Set the user status
         ]);
 
         $requestedPermissions = $request->input('permissions', []);
@@ -104,6 +106,8 @@ class UserController extends Controller
                     'max:20',
                     'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
                 ],
+            'status' => 'required|in:0,1',
+
                 // Validate password if it's filled, and ensure it matches the confirmation and meets length requirements
                 // 'password' => [
                 //     'sometimes',
@@ -126,6 +130,7 @@ class UserController extends Controller
             // Update the user's information
             $user->name = $validatedData['name'];
             $user->phone = $validatedData['phone'];
+            $user->status = $validatedData['status'];
             $user->email = strtolower($validatedData['email']); // Store the email in lowercase
 
             // If a new password was provided, hash and update it
@@ -152,14 +157,12 @@ class UserController extends Controller
     $user = User::findOrFail($userId);
 
     DB::beginTransaction();
-
     try {
         // Remove any existing permissions
         $user->permissions()->detach();
 
         // Get the permissions by display_name
         $permissions = Permission::whereIn('display_name', $permissionNames)->get(['display_name']);
-
         // Check if the permissions were found
         if ($permissions->count() !== count($permissionNames)) {
             throw new \Exception("One or more permissions could not be found.");

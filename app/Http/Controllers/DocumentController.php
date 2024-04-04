@@ -7,25 +7,14 @@ use Illuminate\Support\Str;
 
 use Illuminate\Http\Request;
 use App\Services\DocumentService;
-
-// use Illuminate\Validation\Validator;
-// use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Services\DocumentTableService;
 use Illuminate\Support\Facades\Schema;
-
-use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Database\Migrations\Migration;
 use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set,State,DocumentStatusLog};
 
-
-// use Illuminate\Database\Eloquent\Collection::paginate;
 class DocumentController extends Controller
 {
 
@@ -180,11 +169,18 @@ class DocumentController extends Controller
 
         $document = DB::table($tableName)->where('id', $id)->first();
 
+      
+
         if (!$document) {
             // Handle the case where the document doesn't exist
             return redirect()->back()->withErrors(['error' => 'Document not found']);
         }
 
+        if ($document->status == 1) {
+            // Document is already approved, return with an error message
+            return redirect()->back()->withErrors(['error' => 'Document is already approved']);
+        }
+        
         // Prepare data for updating the individual document table
         $updateData = ['status' => $status];
 

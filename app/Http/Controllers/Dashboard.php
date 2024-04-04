@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Services\DashboardService;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment};
 
-use Illuminate\Http\Request;
 
 class Dashboard extends Controller
 {

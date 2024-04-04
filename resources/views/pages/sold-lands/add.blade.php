@@ -24,8 +24,14 @@
                         </div>
                     </div>
                 
-                    <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.update', $soldLand->id) : route('soldLand.store') }}" method="post" enctype="multipart/form-data">
+                    {{-- <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.update', $soldLand->id) : route('soldLand.store') }}" method="post" enctype="multipart/form-data"> --}}
+                        {{-- <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.update', $soldLand->id) : route('soldLand.store') }}" method="post" enctype="multipart/form-data"> --}}
+                            <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.storeOrUpdate', $soldLand->id) : route('soldLand.storeOrUpdate') }}" method="post" enctype="multipart/form-data">
 
+                            @csrf <!-- Include CSRF token -->
+                            {{-- @if(isset($soldLand))
+                                @method('PUT') 
+                            @endif --}}
 
 
                         @csrf
@@ -50,7 +56,18 @@
                                                         </div>
                                                     @endif
 
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="district_number" class="form-label">State
+                                                                </label>
+                                                            <input type="text" class="form-control"
+                                                                name="state" id="state"
+                                                                aria-describedby="emailHelp"
+                                                                placeholder="Enter State "
+                                                                value="{{ old('state', $soldLand->state ?? '') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="district_number" class="form-label">District
                                                                 Number</label>
@@ -61,7 +78,7 @@
                                                                 value="{{ old('district_number', $soldLand->district_number ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="district" class="form-label">District</label>
                                                             <input type="text" class="form-control" name="district"
@@ -91,6 +108,8 @@
                                                                 value="{{ old('village', $soldLand->village ?? '') }}">
                                                         </div>
                                                     </div>
+<hr/>
+
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="survey_number" class="form-label">Survey
@@ -102,6 +121,17 @@
                                                                 value="{{ old('survey_number', $soldLand->survey_number ?? '') }}">
                                                         </div>
                                                     </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label for="plot" class="form-label">Plot</label>
+                                                            <input type="text" class="form-control" name="plot"
+                                                                id="plot" aria-describedby="emailHelp"
+                                                                placeholder="Enter Plot"
+                                                                value="{{ old('plot', $soldLand->plot ?? '') }}">
+                                                        </div>
+                                                    </div>
+<hr/>
+
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="wet_land" class="form-label">Wet Land</label>
@@ -121,15 +151,7 @@
                                                                 value="{{ old('dry_land', $soldLand->dry_land ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="plot" class="form-label">Plot</label>
-                                                            <input type="text" class="form-control" name="plot"
-                                                                id="plot" aria-describedby="emailHelp"
-                                                                placeholder="Enter Plot"
-                                                                value="{{ old('plot', $soldLand->plot ?? '') }}">
-                                                        </div>
-                                                    </div>
+                                                   
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="traditional_land"
@@ -153,7 +175,7 @@
                                                                 value="{{ old('total_area', $soldLand->total_area ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="total_area_unit" class="form-label">Total Area
                                                                 Unit</label>
@@ -164,7 +186,7 @@
                                                                 value="{{ old('total_area_unit', $soldLand->total_area_unit ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="total_wet_land" class="form-label">Total Wet
                                                                 Land</label>
@@ -175,7 +197,7 @@
                                                                 value="{{ old('total_wet_land', $soldLand->total_wet_land ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="total_dry_land" class="form-label">Total Dry
                                                                 Land</label>
@@ -185,17 +207,9 @@
                                                                 placeholder="Enter Total Dry Land"
                                                                 value="{{ old('total_dry_land', $soldLand->total_dry_land ?? '') }}">
                                                         </div>
-                                                    </div>
-                                                    <div class="mb-3 col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="gap" class="form-label">Gap</label>
-                                                            <input type="text" class="form-control" name="gap"
-                                                                id="gap" aria-describedby="emailHelp"
-                                                                placeholder="Enter Gap"
-                                                                value="{{ old('gap', $soldLand->gap ?? '') }}">
                                                         </div>
-                                                    </div>
-
+                                                   
+<hr/>
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="sale_amount" class="form-label">Sale
@@ -218,7 +232,7 @@
                                                                 value="{{ old('total_sale_amount', $soldLand->total_sale_amount ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="registration_office"
                                                                 class="form-label">Registration Office</label>
@@ -229,7 +243,7 @@
                                                                 value="{{ old('registration_office', $soldLand->registration_office ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="register_number" class="form-label">Register
                                                                 Number</label>
@@ -240,7 +254,7 @@
                                                                 value="{{ old('register_number', $soldLand->register_number ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="register_date" class="form-label">Register
                                                                 Date</label>
@@ -285,13 +299,35 @@
                                                                 value="{{ old('balance_land', $soldLand->balance_land ?? '') }}">
                                                         </div>
                                                     </div>
+                                           
+                                                <div class="mb-3 col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="gap" class="form-label">Gap</label>
+                                                        <input type="text" class="form-control" name="gap"
+                                                            id="gap" aria-describedby="emailHelp"
+                                                            placeholder="Enter Gap"
+                                                            value="{{ old('gap', $soldLand->gap ?? '') }}">
+                                                    </div>
+                                                </div>
                                                     <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Latitude</label>
+                                                        <input type="text" name="latitude" class="form-control" placeholder="Enter Latitude (-90 to +90)"  value="{{ old('latitude', $soldLand->latitude ?? '') }}">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Longitude</label>
+                                                        <input type="text" name="longitude" class="form-control" placeholder="Enter Longitude (-180 to +180)" value="{{ old('longitude', $soldLand->longitude ?? '') }}">
+                                                    </div>
+                                                    <div class="mb-3 col-md-12">
+                                                        <label class="form-label">Document Upload</label>
+                                                        <input type="file" name="file" class="form-control" >
+                                                    </div>
+
+
+                                                    <div class="mb-3 col-md-12">
                                                         <div class="mb-3">
                                                             <label for="remark" class="form-label">Remark</label>
-                                                            <input type="text" class="form-control" name="remark"
-                                                                id="remark" aria-describedby="emailHelp"
-                                                                placeholder="Enter Remark"
-                                                                value="{{ old('remark', $soldLand->remark ?? '') }}">
+                                                            <textarea class="form-control col-12" name="remark" id="remark" rows="4" placeholder="Enter Remark">{{ old('remark', $soldLand->remark ?? '') }}</textarea>
+
                                                         </div>
                                                     </div>
                                                 </div>

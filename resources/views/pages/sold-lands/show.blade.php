@@ -214,12 +214,41 @@
                                                         </tr>
                                                     @endif
 
+                                                    @if ($soldLands->file) <!-- Assuming 'file' contains the path to the PDF file -->
+    <tr>
+        <th> Document</th>
+        <td>
+            <a href="{{ asset($soldLands->file) }}" target="_blank">View PDF</a>
+            <!-- Or embed a PDF viewer if you prefer -->
+            <!-- <embed src="{{ asset($soldLands->file) }}" type="application/pdf" width="100%" height="600px" /> -->
+        </td>
+    </tr>
+@endif
+
+
                                                     @if ($soldLands->created_at)
                                                         <tr>
                                                             <th>Created At</th>
                                                             <td>{{ $soldLands->created_at }}</td>
                                                         </tr>
                                                     @endif
+                                                    @if ($soldLands->latitude && $soldLands->longitude)
+    <tr>
+        <th>Latitude</th>
+        <td>{{ $soldLands->latitude }}</td>
+    </tr>
+    <tr>
+        <th>Longitude</th>
+        <td>{{ $soldLands->longitude }}</td>
+    </tr>
+    <tr>
+        <th>View on Map</th>
+        <td>
+            <a href="https://www.google.com/maps/search/?api=1&query={{ $soldLands->latitude }},{{ $soldLands->longitude }}" target="_blank" class="btn btn-primary">View on Google Maps</a>
+        </td>
+    </tr>
+@endif
+
                                                     <!-- Continue with other attributes -->
                                                 </tbody>
 

@@ -249,7 +249,7 @@ class FilterDocumentService
                 ->first();
 
             // Attach tableId to the $item
-            // $item->tableId = $tableEntry ? $tableEntry->id : null;
+            $item->tableId = $tableEntry ? $tableEntry->id : null;
         }
 
         return $filteredData;

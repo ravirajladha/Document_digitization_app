@@ -181,6 +181,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     //         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     // Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
+    Route::post('/sold-land/{id?}', [SoldLandController::class, 'storeOrUpdate'])->name('soldLand.storeOrUpdate');
 
     Route::get('/sold-land', [SoldLandController::class, 'view'])->name('soldLand.view');
     Route::get('/sold-land-actions', [SoldLandController::class, 'add'])->name('soldLand.add');

@@ -47,14 +47,16 @@ class DocumentService
             'alternate_town' => 'nullable|string',
             'old_locker_number' => 'nullable|integer',
             'physically' => 'nullable|string',
-          
+            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
+            
         
         ]);
 
         if ($validator->fails()) {
             return [
                 'status' => 'fail',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors()->all()
             ];
         }
 
@@ -101,6 +103,8 @@ class DocumentService
             'alternate_town' => $data['alternate_town'],
             'old_locker_number' => $data['old_locker_number'],
             'physically' => $data['physically'],
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude'],
             'set_id' => $setsAsString,
             // ... assign other fields ...
             'created_by' =>  Auth::user()->id,

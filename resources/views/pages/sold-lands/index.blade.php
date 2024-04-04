@@ -23,7 +23,7 @@
                         <div class="filter cm-content-box box-primary">
                             <div class="content-title SlideToolHeader">
                                 <h4>
-                                    Search Document
+                                    Search Sold Land Document
                                 </h4>
                                 <div class="tools">
                                     <a href="javascript:void(0);" class="expand handle"><i
@@ -35,8 +35,8 @@
                                     <form action="{{ url('/') }}/sold-land" method="GET">
                                         @csrf
                                         <div class="row">
-                                            <div class="mb-3 col-md-4 col-xl-3">
-                                                <label class="form-label">Survery Number</label>
+                                            <div class="mb-3 col-md-6 col-xl-6">
+                                                <label class="form-label">Survey Number</label>
 
 
                                                 <input name="survey_number" class="form-control"
@@ -45,7 +45,23 @@
 
                                             </div>
 
-                                            <div class="mb-3 col-md-4">
+                                            <div class="mb-3 col-md-6">
+                                                <label class="form-label">Select State </label>
+
+                                                <select class="form-select form-control" id="single-select-abc3"
+                                                    name="state" aria-label="State select">
+                                                    <option value="" selected>Select State</option>
+                                                    @foreach ($uniqueStates as $state)
+                                                        <option value="{{ $state }}"
+                                                            {{ request()->input('state') == $state ? 'selected' : '' }}>
+                                                            {{ $state }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                            </div>
+
+                                            <div class="mb-3 col-md-6">
                                                 <label class="form-label">Select District </label>
 
                                                 <select class="form-select form-control" id="single-select-abc2"
@@ -60,7 +76,7 @@
                                                 </select>
 
                                             </div>
-                                            <div class="mb-3 col-md-4">
+                                            <div class="mb-3 col-md-6">
                                                 <label class="form-label">Select Village </label>
 
                                                 <select class="form-select form-control" id="single-select-abc1"
@@ -130,7 +146,7 @@
 
 
                                         <div class="card-footer">
-                                            <a href="" class="btn-link"></a>
+                                            <a href="{{ url('/') }}/sold-land" class="btn btn-dark">Reset</a>
                                             <div class="text-end"><button class="btn btn-secondary" type="submit"><i
                                                         class="fas fa-filter"></i>&nbsp;Filter</button>
                                             </div>

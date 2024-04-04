@@ -10,8 +10,7 @@ use App\Models\Master_doc_data;
 use App\Models\Master_doc_type;
 use Illuminate\Support\Facades\DB;
 use App\Services\BulkUploadService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
+
 
 class Document extends Controller
 {

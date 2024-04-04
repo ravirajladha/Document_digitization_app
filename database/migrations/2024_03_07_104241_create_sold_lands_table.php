@@ -38,6 +38,9 @@ return new class extends Migration
             $table->string('book_number',255)->nullable();
             $table->string('name_of_the_purchaser',255)->nullable();
             $table->string('balance_land',255)->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('file')->nullable();
             $table->string('remark',255)->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

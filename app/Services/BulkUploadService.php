@@ -198,8 +198,28 @@ class BulkUploadService
     
         // Find existing record by temp_id
         $existingRecord = Master_doc_data::where('temp_id', $row[1])->first();
-    
-        // Prepare data for insertion or update
+        $setsInput = $row[26];
+
+        // Clean up the input by removing extra spaces and exploding it into an array
+        $setsArray = array_map('trim', explode(',', $setsInput));
+                
+        // Filter out any empty values or convert 'null' to null
+        $setsArray = array_filter($setsArray, function($value) {
+            return $value !== '' && strtolower($value) !== 'null';
+        });
+                
+        // If there are no valid sets, set $setsArray to an empty array
+        if (empty($setsArray)) {
+            $setsArray = [];
+        }
+                
+        // If you want to add double quotes around each value in the array, you can use array_map again
+        $setsArray = array_map(function($value) {
+            return '"' . intval($value) . '"';
+        }, $setsArray);
+        
+        $setsJson = '[' . implode(',', $setsArray) . ']'; // Join array elements into a JSON array
+        
         $data = [
             'temp_id' => $row[1],
             'name' => $row[2],
@@ -226,6 +246,7 @@ class BulkUploadService
             'wet_land' => $row[23],
             'garden_land' => $row[24],
             'old_locker_number' => $row[25],
+            'set_id' => $setsJson ,
             'physically' => $row[27],
             'bulk_uploaded' => 1,
             'created_by' => Auth::user()->id,

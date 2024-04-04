@@ -41,14 +41,15 @@ class DatabaseSeeder extends Seeder
             // Add other fields as necessary
         ]);
 
-        Set::create([
-            'name' => 'set1',
-            'created_by' => 1, // or appropriate user ID if necessary
-            'status' => 1,
-          
-            'created_at' => Carbon::create(2024, 1, 10, 5, 0, 33),
-            'updated_at' => Carbon::create(2024, 1, 10, 5, 36, 9),
-        ]);
+        for ($i = 1; $i <= 100; $i++) {
+            Set::create([
+                'name' => 'Set' . $i,
+                'created_by' => 1, // or appropriate user ID if necessary
+                'status' => 1,
+                'created_at' => Carbon::now()->addMinutes($i), // Adjust the time as needed
+                'updated_at' => Carbon::now()->addMinutes($i + 33), // Adjust the time as needed
+            ]);
+        }
         Receiver_type::create([
             'name' => 'accountant',
             'created_by' => 1, // or appropriate user ID if necessary
@@ -131,7 +132,8 @@ class DatabaseSeeder extends Seeder
             // ['name' => 'fields.create_first_step', 'display_name' => 'View Document Fields ', 'action' => 2],
             ['name' => 'document_fields.view', 'display_name' => 'View Document Fields', 'action' => 2],
             ['name' => 'document_fields.store', 'display_name' => 'Add Document Fields', 'action' => 1],
-
+            ['name' => 'updateDocumentFieldName.update', 'display_name' => 'Update Document Fields', 'action' => 3],
+            
             //configure
             ['name' => 'configure', 'display_name' => 'Configure', 'action' => 2],
             //bulk upload

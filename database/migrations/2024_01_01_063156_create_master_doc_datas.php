@@ -51,6 +51,8 @@ return new class extends Migration
             // $table->text('review')->nullable();
             $table->boolean('bulk_uploaded')->default(0); // 0 for inactive, 1 for active
             $table->string('batch_id')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

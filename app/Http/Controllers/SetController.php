@@ -13,9 +13,8 @@ class SetController extends Controller
 {
     public function viewSet()
     {
-        $data = Set::orderBy('created_at', 'desc')->get();
+        $data = Set::get();
         
-
         // Initialize an empty array to hold the counts
         $setCounts = [];
 

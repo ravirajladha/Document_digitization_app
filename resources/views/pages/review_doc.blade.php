@@ -44,6 +44,11 @@
                                     <table class="table table-striped table-responsive-sm">
                                         <tbody style="padding:0 0 0 0;">
                                             @if ($master_data)
+                                            @php
+        $latitude = null;
+        $longitude = null;
+    @endphp
+                                            {{-- @dd($master_data->getAttributes()) --}}
                                                 @foreach ($master_data->getAttributes() as $attribute => $value)
                                                     @if (
                                                         !(
@@ -73,15 +78,41 @@
                                                                     $vlaue = 'Square Feet';
                                                                 }
                                                             }
-
+                                                            // Check for latitude and longitude
+                                                            
+                                                        
+                                                            if ($attribute === 'longitude') {
+                                                                $longitude = $value;
+                                                            }
+                                                            if ($attribute === 'latitude') {
+                                                                $latitude = $value;
+                                                             
+                                                            }
                                                         @endphp
                                                         <tr style="white-space: nowrap; overflow: hidden;">
                                                             <th style="padding: 5px;">
                                                                 {{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
                                                             <td style="padding: 5px;">{{ $value }}</td>
                                                         </tr>
+
+                                                         {{-- Remove comment to debug latitude and longitude --}}
+         
+
+            
+                                                        {{-- {{ dd($latitude) }} --}}
+                                                        @if ($latitude !== null && $longitude !== null)
+                                                            <tr>
+                                                                <th style="padding: 5px;">Location</th>
+                                                                <td style="padding: 5px;">
+                                                                    <a href="https://www.google.com/maps/search/{{ $latitude }},{{ $longitude }}"
+                                                                        target="_blank" class="btn btn-primary"><i class="fa fa-location"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        @endif
                                                     @endif
                                                 @endforeach
+                                              
+
                                             @endif
 
                                             <tr style="height: 20px;"></tr>
@@ -295,14 +326,12 @@
                                                     class="text-muted">{{ $data->document_name }} </strong></li>
                                             <li class="list-group-item d-flex justify-content-between"><span
                                                     class="mb-0">Document Type</span> <strong
-                                                    class="text-muted">{{ $data->doc_type }} </strong></li>
+                                                    class="text-muted">{{ucwords(str_replace('_', ' ',$data->doc_type))}} </strong></li>
                                         </ul>
                                         <div class="card-footer border-0 mt-0">
                                             <a href="{{ url('/') }}/review_doc/{{ $data->doc_type }}/{{ $data->id }}"
                                                 target="_blank" type="button"
-                                                class="btn btn-primary btn-block">View</a>
-
-
+                                                class="btn btn-primary btn-block">View <i class="fa fa-eye"></i></a>
                                         </div>
                                     </div>
                                 </div>

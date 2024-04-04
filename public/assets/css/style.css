@@ -367,7 +367,8 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   --bs-body-font-size: 4.5rem;
   --bs-body-font-weight: 650;
   --bs-body-line-height: 1.5;
-  --bs-body-color: #9da1a5;
+  /* --bs-body-color: #9da1a5; */
+  --bs-body-color: #323030;
   --bs-body-color-rgb: 157, 161, 165;
   --bs-body-bg: #fff;
   --bs-body-bg-rgb: 255, 255, 255;
@@ -12552,7 +12553,7 @@ label {
   [data-sidebar-style="overlay"] .dlabnav .metismenu > li {
     padding: 0 0.5rem; }
     [data-sidebar-style="overlay"] .dlabnav .metismenu > li > a {
-      color: #7f7184;
+      color: #000000;
       border-radius: 0.625rem;
       -webkit-transition: all 0.5s;
       -ms-transition: all 0.5s;

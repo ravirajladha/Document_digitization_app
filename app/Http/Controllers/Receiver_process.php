@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Mail;
 use App\Mail\AssignDocumentEmail;
 use App\Mail\SendOtpMail;
-use Illuminate\Support\Facades\Storage;
-use ZipArchive;
-use Log;
 use App\Services\NotificationService;
 
 class Receiver_process extends Controller

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{sold_land};
+use Carbon\Carbon;
 
+use App\Models\{sold_land};
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class SoldLandController extends Controller
 {
@@ -29,6 +30,9 @@ class SoldLandController extends Controller
         }
 
         // Filter by district if provided
+        $query->when($request->filled('state'), function ($query) use ($request) {
+            $query->where('state', $request->input('state'));
+        });
         $query->when($request->filled('district'), function ($query) use ($request) {
             $query->where('district', $request->input('district'));
         });
@@ -115,6 +119,7 @@ class SoldLandController extends Controller
         // $data = DB::table('sold_lands')->orderBy('created_at', 'desc')->get();
         $uniqueVillages = DB::table('sold_lands')->whereNotNull('village')->where('village', '<>', '')->distinct()->pluck('village')->toArray();
         $uniqueDistricts = DB::table('sold_lands')->whereNotNull('district')->where('district', '<>', '')->distinct()->pluck('district')->toArray();
+        $uniqueStates = DB::table('sold_lands')->whereNotNull('state')->where('state', '<>', '')->distinct()->pluck('state')->toArray();
 
 
         // Log the SQL query being executed
@@ -125,6 +130,7 @@ class SoldLandController extends Controller
             'data' => $data,
             'uniqueVillages' => $uniqueVillages,
             'uniqueDistricts' => $uniqueDistricts,
+            'uniqueStates' => $uniqueStates,
             'start_date' => $start_date,
         ]);
     }
@@ -141,35 +147,7 @@ class SoldLandController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            // 'district_number' => 'string|max:255', 
-            // Example validation for string and max length
-            // Add custom validation rules for other fields as needed
-        ]);
-
-        // Add the 'created_by' field with the current user's ID
-        $requestData = $request->all();
-        $requestData['created_by'] = Auth::id();
-
-        // If the validation passes, store the sold land details
-        Sold_land::create($requestData);
-
-        // Redirect or return a response
-        return redirect()->route('soldLand.view')->with('success', 'Sold Land details added successfully.');
-    }
-
-
-    // Show the form for editing the specified sold land detail
-    public function edit($id)
-    {
-        $soldLand = Sold_land::findOrFail($id);
-        return view('pages.sold-lands.add', ['soldLand' => $soldLand]);
-    }
-
-    // Update the specified sold land detail in the database
-    public function update(Request $request, $id)
-    {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
+            'state' => 'nullable|string|max:255',
             'district_number' => 'nullable|string|max:255',
             'district' => 'nullable|string|max:255',
             'village_number' => 'nullable|string|max:255',
@@ -193,7 +171,110 @@ class SoldLandController extends Controller
             'name_of_the_purchaser' => 'nullable|string|max:255',
             'balance_land' => 'nullable|string|max:255',
             'remark' => 'nullable|string|max:255',
+            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
         ]);
+
+        // Add the 'created_by' field with the current user's ID
+        $requestData = $request->all();
+        // Check if all fields in the request are empty
+
+        // dd($requestData);
+
+        if ($request->hasFile('pdf_file')) {
+            $filePaths = [];
+            foreach ($request->file('pdf_file') as $input) {
+                $extension = $input->getClientOriginalExtension();
+                $filename = Str::random(4) . time() . '.' . $extension;
+                $path = $input->move('uploads', $filename);
+                $filePaths[] = 'uploads/' . $filename;
+            }
+            $validatedData['pdf_file'] = implode(',', $filePaths);
+        }
+    $isEmpty = true;
+    foreach ($validatedData  as $key => $value) {
+        if ($key !== '_token' && !empty($value)) {
+            // At least one field contains data, so set $isEmpty to false and break the loop
+            $isEmpty = false;
+            break;
+        }
+    }
+
+    // If all fields are empty, redirect back with an error message
+    if ($isEmpty) {
+        return redirect()->back()->with('error', 'Please provide data for at least one field.');
+    }
+
+        $requestData['created_by'] = Auth::id();
+
+          // Attempt to create the sold land details
+    $soldLand = Sold_land::create($validatedData);
+
+        // Redirect or return a response
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Sold Land Details Added Successfully']);
+
+        if ($soldLand) {
+            // Redirect with success message
+            return redirect()->route('soldLand.view')->with('success', 'Sold Land details added successfully.');
+        } else {
+            // Redirect back to the add route with an error message
+            return redirect()->route('soldLand.add')->with('error', 'Failed to add sold land details. Please try again.');
+        }
+    }
+
+
+    // Show the form for editing the specified sold land detail
+    public function edit($id)
+    {
+        $soldLand = Sold_land::findOrFail($id);
+        return view('pages.sold-lands.add', ['soldLand' => $soldLand]);
+    }
+
+    // Update the specified sold land detail in the database
+    public function update(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'state' => 'nullable|string|max:255',
+            'district_number' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'village_number' => 'nullable|string|max:255',
+            'village' => 'nullable|string|max:255',
+            'survey_number' => 'nullable|string|max:255',
+            'wet_land' => 'nullable|string|max:255',
+            'dry_land' => 'nullable|string|max:255',
+            'plot' => 'nullable|string|max:255',
+            'traditional_land' => 'nullable|string|max:255',
+            'total_area' => 'nullable|string|max:255',
+            'total_area_unit' => 'nullable|string|max:255',
+            'total_wet_land' => 'nullable|string|max:255',
+            'total_dry_land' => 'nullable|string|max:255',
+            'gap' => 'nullable|string|max:255',
+            'sale_amount' => 'nullable|string|max:255',
+            'total_sale_amount' => 'nullable|string|max:255',
+            'registration_office' => 'nullable|string|max:255',
+            'register_number' => 'nullable|string|max:255',
+            'register_date' => 'nullable|date',
+            'book_number' => 'nullable|string|max:255',
+            'name_of_the_purchaser' => 'nullable|string|max:255',
+            'balance_land' => 'nullable|string|max:255',
+            'remark' => 'nullable|string|max:255',
+            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
+        ]);
+
+        $isEmpty = true;
+        foreach ($validatedData as $key => $value) {
+            if ($key !== '_token' && !empty($value)) { // Check for null instead of empty string, as null is considered when the field is not present in the request
+                $isEmpty = false;
+                break;
+            }
+        }
+        if ($isEmpty) {
+            return redirect()->back()->with('error', 'Please provide data for at least one field.');
+        }
+    
+
 
         // Find the sold land detail by ID
         $soldLand = Sold_land::findOrFail($id);
@@ -209,6 +290,104 @@ class SoldLandController extends Controller
 
         // return redirect()->route('soldLand.index')->with('success', 'Sold Land details updated successfully.');
     }
+
+
+public function storeOrUpdate(Request $request, $id = null)
+{
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'state' => 'nullable|string|max:255',
+            'district_number' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'village_number' => 'nullable|string|max:255',
+            'village' => 'nullable|string|max:255',
+            'survey_number' => 'nullable|string|max:255',
+            'wet_land' => 'nullable|string|max:255',
+            'dry_land' => 'nullable|string|max:255',
+            'plot' => 'nullable|string|max:255',
+            'traditional_land' => 'nullable|string|max:255',
+            'total_area' => 'nullable|string|max:255',
+            'total_area_unit' => 'nullable|string|max:255',
+            'total_wet_land' => 'nullable|string|max:255',
+            'total_dry_land' => 'nullable|string|max:255',
+            'gap' => 'nullable|string|max:255',
+            'sale_amount' => 'nullable|string|max:255',
+            'total_sale_amount' => 'nullable|string|max:255',
+            'registration_office' => 'nullable|string|max:255',
+            'register_number' => 'nullable|string|max:255',
+            'register_date' => 'nullable|date',
+            'book_number' => 'nullable|string|max:255',
+            'name_of_the_purchaser' => 'nullable|string|max:255',
+            'balance_land' => 'nullable|string|max:255',
+            'remark' => 'nullable|string|max:255',
+            'file' => 'nullable|mimes:pdf|max:10240', 
+            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
+    ]);
+
+    // Check if any field contains data
+    $isEmpty = true;
+    foreach ($validatedData as $value) {
+        if (!empty($value)) {
+            // At least one field contains data, so set $isEmpty to false and break the loop
+            $isEmpty = false;
+            break;
+        }
+    }
+
+    // If all fields are empty, redirect back with an error message
+    if ($isEmpty) {
+        return redirect()->back()->with('error', 'Please provide data for at least one field.');
+    }
+
+    // Add the 'created_by' field with the current user's ID if creating a new record
+    if (is_null($id)) {
+        $validatedData['created_by'] = Auth::id();
+    } else {
+        // If updating an existing record, add the 'updated_by' field with the current user's ID
+        $validatedData['updated_by'] = Auth::id();
+    }
+// dd($request->file('file'));
+    // Handle file upload for PDFs
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        // Ensure the uploaded file is valid
+        if ($file->isValid()) {
+            $extension = $file->getClientOriginalExtension();
+            $filename = Str::random(4) . time() . '.' . $extension;
+            // Move the uploaded file to the desired location
+            $path = $file->move('uploads', $filename);
+            // Store the file path in the validated data
+            $validatedData['file'] = 'uploads/' . $filename;
+        } else {
+            // Handle invalid file upload
+            return redirect()->back()->with('error', 'Invalid file uploaded.');
+        }
+    }
+    
+    // dd($validatedData['file']);
+    // Check if $id is provided to determine if it's an update or create operation
+    if (is_null($id)) {
+        // Attempt to create the sold land details using validated data
+        $soldLand = Sold_land::create($validatedData);
+    } else {
+        // Find the sold land detail by ID and update it with the validated data
+        $soldLand = Sold_land::findOrFail($id);
+        $soldLand->update($validatedData);
+    }
+
+  
+    // Redirect or return a response
+    if ($soldLand) {
+        // Redirect with success message
+        return redirect()->route('soldLand.view')->with('success', 'Sold Land details ' . (is_null($id) ? 'added' : 'updated') . ' successfully.');
+    } else {
+        // Redirect back with an error message
+        return redirect()->route('soldLand.' . (is_null($id) ? 'add' : 'edit'), $id)->with('error', 'Failed to ' . (is_null($id) ? 'add' : 'update') . ' sold land details. Please try again.');
+    }
+}
+
+
 
     public function show($id)
     {

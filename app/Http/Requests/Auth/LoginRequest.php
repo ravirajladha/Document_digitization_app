@@ -49,8 +49,19 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+
+        // Check if user status is 1
+        if ($user && $user->status !== 1) {
+            Auth::logout(); // Log out the user if status is not 1
+            throw ValidationException::withMessages([
+                'email' => 'Your account is not active.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
+
 
     /**
      * Ensure the login request is not rate limited.

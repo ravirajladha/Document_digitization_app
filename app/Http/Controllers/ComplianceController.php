@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Notification};
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\{ Master_doc_type, Compliance};
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Http\Request;

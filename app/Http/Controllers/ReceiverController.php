@@ -1,26 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
-// use Illuminate\Validation\Validator;
-// use Illuminate\Validation\Validator;
-use Illuminate\Support\Facades\Hash;
-use App\Services\DocumentTableService;
-use App\Services\FilterDocumentService;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Session;
-use Carbon\Carbon;
-
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Database\Migrations\Migration;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set,State};
+
+use App\Models\{Receiver, Receiver_type, Master_doc_type};
 
 class ReceiverController extends Controller
 {

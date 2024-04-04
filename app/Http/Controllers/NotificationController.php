@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Receiver, Notification};
+use App\Models\{Alert};
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
@@ -15,10 +13,10 @@ class NotificationController extends Controller
 
     public function showNotifications(Request $request)
     {
-        Notification::query()->update(['is_read' => 1]);
+        Alert::query()->update(['is_read' => 1]);
         
         $user = Auth::user();
-        $notificationsQuery = Notification::with('masterDocData'); // Eager loading the relation
+        $notificationsQuery = Alert::with('masterDocData'); // Eager loading the relation
     
         // Determine which types of notifications the user is allowed to view
         $canViewCompliance = $user->hasPermission('View Compliance Notifications');

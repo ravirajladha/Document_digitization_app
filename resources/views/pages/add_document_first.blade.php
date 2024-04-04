@@ -240,7 +240,15 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Latitude</label>
+                                                        <input type="text" name="latitude" class="form-control" placeholder="Enter Latitude (-90 to +90)">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Longitude</label>
+                                                        <input type="text" name="longitude" class="form-control" placeholder="Enter Longitude (-180 to +180)">
+                                                    </div>
+                                                    
 
 
                                                 </div>

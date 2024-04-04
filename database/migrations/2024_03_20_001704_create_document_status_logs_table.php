@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('document_status_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('document_id');
-            $table->foreign('document_id')->references('id')->on('master_doc_data')->onDelete('cascade');
+            // $table->foreign('document_id')->references('id')->on('master_doc_data');
             $table->string('status');
             $table->text('message')->nullable();
             $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('created_by')->references('id')->on('users');
             $table->string('temp_id')->nullable();
             $table->timestamps();
         });
@@ -32,3 +32,4 @@ return new class extends Migration
         Schema::dropIfExists('document_status_logs');
     }
 };
+

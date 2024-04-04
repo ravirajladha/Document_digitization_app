@@ -189,7 +189,8 @@
                                         <div class="text-end">
                                             {{-- <a href="{{ url('/') }}/filter-document" class="btn-link"><button class="btn btn-dark"><i
                                                 class="fas fa-filter"></i>&nbsp;Reset Filter</button></a> --}}
-                                                <a href="{{ url('/') }}/filter-document" class="btn btn-dark">Reset</a>
+                                            <a href="{{ url('/') }}/filter-document"
+                                                class="btn btn-dark">Reset</a>
 
                                             <button class="btn btn-secondary" type="submit"><i
                                                     class="fas fa-filter"></i>&nbsp;Filter</button>
@@ -256,7 +257,7 @@
                                                 </td>
                                                 <td>{{ $item->area ? $item->area : '--' }}
                                                     {{-- ({{ $item->unit ? ($item->unit === 'acres and cents' ? 'A&C' : 'SqFt') : '--' }}) --}}
-                                                    {{  $item->unit }}
+                                                    {{ $item->unit }}
                                                 </td>
 
                                                 <td>

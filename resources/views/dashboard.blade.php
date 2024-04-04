@@ -3,7 +3,7 @@
 <x-app-layout>
 
 
-    <x-header />
+    <x-header :route-name="Route::currentRouteName()" />
  
 
     <x-sidebar/>
