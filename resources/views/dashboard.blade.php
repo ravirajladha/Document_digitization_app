@@ -506,8 +506,9 @@ $totalAreaAcres = ($totalAreaFeet / 43560 )+ $getGeographicalCounts['totalAreaAc
         ***********************************-->
 
 
-
+        
 </x-app-layout>
+import ApexCharts from 'apexcharts';
 <script>
     var emailchart = function() {
         var options = {
@@ -545,3 +546,5 @@ $totalAreaAcres = ($totalAreaFeet / 43560 )+ $getGeographicalCounts['totalAreaAc
     // Call the function to initialize the chart
     emailchart();
 </script>
+<script src="/assets/vendor/apexchart/apexchart.js"></script>
+

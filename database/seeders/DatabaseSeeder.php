@@ -160,6 +160,9 @@ class DatabaseSeeder extends Seeder
             ['name' => 'soldLand.view', 'display_name' => 'View Sold Land', 'action' => 2],
             ['name' => 'soldLand.store', 'display_name' => 'Add Sold Land', 'action' => 1],
             ['name' => 'soldLand.update', 'display_name' => 'Update Sold Land', 'action' => 3],
+            ['name' => 'documents.viewUploadedDocuments', 'display_name' => 'View Uploaded PDF', 'action' => 2],
+            ['name' => 'upload.files', 'display_name' => 'Add PDF', 'action' => 1],
+            ['name' => 'documents.delete', 'display_name' => 'Delete PDF', 'action' => 3],
         ];
 
    

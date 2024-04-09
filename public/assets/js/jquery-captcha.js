@@ -11,9 +11,9 @@ let Captcha;
     const self = this;
     const defaults = {
         length: 4,                   // Length of CAPTCHA code
-        width: 100,                  // Width of CAPTCHA canvas
-        height: 40,                  // Height of CAPTCHA canvas
-        font: 'bold 23px Arial',     // Font style for CAPTCHA text
+        width: 300,                  // Width of CAPTCHA canvas
+        height: 80,                  // Height of CAPTCHA canvas
+        font: 'bold 50px Arial',     // Font style for CAPTCHA text
         resourceType: 'aA0',         // Types of characters to use in CAPTCHA
         resourceExtra: [],           // Extra characters to include in CAPTCHA
         clickRefresh: true,          // Whether to refresh CAPTCHA on click

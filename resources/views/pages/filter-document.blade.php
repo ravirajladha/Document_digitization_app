@@ -120,7 +120,7 @@
                                             <label class="form-label">Document Date (Start)</label>
                                             <div class="input-hasicon">
                                                 <input name="start_date" type="date"
-                                                    class="form-control bt-datepicker solid"
+                                                    class="form-control  solid"
                                                     value="{{ old('start_date') }}">
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
@@ -129,7 +129,7 @@
                                             <label class="form-label">Document Date (End)</label>
                                             <div class="input-hasicon">
                                                 <input name="end_date" type="date"
-                                                    class="form-control bt-datepicker solid"
+                                                    class="form-control  solid"
                                                     value="{{ old('end_date') }}">
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>

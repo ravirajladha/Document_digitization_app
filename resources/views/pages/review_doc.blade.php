@@ -292,10 +292,49 @@
                                         </div>
                                     @elseif($document->status == 0)
                                         <div class="alert alert-primary">
-                                            <strong>Status : Pending</strong>
+                                            <strong>Current Status : Pending</strong>
 
                                         </div>
                                     @endif
+                                    {{-- Document Status Logs --}}
+                                    @if($document->status != 1)
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Serial Number</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                    <th>Reason</th>
+                                                    <th>Created By</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($document_logs as $index => $log)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>
+                                                            <span class="badge bg-{{ $log->status == 1 ? 'success' : ($log->status == 2 ? 'warning' : 'primary') }}">
+                                                                @if ($log->status == 0)
+                                                                    Pending
+                                                                @elseif ($log->status == 1)
+                                                                    Approved
+                                                                @elseif ($log->status == 2)
+                                                                    Hold
+                                                                @endif
+                                                            </span>
+                                                        </td>
+                                                        <td>{{ date('d/m/Y H:i:s', strtotime($log->created_at)) }}</td>
+                                                        <td>{{ $log->message ? $log->message : 'N/A' }}</td>
+                                                        <td>{{ $log->creator_name }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
+                                
+                                    
                                 </div>
 
                             </div>

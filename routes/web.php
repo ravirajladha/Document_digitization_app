@@ -131,6 +131,11 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     // ->name('documents.view.first');
     Route::get('/documents-for-set/{setId}', [SetController::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
 
+    Route::get('/view-uploaded-documents', [DocumentController::class, 'viewUploadedDocuments'])->name('documents.viewUploadedDocuments');
+    Route::delete('/documents/{filename}', [DocumentController::class, 'deleteFile'])->name('documents.delete');
+    Route::post('/upload-files', [DocumentController::class, 'uploadFiles'])->name('upload.files');
+
+
     //ajax call to get the documen from doc_type
     Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])
         ->name('documents.getByType');

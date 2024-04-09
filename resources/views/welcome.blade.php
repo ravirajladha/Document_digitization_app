@@ -37,18 +37,19 @@
                 <a href="page-forgot-password.html">Forgot Password?</a>
             </div> --}}
         </div>
-
-        <div class="form-row d-flex flex-wrap justify-content-between mb-2">
-            <div class="form-group mb-sm-4 mb-1">
-                <div class="form-check custom-checkbox ms-1">
+        <div class="form-row justify-content-center align-items-center mb-2">
+            <div class="col-auto">
+                <div class="form-check custom-checkbox">
                     <canvas id="canvas"></canvas>
                 </div>
             </div>
-            <div class="form-group ms-2">
-                <input style="border-radius:25%;border-radius: 25px;padding: 10px;" onKeyup="check_captcha(this.value)"
-                    name="code" placeholder="Type Code" class="form-control">
+            <div class="col-auto">
+                <div class="input-group">
+                    <input style="border-radius: 25px; padding: 8px 15px; border: 1px solid #ced4da;" onKeyup="check_captcha(this.value)" name="code" placeholder="Enter Captcha" class="form-control">
+                </div>
             </div>
         </div>
+        
 
 
         {{-- </div> --}}

@@ -37,17 +37,12 @@
                                         <div class="row">
                                             <div class="mb-3 col-md-6 col-xl-6">
                                                 <label class="form-label">Survey Number</label>
-
-
                                                 <input name="survey_number" class="form-control"
                                                     placeholder="Enter Survery Number"
                                                     value="{{ request()->input('survey_number') }}">
-
                                             </div>
-
                                             <div class="mb-3 col-md-6">
                                                 <label class="form-label">Select State </label>
-
                                                 <select class="form-select form-control" id="single-select-abc3"
                                                     name="state" aria-label="State select">
                                                     <option value="" selected>Select State</option>
@@ -58,7 +53,6 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-
                                             </div>
 
                                             <div class="mb-3 col-md-6">
@@ -99,7 +93,7 @@
                                                     {{ old('start_date') }}</label>
                                                 <div class="input-hasicon">
                                                     <input name="start_date" type="date"
-                                                        class="form-control bt-datepicker solid"
+                                                        class="form-control  solid"
                                                         value="{{ request()->input('start_date') }}">
                                                     <div class="icon"><i class="far fa-calendar"></i></div>
                                                 </div>
@@ -108,7 +102,7 @@
                                                 <label class="form-label">Register Date (End)</label>
                                                 <div class="input-hasicon">
                                                     <input name="end_date" type="date"
-                                                        class="form-control bt-datepicker solid"
+                                                        class="form-control  solid"
                                                         value="{{ request()->input('end_date') }}">
                                                     <div class="icon"><i class="far fa-calendar"></i></div>
                                                 </div>
@@ -161,17 +155,17 @@
                 </div>
 
 
-               
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="title">Sold Lands</h5>
-                                    <span>
-                                        <button id="exportButton" class="btn btn-secondary btn-sm "
-                                            style="margin-right: 10px;"><i
-                                                class="fas fa-file-export"></i>&nbsp;Export</button>
-                                                @if ($user && $user->hasPermission('Add Sold Land'))
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="title">Sold Lands</h5>
+                                <span>
+                                    <button id="exportButton" class="btn btn-secondary btn-sm "
+                                        style="margin-right: 10px;"><i
+                                            class="fas fa-file-export"></i>&nbsp;Export</button>
+                                    @if ($user && $user->hasPermission('Add Sold Land'))
                                         <button type="button" class="btn btn-warning btn-sm  "
                                             style="margin-right: 10px;" data-bs-toggle="modal"
                                             data-bs-target="#addDocumentTypeModal">
@@ -183,116 +177,114 @@
                                                 <i class="fas fa-plus-square"></i>&nbsp; Add
                                             </button>
                                         </a>
-                                        @endif
-                                        {{-- Bulk Upload button --}}
+                                    @endif
+                                    {{-- Bulk Upload button --}}
 
-                                    </span>
-                                </div>
+                                </span>
+                            </div>
 
-                                <div class="card-body">
+                            <div class="card-body">
 
-                                    <div class="table-responsive">
-                                        {{-- <div class="table-responsive"> --}}
-                                        {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
-                                        <table id="example3" class="display">
+                                <div class="table-responsive">
+                                    {{-- <div class="table-responsive"> --}}
+                                    {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
+                                    <table id="example3" class="display">
 
-                                            <thead>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Sl. No.</th>
+                                                <th scope="col">Survey Number</th>
+                                                <th scope="col">District</th>
+                                                <th scope="col">Village</th>
+                                                <th scope="col">Total Area (Unit)</th>
+
+
+
+                                                <th scope="col">Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $index => $item)
                                                 <tr>
-                                                    <th scope="col">Sl. No.</th>
-                                                    <th scope="col">Survey Number</th>
-                                                    <th scope="col">District</th>
-                                                    <th scope="col">Village</th>
-                                                    <th scope="col">Total Area (Unit)</th>
+                                                    <th scope="row">{{ $index + 1 }}</th>
+                                                    <td>{{ $item->survey_number ? ucwords($item->survey_number) : '--' }}
+                                                    </td>
+                                                    <td>{{ $item->district ? ucwords($item->district) : '--' }}
+                                                    </td>
+                                                    <td>{{ $item->village ? ucwords($item->village) : '--' }}</td>
+                                                    <td>{{ $item->total_area ? $item->total_area : '--' }}
+                                                        ({{ $item->total_area_unit ? $item->total_area_unit : '--' }})
+                                                    </td>
 
 
-                                                   
-                                                        <th scope="col">Action</th>
-                                                 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($data as $index => $item)
-                                                    <tr>
-                                                        <th scope="row">{{ $index + 1 }}</th>
-                                                        <td>{{ $item->survey_number ? ucwords($item->survey_number) : '--' }}
-                                                        </td>
-                                                        <td>{{ $item->district ? ucwords($item->district) : '--' }}
-                                                        </td>
-                                                        <td>{{ $item->village ? ucwords($item->village) : '--' }}</td>
-                                                        <td>{{ $item->total_area ? $item->total_area : '--' }}
-                                                            ({{ $item->total_area_unit ? $item->total_area_unit : '--' }})
-                                                        </td>
-
-
-                                                        <!-- Display the count for each set -->
-                                                        {{-- @if ($user && $user->hasPermission('View Documents from Sets'))
+                                                    <!-- Display the count for each set -->
+                                                    {{-- @if ($user && $user->hasPermission('View Documents from Sets'))
                                                             <td><a href="/documents-for-set/{{ $item->id }}"><button
                                                                         class="btn btn-secondary edit-btn"><i
                                                                             class="fas fa-eye"></i>&nbsp;View</button></a>
                                                             </td>
                                                         @endif --}}
 
-                                                     
-                                                            <td>
-                                                                <a href="/sold-land/{{ $item->id }}"><button
-                                                                        class="btn btn-secondary btn-sm  edit-btn"><i
-                                                                            class="fas fa-eye"></i></button></a>
-                                                                            @if ($user && $user->hasPermission('Update Sold Land'))
 
-                                                                <a href="/sold-land/{{ $item->id }}/edit">
-                                                                    <button class="btn btn-primary btn-sm edit-btn"><i
-                                                                            class="fas fa-pencil"></i></button></a>
-                                                                            @endif
-                                                            </td>
-                                                       
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                    <td>
+                                                        <a href="/sold-land/{{ $item->id }}"><button
+                                                                class="btn btn-secondary btn-sm  edit-btn"><i
+                                                                    class="fas fa-eye"></i></button></a>
+                                                        @if ($user && $user->hasPermission('Update Sold Land'))
+                                                            <a href="/sold-land/{{ $item->id }}/edit">
+                                                                <button class="btn btn-primary btn-sm edit-btn"><i
+                                                                        class="fas fa-pencil"></i></button></a>
+                                                        @endif
+                                                    </td>
 
-                                        <!-- Modal (outside the loop) -->
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="exampleModalCenter">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Edit Set</h5>
-                                                        <button type="button" class="btn-close"
-                                                            data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <!-- Update Form -->
-                                                        <form id="updateSetForm">
-                                                            <div class="mb-3">
-                                                                <label for="setName" class="form-label">Update Set
-                                                                    Name&nbsp;<span
-                                                                        class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control"
-                                                                    id="setName" name="name" required>
-                                                                <input type="hidden" id="setId" name="id">
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger light"
-                                                            data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-primary"
-                                                            onclick="submitUpdateForm()">Submit Form</button>
-                                                    </div>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Modal (outside the loop) -->
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModalCenter">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Set</h5>
+                                                    <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Update Form -->
+                                                    <form id="updateSetForm">
+                                                        <div class="mb-3">
+                                                            <label for="setName" class="form-label">Update Set
+                                                                Name&nbsp;<span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="setName"
+                                                                name="name" required>
+                                                            <input type="hidden" id="setId" name="id">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger light"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="submitUpdateForm()">Submit Form</button>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {{-- modal end --}}
                                     </div>
+
+                                    {{-- modal end --}}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
+    </div>
     </div>
 
     <div class="modal fade" id="addDocumentTypeModal" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"

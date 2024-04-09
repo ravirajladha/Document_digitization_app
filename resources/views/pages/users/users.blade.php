@@ -477,6 +477,22 @@
                                                                 <td></td>
                                                             </tr>
                                                             <tr>
+                                                                <td class="module-name">View Uploaded PDF's</td>
+                                                                <td>
+
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Add PDF') @endphp
+                                                                </td>
+                                                                <td>
+
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Uploaded PDF') @endphp
+                                                                </td>
+                                                                <td>
+
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Delete PDF') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
                                                                 <td class="module-name">View Compliances Notification
                                                                 </td>
                                                                 <td></td>

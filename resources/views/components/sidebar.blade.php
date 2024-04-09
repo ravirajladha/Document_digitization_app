@@ -43,8 +43,11 @@
                                 @if ($user && $user->hasPermission('View Bulk Upload'))
                                     <li><a href="{{ url('/') }}/bulk-upload-master-data">Bulk Upload</a></li>
                                 @endif
-                                @if ($user && $user->hasPermission('View Document Types '))
+                                @if ($user && $user->hasPermission('View Document Types'))
                                     <li><a href="{{ url('/') }}/document_type">Document Type</a></li>
+                                @endif
+                                @if ($user && $user->hasPermission('View Uploaded PDF'))
+                                    <li><a href="{{ url('/') }}/view-uploaded-documents">Uploaded PDF's</a></li>
                                 @endif
                                 {{-- <li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li> --}}
                                 {{-- <li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		 --}}

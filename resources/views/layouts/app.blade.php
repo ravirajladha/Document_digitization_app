@@ -5,7 +5,8 @@
     <!-- PAGE TITLE HERE -->
     <title>Sri Ahobila Mutt</title>
     {{-- <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title> --}}
-
+    {{-- <script src="{{ mix('js/app.js') }}"></script> --}}
+    <script src="../../js/app.js"></script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,39 +15,33 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta name="keywords"
-        content="	admin, admin dashboard, admin template, analytics, bootstrap, bootstrap5, bootstrap 5 admin template, modern, responsive admin dashboard, sales dashboard, sass, ui kit, web app, Fillow SaaS, User Interface (UI), User Experience (UX), Dashboard Design, SaaS Application, Web Application, Data Visualization, Analytics, Customization, Responsive Design, Bootstrap Framework, Charts and Graphs, Data Management, Reporting, Dark Mode, Mobile-Friendly, Dashboard Components, Integrations, Analytics Dashboard, API Integration, User Authentication">
+        content="Admin, admin dashboard, admin template, analytics, bootstrap, bootstrap5, bootstrap 5 admin template, modern, responsive admin dashboard, sales dashboard, sass, ui kit, web app, Fillow SaaS, User Interface (UI), User Experience (UX), Dashboard Design, SaaS Application, Web Application, Data Visualization, Analytics, Customization, Responsive Design, Bootstrap Framework, Charts and Graphs, Data Management, Reporting, Dark Mode, Mobile-Friendly, Dashboard Components, Integrations, Analytics Dashboard, API Integration, User Authentication">
 
 
-    <meta name="description"
-        content="Digitization Document Software">
+    <meta name="description" content="Digitization Document Software">
 
     <meta property="og:title" content="Kods">
-    <meta property="og:description"
-        content="Documents management software.">
+    <meta property="og:description" content="Documents management software.">
     <meta property="og:image" content="https://kodstech.com/">
     <meta name="format-detection" content="telephone=no">
 
     <meta name="twitter:title" content="Kods">
-    <meta name="twitter:description"
-        content="Digitization Document Software">
+    <meta name="twitter:description" content="Digitization Document Software">
     <meta name="twitter:image" content="https://kodstech.com/">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- MOBILE SPECIFIC -->
-  
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
     <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
-    {{-- <link href="/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet"> --}}
 
-
-    <!-- Style css -->
 
     <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">
     <link rel="stylesheet" href="/assets/vendor/select2/css/select2.min.css">
- 
-	<link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+
+    <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
 
     <link href="/assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="/assets/vendor/datatables/responsive/responsive.css" rel="stylesheet">
@@ -55,8 +50,6 @@
 </head>
 
 <body class="">
-
-    {{-- <div class="min-h-screen bg-gray-100 dark:bg-gray-900"> --}}
     <div class="">
         <div id="preloader">
             <div class="lds-ripple">
@@ -65,26 +58,12 @@
             </div>
         </div>
         <div id="main-wrapper">
-            {{-- @include('layouts.navigation') --}}
-
-            {{-- <x-toaster /> --}}
-            <!-- Page Heading -->
-            {{-- @if (isset($header))
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif --}}
-
-            <!-- Page Content -->
             <main>
-                {{-- <x-toaster /> --}}
-
                 {{ $slot }}
             </main>
         </div>
     </div>
+   
     <script src="/assets/vendor/global/global.min.js"></script>
     <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
 
@@ -92,7 +71,7 @@
     <script src="/assets/vendor/counter/counter.min.js"></script>
     <script src="/assets/vendor/counter/waypoint.min.js"></script>
     <!-- Apex Chart -->
-    <script src="/assets/vendor/apexchart/apexchart.js"></script>
+    {{-- <script src="/assets/vendor/apexchart/apexchart.js"></script> --}}
     <script src="/assets/vendor/chart-js/chart.bundle.min.js"></script>
     <!-- Chart piety plugin files -->
     <script src="/assets/vendor/peity/jquery.peity.min.js"></script>
@@ -115,48 +94,6 @@
     <script src="/assets/js/plugins-init/select2-init.js"></script>
 
 
-
-    <script>
-        // function cardsCenter() {
-          
-        //     jQuery('.card-slider').owlCarousel({
-        //         loop: true,
-        //         margin: 0,
-        //         nav: true,
-        //         //center:true,
-        //         slideSpeed: 3000,
-        //         paginationSpeed: 3000,
-        //         dots: true,
-        //         navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
-        //         responsive: {
-        //             0: {
-        //                 items: 1
-        //             },
-        //             576: {
-        //                 items: 1
-        //             },
-        //             800: {
-        //                 items: 1
-        //             },
-        //             991: {
-        //                 items: 1
-        //             },
-        //             1200: {
-        //                 items: 1
-        //             },
-        //             1600: {
-        //                 items: 1
-        //             }
-        //         }
-        //     })
-        // }
-
-        // jQuery(window).on('load', function() {
-        //     setTimeout(function() {
-        //         cardsCenter();
-        //     }, 1000);
-        // });
-    </script>
     <script>
         // Check for session messages
         @if (session('toastr'))

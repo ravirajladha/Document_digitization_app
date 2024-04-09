@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use App\Services\DocumentService;
 use Illuminate\Support\Facades\DB;
@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Services\DocumentTableService;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Schema\Blueprint;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set,State,DocumentStatusLog};
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog};
 
 class DocumentController extends Controller
 {
@@ -62,7 +63,7 @@ class DocumentController extends Controller
     }
 
 
-    
+
 
     public function add_document_first()
     {
@@ -74,7 +75,7 @@ class DocumentController extends Controller
     }
 
 
-    
+
 
     public function documentCreationContinue(Request $req)
     {
@@ -169,7 +170,7 @@ class DocumentController extends Controller
 
         $document = DB::table($tableName)->where('id', $id)->first();
 
-      
+
 
         if (!$document) {
             // Handle the case where the document doesn't exist
@@ -180,7 +181,7 @@ class DocumentController extends Controller
             // Document is already approved, return with an error message
             return redirect()->back()->withErrors(['error' => 'Document is already approved']);
         }
-        
+
         // Prepare data for updating the individual document table
         $updateData = ['status' => $status];
 
@@ -210,17 +211,17 @@ class DocumentController extends Controller
 
         // Update the status in the master document table using the doc_id from the individual document
         Master_doc_data::where('id', $document->doc_id)->update($updateDataMaster);
-       $master_data   =  Master_doc_data::where('id', $id)->first();
+        $master_data   =  Master_doc_data::where('id', $id)->first();
 
-//this log was necessary, as the reviewer was starting the review. so for the backup, the status has been recorded in the database.
+        //this log was necessary, as the reviewer was starting the review. so for the backup, the status has been recorded in the database.
         $logData = [
             'document_id' => $document->doc_id,
             'status' => $status,
             'message' => $message ?? null,
             'created_by' => $userId,
-            'temp_id' => $master_data->temp_id ?? null,// Assuming temp_id is retrieved from $document
+            'temp_id' => $master_data->temp_id ?? null, // Assuming temp_id is retrieved from $document
         ];
-    
+
         DocumentStatusLog::create($logData);
 
 
@@ -232,69 +233,69 @@ class DocumentController extends Controller
 
 
     public function add_document_data(Request $req, DocumentService $documentService)
-{
-    $result = $documentService->saveDocumentData($req->all());
+    {
+        $result = $documentService->saveDocumentData($req->all());
 
-    if ($result['status'] === 'fail') {
-        return back()->withErrors($result['errors'])->withInput();
+        if ($result['status'] === 'fail') {
+            return back()->withErrors($result['errors'])->withInput();
+        }
+
+        // dd($result['status']);
+        // Prepare data for the redirection
+        $redirectData = [
+            'table_name' => $result['table_name'],
+            'id' => $result['id'],
+            'document_data' => $result['document_data'],
+            // Add other data as needed
+        ];
+
+
+        return $this->documentCreationContinue(new Request([
+            // 'columns' => $columns,
+            // 'document' => $document,
+            'table_name' => $result['table_name'],
+            'id' => $result['id'],
+            'document_data' => $result['document_data'],
+        ]));
+
+
+        // // Convert array to request for documentCreationContinue method
+        // $redirectRequest = Request::create(route('your.route.name'), 'POST', $redirectData);
+
+        // // Perform the redirection
+        // return $this->documentCreationContinue($redirectRequest);
+
+        // Handle the success case
     }
 
-// dd($result['status']);
-       // Prepare data for the redirection
-       $redirectData = [
-        'table_name' => $result['table_name'],
-        'id' => $result['id'],
-        'document_data' => $result['document_data'],
-        // Add other data as needed
-    ];
+    public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $documentService)
+    {
+        $result = $documentService->saveDocumentData($req->all(), $doc_id);
+
+        if ($result['status'] === 'fail') {
+            return back()->withErrors($result['errors'])->withInput();
+        }
+
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Please fill the other details.']);
+
+        // dd($result['status']);
+        // Prepare data for the redirection
+        $redirectData = [
+            'table_name' => $result['table_name'],
+            'id' => $result['id'],
+            'document_data' => $result['document_data'],
+            // Add other data as needed
+        ];
 
 
-    return $this->documentCreationContinue(new Request([
-        // 'columns' => $columns,
-        // 'document' => $document,
-        'table_name' => $result['table_name'],
-        'id' => $result['id'],
-        'document_data' => $result['document_data'],
-    ]));
-
-    
-    // // Convert array to request for documentCreationContinue method
-    // $redirectRequest = Request::create(route('your.route.name'), 'POST', $redirectData);
-
-    // // Perform the redirection
-    // return $this->documentCreationContinue($redirectRequest);
-
-    // Handle the success case
-}
-
-public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $documentService)
-{
-    $result = $documentService->saveDocumentData($req->all(), $doc_id);
-
-    if ($result['status'] === 'fail') {
-        return back()->withErrors($result['errors'])->withInput();
+        return $this->documentCreationContinue(new Request([
+            // 'columns' => $columns,
+            // 'document' => $document,
+            'table_name' => $result['table_name'],
+            'id' => $result['id'],
+            'document_data' => $result['document_data'],
+        ]));
     }
-
-    session()->flash('toastr', ['type' => 'success', 'message' => 'Please fill the other details.']);
-
-// dd($result['status']);
-       // Prepare data for the redirection
-       $redirectData = [
-        'table_name' => $result['table_name'],
-        'id' => $result['id'],
-        'document_data' => $result['document_data'],
-        // Add other data as needed
-    ];
-
-
-    return $this->documentCreationContinue(new Request([
-        // 'columns' => $columns,
-        // 'document' => $document,
-        'table_name' => $result['table_name'],
-        'id' => $result['id'],
-        'document_data' => $result['document_data'],
-    ]));
-}
 
     public function view_doc_first()
     {
@@ -317,7 +318,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         $columnDetails = Table_metadata::where('table_name', $tableName)
             ->orderBy('column_name')->get(['column_name', 'data_type']);
 
-            // dd($columnDetails);
+        // dd($columnDetails);
         // Pass the column details to the view instead of the direct schema columns
         return view('pages.document_field', [
             'tableName' => $tableName,
@@ -332,29 +333,29 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         $duplicateColumns = [];
         $documentType = Master_doc_type::where('name', $type)->lockForUpdate()->first(); // Lock the row for update
         $table_id = $documentType->id;
-    
+
         if (!Schema::hasTable($type) && !$documentType->id) {
             session()->flash('toastr', ['type' => 'warning', 'message' => 'Table does not exist.']);
             return redirect('/document_field')->with('error', 'Table does not exist.');
         }
-    
+
         $columns = Schema::getColumnListing($type);
         $existingMetadataColumns = Table_metadata::where('table_name', $type)->pluck('column_name')->toArray();
         $allExistingColumns = array_merge($columns, $existingMetadataColumns);
-    
+
         foreach ($fields as $index => $field) {
             $columnName = strtolower(str_replace(' ', '_', $field));
             if (in_array($columnName, $allExistingColumns)) {
                 $duplicateColumns[] = $columnName;
             }
         }
-    
+
         if (!empty($duplicateColumns)) {
             $duplicates = implode(', ', $duplicateColumns);
             session()->flash('toastr', ['type' => 'error', 'message' => "Duplicate columns: {$duplicates}."]);
             return redirect('/document_field' . '?type=' . $type)->with('error', "Duplicate columns: {$duplicates}.");
         }
-    
+
         // Perform the schema changes outside of a transaction
         Schema::table($type, function (Blueprint $table) use ($type, $fields, $fieldType, $table_id, $allExistingColumns) {
             foreach ($fields as $index => $field) {
@@ -364,7 +365,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
                 }
             }
         });
-    
+
         // Begin the transaction for metadata insertion
         DB::beginTransaction();
         try {
@@ -389,50 +390,51 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
             Log::error($e);
             return redirect('/document_field' . '?type=' . $type)->with('error', 'An error occurred while adding fields.');
         }
-    
+
         session()->flash('toastr', ['type' => 'success', 'message' => 'Fields added successfully.']);
         return redirect('/document_field' . '?type=' . $type)->with('success', 'Columns added successfully.');
     }
-    
-    public function updateDocumentFieldName(Request $request, $tableName, $oldColumnName) {
+
+    public function updateDocumentFieldName(Request $request, $tableName, $oldColumnName)
+    {
         // Validate the request
         $validated = $request->validate([
             'newFieldName' => 'required|string|max:255',
         ]);
-    
+
         $newColumnName = str_replace(' ', '_', $validated['newFieldName']);
-    
+
         if (!Schema::hasTable($tableName)) {
             return back()->with('error', 'Table does not exist.');
         }
-    
+
         if (!Schema::hasColumn($tableName, $oldColumnName)) {
             return back()->with('error', 'Column does not exist.');
         }
-    
+
         if (Schema::hasColumn($tableName, $newColumnName)) {
             return back()->with('error', 'New column name already exists.');
         }
-    
+
         $columnType = $this->getColumnType($tableName, $oldColumnName);
-    
+
         try {
             // Log::info('Preparing to rename column in table ' . $tableName);
-    
+
             // Rename the column outside of transaction due to possible implicit commit
             DB::statement("ALTER TABLE `$tableName` CHANGE `$oldColumnName` `$newColumnName` $columnType");
-    
+
             // Log::info('Starting transaction for table ' . $tableName);
             DB::beginTransaction();
-    
+
             // Update metadata within the transaction
             Table_metadata::where('table_name', $tableName)
-                          ->where('column_name', $oldColumnName)
-                          ->update(['column_name' => $newColumnName]);
-    
+                ->where('column_name', $oldColumnName)
+                ->update(['column_name' => $newColumnName]);
+
             DB::commit();
             // Log::info('Transaction committed for table ' . $tableName);
-    
+
             return back()->with('success', 'Field name updated successfully.');
         } catch (\Exception $e) {
             // Only roll back if a transaction is active
@@ -440,72 +442,76 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
                 Log::error('Rolling back transaction for table ' . $tableName);
                 DB::rollBack();
             }
-    
+
             // Log::error('Error while renaming column in table ' . $tableName . ': ' . $e->getMessage());
             return back()->with('error', 'An error occurred while updating the field name. ' . $e->getMessage());
         }
     }
-    
-    
-    
-    
-    private function getColumnType($tableName, $columnName) {
+
+
+
+
+    private function getColumnType($tableName, $columnName)
+    {
         // Retrieve the column type directly from the information schema
-        $columnData = DB::selectOne("SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS 
+        $columnData = DB::selectOne(
+            "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS 
                                       WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
-                                      [env('DB_DATABASE'), $tableName, $columnName]);
-    
+            [env('DB_DATABASE'), $tableName, $columnName]
+        );
+
         // Return the column type or null if not found
         return $columnData ? $columnData->COLUMN_TYPE : null;
     }
-    
 
-    
 
-    public function updateDocumentFieldName1(Request $request, $tableName, $oldColumnName) {
+
+
+    public function updateDocumentFieldName1(Request $request, $tableName, $oldColumnName)
+    {
         // Validate the request
         // dd($oldColumnName);
         $validated = $request->validate([
             'newFieldName' => 'required|string|max:255',
         ]);
-    
+
         // Check if the table and old column exist
         if (!Schema::hasTable($tableName)) {
             return back()->with('error', 'Table does not exist.');
         }
-    
+
         if (!Schema::hasColumn($tableName, $oldColumnName)) {
             return back()->with('error', 'Column does not exist.');
         }
-    
+
         Schema::table($tableName, function ($table) use ($oldColumnName, $validated) {
             $table->renameColumn($oldColumnName, $validated['newFieldName']);
         });
 
         // Rename the column
-     
 
 
-            try {
-                DB::beginTransaction();
-        
-                // Rename the column using raw SQL statement
-                Schema::table($tableName, function ($table) use ($oldColumnName, $validated) {
-                    $table->renameColumn($oldColumnName, $validated['newFieldName']);
-                });
-        
-                // Clear table cache to prevent issues with column not found errors
-                // DB::statement('FLUSH TABLES');
-        
-                // Update the column name in table_metadata
-                Table_metadata::where('table_name', $tableName)
-                              ->where('column_name', $oldColumnName)
-                              ->update(['column_name' => $validated['newFieldName']]);
-        
-                DB::commit();
-        
-                return back()->with('success', 'Field name updated successfully.');
-            } catch (\Exception $e) {
+
+        try {
+            DB::beginTransaction();
+
+            // Rename the column using raw SQL statement
+            Schema::table($tableName, function ($table) use ($oldColumnName, $validated) {
+                $table->renameColumn($oldColumnName, $validated['newFieldName']);
+            });
+
+            // Clear table cache to prevent issues with column not found errors
+            // DB::statement('FLUSH TABLES');
+
+            // Update the column name in table_metadata
+            Table_metadata::where('table_name', $tableName)
+                ->where('column_name', $oldColumnName)
+                ->update(['column_name' => $validated['newFieldName']]);
+
+            DB::commit();
+
+            return back()->with('success', 'Field name updated successfully.');
+        } catch (\Exception $e) {
 
 
 
@@ -515,7 +521,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
             return back()->with('error', 'An error occurred while updating the field name. ' . $e->getMessage());
         }
     }
-    
+
     //  * Edit Document Basic Details
     //  * 
     //  * Retrieves and displays the editing interface for basic details of a specific document.
@@ -525,7 +531,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
     //  * @param int $id The unique identifier of the document to be edited.
     //  * @return \Illuminate\Http\Response Returns a view with the document's basic details for editing if the document exists and is accessible.
     //  * If the document's status_id is 1 or if the document does not exist, it returns a 403 Forbidden error page.
-   
+
     public function edit_document_basic_detail($id)
     {
         $doc_type = Master_doc_type::orderBy('name')->get();
@@ -564,7 +570,13 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         $document = DB::table($tableName)->where('id', $id)->first();
         // dd($document);
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
-// Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
+        $document_logs = DocumentStatusLog::where("document_id", $document->doc_id)
+        ->join('users', 'document_status_logs.created_by', '=', 'users.id')
+        ->select('document_status_logs.*', 'users.name as creator_name')
+        ->get();
+    
+        // dd($get_document_logs);
+        // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
         $set_ids = array_map('strval', $set_ids);
         $masterDataEntries = Master_doc_data::all()->filter(function ($entry) use ($set_ids, $document) {
@@ -595,7 +607,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
         //    dd($matchingData);
         $compliances = Compliance::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
             ->get();
-          
+
         return view('pages.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,
@@ -604,6 +616,7 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
             'master_data' => $get_document_master_data,
             'matchingData' => $matchingData,
             'compliances' => $compliances,
+            'document_logs' => $document_logs,
         ]);
     }
 
@@ -616,5 +629,104 @@ public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $
             'receiver_type_count' => $receiver_type_count,
         ];
         return view('pages.data-sets.data-sets', $data);
+ 
     }
+
+   
+        public function viewUploadedDocuments()
+    {
+        $basePath = base_path();
+
+    // Construct the path to the public/uploads directory relative to the base path
+    $uploadsPath = $basePath . '/public/uploads/documents';
+        // Get the path to the public/uploads directory
+        $uploadsPath = public_path('uploads/documents');
+
+        // Check if the uploads directory exists
+        if (!File::exists($uploadsPath)) {
+            return 'Uploads directory does not exist.';
+        }
+
+        // Get the list of files in the uploads directory
+        $documents = File::files($uploadsPath);
+
+        // Initialize an array to store file information
+        $fileInfoList = [];
+// dd($documents);
+        // Iterate over each file to extract information
+        foreach ($documents as $file) {
+            // Get the file name
+            $filename = $file->getFilename();
+            
+            // Get the file size
+            $size = $file->getSize();
+            $extension = $file->getExtension();
+            
+            // Get the last modified time (uploaded date)
+            $uploadedDate = $file->getMTime();
+
+            // Push the file information into the array
+            $fileInfoList[] = [
+                'name' => $filename,
+                'size' => $size,
+                'extension' => $extension,
+                'uploaded_date' => date('Y-m-d H:i:s', $uploadedDate) // Format the date as needed
+            ];
+        }
+        // dd($fileInfoList);
+        return view('pages.uploaded-documents', compact('fileInfoList'));
+    }
+
+    
+    public function deleteFile($filename)
+    {
+        $filePath = public_path('uploads/documents/' . $filename);
+
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+            return redirect()->back()->with('success', 'File deleted successfully.');
+        }
+
+        return redirect()->back()->with('error', 'File not found.');
+    }
+ 
+    
+    public function uploadFiles(Request $request)
+    {
+        // Validate the uploaded files
+        $request->validate([
+            'files.*' => 'required|file|mimes:pdf|max:500000', // Max size in bytes (500 MB)
+        ]);
+        Log::info('File upload request received');
+        // Process the uploaded files
+        if ($request->hasFile('files')) {
+            $file_paths = [];
+            foreach ($request->file('files') as $file) {
+                $originalFilename = $file->getClientOriginalName(); // Get the original filename
+                $path = $file->move(public_path('uploads/documents'), $originalFilename); // Store the file in the specified directory
+                $file_paths[] = $path;
+            }
+    
+            // Optionally, you can save the file paths to a database or perform additional processing here
+    
+            // Return a success response
+            session()->flash('toastr', ['type' => 'success', 'message' => 'Document uploaded successfully']);
+            return response()->json(['message' => 'Files uploaded successfully', 'file_paths' => $file_paths], 200);
+        }
+        // Return an error response if no files were uploaded
+        return response()->json(['message' => 'No files uploaded'], 400);
+    }
+
 }
+
+
+// if ($request->hasFile('files')) {
+//     $file_paths = [];
+//     foreach ($request->file('files') as $file) {
+//         // Get the original filename
+//         $originalFilename = $file->getClientOriginalName();
+//         // Save the file with its original filename, overwriting if it already exists
+//         $path = $file->store('uploads/documents', $originalFilename, 'public');
+//         // Add the file path to the list
+//         $file_paths[] = $path;
+//     }
