@@ -7,19 +7,13 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\Doc_type;
 use App\Models\Master_doc_type;
 
 class DocumentTableService
 {
-    public function createDynamicTable($typeName, $fields)
-    {
-        // Your logic to create the table and model
-    }
+  
     public function createDocumentType($typeName)
     {
-        // dd($typeName);
         $type = strtolower(str_replace(' ', '_', $typeName));
 
         // Check if a DocType with the same name already exists

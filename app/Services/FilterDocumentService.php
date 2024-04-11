@@ -2,18 +2,10 @@
 // File: app/Services/DocumentTableService.php
 
 namespace App\Services;
-
-use Validator;
 use Carbon\Carbon;
-use App\Models\Doc_type;
 use App\Models\Master_doc_data;
-use App\Models\Master_doc_type;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
-
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Eloquent\Collection;
 
 class FilterDocumentService
@@ -63,62 +55,14 @@ class FilterDocumentService
             });
         }
 
-
-        //before all the types of villages were comninely searched
-
-        // if ($state) {
-        //     $query->where(function ($q) use ($state) {
-        //         $q->where('state', $state)
-        //           ->orWhere('current_state', $state)
-        //           ->orWhere('alternate_state', $state);
-        //     });
-        // }
-        // if ($district) {
-        //     $query->where(function ($q) use ($district) {
-        //         $q->where('district', $district)
-        //           ->orWhere('current_district', $district)
-        //           ->orWhere('alternate_district', $district);
-        //     });
-        // }
-        // if ($village) {
-        //     $query->where(function ($q) use ($village) {
-        //         $q->where('village', $village)
-        //           ->orWhere('current_village', $village)
-        //           ->orWhere('alternate_village', $village);
-        //     });
-        // }
-        // if ($area_range_start !== null || $area_range_end !== null) {
-        //     $query->where(function ($q) use ($area_range_start, $area_range_end) {
-        //         if ($area_range_start !== null) {
-        //             $q->where('area', '>=', $area_range_start);
-        //         }
-        //         if ($area_range_end !== null) {
-        //             $q->where('area', '<=', $area_range_end);
-        //         }
-        //     });
-        // }
-
-
-        // if ($area_unit !== null) {
-        //     $query->where('unit', $area_unit);
-        // }
         $area_range_start  = intval($area_range_start);
         $area_range_end  = intval($area_range_end);
-
+// dd(232323);
         if ($area_range_start !== null || $area_range_end !== null) {
             $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
-                // dd(gettype($area_range_start));
-                // if ($area_range_start !== null) {
-                //     $q->where('area', '>=', $area_range_start);
-                // }
-                // if ($area_range_end !== null) {
-                //     $q->where('area', '<=', ($area_range_end));
-                // }
-                // dd($area_unit);
-                // Filter by area unit if provided
                 if ($area_unit) {
                     if ($area_unit === 'Acres') {
-                        
+                        // dd(23);
                         // dd($area_range_start,$area_range_end);
                         // Search for both acres and cents
                         $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {

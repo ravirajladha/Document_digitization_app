@@ -256,7 +256,7 @@
 
                                 <div class="card-body">
                                     {{-- Status Form --}}
-                                    @if ($document->status == 0 || $document->status == 2)
+                                    @if ($document->status == 0 || $document->status == 2 ||$document->status == 3)
                                         <form action="{{ url('/') }}/update_document" method="post"
                                             class="mb-3">
                                             @csrf
@@ -272,6 +272,9 @@
                                                     <option value="2"
                                                         {{ $document->status == 2 ? 'selected' : '' }}>
                                                         Hold</option>
+                                                    <option value="3"
+                                                        {{ $document->status == 3 ? 'selected' : '' }}>
+                                                        Reviewer Feedback</option>
                                                 </select>
                                                 <input type="hidden" id="holdReason" name="holdReason">
 
@@ -288,12 +291,17 @@
                                     @if ($document->status == 2 && $master_data->rejection_message)
                                         <div class="alert alert-warning">
                                             <strong>Hold Reason:</strong> {{ $master_data->rejection_message }}
-                                            <div><small>{{ $master_data->rejection_timestamp }}</small></div>
+                                            <div><small>  {{ \Carbon\Carbon::parse($master_data->rejection_timestamp)->format('m/d/Y') }}</small></div>
                                         </div>
                                     @elseif($document->status == 0)
                                         <div class="alert alert-primary">
                                             <strong>Current Status : Pending</strong>
 
+                                        </div>
+                                        @elseif ($document->status == 3 && $master_data->rejection_message)
+                                        <div class="alert alert-warning">
+                                            <strong>Reviewer Feedback:</strong> {{ $master_data->rejection_message }}
+                                            <div><small>  {{ \Carbon\Carbon::parse($master_data->rejection_timestamp)->format('m/d/Y') }}</small></div>
                                         </div>
                                     @endif
                                     {{-- Document Status Logs --}}
@@ -321,10 +329,12 @@
                                                                     Approved
                                                                 @elseif ($log->status == 2)
                                                                     Hold
+                                                                    @elseif ($log->status == 3)
+                                                                    Reviewer Feedback
                                                                 @endif
                                                             </span>
                                                         </td>
-                                                        <td>{{ date('d/m/Y H:i:s', strtotime($log->created_at)) }}</td>
+                                                        <td>{{ date('H:i:s d/m/Y ', strtotime($log->created_at)) }}</td>
                                                         <td>{{ $log->message ? $log->message : 'N/A' }}</td>
                                                         <td>{{ $log->creator_name }}</td>
                                                     </tr>
@@ -469,6 +479,14 @@
     function handleStatusChange(select) {
         if (select.value == "2") { // Assuming '2' is the value for 'Hold'
             const reason = window.prompt("Please enter the reason for holding: (* Mandatory)");
+            if (reason) {
+                document.getElementById('holdReason').value = reason;
+                select.form.submit();
+            } else {
+                select.value = "{{ $document->status }}"; // Revert back to the original value if no reason is provided
+            }
+        }else if(select.value == "3"){
+            const reason = window.prompt("Please enter the feedback: (* Mandatory)");
             if (reason) {
                 document.getElementById('holdReason').value = reason;
                 select.form.submit();

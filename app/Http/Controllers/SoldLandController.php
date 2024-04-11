@@ -42,10 +42,10 @@ class SoldLandController extends Controller
             $query->where('village', $request->input('village'));
         });
 
-   
 
-           // dd($start_date);
-           if ($start_date && $end_date) {
+
+        // dd($start_date);
+        if ($start_date && $end_date) {
             // Convert dates to Carbon instances to ensure correct format and handle any timezone issues
             $start = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay(); // Ensures the comparison includes the start of the start_date
             $end = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay(); // Ensures the comparison includes the end of the end_date
@@ -62,56 +62,49 @@ class SoldLandController extends Controller
         }
 
 
+
+
+        $area_range_start  = intval($area_range_start);
+        $area_range_end  = intval($area_range_end);
+        // dd(232323);
+        $area_unit = $request->input('area_unit');
         if ($area_range_start !== null || $area_range_end !== null) {
-            $query->where(function ($q) use ($area_range_start, $area_range_end) {
-                if ($area_range_start !== null) {
-                    $q->where('total_area', '>=', $area_range_start);
-                }
-                if ($area_range_end !== null) {
-                    $q->where('total_area', '<=', $area_range_end);
-                }
-            });
-        }
-    
-        if ($area_range_start !== null || $area_range_end !== null) {
-            $query->where(function ($q) use ($area_range_start, $area_range_end, $request) {
-                if ($area_range_start !== null) {
-                    $q->where('total_area', '>=', $area_range_start);
-                }
-                if ($area_range_end !== null) {
-                    $q->where('total_area', '<=', $area_range_end);
-                }
-                // Filter by area unit if provided
-                if ($request->filled('area_unit')) {
-                    $area_unit = $request->input('area_unit');
+            $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
+                if ($area_unit) {
                     if ($area_unit === 'Acres') {
-                        // Convert square feet to acres and apply the filter
+                        // dd(23);
+                        // dd($area_range_start,$area_range_end);
+                        // Search for both acres and cents
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('total_area_unit', 'acres and cents')
+                                ->where('total_area', '>=', $area_range_start)
+                                ->where('total_area', '<=', $area_range_end);
+                        });
+                        // Convert acres to square feet and search
                         $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
                             $q->where('total_area_unit', 'Square Feet')
-                                ->where('total_area', '>=', $area_range_start / 43560)
-                                ->where('total_area', '<=', $area_range_end / 43560);
-                        });
-                    } elseif ($area_unit === 'Square Feet') {
-                        // Convert acres to square feet and apply the filter
-                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                            $q->where('total_area_unit', 'Acres')
                                 ->where('total_area', '>=', $area_range_start * 43560)
                                 ->where('total_area', '<=', $area_range_end * 43560);
                         });
+                    } elseif ($area_unit === 'Square Feet') {
+                        // Search for square feet
+                        // dd(22);
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('total_area_unit', 'Square Feet')
+                                ->where('total_area', '>=', $area_range_start)
+                                ->where('total_area', '<=', $area_range_end);
+                        });
+                        // Convert square feet to acres and cents and search
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('total_area_unit', 'Acres and Cents')
+                                ->where('total_area', '>=', $area_range_start / 43560)
+                                ->where('total_area', '<=', $area_range_end / 43560);
+                        });
                     }
                 }
-                
             });
         }
-        
-        // $query->orWhere(function ($query) use ($request) {
-        //     $query->when($request->has('start_date') || $request->has('end_date'), function ($query) use ($request) {
-        //         $query->whereBetween('register_date', [$request->input('start_date'), $request->input('end_date')]);
-        //     })
-        //         ->when($request->has('area_range_start') || $request->has('area_range_end'), function ($query) use ($request) {
-        //             $query->orWhereBetween('total_area', [$request->input('area_range_start'), $request->input('area_range_end')]);
-        //         });
-        // });
+
 
         // Get the filtered sold lands
         $data = $query->orderBy('created_at', 'desc')->get();
@@ -171,8 +164,8 @@ class SoldLandController extends Controller
             'name_of_the_purchaser' => 'nullable|string|max:255',
             'balance_land' => 'nullable|string|max:255',
             'remark' => 'nullable|string|max:255',
-            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
-            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
+            'latitude' => ['nullable', 'string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable', 'string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
         ]);
 
         // Add the 'created_by' field with the current user's ID
@@ -191,24 +184,24 @@ class SoldLandController extends Controller
             }
             $validatedData['pdf_file'] = implode(',', $filePaths);
         }
-    $isEmpty = true;
-    foreach ($validatedData  as $key => $value) {
-        if ($key !== '_token' && !empty($value)) {
-            // At least one field contains data, so set $isEmpty to false and break the loop
-            $isEmpty = false;
-            break;
+        $isEmpty = true;
+        foreach ($validatedData  as $key => $value) {
+            if ($key !== '_token' && !empty($value)) {
+                // At least one field contains data, so set $isEmpty to false and break the loop
+                $isEmpty = false;
+                break;
+            }
         }
-    }
 
-    // If all fields are empty, redirect back with an error message
-    if ($isEmpty) {
-        return redirect()->back()->with('error', 'Please provide data for at least one field.');
-    }
+        // If all fields are empty, redirect back with an error message
+        if ($isEmpty) {
+            return redirect()->back()->with('error', 'Please provide data for at least one field.');
+        }
 
         $requestData['created_by'] = Auth::id();
 
-          // Attempt to create the sold land details
-    $soldLand = Sold_land::create($validatedData);
+        // Attempt to create the sold land details
+        $soldLand = Sold_land::create($validatedData);
 
         // Redirect or return a response
         session()->flash('toastr', ['type' => 'success', 'message' => 'Sold Land Details Added Successfully']);
@@ -259,8 +252,8 @@ class SoldLandController extends Controller
             'name_of_the_purchaser' => 'nullable|string|max:255',
             'balance_land' => 'nullable|string|max:255',
             'remark' => 'nullable|string|max:255',
-            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
-            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
+            'latitude' => ['nullable', 'string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable', 'string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
         ]);
 
         $isEmpty = true;
@@ -273,7 +266,7 @@ class SoldLandController extends Controller
         if ($isEmpty) {
             return redirect()->back()->with('error', 'Please provide data for at least one field.');
         }
-    
+
 
 
         // Find the sold land detail by ID
@@ -292,11 +285,11 @@ class SoldLandController extends Controller
     }
 
 
-public function storeOrUpdate(Request $request, $id = null)
-{
-    // Validate the incoming request data
-    $validatedData = $request->validate([
-        'state' => 'nullable|string|max:255',
+    public function storeOrUpdate(Request $request, $id = null)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'state' => 'nullable|string|max:255',
             'district_number' => 'nullable|string|max:255',
             'district' => 'nullable|string|max:255',
             'village_number' => 'nullable|string|max:255',
@@ -320,72 +313,72 @@ public function storeOrUpdate(Request $request, $id = null)
             'name_of_the_purchaser' => 'nullable|string|max:255',
             'balance_land' => 'nullable|string|max:255',
             'remark' => 'nullable|string|max:255',
-            'file' => 'nullable|mimes:pdf|max:10240', 
-            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
-            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
-    ]);
+            'file' => 'nullable|mimes:pdf|max:10240',
+            'latitude' => ['nullable', 'string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable', 'string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
+        ]);
 
-    // Check if any field contains data
-    $isEmpty = true;
-    foreach ($validatedData as $value) {
-        if (!empty($value)) {
-            // At least one field contains data, so set $isEmpty to false and break the loop
-            $isEmpty = false;
-            break;
+        // Check if any field contains data
+        $isEmpty = true;
+        foreach ($validatedData as $value) {
+            if (!empty($value)) {
+                // At least one field contains data, so set $isEmpty to false and break the loop
+                $isEmpty = false;
+                break;
+            }
         }
-    }
 
-    // If all fields are empty, redirect back with an error message
-    if ($isEmpty) {
-        return redirect()->back()->with('error', 'Please provide data for at least one field.');
-    }
+        // If all fields are empty, redirect back with an error message
+        if ($isEmpty) {
+            return redirect()->back()->with('error', 'Please provide data for at least one field.');
+        }
 
-    // Add the 'created_by' field with the current user's ID if creating a new record
-    if (is_null($id)) {
-        $validatedData['created_by'] = Auth::id();
-    } else {
-        // If updating an existing record, add the 'updated_by' field with the current user's ID
-        $validatedData['updated_by'] = Auth::id();
-    }
-// dd($request->file('file'));
-    // Handle file upload for PDFs
-    if ($request->hasFile('file')) {
-        $file = $request->file('file');
-        // Ensure the uploaded file is valid
-        if ($file->isValid()) {
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::random(4) . time() . '.' . $extension;
-            // Move the uploaded file to the desired location
-            $path = $file->move('uploads', $filename);
-            // Store the file path in the validated data
-            $validatedData['file'] = 'uploads/' . $filename;
+        // Add the 'created_by' field with the current user's ID if creating a new record
+        if (is_null($id)) {
+            $validatedData['created_by'] = Auth::id();
         } else {
-            // Handle invalid file upload
-            return redirect()->back()->with('error', 'Invalid file uploaded.');
+            // If updating an existing record, add the 'updated_by' field with the current user's ID
+            $validatedData['updated_by'] = Auth::id();
+        }
+        // dd($request->file('file'));
+        // Handle file upload for PDFs
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            // Ensure the uploaded file is valid
+            if ($file->isValid()) {
+                $extension = $file->getClientOriginalExtension();
+                $filename = Str::random(4) . time() . '.' . $extension;
+                // Move the uploaded file to the desired location
+                $path = $file->move('uploads', $filename);
+                // Store the file path in the validated data
+                $validatedData['file'] = 'uploads/' . $filename;
+            } else {
+                // Handle invalid file upload
+                return redirect()->back()->with('error', 'Invalid file uploaded.');
+            }
+        }
+
+        // dd($validatedData['file']);
+        // Check if $id is provided to determine if it's an update or create operation
+        if (is_null($id)) {
+            // Attempt to create the sold land details using validated data
+            $soldLand = Sold_land::create($validatedData);
+        } else {
+            // Find the sold land detail by ID and update it with the validated data
+            $soldLand = Sold_land::findOrFail($id);
+            $soldLand->update($validatedData);
+        }
+
+
+        // Redirect or return a response
+        if ($soldLand) {
+            // Redirect with success message
+            return redirect()->route('soldLand.view')->with('success', 'Sold Land details ' . (is_null($id) ? 'added' : 'updated') . ' successfully.');
+        } else {
+            // Redirect back with an error message
+            return redirect()->route('soldLand.' . (is_null($id) ? 'add' : 'edit'), $id)->with('error', 'Failed to ' . (is_null($id) ? 'add' : 'update') . ' sold land details. Please try again.');
         }
     }
-    
-    // dd($validatedData['file']);
-    // Check if $id is provided to determine if it's an update or create operation
-    if (is_null($id)) {
-        // Attempt to create the sold land details using validated data
-        $soldLand = Sold_land::create($validatedData);
-    } else {
-        // Find the sold land detail by ID and update it with the validated data
-        $soldLand = Sold_land::findOrFail($id);
-        $soldLand->update($validatedData);
-    }
-
-  
-    // Redirect or return a response
-    if ($soldLand) {
-        // Redirect with success message
-        return redirect()->route('soldLand.view')->with('success', 'Sold Land details ' . (is_null($id) ? 'added' : 'updated') . ' successfully.');
-    } else {
-        // Redirect back with an error message
-        return redirect()->route('soldLand.' . (is_null($id) ? 'add' : 'edit'), $id)->with('error', 'Failed to ' . (is_null($id) ? 'add' : 'update') . ' sold land details. Please try again.');
-    }
-}
 
 
 
@@ -419,93 +412,93 @@ public function storeOrUpdate(Request $request, $id = null)
         try {
             while (($line = fgetcsv($file)) !== false) {
                 if (!empty($line[0])) {
-                if (array_filter($line)) {
+                    if (array_filter($line)) {
 
-                    $dateFormats = ['d-m-Y', 'd/m/Y'];
-                    $formattedDate = null;
-                    foreach ($dateFormats as $format) {
-                        try {
-                            $formattedDate = Carbon::createFromFormat($format, trim($line[19]))->toDateString();
-                            break; // Format matched, break out of the loop
-                        } catch (\Exception $e) {
-                            // Catch the exception and continue trying other formats
+                        $dateFormats = ['d-m-Y', 'd/m/Y'];
+                        $formattedDate = null;
+                        foreach ($dateFormats as $format) {
+                            try {
+                                $formattedDate = Carbon::createFromFormat($format, trim($line[19]))->toDateString();
+                                break; // Format matched, break out of the loop
+                            } catch (\Exception $e) {
+                                // Catch the exception and continue trying other formats
+                            }
                         }
+
+                        $data['register_date'] = $formattedDate ?? null;
+
+                        // Extract data from each row
+                        $data = [
+                            // 'index_id' => $line[0] ?? null,
+                            'index_id' => $line[1] ?? null,
+                            'state' => $line[2] ?? null,
+                            'district_number' => $line[3] ?? null,
+                            'district' => $line[4] ?? null,
+                            'village_number' => $line[5] ?? null,
+                            'village' => $line[6] ?? null,
+                            'survey_number' => $line[7] ?? null,
+                            'wet_land' => $line[8] ?? null,
+                            'dry_land' => $line[9] ?? null,
+                            'plot' => $line[10] ?? null,
+                            'traditional_land' => $line[11] ?? null,
+                            'total_area' => $line[12] ?? null,
+                            'total_area_unit' => $line[13] ?? null,
+                            'total_wet_land' => $line[14] ?? null,
+                            'total_dry_land' => $line[15] ?? null,
+                            'gap' => $line[16] ?? null,
+                            'sale_amount' => $line[17] ?? null,
+                            'total_sale_amount' => $line[18] ?? null,
+                            'registration_office' => $line[19] ?? null,
+                            'register_number' => $line[20] ?? null,
+                            'register_date' => $formattedDate ?? null,
+                            'book_number' => $line[22] ?? null,
+                            'name_of_the_purchaser' => $line[23] ?? null,
+                            'balance_land' => $line[24] ?? null,
+                            'remark' => $line[25] ?? null,
+                            'created_by' => Auth::user()->id,
+
+
+                            // Add other fields here...
+                        ];
+
+                        // Validate the data
+                        $validator = Validator::make($data, [
+                            'index_id' => 'nullable|string|max:255',
+                            'district_number' => 'nullable|string|max:255',
+                            'district' => 'nullable|string|max:255',
+                            'village_number' => 'nullable|string|max:255',
+                            'village' => 'nullable|string|max:255',
+                            'survey_number' => 'nullable|string|max:255',
+                            'wet_land' => 'nullable|string|max:255',
+                            'dry_land' => 'nullable|string|max:255',
+                            'plot' => 'nullable|string|max:255',
+                            'traditional_land' => 'nullable|string|max:255',
+                            'total_area' => 'nullable|string|max:255',
+                            'total_area_unit' => 'nullable|string|max:255',
+                            'total_wet_land' => 'nullable|string|max:255',
+                            'total_dry_land' => 'nullable|string|max:255',
+                            'gap' => 'nullable|string|max:255',
+                            'sale_amount' => 'nullable|string|max:255',
+                            'total_sale_amount' => 'nullable|string|max:255',
+                            'registration_office' => 'nullable|string|max:255',
+                            'register_number' => 'nullable|string|max:255',
+                            // 'register_date' => 'nullable|date',
+                            'book_number' => 'nullable|string|max:255',
+                            'name_of_the_purchaser' => 'nullable|string|max:255',
+                            'balance_land' => 'nullable|string|max:255',
+                            'remark' => 'nullable|string|max:255',
+                            // Add validation rules for other fields...
+                        ]);
+
+                        if ($validator->fails()) {
+                            throw new \Exception('Validation failed for one or more rows.');
+                        }
+
+                        // Create or update the SoldLand record, if the index_id  is unique it will create else update
+                        Sold_land::updateOrCreate(['index_id' => $data['index_id']], $data);
                     }
-
-                    $data['register_date'] = $formattedDate ?? null;
-
-                    // Extract data from each row
-                    $data = [
-                        // 'index_id' => $line[0] ?? null,
-                        'index_id' => $line[1] ?? null,
-                        'state' => $line[2] ?? null,
-                        'district_number' => $line[3] ?? null,
-                        'district' => $line[4] ?? null,
-                        'village_number' => $line[5] ?? null,
-                        'village' => $line[6] ?? null,
-                        'survey_number' => $line[7] ?? null,
-                        'wet_land' => $line[8] ?? null,
-                        'dry_land' => $line[9] ?? null,
-                        'plot' => $line[10] ?? null,
-                        'traditional_land' => $line[11] ?? null,
-                        'total_area' => $line[12] ?? null,
-                        'total_area_unit' => $line[13] ?? null,
-                        'total_wet_land' => $line[14] ?? null,
-                        'total_dry_land' => $line[15] ?? null,
-                        'gap' => $line[16] ?? null,
-                        'sale_amount' => $line[17] ?? null,
-                        'total_sale_amount' => $line[18] ?? null,
-                        'registration_office' => $line[19] ?? null,
-                        'register_number' => $line[20] ?? null,
-                        'register_date' => $formattedDate ?? null,
-                        'book_number' => $line[22] ?? null,
-                        'name_of_the_purchaser' => $line[23] ?? null,
-                        'balance_land' => $line[24] ?? null,
-                        'remark' => $line[25] ?? null,
-                        'created_by' => Auth::user()->id,
-
-
-                        // Add other fields here...
-                    ];
-
-                    // Validate the data
-                    $validator = Validator::make($data, [
-                        'index_id' => 'nullable|string|max:255',
-                        'district_number' => 'nullable|string|max:255',
-                        'district' => 'nullable|string|max:255',
-                        'village_number' => 'nullable|string|max:255',
-                        'village' => 'nullable|string|max:255',
-                        'survey_number' => 'nullable|string|max:255',
-                        'wet_land' => 'nullable|string|max:255',
-                        'dry_land' => 'nullable|string|max:255',
-                        'plot' => 'nullable|string|max:255',
-                        'traditional_land' => 'nullable|string|max:255',
-                        'total_area' => 'nullable|string|max:255',
-                        'total_area_unit' => 'nullable|string|max:255',
-                        'total_wet_land' => 'nullable|string|max:255',
-                        'total_dry_land' => 'nullable|string|max:255',
-                        'gap' => 'nullable|string|max:255',
-                        'sale_amount' => 'nullable|string|max:255',
-                        'total_sale_amount' => 'nullable|string|max:255',
-                        'registration_office' => 'nullable|string|max:255',
-                        'register_number' => 'nullable|string|max:255',
-                        // 'register_date' => 'nullable|date',
-                        'book_number' => 'nullable|string|max:255',
-                        'name_of_the_purchaser' => 'nullable|string|max:255',
-                        'balance_land' => 'nullable|string|max:255',
-                        'remark' => 'nullable|string|max:255',
-                        // Add validation rules for other fields...
-                    ]);
-
-                    if ($validator->fails()) {
-                        throw new \Exception('Validation failed for one or more rows.');
-                    }
-
-                    // Create or update the SoldLand record, if the index_id  is unique it will create else update
-                    Sold_land::updateOrCreate(['index_id' => $data['index_id']], $data);
                 }
             }
-        }
             DB::commit();
 
             // Redirect or return a response

@@ -38,7 +38,7 @@ class SetController extends Controller
 
 
         // Pass the counts and the set data to the view
-        return view('pages.set', [
+        return view('pages.sets.set', [
             'data' => $data,
             'setCounts' => $setCounts
         ]);
@@ -75,7 +75,7 @@ class SetController extends Controller
         }
         // dd($documentsDetails);
         // Pass the documents details to the view
-        return view('pages.documents-for-set', [
+        return view('pages.documents.documents-for-set', [
             'documentsDetails' => $documentsDetails,
             'setId' => $setId,
             'get_set_detail' => $get_set_detail,

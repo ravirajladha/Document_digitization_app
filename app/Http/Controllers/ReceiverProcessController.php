@@ -10,14 +10,14 @@ use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table
 use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use Illuminate\Support\Str; 
 use Illuminate\Support\Facades\Auth;
 use Mail;
 use App\Mail\AssignDocumentEmail;
 use App\Mail\SendOtpMail;
 use App\Services\NotificationService;
 
-class Receiver_process extends Controller
+class ReceiverProcessController extends Controller
 {
 
     protected $notificationService;

@@ -1,26 +1,17 @@
-<x-app-layout>
-    {{-- <link rel="stylesheet" href="/assets/vendor/nouislider/nouislider.min.css"> --}}
-    <x-header />
+<x-app-layout pageTitle="Your Page Title">
 
+    <x-header />
 
     <x-sidebar />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
-    {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
-    <!-- Include Buttons extension CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css"> --}}
-
 
     <div class="content-body default-height">
         <!-- row -->
         <div class="container-fluid">
             {{-- $tableName --}}
             <div class="row page-titles">
-                {{-- <span> <form action="{{ url('/') }}/add-document-data" method="POST" enctype="multipart/form-data" style="none">
-                    @csrf
-                    <input type="hidden" name="type" value="222">
-                    <button class="btn btn-secondary" type="submit">Add Document</button>
-                </form></span>  --}}
+
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                     <li class="breadcrumb-item "><a href="javascript:void(0)">View Document</a></li>
@@ -119,8 +110,7 @@
                                         <div class="mb-3 col-md-3">
                                             <label class="form-label">Document Date (Start)</label>
                                             <div class="input-hasicon">
-                                                <input name="start_date" type="date"
-                                                    class="form-control  solid"
+                                                <input name="start_date" type="date" class="form-control  solid"
                                                     value="{{ old('start_date') }}">
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
@@ -128,8 +118,7 @@
                                         <div class="mb-3 col-md-3">
                                             <label class="form-label">Document Date (End)</label>
                                             <div class="input-hasicon">
-                                                <input name="end_date" type="date"
-                                                    class="form-control  solid"
+                                                <input name="end_date" type="date" class="form-control  solid"
                                                     value="{{ old('end_date') }}">
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
@@ -217,7 +206,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
 
-                                <table id="example3" class="display" style="min-width: 845px">
+                                <table id="example3" class="display table-hover" style="min-width: 845px">
                                     <thead>
                                         <tr>
                                             {{-- <th>
@@ -266,11 +255,13 @@
                                                             '0' => 'badge-danger text-danger',
                                                             '1' => 'badge-success text-success',
                                                             '2' => 'badge-warning text-warning',
+                                                            '3' => 'badge-warning text-dark',
                                                         ];
                                                         $statusTexts = [
                                                             '0' => 'Pending',
                                                             '1' => 'Accepted',
                                                             '2' => 'Hold',
+                                                            '3' => 'Feedback',
                                                         ];
                                                         $statusId = strval($item->status_id); // Convert to string to match array keys
                                                         $statusClass =
@@ -320,35 +311,6 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
     </div>
 
     </div>
-    {{-- <div id="preloader">
-        <div class="lds-ripple">
-            <div></div>
-            <div></div>
-        </div>
-    </div> --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script> --}}
-    <!-- DataTables CSS -->
-    <!-- Include DataTables CSS for Bootstrap 5 -->
-
-
-    <!-- Include jQuery -->
-    {{-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<!-- Include DataTables and Bootstrap JS -->
-<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
-<!-- Include DataTables Buttons extension JS -->
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.bootstrap5.min.js"></script>
-<!-- Include JSZip for Excel export -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<!-- Include pdfmake for PDF export -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<!-- Include HTML5 export buttons -->
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script> --}}
-
-
-
 
     @include('layouts.footer')
 

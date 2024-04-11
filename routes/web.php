@@ -1,20 +1,8 @@
 <?php
 
-use App\Http\Controllers\Document;
-
-use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, Dashboard, Receiver_process, ProfileController, FilterDocumentController, LogController, SoldLandController};
+use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController};
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::view('/error/403', 'error.403')->name('error');
 Route::middleware('guest')->group(function () {
@@ -23,17 +11,14 @@ Route::middleware('guest')->group(function () {
     })->name('welcome');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/verify-document/{token}', [Receiver_process::class, 'showPublicDocument'])->name('showPublicDocument');
-Route::get('/otp/{token}', [Receiver_process::class, 'showOtpForm'])->name('otp.form');
-Route::post('/verify-document/{token}', [Receiver_process::class, 'verifyOtp'])->name('otp.verify');
-Route::post('/send-otp', [Receiver_process::class, 'sendOTP'])->name('otp.send');
-
+Route::get('/verify-document/{token}', [ReceiverProcessController::class, 'showPublicDocument'])->name('showPublicDocument');
+Route::get('/otp/{token}', [ReceiverProcessController::class, 'showOtpForm'])->name('otp.form');
+Route::post('/verify-document/{token}', [ReceiverProcessController::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/send-otp', [ReceiverProcessController::class, 'sendOTP'])->name('otp.send');
 
 Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 'LogHttpRequest'])->group(function () {
-    Route::get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -42,8 +27,6 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::view('/error-page-403', 'pages.error-403')->name('error-403');
 
     // set view
-
-    // Route::get('/set', [DocumentController::class, 'set'])->name('set');
     Route::get('/set', [SetController::class, 'viewSet'])->name('sets.view');
     Route::get('/get-updated-sets', [SetController::class, 'viewUpdatedSets'])->name('sets.viewUpdated');
     Route::post('/add_set', [SetController::class, 'addSet'])->name('sets.add');
@@ -64,32 +47,25 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('receivers.store');
     Route::post('/update-receiver', [ReceiverController::class, 'updateReceiver'])
         ->name('receivers.update');
-    Route::get('/get-receivers/{typeId}', [Receiver_process::class, 'getReceiversByType'])
+    Route::get('/get-receivers/{typeId}', [ReceiverProcessController::class, 'getReceiversByType'])
         ->name('receivers.byType');
     Route::get('/get-updated-receivers', [ReceiverController::class, 'getUpdatedReceivers'])
         ->name('receivers.updated');
 
-
     // assigning documents
-
-
-    Route::get('/assign-documents', [Receiver_process::class, 'showAssignedDocument'])
+    Route::get('/assign-documents', [ReceiverProcessController::class, 'showAssignedDocument'])
         ->name('documents.assigned.show');
-    Route::get('/user-assign-documents/{receiver_id}', [Receiver_process::class, 'showUserAssignedDocument'])
+    Route::get('/user-assign-documents/{receiver_id}', [ReceiverProcessController::class, 'showUserAssignedDocument'])
         ->name('user.documents.assigned.show');
-    Route::post('/toggle-assigned-document-status/{id}', [Receiver_process::class, 'toggleStatus'])
+    Route::post('/toggle-assigned-document-status/{id}', [ReceiverProcessController::class, 'toggleStatus'])
         ->name('documents.assigned.toggleStatus');
-    Route::post('/assign-documents-to-receiver', [Receiver_process::class, 'assignDocumentsToReceiver'])
+    Route::post('/assign-documents-to-receiver', [ReceiverProcessController::class, 'assignDocumentsToReceiver'])
         ->name('documents.assign.toReceiver');
 
     //document type
     Route::get('/document_type', [DocumentController::class, 'document_type'])->name('document_types.index');
     Route::post('/add_document_type', [DocumentController::class, 'addDocumentType'])->name('document_types.store');
 
-    // Route::get('/get-all-documents-type', [DocumentController::class, 'getAllDocumentsType'])
-    // ->name('documents.types.all');
-    //documents field (dynamic column)
-    // Route::get('/add_fields_first', [DocumentController::class, 'add_fields_first'])->name('fields.create_first_step');
     Route::post('/add_document_field', [DocumentController::class, 'add_document_field'])->name('document_fields.store');
     Route::get('/document_field/{table?}', [DocumentController::class, 'document_field'])->name('document_fields.view');
     //update dynamic document field name
@@ -98,14 +74,9 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::post('/add_document', [DocumentController::class, 'add_document'])
         ->name('documents.store');
 
-    // Route::post('/add-basic-detail-to-master-doc-data', [DocumentController::class, 'addBasicDetailToMasterDocData'])
-    //     ->name('master_documents.addBasicDetail');
     Route::get('/add_document_first', [DocumentController::class, 'add_document_first'])
         ->name('documents.add_document_first');
 
-    // Route::get('/add_document_first', [DocumentController::class, 'add_document_first'])
-    //     ->middleware('checkuserpermission:add_document_first') 
-    //     ->name('add_document_first');
 
     Route::get('/review_doc/{table}/{id}', [DocumentController::class, 'review_doc'])
         ->name('documents.review');
@@ -116,9 +87,6 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::get('/document-creation-continue', [DocumentController::class, 'documentCreationContinue'])
         ->name('documents.creation.continue');
 
-
-    // Route::get('/edit_document/{table}/{id}', [DocumentController::class, 'edit_document'])
-    //     ->name('documents.edit');
     Route::get('/edit_document_basic_detail/{id}', [DocumentController::class, 'edit_document_basic_detail'])
         ->name('documents.basic_detail.edit');
     Route::post('/update_document', [DocumentController::class, 'update_document'])
@@ -127,31 +95,28 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     //view documents
     Route::get('/filter-document', [FilterDocumentController::class, 'filterDocument'])
         ->name('documents.review');
-    // Route::get('/view_doc_first', [DocumentController::class, 'view_doc_first'])
-    // ->name('documents.view.first');
     Route::get('/documents-for-set/{setId}', [SetController::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
-
-    Route::get('/view-uploaded-documents', [DocumentController::class, 'viewUploadedDocuments'])->name('documents.viewUploadedDocuments');
+    Route::get('/view-uploaded-documents/{page?}', [DocumentController::class, 'viewUploadedDocuments'])->name('documents.viewUploadedDocuments');
     Route::delete('/documents/{filename}', [DocumentController::class, 'deleteFile'])->name('documents.delete');
     Route::post('/upload-files', [DocumentController::class, 'uploadFiles'])->name('upload.files');
 
 
     //ajax call to get the documen from doc_type
-    Route::get('/get-documents/{typeId}', [Document::class, 'getDocumentsByType'])
+    Route::get('/get-documents/{typeId}', [BulkUploadController::class, 'getDocumentsByType'])
         ->name('documents.getByType');
 
-    Route::get('/api/fetch/{type}/{id}', [Document::class, 'fetchData']);
+    Route::get('/api/fetch/{type}/{id}', [BulkUploadController::class, 'fetchData']);
 
 
     //data sets
     Route::get('/data-sets', [DocumentController::class, 'configure'])->name('configure');
 
     //bulk upload documents 
-    Route::get('/bulk-upload-master-data', [Document::class, 'bulkUploadMasterData'])
+    Route::get('/bulk-upload-master-data', [BulkUploadController::class, 'bulkUploadMasterData'])
         ->name('master_data.bulk_upload');
-    Route::post('/bulk-upload-master-document-data', [Document::class, 'bulkUploadMasterDocumentData'])
+    Route::post('/bulk-upload-master-document-data', [BulkUploadController::class, 'bulkUploadMasterDocumentData'])
         ->name('master_documents.bulk_upload');
-    Route::post('/bulk-upload-child-document-data', [Document::class, 'bulkUploadChildDocumentData'])
+    Route::post('/bulk-upload-child-document-data', [BulkUploadController::class, 'bulkUploadChildDocumentData'])
         ->name('child_documents.bulk_upload');
 
     //compliance routes
@@ -182,24 +147,18 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
 
     // Process the update form submission
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-
-    //         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    // Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
-
     Route::post('/sold-land/{id?}', [SoldLandController::class, 'storeOrUpdate'])->name('soldLand.storeOrUpdate');
-
     Route::get('/sold-land', [SoldLandController::class, 'view'])->name('soldLand.view');
     Route::get('/sold-land-actions', [SoldLandController::class, 'add'])->name('soldLand.add');
     //show single page
     Route::get('/sold-land/{soldLand}/edit', [SoldLandController::class, 'edit'])->name('soldLand.edit');
     //add sold land details
     Route::post('/add-sold-land', [SoldLandController::class, 'store'])->name('soldLand.store');
-
     //single sold land details
     Route::get('/sold-land/{soldLand}', [SoldLandController::class, 'show'])->name('soldLand.show');
     //update
     Route::post('/sold-land/{soldLand}', [SoldLandController::class, 'update'])->name('soldLand.update');
-    //add or updatebulk upload 
+    //add or update bulk upload 
     Route::post('/bulk-upload-sold-land-data', [SoldLandController::class, 'bulkUploadSoldLandData'])
         ->name('sold_land.bulk_upload');
 

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\BulkUploadService;
 
 
-class Document extends Controller
+class BulkUploadController extends Controller
 {
     protected $bulkUploadService;
 

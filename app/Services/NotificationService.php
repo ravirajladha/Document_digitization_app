@@ -4,7 +4,6 @@
 namespace App\Services;
 
 use App\Models\{Document_assignment, Alert};
-
 class NotificationService
 {
 

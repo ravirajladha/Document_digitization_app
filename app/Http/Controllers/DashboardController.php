@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Services\DashboardService;
 
 
-class Dashboard extends Controller
+class DashboardController extends Controller
 {
     protected $dashboardService;
 
@@ -18,11 +19,7 @@ class Dashboard extends Controller
         $documentCount = $this->dashboardService->getDocumentCounts();
         $getGeographicalCounts = $this->dashboardService->getGeographicalCounts();
         $getRecieverCount = $this->dashboardService->getRecieverCount();
-        
-
         $documentTypeWiseCounts = $this->dashboardService->getDocumentCountsByType();
-        // dd($documentTypeWiseCounts);
-        return view('dashboard', compact('documentCount','getRecieverCount','documentTypeWiseCounts','getGeographicalCounts'));
-
+        return view('pages.dashboard.dashboard', compact('documentCount', 'getRecieverCount', 'documentTypeWiseCounts', 'getGeographicalCounts'));
     }
 }

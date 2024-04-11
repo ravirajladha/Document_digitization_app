@@ -27,7 +27,7 @@ class ComplianceController extends Controller
         $documentTypes = Master_doc_type::orderBy('name')->get();
 
 
-        return view('pages.compliances', [
+        return view('pages.compliances.compliances', [
             'compliances' => $compliances,
             'documentTypes' => $documentTypes,
 

@@ -4,15 +4,8 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment,User};
-
-use App\Models\Doc_type;
-
-
-use Validator;
+use App\Models\{Receiver, Master_doc_data,User};
 
 class DashboardService
 {

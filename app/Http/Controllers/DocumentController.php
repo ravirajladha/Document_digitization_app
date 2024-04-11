@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use App\Services\DocumentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\Paginator;
+
 use Illuminate\Support\Facades\Auth;
 use App\Services\DocumentTableService;
 use Illuminate\Support\Facades\Schema;
@@ -38,7 +40,7 @@ class DocumentController extends Controller
         }
         // throw new \Exception("This is a test exception.");
 
-        return view('pages.document_type', ['doc_types' => $doc_types, 'doc_counts' => $doc_counts]);
+        return view('pages.documents.document_type', ['doc_types' => $doc_types, 'doc_counts' => $doc_counts]);
     }
 
     public function addDocumentType(Request $req, DocumentTableService $documentTypeService)
@@ -62,20 +64,13 @@ class DocumentController extends Controller
         }
     }
 
-
-
-
     public function add_document_first()
     {
         $doc_type = Master_doc_type::orderBy('name')->get();
         $sets = Set::get();
         $states = State::all();
-
-        return view('pages.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
+        return view('pages.documents.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
     }
-
-
-
 
     public function documentCreationContinue(Request $req)
     {
@@ -92,7 +87,7 @@ class DocumentController extends Controller
         $documentData = DB::table($tableName)->where('doc_id', $document_data->doc_id)->first();
 
         // Render the view with all the necessary data
-        return view('pages.document-creation-continue', [
+        return view('pages.documents.document-creation-continue', [
             'columnMetadata' => $columnMetadata,
             'documentData' => $documentData,
             'table_name' => $tableName,
@@ -101,7 +96,6 @@ class DocumentController extends Controller
 
         ]);
     }
-
 
     public function add_document(Request $req)
     {
@@ -198,7 +192,7 @@ class DocumentController extends Controller
             $updateDataMaster['rejection_timestamp'] = now(); // Set the current timestamp
         }
         // dd($message);
-        if ($status == 2 && !empty($message)) {
+        if (($status == 2 || $status == 3)  && !empty($message)) {
             // Update with hold reason if provided
             $updateDataMaster['rejection_message'] = $message;
         }
@@ -223,7 +217,6 @@ class DocumentController extends Controller
         ];
 
         DocumentStatusLog::create($logData);
-
 
         session()->flash('toastr', ['type' => 'success', 'message' => 'Document status updated successfully']);
 
@@ -251,21 +244,10 @@ class DocumentController extends Controller
 
 
         return $this->documentCreationContinue(new Request([
-            // 'columns' => $columns,
-            // 'document' => $document,
             'table_name' => $result['table_name'],
             'id' => $result['id'],
             'document_data' => $result['document_data'],
         ]));
-
-
-        // // Convert array to request for documentCreationContinue method
-        // $redirectRequest = Request::create(route('your.route.name'), 'POST', $redirectData);
-
-        // // Perform the redirection
-        // return $this->documentCreationContinue($redirectRequest);
-
-        // Handle the success case
     }
 
     public function updateFirstDocumentData(Request $req, $doc_id, DocumentService $documentService)
@@ -278,19 +260,14 @@ class DocumentController extends Controller
 
         session()->flash('toastr', ['type' => 'success', 'message' => 'Please fill the other details.']);
 
-        // dd($result['status']);
-        // Prepare data for the redirection
         $redirectData = [
             'table_name' => $result['table_name'],
             'id' => $result['id'],
             'document_data' => $result['document_data'],
-            // Add other data as needed
         ];
 
 
         return $this->documentCreationContinue(new Request([
-            // 'columns' => $columns,
-            // 'document' => $document,
             'table_name' => $result['table_name'],
             'id' => $result['id'],
             'document_data' => $result['document_data'],
@@ -300,7 +277,6 @@ class DocumentController extends Controller
     public function view_doc_first()
     {
         $doc_type = Master_doc_type::get();
-
         return view('pages.view_doc_first', ['doc_type' => $doc_type]);
     }
 
@@ -318,9 +294,7 @@ class DocumentController extends Controller
         $columnDetails = Table_metadata::where('table_name', $tableName)
             ->orderBy('column_name')->get(['column_name', 'data_type']);
 
-        // dd($columnDetails);
-        // Pass the column details to the view instead of the direct schema columns
-        return view('pages.document_field', [
+        return view('pages.documents.document_field', [
             'tableName' => $tableName,
             'columnDetails' => $columnDetails,
         ]);
@@ -423,7 +397,6 @@ class DocumentController extends Controller
 
             // Rename the column outside of transaction due to possible implicit commit
             DB::statement("ALTER TABLE `$tableName` CHANGE `$oldColumnName` `$newColumnName` $columnType");
-
             // Log::info('Starting transaction for table ' . $tableName);
             DB::beginTransaction();
 
@@ -490,8 +463,6 @@ class DocumentController extends Controller
 
         // Rename the column
 
-
-
         try {
             DB::beginTransaction();
 
@@ -512,9 +483,6 @@ class DocumentController extends Controller
 
             return back()->with('success', 'Field name updated successfully.');
         } catch (\Exception $e) {
-
-
-
 
 
             // Log the error or handle it as per your application's error handling policies
@@ -550,14 +518,13 @@ class DocumentController extends Controller
         $states = State::all();
         $sets = Set::all();
 
-        return view('pages.edit_document_first', [
+        return view('pages.documents.edit_document_first', [
             'doc_type' => $doc_type,
             'document' => $document,
             'sets' => $sets,
             'states' => $states
         ]);
     }
-
     public function review_doc($table, $id)
     {
         $tableName = $table;
@@ -571,10 +538,10 @@ class DocumentController extends Controller
         // dd($document);
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
         $document_logs = DocumentStatusLog::where("document_id", $document->doc_id)
-        ->join('users', 'document_status_logs.created_by', '=', 'users.id')
-        ->select('document_status_logs.*', 'users.name as creator_name')
-        ->get();
-    
+            ->join('users', 'document_status_logs.created_by', '=', 'users.id')
+            ->select('document_status_logs.*', 'users.name as creator_name')
+            ->get();
+
         // dd($get_document_logs);
         // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
@@ -608,7 +575,7 @@ class DocumentController extends Controller
         $compliances = Compliance::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
             ->get();
 
-        return view('pages.review_doc', [
+        return view('pages.documents.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,
             'tableName' => $tableName,
@@ -629,16 +596,16 @@ class DocumentController extends Controller
             'receiver_type_count' => $receiver_type_count,
         ];
         return view('pages.data-sets.data-sets', $data);
- 
     }
 
-   
-        public function viewUploadedDocuments()
+
+    public function viewUploadedDocuments()
     {
         $basePath = base_path();
-
-    // Construct the path to the public/uploads directory relative to the base path
-    $uploadsPath = $basePath . '/public/uploads/documents';
+        // dd($basePath);
+        // Construct the path to the public/uploads directory relative to the base path
+        // $basePath = '/home4/kodstecu/ahobila.kods.app';
+        // $uploadsPath = $basePath . '/uploads/documents';
         // Get the path to the public/uploads directory
         $uploadsPath = public_path('uploads/documents');
 
@@ -652,16 +619,16 @@ class DocumentController extends Controller
 
         // Initialize an array to store file information
         $fileInfoList = [];
-// dd($documents);
+        // dd($documents);
         // Iterate over each file to extract information
         foreach ($documents as $file) {
             // Get the file name
             $filename = $file->getFilename();
-            
+
             // Get the file size
             $size = $file->getSize();
             $extension = $file->getExtension();
-            
+
             // Get the last modified time (uploaded date)
             $uploadedDate = $file->getMTime();
 
@@ -670,14 +637,13 @@ class DocumentController extends Controller
                 'name' => $filename,
                 'size' => $size,
                 'extension' => $extension,
-                'uploaded_date' => date('Y-m-d H:i:s', $uploadedDate) // Format the date as needed
+                'uploaded_date' => date('H:i:s m-d-Y', $uploadedDate) // Format the date as needed
             ];
         }
-        // dd($fileInfoList);
-        return view('pages.uploaded-documents', compact('fileInfoList'));
+
+        return view('pages.documents.uploaded-documents', compact('fileInfoList'));
     }
 
-    
     public function deleteFile($filename)
     {
         $filePath = public_path('uploads/documents/' . $filename);
@@ -689,8 +655,8 @@ class DocumentController extends Controller
 
         return redirect()->back()->with('error', 'File not found.');
     }
- 
-    
+
+
     public function uploadFiles(Request $request)
     {
         // Validate the uploaded files
@@ -703,12 +669,12 @@ class DocumentController extends Controller
             $file_paths = [];
             foreach ($request->file('files') as $file) {
                 $originalFilename = $file->getClientOriginalName(); // Get the original filename
-                $path = $file->move(public_path('uploads/documents'), $originalFilename); // Store the file in the specified directory
+                $path = $file->move('uploads/documents', $originalFilename); // Store the file in the specified directory
                 $file_paths[] = $path;
             }
-    
+
             // Optionally, you can save the file paths to a database or perform additional processing here
-    
+
             // Return a success response
             session()->flash('toastr', ['type' => 'success', 'message' => 'Document uploaded successfully']);
             return response()->json(['message' => 'Files uploaded successfully', 'file_paths' => $file_paths], 200);
@@ -716,17 +682,4 @@ class DocumentController extends Controller
         // Return an error response if no files were uploaded
         return response()->json(['message' => 'No files uploaded'], 400);
     }
-
 }
-
-
-// if ($request->hasFile('files')) {
-//     $file_paths = [];
-//     foreach ($request->file('files') as $file) {
-//         // Get the original filename
-//         $originalFilename = $file->getClientOriginalName();
-//         // Save the file with its original filename, overwriting if it already exists
-//         $path = $file->store('uploads/documents', $originalFilename, 'public');
-//         // Add the file path to the list
-//         $file_paths[] = $path;
-//     }

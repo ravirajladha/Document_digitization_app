@@ -69,7 +69,7 @@ class ReceiverController extends Controller
         $receiverTypes = Receiver_type::all();
         $documentTypes = Master_doc_type::orderBy('name')->get();
 
-        return view('pages.receivers', [
+        return view('pages.receivers.receivers', [
             'data' => $data,
             'receiverTypes' => $receiverTypes,
             'documentTypes' => $documentTypes

@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <!-- PAGE TITLE HERE -->
-    <title>Sri Ahobila Mutt</title>
+   
+
+    <title>
+        <x-page-title /> - Sri Ahobila Mutt
+    </title>
+       <!-- Other meta tags and scripts -->
     {{-- <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title> --}}
     {{-- <script src="{{ mix('js/app.js') }}"></script> --}}
     <script src="../../js/app.js"></script>
@@ -15,7 +19,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta name="keywords"
-        content="Admin, admin dashboard, admin template, analytics, bootstrap, bootstrap5, bootstrap 5 admin template, modern, responsive admin dashboard, sales dashboard, sass, ui kit, web app, Fillow SaaS, User Interface (UI), User Experience (UX), Dashboard Design, SaaS Application, Web Application, Data Visualization, Analytics, Customization, Responsive Design, Bootstrap Framework, Charts and Graphs, Data Management, Reporting, Dark Mode, Mobile-Friendly, Dashboard Components, Integrations, Analytics Dashboard, API Integration, User Authentication">
+        content="Documents management software">
 
 
     <meta name="description" content="Digitization Document Software">
@@ -59,6 +63,7 @@
         </div>
         <div id="main-wrapper">
             <main>
+                {{-- {{ dd($pageTitle) }} --}}
                 {{ $slot }}
             </main>
         </div>
@@ -71,7 +76,7 @@
     <script src="/assets/vendor/counter/counter.min.js"></script>
     <script src="/assets/vendor/counter/waypoint.min.js"></script>
     <!-- Apex Chart -->
-    {{-- <script src="/assets/vendor/apexchart/apexchart.js"></script> --}}
+    <script src="/assets/vendor/apexchart/apexchart.js"></script>
     <script src="/assets/vendor/chart-js/chart.bundle.min.js"></script>
     <!-- Chart piety plugin files -->
     <script src="/assets/vendor/peity/jquery.peity.min.js"></script>
@@ -92,7 +97,6 @@
     <script src="/assets/js/plugins-init/toastr-init.js"></script>
     <script src="/assets/vendor/select2/js/select2.full.min.js"></script>
     <script src="/assets/js/plugins-init/select2-init.js"></script>
-
 
     <script>
         // Check for session messages

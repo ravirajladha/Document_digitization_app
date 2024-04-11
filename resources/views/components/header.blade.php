@@ -24,7 +24,11 @@ $user = Auth::user();
             <div class="collapse navbar-collapse justify-content-between">
                 <div class="header-left">
                     <div class="dashboard_bar">
-                        {{ $pageName }}
+                    
+                   
+                            <x-page-title />
+                    
+
                     </div>
                 </div>
                 <style>
