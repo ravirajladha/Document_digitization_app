@@ -14,7 +14,7 @@
         <tbody style="padding:0px 30px; display: block;">
             <tr>
                 <td style="padding: 56px 0 24px 26px;height:110px;" >
-                    <img src="https://ahobila.kods.app/assets/logo/logo.jpg">
+                    <img src="{{ getProjectLogo() }}">
                 </td>
             </tr>
             <tr>
@@ -26,7 +26,7 @@
             <tr>
                 <td
                     style="padding:1px 24px 22px; color:#606060; font-size:14px; font-family:  Arial; line-height: 1.5;">
-                    You have requested to access a document provided by Sri Ahobila Mutt.<br />
+                    You have requested to access a document provided by {{ getProjectName() }}.<br />
                     A One-Time Password (OTP) has been generated. This OTP is time and case sensitive and valid
                     for single user access.<br>
                     {{-- This OTP is time sensitive and valid for 10 minutes. --}}
@@ -65,7 +65,7 @@
         <tr>
             <td
                 style="padding:28px 0 0; color: #606060; font-family:  Arial; font-size: 12px; background-color: #e7e7e7;">
-                &copy; Sri Ahobila Mutt. All Rights Reserved<br><br>
+                &copy; {{ getProjectName() }}. All Rights Reserved<br><br>
                 The content of this message, together with any attachments, are intended only for the use of the
                 person(s) to which they are addressed and may contain confidential and/or privileged information.
                 Further, any information herein is confidential and protected by law. It is unlawful for unauthorized

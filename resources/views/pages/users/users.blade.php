@@ -514,6 +514,17 @@
                                                                 <td></td>
                                                                 <td></td>
                                                             </tr>
+                                                            <tr>
+                                                                <td class="module-name">Application Settings
+                                                                </td>
+                                                                <td></td>
+                                                                <td>
+
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Project Settings') @endphp
+                                                                </td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
 
                                                             </tr>
 
@@ -612,10 +623,13 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
 
                                                         <!-- Assuming you have a relation to get the receiver type name -->
                                                         <td>
+                                                            <a href="{{ route('users.show_reviewed_documents_users', $item->id) }}">
+                                                                <button class="btn btn-secondary btn-sm edit-btn">
+                                                                    View</button></a>
                                                             <a href="{{ route('users.edit', $item->id) }}">
                                                                 <button class="btn btn-primary btn-sm edit-btn">
                                                                     <i
-                                                                        class="fas fa-pencil-square"></i>&nbsp;Edit</button></a>
+                                                                        class="fas fa-pencil-square"></i>&nbsp;</button></a>
                                                         </td>
 
 

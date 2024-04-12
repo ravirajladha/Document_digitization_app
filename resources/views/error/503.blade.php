@@ -4,8 +4,7 @@
 
 <head>
     <!-- PAGE TITLE HERE -->
-    <title>Sri Ahobila Mutt</title>
-    {{-- <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title> --}}
+    <title>{{ getProjectName() }}</title>
 
 
     <meta charset="utf-8">
@@ -36,7 +35,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
-    <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
+    <link rel="shortcut icon" type="image/png" href="{{ getProjectLogo() }}">
     <link href="vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     

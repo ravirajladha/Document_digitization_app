@@ -44,7 +44,7 @@
                     <div class="card mb-0 h-auto">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                <a href="index.html"><img class="logo-auth" src="https://ahobila.kods.app/assets/logo/logo.jpg" alt="" style="width:100px;"></a>
+                                <a href="index.html"><img class="logo-auth" src="{{ getProjectLogo() }}" alt="" style="width:100px;"></a>
                             </div>
                             <h4 class="text-center mb-4">OTP Verification</h4>
                             <p>Hello,  {{ $receiverName }}</p>

@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Carbon;
+
+
 use Illuminate\Validation\Rule;
-
-
 use Illuminate\Validation\Rules;
-use App\Models\{User, Permission};
 
+use App\Models\DocumentStatusLog;
+use App\Models\{User, Permission};
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 
@@ -22,7 +25,7 @@ class UserController extends Controller
         if ($userId) {
             $editUser = User::with('permissions')->findOrFail($userId);
         }
-// dd($editUser);
+        // dd($editUser);
         $users = User::where('type', "user")
             ->orderBy('created_at', 'desc')
             ->get();
@@ -35,6 +38,86 @@ class UserController extends Controller
             'users' => $users,
             'permissions' => $permissions,
             'editUser' => $editUser, // Pass the user to be edited, if any
+        ]);
+    }
+
+    public function showReviewedDocumentsUsers($id)
+    {
+        $user_detail = User::find($id);
+      
+        // Check if the user exists
+        if (!$user_detail) {
+            // Handle the case where the user doesn't exist
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+
+        // Get the counts for each status type for all documents
+        $today = Carbon::now()->toDateString();
+
+        // Get all distinct dates when document status was changed for the user
+        $changedDates = DocumentStatusLog::where('created_by', $id)
+            ->selectRaw('DATE(created_at) as date')
+            ->distinct()
+            ->pluck('date');
+
+        // Initialize an array to store the data
+        $data = [];
+
+        // Loop through each date
+        foreach ($changedDates as $date) {
+            $formattedDate = date('d/m/Y', strtotime($date));
+            // Get the count of each status type for the current date
+            $counts = DocumentStatusLog::where('created_by', $id)
+                ->whereDate('created_at', $date)
+                ->selectRaw('status, COUNT(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status');
+
+            // Initialize an array to store the counts for each status type
+            $statusCounts = [
+                'Pending' => $counts[0] ?? 0,
+                'Approved' => $counts[1] ?? 0,
+                'Hold' => $counts[2] ?? 0,
+                'Reviewer Feedback' => $counts[3] ?? 0,
+                'Total' => ($counts[0] ?? 0) + ($counts[1] ?? 0) + ($counts[2] ?? 0) + ($counts[3] ?? 0),
+            ];
+
+            // Add the counts to the data array
+            $data[$formattedDate] = $statusCounts;
+        }
+
+        // Get the total counts for each status type
+        $totalCounts = DocumentStatusLog::where('created_by', $id)
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        // Initialize an array to store the total counts
+        $totalStatusCounts = [
+            'Pending' => $totalCounts[0] ?? 0,
+            'Approved' => $totalCounts[1] ?? 0,
+            'Hold' => $totalCounts[2] ?? 0,
+            'Reviewer Feedback' => $totalCounts[3] ?? 0,
+            'Total' => ($totalCounts[0] ?? 0) + ($totalCounts[1] ?? 0) + ($totalCounts[2] ?? 0) + ($totalCounts[3] ?? 0),
+
+        ];
+
+        // Add the total counts to the data array
+        $data['Total'] = $totalStatusCounts;
+
+        // Get the counts for each status type for documents approved today
+        $todayCounts = DocumentStatusLog::where('created_by', $id)
+            ->whereDate('created_at', $today)
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+        //dd($data, $todayCounts);
+        // Return the view with the counts
+        return view('pages.users.reviewed-documents', [
+            'data' => $data,
+            'todayCounts' => $todayCounts,
+            'user_detail' => $user_detail,
         ]);
     }
 
@@ -67,7 +150,7 @@ class UserController extends Controller
         // return redirect()->route('users.index')->with('success', 'User created successfully.');
         try {
             // Attempt to assign permissions
-           
+
             $assign_permission = $this->assignPermissions($permissionNames, $user->id);
             session()->flash('toastr', ['type' => 'success', 'message' => 'User created successfully.']);
 
@@ -96,7 +179,7 @@ class UserController extends Controller
                     'string',
                     'email',
                     'max:255',
-                    
+
                     Rule::unique(User::class)->ignore($user->id),
                 ],
                 'password' => [
@@ -106,7 +189,7 @@ class UserController extends Controller
                     'max:20',
                     'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
                 ],
-            'status' => 'required|in:0,1',
+                'status' => 'required|in:0,1',
 
                 // Validate password if it's filled, and ensure it matches the confirmation and meets length requirements
                 // 'password' => [
@@ -140,7 +223,6 @@ class UserController extends Controller
 
             $user->save();
             session()->flash('toastr', ['type' => 'success', 'message' => 'User updated successfully.']);
-
         } catch (\Illuminate\Validation\ValidationException $exception) {
             // Redirect to the edit route with the input except the password and with errors
             return redirect()->route('users.edit', ['user' => $id])
@@ -152,34 +234,32 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
     public function assignPermissions($permissionNames, $userId)
-{
-    // dd($permissionNames,$userId);
-    $user = User::findOrFail($userId);
+    {
+        // dd($permissionNames,$userId);
+        $user = User::findOrFail($userId);
 
-    DB::beginTransaction();
-    try {
-        // Remove any existing permissions
-        $user->permissions()->detach();
+        DB::beginTransaction();
+        try {
+            // Remove any existing permissions
+            $user->permissions()->detach();
 
-        // Get the permissions by display_name
-        $permissions = Permission::whereIn('display_name', $permissionNames)->get(['display_name']);
-        // Check if the permissions were found
-        if ($permissions->count() !== count($permissionNames)) {
-            throw new \Exception("One or more permissions could not be found.");
+            // Get the permissions by display_name
+            $permissions = Permission::whereIn('display_name', $permissionNames)->get(['display_name']);
+            // Check if the permissions were found
+            if ($permissions->count() !== count($permissionNames)) {
+                throw new \Exception("One or more permissions could not be found.");
+            }
+
+            // Attach the new permissions using their display names
+            foreach ($permissions as $permission) {
+                $user->permissions()->attach($permission->display_name);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            report($th); // Make sure to log the exception
+            throw $th;
         }
-
-        // Attach the new permissions using their display names
-        foreach ($permissions as $permission) {
-            $user->permissions()->attach($permission->display_name);
-        }
-
-        DB::commit();
-    } catch (\Throwable $th) {
-        DB::rollBack();
-        report($th); // Make sure to log the exception
-        throw $th;
     }
-}
-
-
 }

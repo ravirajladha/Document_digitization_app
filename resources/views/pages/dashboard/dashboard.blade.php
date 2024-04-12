@@ -242,7 +242,63 @@
                                                 </div>
                                             </div>
                                         </div>
+                                      
+                                   
 
+                                        <div class="col-xl-12 col-xxl-12 col-lg-12">
+                                            <div class="card border-0 pb-0">
+                                                <div class="card-header border-0 pb-0">
+                                                    <h4 class="card-title">Users</h4>
+                                                </div>
+                                                <div class="card-body p-0"> 
+                                                    <div id="DZ_W_Todo3" class="widget-media p-4 dlab-scroll height370">
+                                                        <ul class="timeline">
+                                                            @foreach($users as $user)
+                                                                <li>
+                                                                    <div class="timeline-panel">
+                                                                        <div class="media me-2">
+                                                                            <img alt="image" width="50" src="/assets/images/avatar/avatar.jpg">
+                                                                        </div>
+                                                                        <div class="media-body">
+                                                                            <h5 class="mb-1">{{ $user->name }} <small class="text-muted"> <a href="/users/{{ $user->id }}/reviewed-documents" class="btn btn-primary btn-xxs shadow">  <i class="fa fa-eye"></i></a></small></h5>
+
+                                                                            <div class="row">
+                                                                                <div class="col-3 pt-3 pb-3 border-end">
+                                                                                    <h3 class="mb-1">
+                                                                                        {{ $user->todayCounts['Pending'] }}</h3>
+                                                                                    <span>Pending</span>
+                                                                                </div>
+                                                                                <div class="col-3 pt-3 pb-3 border-end">
+                                                                                    <h3 class="mb-1">
+                                                                                        {{ $user->todayCounts['Approved'] }}</h3>
+                                                                                    <span>Approved</span>
+                                                                                </div>
+                                                                                <div class="col-3 pt-3 pb-3">
+                                                                                    <h3 class="mb-1">
+                                                                                        {{ $user->todayCounts['Hold'] }}</h3>
+                                                                                    <span>Hold</span>
+                                                                                </div>
+                                                                                <div class="col-3 pt-3 pb-3">
+                                                                                    <h3 class="mb-1">
+                                                                                        {{ $user->todayCounts['Reviewer Feedback'] }}</h3>
+                                                                                    <span>Reviewer Feedback</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            
+                                                                           
+                                                                           
+                                                                        </div>
+                                                                       
+                                                                    </div>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
 
                                     </div>
 

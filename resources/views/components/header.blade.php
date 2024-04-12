@@ -5,11 +5,9 @@ $user = Auth::user();
 
 <div class="nav-header">
     <a href="/dashboard" class="brand-logo">
-		<img class="logo-abbr" width="100%" height="55" src="/assets/logo/logo.jpg" alt="Your Logo">
-
-        {{-- <div class="brand-title">
-		<span width="106" height="47">Sri Ahobila Mutt</span>
-        </div> --}}
+		<img class="logo-abbr" width="100%" height="55" src="{{ getProjectLogo() }}" alt="{{ getProjectName() }} Logo">
+    
+      
     </a>
     <div class="nav-control">
         <div class="hamburger">

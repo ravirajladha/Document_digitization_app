@@ -3,8 +3,10 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Carbon;
+use App\Models\DocumentStatusLog;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Models\{Receiver, Master_doc_data,User};
 
 class DashboardService
@@ -119,5 +121,47 @@ class DashboardService
             'totalAreaAcre' => $totalAreaAcre,
             'totalAreaFeet' => $totalAreaFeet
         ];
+    }
+
+
+    public function getUsersWithTodayCounts()
+    {
+        // Get today's date
+        $today = Carbon::now()->toDateString();
+
+        // Get all users
+        $users = User::all();
+
+        // Initialize an array to store users with today's counts
+        $usersWithCounts = [];
+
+        // Loop through each user
+        foreach ($users as $user) {
+            // Get the today's count for each status type for the current user
+            $todayCounts = DocumentStatusLog::where('created_by', $user->id)
+                ->whereDate('created_at', $today)
+                ->selectRaw('status, COUNT(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
+
+            // Calculate total count for today
+            $totalTodayCount = array_sum($todayCounts);
+
+            // Add the today's counts to the user's data
+            $user->todayCounts = [
+                'Pending' => $todayCounts[0] ?? 0,
+                'Approved' => $todayCounts[1] ?? 0,
+                'Hold' => $todayCounts[2] ?? 0,
+                'Reviewer Feedback' => $todayCounts[3] ?? 0,
+                'Total' => $totalTodayCount,
+            ];
+
+            // Add the user to the array
+            $usersWithCounts[] = $user;
+        }
+
+   //     dd($usersWithCounts);
+        return $usersWithCounts;
     }
 }

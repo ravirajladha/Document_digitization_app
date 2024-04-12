@@ -55,7 +55,7 @@
         <tbody style="padding:0px 10px; display: block;">
             <tr>
                 <td style="padding: 56px 0 24px 26px;height:75px;text-align: center;">
-                    <img src="https://ahobila.kods.app/assets/logo/logo.jpg" style="height:100px;width:55%;">
+                    <img src="{{ getProjectLogo() }}" style="height:100px;width:55%;">
                 </td>
             </tr>
             <tr>
@@ -79,7 +79,7 @@
             <tr>
                 <td
                     style="padding:1px 24px 22px; color:#606060; font-size:14px; font-family:  Arial; line-height: 1.5;">
-                    You have requested to access a document provided by Sri Ahobila Mutt.<br />
+                    You have requested to access a document provided by {{ getProjectName() }}.<br />
                     A One-Time Password (OTP) has been generated. This OTP is time and case sensitive and valid time
                     sensitive and valid for 24 hours.<br>
                     {{-- This OTP is time sensitive and valid for 10 minutes. --}}
@@ -124,7 +124,7 @@
                                 style="border-collapse: collapse; border: 0; margin: 0; padding: 20px; -webkit-text-size-adjust: none; color: #555559; font-family: Arial, sans-serif; font-size: 12px; line-height: 16px; vertical-align: middle; text-align: left; width: 580px;">
                                 <div id="address" class="mktEditable">
                                     Warm regards,<br>
-                                    <b>Sri Ahobila Mutt</b> <br> 8-A, 1st St, East Tambaram, Tambaram, Chennai, Tamil Nadu 600059<br>
+                                    <b>{{ getProjectName() }}</b> <br> 8-A, 1st St, East Tambaram, Tambaram, Chennai, Tamil Nadu 600059<br>
                                     {{-- <a style="color: #00a5b5;" href="https://www.ahobila.kods.app">Contact Us</a> --}}
                                 </div>
                             </td>
@@ -137,7 +137,7 @@
         <tr>
             <td
                 style="padding:28px 0 0; color: #606060; font-family:  Arial; font-size: 12px; background-color: #e7e7e7;">
-                &copy; Sri Ahobila Mutt. All Rights Reserved<br><br>
+                &copy; {{ getProjectName() }}. All Rights Reserved<br><br>
                 The content of this message, together with any attachments, are intended only for the use of the
                 person(s) to which they are addressed and may contain confidential and/or privileged information.
                 Further, any information herein is confidential and protected by law. It is unlawful for unauthorized

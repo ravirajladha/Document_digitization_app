@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <!-- PAGE TITLE HERE -->
-   
+
 
     <title>
-        <x-page-title /> - Sri Ahobila Mutt
+        <x-page-title /> - {{ getProjectName() }}
     </title>
-       <!-- Other meta tags and scripts -->
-    {{-- <title>{{ config('app.name', 'Sri Ahobila Mutt') }}</title> --}}
-    {{-- <script src="{{ mix('js/app.js') }}"></script> --}}
     <script src="../../js/app.js"></script>
 
     <meta charset="utf-8">
@@ -18,8 +16,7 @@
     <meta name="robots" content="index, follow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <meta name="keywords"
-        content="Documents management software">
+    <meta name="keywords" content="Documents management software">
 
 
     <meta name="description" content="Digitization Document Software">
@@ -39,7 +36,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
-    <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
+    <link rel="shortcut icon" type="image/png" href="{{ getProjectFavicon() }}">
 
 
     <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">
@@ -68,7 +65,7 @@
             </main>
         </div>
     </div>
-   
+
     <script src="/assets/vendor/global/global.min.js"></script>
     <script src="/assets/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
 

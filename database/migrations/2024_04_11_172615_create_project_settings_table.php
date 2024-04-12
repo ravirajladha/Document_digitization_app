@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('project_settings', function (Blueprint $table) {
             $table->id();
+            $table->string('project_name');
+            $table->string('favicon');
+            $table->string('logo');
             $table->timestamps();
         });
     }
 
-    /**
+    /**php
      * Reverse the migrations.
      */
     public function down(): void

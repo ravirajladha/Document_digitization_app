@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController};
+use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController, ProjectSettingsController};
 use Illuminate\Support\Facades\Route;
 
 
@@ -79,7 +79,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
 
 
     Route::get('/review_doc/{table}/{id}', [DocumentController::class, 'review_doc'])
-        ->name('documents.review');
+        ->name('documents.review1');
     Route::post('/add-document-data', [DocumentController::class, 'add_document_data'])
         ->name('documents.data.add');
     Route::put('/update-first-document-data/{id}', [DocumentController::class, 'updateFirstDocumentData'])
@@ -138,6 +138,8 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     //useres//subadmin
     Route::get('/users', [UserController::class, 'showUsers'])
         ->name('users.index');
+    Route::get('/users/{id}/reviewed-documents', [UserController::class, 'showReviewedDocumentsUsers'])
+        ->name('users.show_reviewed_documents_users');
 
     Route::post('/register-user', [UserController::class, 'store'])
         ->name('users.store');
@@ -161,6 +163,9 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     //add or update bulk upload 
     Route::post('/bulk-upload-sold-land-data', [SoldLandController::class, 'bulkUploadSoldLandData'])
         ->name('sold_land.bulk_upload');
+    //Project settings
+    Route::get('/project-settings/edit', [ProjectSettingsController::class, 'edit'])->name('project-settings.edit');
+    Route::put('/project-settings', [ProjectSettingsController::class, 'update'])->name('project-settings.update');
 
 
     Route::get('/action-logs', [LogController::class, 'actionLogsIndex'])->name('logs.action-logs');
