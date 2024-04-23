@@ -132,7 +132,9 @@ class ReceiverProcessController extends Controller
             } else {
                 // If receiver_id is a part of the request, you can get it like this:
                 $receiverId = $request->input('receiver_id');
-                return redirect('/user-assign-documents/' . $receiverId);
+               // return redirect('/user-assign-documents/' . $receiverId);
+            return redirect()->back()->with('success', 'File deleted successfully.');
+
             }
         } else {
             // Handle the case where the assignment was not created
@@ -142,7 +144,9 @@ class ReceiverProcessController extends Controller
             } else {
                 // If receiver_id is a part of the request, you can get it like this:
                 $receiverId = $request->input('receiver_id');
-                return redirect('/user-assign-documents/' . $receiverId);
+            return redirect()->back()->with('success', 'File deleted successfully.');
+
+               // return redirect('/user-assign-documents/' . $receiverId);
             }
         }
     }

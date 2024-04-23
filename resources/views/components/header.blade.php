@@ -5,7 +5,7 @@ $user = Auth::user();
 
 <div class="nav-header">
     <a href="/dashboard" class="brand-logo">
-		<img class="logo-abbr" width="100%" height="55" src="{{ getProjectLogo() }}" alt="{{ getProjectName() }} Logo">
+		<img class="logo-abbr" width="100%" height="55" src="/assets/logo/logo.jpg" alt="Sri Ahobila Mutt Logo">
     
       
     </a>

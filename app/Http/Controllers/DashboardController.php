@@ -21,7 +21,9 @@ class DashboardController extends Controller
         $getRecieverCount = $this->dashboardService->getRecieverCount();
         $documentTypeWiseCounts = $this->dashboardService->getDocumentCountsByType();
         $users = $this->dashboardService->getUsersWithTodayCounts();
+        $getCategoryDocumentCounts = $this->dashboardService->getCategoryDocumentCounts();
+        // dd($getCategoryDocumentCounts);
 //        dd($users);
-        return view('pages.dashboard.dashboard', compact('documentCount', 'getRecieverCount', 'documentTypeWiseCounts', 'getGeographicalCounts','users'));
+        return view('pages.dashboard.dashboard', compact('documentCount', 'getRecieverCount', 'documentTypeWiseCounts', 'getGeographicalCounts','users','getCategoryDocumentCounts'));
     }
 }

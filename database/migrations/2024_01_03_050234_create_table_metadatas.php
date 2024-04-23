@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('position')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
+            $table->boolean('special')->default(0);
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

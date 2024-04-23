@@ -39,7 +39,19 @@
                                 <form action="{{ url('/') }}/filter-document" method="GET">
                                     @csrf
                                     <div class="row">
-                                        <div class="mb-3 col-md-12">
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label">Select Category </label>
+                                            <select id="single-select-abc1" class="form-select form-control" style="width:100%;" name="category">
+                                                <option value="" selected>Select Category</option>
+                                                @foreach ($categories as $category)
+                                                    <option value="{{ $category }}" {{ old('category') == $category ? 'selected' : '' }}>
+                                                        {{ ucwords(str_replace('_', ' ', $category)) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3 col-md-6">
                                             <label class="form-label">Select Document Type </label>
                                             <select id="single-select-abc1" class="form-select form-control"
                                                 style="width:100%;" name="type">
@@ -107,7 +119,7 @@
                                             class="form-range">
                                         <output>{{ old('number_of_pages') !== null ? old('number_of_pages') : 'null' }}</output>
                                     </div> --}}
-                                        <div class="mb-3 col-md-3">
+                                        <div class="mb-3 col-md-4">
                                             <label class="form-label">Document Date (Start)</label>
                                             <div class="input-hasicon">
                                                 <input name="start_date" type="date" class="form-control  solid"
@@ -115,7 +127,7 @@
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
-                                        <div class="mb-3 col-md-3">
+                                        <div class="mb-3 col-md-4">
                                             <label class="form-label">Document Date (End)</label>
                                             <div class="input-hasicon">
                                                 <input name="end_date" type="date" class="form-control  solid"
@@ -123,51 +135,55 @@
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
-                                        <div class="mb-3 col-md-6">
+                                        <div class="mb-3 col-md-4">
                                             <label class="form-label">Locker Number</label>
                                             <input type="number" name="locker_no" class="form-control"
                                                 placeholder="Enter Locker Number" value="{{ old('locker_no') }}">
                                         </div>
-                                        <div class="mb-3 col-md-3 col-xl-3">
+                                        <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Minimum Area Size</label>
-
-
                                             <input name="area_range_start" class="form-control"
                                                 placeholder="Enter Minimum Area Size" type="number"
                                                 value="{{ old('area_range_start') }}">
-
-
-
                                         </div>
-                                        <div class="mb-3 col-md-3 col-xl-3">
+                                        <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Maximum Area Size</label>
                                             <input name="area_range_end" class="form-control"
                                                 placeholder="Enter Maximum Area Size" type="number"
                                                 value="{{ old('area_range_end') }}">
                                         </div>
-                                        <div class="mb-3 col-md-6 col-xl-6">
-
-
+                                        <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Select Area Unit (Optional)</label>
                                             <select class="form-control" id="area-unit-dropdown" name="area_unit">
                                                 <option value="">Select Unit</option>
-                                                {{-- <option value="Acres" {{ old('area_unit') == 1 ? 'selected' : '' }}>
-                                                    Acres and Cents</option>
-                                                <option value="Square Feet" {{ old('area_unit') == 2 ? 'selected' : '' }}>
-                                                    Square Feet</option> --}}
-
-
-
                                                 <option value="Acres"
                                                     {{ request()->input('area_unit') == 'Acres' ? 'selected' : '' }}>
                                                     Acres and Cents</option>
                                                 <option value="Square Feet"
                                                     {{ request()->input('area_unit') == 'Square Feet' ? 'selected' : '' }}>
                                                     Square Feet</option>
-
-
                                             </select>
                                         </div>
+                                        <div class="mb-3 col-md-4 col-xl-4">
+                                            <label class="form-label">Court Case</label>
+                                            <input name="court_case_no" class="form-control"
+                                                placeholder="Enter Court Case Details" type="number"
+                                                value="{{ old('court_case_no') }}">
+                                        </div>
+                                        <div class="mb-3 col-md-4 col-xl-4">
+                                            <label class="form-label">Document No</label>
+                                            <input name="doc_no" class="form-control"
+                                                placeholder="Enter Document Number" type="number"
+                                                value="{{ old('doc_no') }}">
+                                        </div>
+                                        <div class="mb-3 col-md-4 col-xl-4">
+                                            <label class="form-label">Survey No</label>
+                                            <input name="survey_no" class="form-control"
+                                                placeholder="Enter Survey Number" type="number"
+                                                value="{{ old('survey_no') }}">
+                                        </div>
+                                       
+                                       
                                     </div>
 
 

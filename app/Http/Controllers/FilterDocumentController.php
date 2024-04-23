@@ -29,7 +29,19 @@ class FilterDocumentController extends Controller
         $area_range_start = $request->input('area_range_start');
         $area_range_end = $request->input('area_range_end');
         $area_unit = $request->input('area_unit');
+        $court_case_no = $request->input('court_case_no');
+        $doc_no = $request->input('doc_no');
+        $survey_no = $request->input('survey_no');
+        $category = $request->input('category');
         $request->flash();
+
+        $categories = Master_doc_data::pluck('category')
+    ->reject(function ($value) {
+        return empty($value);
+    })
+    ->unique()
+    ->values();
+
 
         $states = Master_doc_data::pluck('current_state')
             ->flatMap(function ($item) {
@@ -74,12 +86,12 @@ class FilterDocumentController extends Controller
             })
             ->values();
 
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit']);
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit','court_case_no','doc_no', 'survey_no', 'category']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
 
-        $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit);
+        $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $locker_no, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit,$court_case_no,$doc_no,$survey_no,$category);
 
         $data = [
             'documents' => $documents,
@@ -89,6 +101,7 @@ class FilterDocumentController extends Controller
             'districts' => $districts,
             'villages' => $villages,
             'area_unit' => $area_unit,
+            'categories' => $categories,
         ];
 
         return view('pages.documents.filter-document', $data);

@@ -6,7 +6,7 @@
 
 
     <title>
-        <x-page-title /> - {{ getProjectName() }}
+        <x-page-title /> - Sri Ahobila Mutt
     </title>
     <script src="../../js/app.js"></script>
 
@@ -36,7 +36,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
-    <link rel="shortcut icon" type="image/png" href="{{ getProjectFavicon() }}">
+    <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
 
 
     <link rel="stylesheet" href="/assets/vendor/toastr/css/toastr.min.css">

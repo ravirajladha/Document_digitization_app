@@ -3,7 +3,7 @@
 
 <head>
     <!-- PAGE TITLE HERE -->
-    <title>{{ getProjectName() }}</title>
+    <title>Sri Ahobila Mutt</title>
 
 
     <meta charset="utf-8">
@@ -34,7 +34,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- FAVICONS ICON -->
-    <link rel="shortcut icon" type="image/png" href="{{ getProjectLogo() }}">
+    <link rel="shortcut icon" type="image/png" href="/assets/logo/logo.jpg">
     <link href="/assets/vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/css/style.css" rel="stylesheet">
     

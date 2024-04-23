@@ -292,7 +292,7 @@ class DocumentController extends Controller
 
         // Fetch the column details from `table_metadata` for the given table
         $columnDetails = Table_metadata::where('table_name', $tableName)
-            ->orderBy('column_name')->get(['column_name', 'data_type']);
+            ->orderBy('column_name')->get(['column_name', 'data_type','special']);
 
         return view('pages.documents.document_field', [
             'tableName' => $tableName,
@@ -307,6 +307,7 @@ class DocumentController extends Controller
         $duplicateColumns = [];
         $documentType = Master_doc_type::where('name', $type)->lockForUpdate()->first(); // Lock the row for update
         $table_id = $documentType->id;
+        $special = $req->has('specialCheckbox') ? 1 : 0;
 
         if (!Schema::hasTable($type) && !$documentType->id) {
             session()->flash('toastr', ['type' => 'warning', 'message' => 'Table does not exist.']);
@@ -351,6 +352,7 @@ class DocumentController extends Controller
                         'table_name' => $type,
                         'table_id' => $table_id,
                         'column_name' => $columnName,
+                        'special' => $special,
                         'data_type' => $fieldType[$index],
                         'created_by' => Auth::user()->id,
                         'created_at' => now(),
@@ -378,6 +380,13 @@ class DocumentController extends Controller
 
         $newColumnName = str_replace(' ', '_', $validated['newFieldName']);
 
+          // Check if the special checkbox is checked
+    $special = $request->has('specialCheckbox') ? 1 : 0;
+
+    // Update special column in metadata first
+    Table_metadata::where('table_name', $tableName)
+        ->where('column_name', $oldColumnName)
+        ->update(['special' => $special]);
         if (!Schema::hasTable($tableName)) {
             return back()->with('error', 'Table does not exist.');
         }
@@ -391,8 +400,10 @@ class DocumentController extends Controller
         }
 
         $columnType = $this->getColumnType($tableName, $oldColumnName);
+ // Check if the special checkbox is checked
 
         try {
+            
             // Log::info('Preparing to rename column in table ' . $tableName);
 
             // Rename the column outside of transaction due to possible implicit commit
@@ -402,8 +413,8 @@ class DocumentController extends Controller
 
             // Update metadata within the transaction
             Table_metadata::where('table_name', $tableName)
-                ->where('column_name', $oldColumnName)
-                ->update(['column_name' => $newColumnName]);
+            ->where('column_name', $oldColumnName)
+            ->update(['column_name' => $newColumnName]);
 
             DB::commit();
             // Log::info('Transaction committed for table ' . $tableName);
@@ -530,10 +541,13 @@ class DocumentController extends Controller
         $tableName = $table;
         if (Schema::hasTable($tableName)) {
             $columnMetadata = Table_metadata::where('table_name', $tableName)
+                ->orWhere('column_name', 'special') // Include "special" column metadata
                 ->get()
                 ->keyBy('column_name'); // This will help you to easily find metadata by column name.
         }
-        // dd($id);
+
+    //     dd($columnMetadata);
+        $master_doc_type = Master_doc_type::where("name", $tableName)->first();
         $document = DB::table($tableName)->where('id', $id)->first();
         // dd($document);
         $get_document_master_data = Master_doc_data::where('id', $document->doc_id)->first();
@@ -574,7 +588,11 @@ class DocumentController extends Controller
         //    dd($matchingData);
         $compliances = Compliance::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
             ->get();
+        $assigned_docs = Document_assignment::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
+            ->get();
+        $receiverTypes = Receiver_type::where('status', 1)->get();
 
+// dd($master_doc_type->id);
         return view('pages.documents.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,
@@ -584,6 +602,11 @@ class DocumentController extends Controller
             'matchingData' => $matchingData,
             'compliances' => $compliances,
             'document_logs' => $document_logs,
+            'document_id' => $document->doc_id,
+            'doc_type' => $master_doc_type,
+            'documentAssignments' => $assigned_docs,
+            'receiverTypes' => $receiverTypes,
+            
         ]);
     }
 
@@ -604,10 +627,10 @@ class DocumentController extends Controller
         $basePath = base_path();
         // dd($basePath);
         // Construct the path to the public/uploads directory relative to the base path
-        // $basePath = '/home4/kodstecu/ahobila.kods.app';
-        // $uploadsPath = $basePath . '/uploads/documents';
+        $basePath = '/home4/kodstecu/ahobila.kods.app';
+         $uploadsPath = $basePath . '/uploads/documents';
         // Get the path to the public/uploads directory
-        $uploadsPath = public_path('uploads/documents');
+       // $uploadsPath = public_path('uploads/documents');
 
         // Check if the uploads directory exists
         if (!File::exists($uploadsPath)) {

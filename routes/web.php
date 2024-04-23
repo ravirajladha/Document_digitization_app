@@ -79,7 +79,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
 
 
     Route::get('/review_doc/{table}/{id}', [DocumentController::class, 'review_doc'])
-        ->name('documents.review1');
+        ->name('documents.review');
     Route::post('/add-document-data', [DocumentController::class, 'add_document_data'])
         ->name('documents.data.add');
     Route::put('/update-first-document-data/{id}', [DocumentController::class, 'updateFirstDocumentData'])

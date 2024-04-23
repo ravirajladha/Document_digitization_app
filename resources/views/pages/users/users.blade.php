@@ -117,14 +117,16 @@
                                                 <label class="form-label">Status</label>
                                                 <select class="form-control" id="area-unit-dropdown" name="status">
                                                     <option value="">Select Status</option>
-                                                    <option value="1" {{ isset($editUser) && $editUser->status == '1' ? 'selected' : '' }}>
+                                                    <option value="1"
+                                                        {{ isset($editUser) && $editUser->status == '1' ? 'selected' : '' }}>
                                                         Active</option>
-                                                    <option value="0" {{ isset($editUser) && $editUser->status == '0' ? 'selected' : '' }}>
+                                                    <option value="0"
+                                                        {{ isset($editUser) && $editUser->status == '0' ? 'selected' : '' }}>
                                                         Inactive</option>
                                                 </select>
                                                 @error('status')
-                                                <div class="alert alert-danger mt-2 ">{{ $message }}</div>
-                                            @enderror
+                                                    <div class="alert alert-danger mt-2 ">{{ $message }}</div>
+                                                @enderror
                                             </div>
 
                                             {{-- Password fields --}}
@@ -319,7 +321,7 @@
                                                                 <td>
                                                                     @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Sold Land') @endphp
                                                                 </td>
-                                                                <td>  @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sold Land') @endphp</td>
+                                                                <td> @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sold Land') @endphp</td>
                                                                 <td></td>
                                                             </tr>
                                                             <tr>
@@ -595,35 +597,34 @@
 
 
                                                         <td>
-                                                        @php
-                                                        $statusClasses = [
-                                                           
-                                                            '1' => 'badge-success text-success',
-                                                            '0' => 'badge-warning text-warning',
-                                                        ];
-                                                        $statusTexts = [
-                                                            '0' => 'Inactive',
-                                                            '1' => 'Active',
-                                                          
-                                                        ];
-                                                        $statusId = strval($item->status); // Convert to string to match array keys
-                                                        $statusClass =
-                                                            $statusClasses[$statusId] ??
-                                                            'badge-secondary text-secondary'; // Default class if key doesn't exist
+                                                            @php
+                                                                $statusClasses = [
+                                                                    '1' => 'badge-success text-success',
+                                                                    '0' => 'badge-warning text-warning',
+                                                                ];
+                                                                $statusTexts = [
+                                                                    '0' => 'Inactive',
+                                                                    '1' => 'Active',
+                                                                ];
+                                                                $statusId = strval($item->status); // Convert to string to match array keys
+                                                                $statusClass =
+                                                                    $statusClasses[$statusId] ??
+                                                                    'badge-secondary text-secondary'; // Default class if key doesn't exist
 $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn't exist
-                                                    @endphp
+                                                            @endphp
 
-                                                    <span class="badge light {{ $statusClass }}">
-                                                        <i class="fa fa-circle {{ $statusClass }} me-1"></i>
-                                                        {{ $statusText }}
-                                                    </span>
+                                                            <span class="badge light {{ $statusClass }}">
+                                                                <i class="fa fa-circle {{ $statusClass }} me-1"></i>
+                                                                {{ $statusText }}
+                                                            </span>
 
-                                                </td>
+                                                        </td>
 
 
                                                         <!-- Assuming you have a relation to get the receiver type name -->
                                                         <td>
-                                                            <a href="{{ route('users.show_reviewed_documents_users', $item->id) }}">
+                                                            <a
+                                                                href="{{ route('users.show_reviewed_documents_users', $item->id) }}">
                                                                 <button class="btn btn-secondary btn-sm edit-btn">
                                                                     View</button></a>
                                                             <a href="{{ route('users.edit', $item->id) }}">

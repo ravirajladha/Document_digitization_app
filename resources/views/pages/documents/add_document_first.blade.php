@@ -65,6 +65,16 @@
                                                         <input type="text" name="name" class="form-control"
                                                             placeholder="Enter Name" required>
                                                     </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Category</label>
+                                                        <input type="text" name="category"
+                                                            class="form-control" placeholder="Enter Category" >
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Issued Date</label>
+                                                        <input type="date" name="issued_date"
+                                                            class="form-control">
+                                                    </div>
                                                     {{-- <div class="mb-3 col-md-6"> --}}
                                                     {{-- <label class="form-label">Temp Id</label> --}}
                                                     <input type="text" name="temp_id" hidden class="form-control"
@@ -176,11 +186,7 @@
                                                             placeholder="Enter Alternate Village">
                                                     </div>
 
-                                                    <div class="mb-3 col-md-6">
-                                                        <label class="form-label">Issued Date</label>
-                                                        <input type="date" name="issued_date"
-                                                            class="form-control">
-                                                    </div>
+                                                  
 
                                                     {{-- <div class="mb-3 col-md-6">
                                             <label class="form-label">Document Sub Type</label>
@@ -241,12 +247,24 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-md-6">
-                                                        <label class="form-label">Latitude</label>
-                                                        <input type="text" name="latitude" class="form-control" placeholder="Enter Latitude (-90 to +90)">
+                                                        <label class="form-label">Court Case Details</label>
+                                                        <input type="text" name="court_case_no" class="form-control" placeholder="Enter Court Case Number">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Document Number</label>
+                                                        <input type="text" name="doc_no" class="form-control" placeholder="Enter Document Number">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Survey Number</label>
+                                                        <input type="text" name="survey_no" class="form-control" placeholder="Enter Survey Number">
                                                     </div>
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Longitude</label>
                                                         <input type="text" name="longitude" class="form-control" placeholder="Enter Longitude (-180 to +180)">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Latitude</label>
+                                                        <input type="text" name="latitude" class="form-control" placeholder="Enter Latitude (-180 to +180)">
                                                     </div>
                                                     
 

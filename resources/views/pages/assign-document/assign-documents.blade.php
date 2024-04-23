@@ -16,41 +16,7 @@
 
                     </ol>
                 </div>
-                {{-- <div class="row">
-					<div class="col-xl-12">
-						
-								<div class="filter cm-content-box box-primary">
-									<div class="content-title SlideToolHeader">
-										<div class="cpa">
-											Add Blog Category
-										</div>
-										<div class="tools">
-											<a href="javascript:void(0);" class="expand handle"><i class="fal fa-angle-down"></i></a>
-										</div>
-									</div>
-									<div class="cm-content-body  form excerpt">
-										<div class="card-body">
-											<div class="mb-3">
-											  <label  class="form-label">Name</label>
-											  <input type="text" class="form-control" placeholder="Name">
-											</div>
-											<div class="mb-3">
-												  <label  class="form-label">Slug</label>
-												  <input type="text" class="form-control" placeholder="Slug">
-											</div>
-											<div class="mb-3">
-											  <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-											  <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
-											</div>
-											<div>
-												<button type="button" class="btn btn-primary">Save</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							</div> --}}
-
+            
 
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalCenter">
@@ -69,35 +35,7 @@
                                         @csrf
                                         <div class="row">
                                             <input type="hidden" name="location" value="all">
-                                            {{-- <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="documentType" class="form-label">Document
-                                                        Type</label>
-                                                    <select class="form-control" id="documentType" name="document_type"
-                                                        onchange="fetchDocuments(this.value)" required>
-                                                        <option value="">Select Document Type</option>
-                                                        @foreach ($documentTypes as $type)
-                                                            <option value="{{ $type->id }}">
-                                                                {{ ucwords(str_replace('_', ' ', $type->name)) }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
                                            
-
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="document" class="form-label">Document <i><span
-                                                                style="font-size:10px;">(Only the approved documents are
-                                                                shown here.)</span></i></label>
-                                                    <select class="form-control" id="document" name="document_id"
-                                                        required>
-                                                        <option value="">Select Document</option>
-                                                    
-                                                    </select>
-                                                </div>
-                                            </div> --}}
                                             <x-document-type-select />
 
                                             <div class="col-md-12">
@@ -199,16 +137,7 @@
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
 
-                                                        {{-- @if ($user && $user->hasPermission('Update Document Assignment Status'))
-                                                        <td>
-                                                            <form method="POST" action="{{ route('documents.assigned.toggleStatus', $item->id) }}">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-sm {{ $item->status ? 'btn-danger' : 'btn-success' }}">
-                                                                    {{ $item->status ? 'Deactivate' : 'Activate' }}
-                                                                </button>
-                                                            </form>
-                                                        </td>
-                                                    @endif --}}
+                                                     
                                                         @if ($user && $user->hasPermission('Update Document Assignment Status'))
                                                             <td>
                                                                 <button type="button"

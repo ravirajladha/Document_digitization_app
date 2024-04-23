@@ -124,6 +124,18 @@ class DashboardService
     }
 
 
+    public function getCategoryDocumentCounts()
+{
+    // Get document count for each category
+    $categoryCounts = Master_doc_data::selectRaw('category, count(*) as count')
+        ->groupBy('category')
+        ->get()
+        ->pluck('count', 'category')
+        ->toArray();
+
+    return $categoryCounts;
+}
+
     public function getUsersWithTodayCounts()
     {
         // Get today's date

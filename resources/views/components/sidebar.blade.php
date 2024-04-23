@@ -124,9 +124,9 @@
                             @if ($user && $user->hasPermission('View Profile'))
                                 <li><a href="{{ url('/') }}/profile">Profile</a></li>
                             @endif
-                            @if ($user && $user->hasPermission('Project Settings'))
+                            {{-- @if ($user && $user->hasPermission('Project Settings'))
                                 <li><a href="{{ url('/') }}/project-settings/edit">Change Logo & Project Name</a></li>
-                            @endif
+                            @endif --}}
                             @if ($user && ($user->hasPermission('Http Request Logs') || $user->hasPermission('Action Logs')))
                                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Logs</a>
                                     <ul aria-expanded="false">

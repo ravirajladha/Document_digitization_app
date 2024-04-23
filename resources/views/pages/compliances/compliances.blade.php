@@ -33,38 +33,6 @@
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
-                                            {{--
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="documentType" class="form-label">Document
-                                                        Type</label>
-                                                    <select class="form-control" id="documentType" name="document_type"
-                                                        onchange="fetchDocuments(this.value)" required>
-                                                        <option value="">Select Document Type</option>
-                                                        @foreach ($documentTypes as $type)
-                                                            <option value="{{ $type->id }}">
-                                                                {{ ucwords(str_replace('_', ' ', $type->name)) }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            
-
-                                           <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="document" class="form-label">Document <i><span
-                                                                style="font-size:10px;">(Only the approved documents are
-                                                                shown here)</span></i></label>
-                                                    <select class="form-control" id="document" name="document_id"
-                                                        required>
-                                                        <option value="">Select Document</option>
-                                                        
-                                                    </select>
-                                                </div>
-                                            </div>
- --}}
 
                                             <x-document-type-select />
                                             <div class="col-md-12">

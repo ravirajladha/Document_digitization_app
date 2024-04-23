@@ -76,6 +76,20 @@
                                                         {{-- </div> --}}
 
                                                         <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Category</label>
+                                                            <input type="text" name="category"
+                                                                class="form-control"
+                                                                value="{{ $document->category }}">
+                                                        </div>
+                                                        <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Issued Date</label>
+                                                            <input type="date" name="issued_date"
+                                                                class="form-control"
+                                                                value="{{ $document->issued_date }}">
+                                                        </div>
+
+
+                                                        <div class="mb-3 col-md-6">
                                                             <label class="form-label">Document Present At</label>
                                                             <input type="text" name="location" class="form-control"
                                                                 placeholder="Enter Document Present At"
@@ -203,12 +217,7 @@
                                                                 value="{{ $document->alternate_village }}">
                                                         </div>
 
-                                                        <div class="mb-3 col-md-6">
-                                                            <label class="form-label">Issued Date</label>
-                                                            <input type="date" name="issued_date"
-                                                                class="form-control"
-                                                                value="{{ $document->issued_date }}">
-                                                        </div>
+                                                      
 
                                                         {{-- <div class="mb-3 col-md-6">
                                                             <label class="form-label">Document Sub Type</label>
@@ -288,6 +297,20 @@
                                                                 @endforeach
                                                             </select>
                                                         </div>
+
+                                                        <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Court Case Details</label>
+                                                            <input type="text" name="court_case_no" class="form-control" placeholder="Enter Court Case Number" value="{{ $document->court_case_no }}">
+                                                        </div>
+                                                        <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Document Number</label>
+                                                            <input type="text" name="doc_no" class="form-control" placeholder="Enter Document Number" value="{{ $document->doc_no }}">
+                                                        </div>
+                                                        <div class="mb-3 col-md-6">
+                                                            <label class="form-label">Survey Number</label>
+                                                            <input type="text" name="survey_no" class="form-control" placeholder="Enter Survey Number" value="{{ $document->survey_no }}" >
+                                                        </div>
+
                                                         <div class="mb-3 col-md-6">
                                                             <label class="form-label">Latitude</label>
                                                             <input type="text" name="latitude"
