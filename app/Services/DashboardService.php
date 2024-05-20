@@ -28,6 +28,7 @@ class DashboardService
         $acceptedCounts = []; //to get the accepted doc
         $notAcceptedCounts = []; // to get the pending doc
         $holdedCounts = []; // to get the pending doc
+        $reviewerHoldCounts = []; // to get the pending doc
         $userCounts = 0;
        $userCounts =  User::where('type', "user")->count();
         foreach ($docTypes as $docType) {
@@ -51,18 +52,22 @@ class DashboardService
                 // Hold  count
                 $holdedCount = DB::table($docType)->where('status', 2)->count();
                 $holdedCounts[] = $holdedCount;
+                // reviewerHoldCounts feedback  count
+                $reviewerHoldCount = DB::table($docType)->where('status', 3)->count();
+                $reviewerHoldCounts[] = $reviewerHoldCount;
             } else {
                 $chartCounts[] = 0;
                 $acceptedCounts[] = 0;
                 $notAcceptedCounts[] = 0;
                 $holdedCounts[] = 0;
+                $reviewerHoldCounts[] = 0;
             }
         }
         // dd(array_sum($notAcceptedCounts));
         $total_document_type = count($chartLabels);
 
         $colors = $this->generateColorPalette(count($chartLabels));
-        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts', 'holdedCounts', 'total_document_type','userCounts');
+        return compact('chartLabels', 'chartCounts', 'colors', 'acceptedCounts', 'notAcceptedCounts', 'holdedCounts', 'total_document_type','userCounts','reviewerHoldCounts');
     }
     private function generateColorPalette($numColors)
     {
@@ -125,24 +130,41 @@ class DashboardService
 
 
     public function getCategoryDocumentCounts()
-{
-    // Get document count for each category
-    $categoryCounts = Master_doc_data::selectRaw('category, count(*) as count')
-        ->groupBy('category')
-        ->get()
-        ->pluck('count', 'category')
-        ->toArray();
-
-    return $categoryCounts;
-}
-
+    {
+        // Fetch all categories as a single list
+        $allCategories = Master_doc_data::pluck('category');
+    
+        // Initialize an empty array to hold the count of each category
+        $categoryCounts = [];
+    
+        // Loop through each document's categories
+        foreach ($allCategories as $categories) {
+            // Split categories by comma and trim spaces
+            foreach (explode(',', $categories) as $category) {
+                $category = trim($category);
+                // Increment the count for each category
+                if (!empty($category)) {
+                    if (!isset($categoryCounts[$category])) {
+                        $categoryCounts[$category] = 0;
+                    }
+                    $categoryCounts[$category]++;
+                }
+            }
+        }
+    
+        // Sort categories alphabetically before returning (optional)
+        ksort($categoryCounts);
+    
+        return $categoryCounts;
+    }
+    
     public function getUsersWithTodayCounts()
     {
         // Get today's date
         $today = Carbon::now()->toDateString();
 
         // Get all users
-        $users = User::all();
+        $users = User::orderBy('id', 'desc')->get();
 
         // Initialize an array to store users with today's counts
         $usersWithCounts = [];

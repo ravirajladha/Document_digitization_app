@@ -99,6 +99,8 @@ class DocumentController extends Controller
 
     public function add_document(Request $req)
     {
+        // Log request data for debugging
+        // Log::info('Request Data: ', $req->all());
         // dd($req->all());
         $tableName = $req->type;
         $master_doc_id = $req->master_doc_id;
@@ -121,28 +123,41 @@ class DocumentController extends Controller
                         $file_paths[] = 'uploads/' . $filename;
                     }
                     $updateData[$column] = implode(',', $file_paths);
-                } elseif ($existingRecord && $existingRecord->$column !== null) {
-                    // If no file is uploaded, keep the existing value
-                    $updateData[$column] = $existingRecord->$column;
-                } else {
-                    // If it's not a file and there's a new value, update with the new value
+                    // } elseif ($existingRecord && $existingRecord->$column !== null) {
+                    //     // If no file is uploaded, keep the existing value
+
+                    //     $updateData[$column] = $existingRecord->$column;
+                    // } else {
+                    //     // If it's not a file and there's a new value, update with the new value
+                    //     $updateData[$column] = $req->input($column);
+                    // }
+
+
+                } elseif ($req->input($column) !== null) {
+                    // If there's a new value, update with the new value
                     $updateData[$column] = $req->input($column);
+                } elseif ($existingRecord && $existingRecord->$column !== null) {
+                    // If no new value and no file is uploaded, keep the existing value
+                    $updateData[$column] = $existingRecord->$column;
                 }
             }
         }
-
+        // Log update data for debugging
+        // Log::info('Update Data: ', $updateData);
         // Check if a record with this doc_id exists and update or insert accordingly
-        $existingRecord = DB::table($tableName)->where('doc_id', $master_doc_id)->first();
+        // $existingRecord = DB::table($tableName)->where('doc_id', $master_doc_id)->first();
         if ($existingRecord) {
             // Update the existing record
-            $documentId =   DB::table($tableName)->where('doc_id', $master_doc_id)->update($updateData);
+            // dd($tableName, $updateData);
+            $updateResult =   DB::table($tableName)->where('doc_id', $master_doc_id)->update($updateData);
+            // Log::info('Update Result: ', ['result' => $updateResult]);
             // dd($documentId->id);
         } else {
             // Insert a new record with the doc_id
             $updateData['doc_id'] = $master_doc_id; // Assuming 'doc_id' is the column name
             $documentId = DB::table($tableName)->insertGetId($updateData); // This is the new
             // dd("insert");
-
+            // Log::info('Insert Result: ', ['id' => $documentId]);
         }
         $documentId = DB::table($tableName)->where('doc_id', $master_doc_id)->value('id');
 
@@ -151,6 +166,7 @@ class DocumentController extends Controller
 
         return redirect('/review_doc/' . $tableName . '/' . $documentId);
     }
+
     public function update_document(Request $req)
     {
         $id = $req->id;
@@ -163,8 +179,6 @@ class DocumentController extends Controller
         }
 
         $document = DB::table($tableName)->where('id', $id)->first();
-
-
 
         if (!$document) {
             // Handle the case where the document doesn't exist
@@ -188,7 +202,6 @@ class DocumentController extends Controller
         // If the status is 'Hold', add additional fields for the message and timestamp
 
         if ($status == 2) { // Assuming '2' represents the 'Hold' status
-
             $updateDataMaster['rejection_timestamp'] = now(); // Set the current timestamp
         }
         // dd($message);
@@ -292,7 +305,7 @@ class DocumentController extends Controller
 
         // Fetch the column details from `table_metadata` for the given table
         $columnDetails = Table_metadata::where('table_name', $tableName)
-            ->orderBy('column_name')->get(['column_name', 'data_type','special']);
+            ->orderBy('column_name')->get(['column_name', 'data_type', 'special']);
 
         return view('pages.documents.document_field', [
             'tableName' => $tableName,
@@ -380,13 +393,13 @@ class DocumentController extends Controller
 
         $newColumnName = str_replace(' ', '_', $validated['newFieldName']);
 
-          // Check if the special checkbox is checked
-    $special = $request->has('specialCheckbox') ? 1 : 0;
+        // Check if the special checkbox is checked
+        $special = $request->has('specialCheckbox') ? 1 : 0;
 
-    // Update special column in metadata first
-    Table_metadata::where('table_name', $tableName)
-        ->where('column_name', $oldColumnName)
-        ->update(['special' => $special]);
+        // Update special column in metadata first
+        Table_metadata::where('table_name', $tableName)
+            ->where('column_name', $oldColumnName)
+            ->update(['special' => $special]);
         if (!Schema::hasTable($tableName)) {
             return back()->with('error', 'Table does not exist.');
         }
@@ -400,10 +413,10 @@ class DocumentController extends Controller
         }
 
         $columnType = $this->getColumnType($tableName, $oldColumnName);
- // Check if the special checkbox is checked
+        // Check if the special checkbox is checked
 
         try {
-            
+
             // Log::info('Preparing to rename column in table ' . $tableName);
 
             // Rename the column outside of transaction due to possible implicit commit
@@ -413,8 +426,8 @@ class DocumentController extends Controller
 
             // Update metadata within the transaction
             Table_metadata::where('table_name', $tableName)
-            ->where('column_name', $oldColumnName)
-            ->update(['column_name' => $newColumnName]);
+                ->where('column_name', $oldColumnName)
+                ->update(['column_name' => $newColumnName]);
 
             DB::commit();
             // Log::info('Transaction committed for table ' . $tableName);
@@ -546,7 +559,7 @@ class DocumentController extends Controller
                 ->keyBy('column_name'); // This will help you to easily find metadata by column name.
         }
 
-    //     dd($columnMetadata);
+        //     dd($columnMetadata);
         $master_doc_type = Master_doc_type::where("name", $tableName)->first();
         $document = DB::table($tableName)->where('id', $id)->first();
         // dd($document);
@@ -592,7 +605,7 @@ class DocumentController extends Controller
             ->get();
         $receiverTypes = Receiver_type::where('status', 1)->get();
 
-// dd($master_doc_type->id);
+        // dd($master_doc_type->id);
         return view('pages.documents.review_doc', [
             'columnMetadata' => $columnMetadata,
             'document' => $document,
@@ -606,7 +619,7 @@ class DocumentController extends Controller
             'doc_type' => $master_doc_type,
             'documentAssignments' => $assigned_docs,
             'receiverTypes' => $receiverTypes,
-            
+
         ]);
     }
 
@@ -628,9 +641,9 @@ class DocumentController extends Controller
         // dd($basePath);
         // Construct the path to the public/uploads directory relative to the base path
         $basePath = '/home4/kodstecu/ahobila.kods.app';
-         $uploadsPath = $basePath . '/uploads/documents';
+        $uploadsPath = $basePath . '/uploads/documents';
         // Get the path to the public/uploads directory
-       // $uploadsPath = public_path('uploads/documents');
+        // $uploadsPath = public_path('uploads/documents');
 
         // Check if the uploads directory exists
         if (!File::exists($uploadsPath)) {

@@ -2,6 +2,7 @@
 // File: app/Services/BulkUploadService.php
 
 namespace App\Services;
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,7 @@ class BulkUploadService
 
     public function handleUpload($path)
     {
+      
         $stats = [
             'total' => 0,
             'inserted' => 0,
@@ -72,7 +74,7 @@ class BulkUploadService
                     }
                 }
 
-                // Perform the batch insert. very effiicient
+                // Perform the batch insert. very efficient
                 // dd($rowsToInsert);
                 $masterDocData =  Master_doc_data::upsert($rowsToInsert, ['temp_id']);
 
@@ -167,6 +169,7 @@ class BulkUploadService
     //   child bulk upload start
     protected function processRow($row, $batchId)
     {
+        // dd($row);
         $dateFormats = ['d-m-Y', 'd/m/Y'];
         $formattedDate = null;
         foreach ($dateFormats as $format) {
@@ -177,7 +180,7 @@ class BulkUploadService
                 // Catch the exception and continue trying other formats
             }
         }
-    
+
         // Assign a code based on the unit
         // $unit = strtolower(trim($row[21]));
         // $unitCode = null;
@@ -187,31 +190,31 @@ class BulkUploadService
         //     $unitCode = 2;
         // }
         $document_type_name = strtolower(str_replace(' ', '_', $row[6]));
-    
+
         // Find existing record by temp_id
         $existingRecord = Master_doc_data::where('temp_id', $row[1])->first();
         $setsInput = $row[26];
 
         // Clean up the input by removing extra spaces and exploding it into an array
         $setsArray = array_map('trim', explode(',', $setsInput));
-                
+
         // Filter out any empty values or convert 'null' to null
-        $setsArray = array_filter($setsArray, function($value) {
+        $setsArray = array_filter($setsArray, function ($value) {
             return $value !== '' && strtolower($value) !== 'null';
         });
-                
+
         // If there are no valid sets, set $setsArray to an empty array
         if (empty($setsArray)) {
             $setsArray = [];
         }
-                
+
         // If you want to add double quotes around each value in the array, you can use array_map again
-        $setsArray = array_map(function($value) {
+        $setsArray = array_map(function ($value) {
             return '"' . intval($value) . '"';
         }, $setsArray);
-        
+
         $setsJson = '[' . implode(',', $setsArray) . ']'; // Join array elements into a JSON array
-        
+
         $data = [
             'temp_id' => $row[1],
             'name' => $row[2],
@@ -222,15 +225,15 @@ class BulkUploadService
             'current_state' => isset($row[7]) && !empty(trim($row[7])) ? $row[7] : 'N/A',
             'state' => isset($row[8]) && !empty(trim($row[8])) ? $row[8] : 'N/A',
             'alternate_state' => isset($row[9]) && !empty(trim($row[9])) ? $row[9] : 'N/A',
-            'current_district' =>isset($row[10]) && !empty(trim($row[10])) ? $row[10] : 'N/A',
+            'current_district' => isset($row[10]) && !empty(trim($row[10])) ? $row[10] : 'N/A',
             'district' => isset($row[11]) && !empty(trim($row[11])) ? $row[11] : 'N/A',
             'alternate_district' =>  isset($row[12]) && !empty(trim($row[12])) ? $row[12] : 'N/A',
             'current_taluk' => isset($row[13]) && !empty(trim($row[13])) ? $row[13] : 'N/A',
             'taluk' => isset($row[14]) && !empty(trim($row[14])) ? $row[14] : 'N/A',
-            'alternate_taluk' =>isset($row[15]) && !empty(trim($row[15])) ? $row[15] : 'N/A',
+            'alternate_taluk' => isset($row[15]) && !empty(trim($row[15])) ? $row[15] : 'N/A',
             'current_village' => isset($row[16]) && !empty(trim($row[16])) ? $row[16] : 'N/A',
             'village' => isset($row[17]) && !empty(trim($row[17])) ? $row[17] : 'N/A',
-            'alternate_village' =>isset($row[18]) && !empty(trim($row[18])) ? $row[18] : 'N/A',
+            'alternate_village' => isset($row[18]) && !empty(trim($row[18])) ? $row[18] : 'N/A',
             'issued_date' => $formattedDate,
             'area' => $row[20],
             'unit' =>  strtolower(trim($row[21])),
@@ -238,16 +241,21 @@ class BulkUploadService
             'wet_land' => $row[23],
             'garden_land' => $row[24],
             'old_locker_number' => $row[25],
-            'set_id' => $setsJson ,
+            'set_id' => $setsJson,
             'physically' => $row[27],
+            'category' => $row[29],
+            'survey_no' => $row[30],
+            'doc_no' => $row[31],
+            'court_case_no' => $row[32],
             'bulk_uploaded' => 1,
             'created_by' => Auth::user()->id,
             'batch_id' => $batchId,
         ];
-    
+
         if ($existingRecord) {
             // If record exists, update it
             //updating the document_type_name will give error, as it will search for the document_type and the table too on view document page
+            // dd($data);
             unset($data['document_type_name']);
             $existingRecord->update($data);
         } else {
@@ -256,10 +264,10 @@ class BulkUploadService
             $data['document_type'] = $documentType->id;
             Master_doc_data::create($data);
         }
-    
+
         return null; // Return null to indicate no new row to be inserted
     }
-    
+
     public function handleChildUpload($path)
     {
         $collections = Excel::toCollection(null, $path);

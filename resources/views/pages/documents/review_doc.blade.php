@@ -89,14 +89,14 @@
                                                         @endphp
                                                         @php
                                                             $truncatedValue =
-                                                                strlen($value) > 110 ? substr($value, 0, 110) : $value;
+                                                                strlen($value) > 35 ? substr($value, 0, 35) : $value;
                                                         @endphp
                                                         <tr style="white-space: nowrap; overflow: hidden;">
                                                             <th style="padding: 5px;">
                                                                 {{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
 
                                                             <td style="padding: 5px;">
-                                                                @if (strlen($value) > 110)
+                                                                @if (strlen($value) > 35)
                                                                     {{ $truncatedValue }}
                                                                     <span data-bs-toggle="modal"
                                                                         data-bs-target="#{{ $attribute }}Modal"
@@ -168,7 +168,7 @@
                                                             );
                                                             $value = $document->{$meta->column_name} ?? null;
                                                             $truncatedValue =
-                                                                strlen($value) > 110 ? substr($value, 0, 110) : $value;
+                                                                strlen($value) > 35 ? substr($value, 0, 35) : $value;
                                                             $modalTarget = $meta->column_name . 'Modal';
                                                             $isSpecial = $meta->special == 1; // Ensure you're comparing values, not types
                                                         @endphp
@@ -200,7 +200,7 @@
                                                     <tr style="padding:0 0 0 0;">
                                                         <th style="padding: 5px;">{{ $column['name'] }}</th>
                                                         <td>
-                                                            @if (strlen($column['value']) > 110)
+                                                            @if (strlen($column['value']) > 35)
                                                                 {{ $column['truncatedValue'] }}
                                                                 <span data-bs-toggle="modal"
                                                                     data-bs-target="#{{ $column['modalTarget'] }}"
@@ -305,7 +305,7 @@
                                                 <img src="{{ url($document->pdf_file_path) }}" width="100%"
                                                     alt="Document Image">
                                             </div>
-                                        @elseif($extension === 'pdf' && file_exists(public_path($document->pdf_file_path)))
+                                        @elseif($extension === 'pdf')
                                             <h4 class="mt-2">PDF File</h4>
                                             <div class="pointer-events: auto;">
                                                 <iframe src="{{ url($document->pdf_file_path) }}" width="100%"
@@ -350,7 +350,6 @@
                         <div class="card-body">
                             <div class="row">
 
-
                                 @foreach ($specialColumns as $specialColumn)
                                     @if ($specialColumn['value'] !== null && $specialColumn['value'] !== '')
                                         <div class="col-xl-4 col-lg-4 col-xxl-4 col-sm-4">
@@ -370,9 +369,6 @@
                         </div>
                     </div>
                 @endif
-
-
-
 
                 @if ($user && $user->hasPermission('Update Document Status'))
 
@@ -567,13 +563,8 @@
                                 <th scope="col">Document Type </th> --}}
                                                 <th scope="col">Due Date</th>
                                                 <th scope="col">Is Recurring </th>
-
                                                 {{-- <th scope="col">Status </th> --}}
-
                                                 <th scope="col">Action </th>
-
-
-
 
                                             </tr>
                                         </thead>

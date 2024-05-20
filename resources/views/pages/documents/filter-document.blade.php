@@ -53,7 +53,7 @@
                                         
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Select Document Type </label>
-                                            <select id="single-select-abc1" class="form-select form-control"
+                                            <select id="single-select-abc2" class="form-select form-control"
                                                 style="width:100%;" name="type">
                                                 <option value="" selected>Select Document Type</option>
                                                 @foreach ($doc_type as $item)
@@ -66,7 +66,7 @@
                                         </div>
                                         <div class="mb-3 col-md-4">
                                             <label class="form-label">Select State </label>
-                                            <select class="form-select form-control" id="single-select-abc2"
+                                            <select class="form-select form-control" id="single-select-abc3"
                                                 name="state" aria-label="State select">
                                                 <option value="" selected>Select State</option>
                                                 @foreach ($states as $state)
@@ -80,7 +80,7 @@
 
                                         <div class="mb-3 col-md-4">
                                             <label class="form-label">Select District </label>
-                                            <select class="form-select form-control" id="single-select-abc3"
+                                            <select class="form-select form-control" id="single-select-abc4"
                                                 name="district" aria-label="District select">
                                                 <option value="" selected>Select District</option>
                                                 @foreach ($districts as $district)
@@ -95,7 +95,7 @@
                                         <div class="mb-3 col-md-4">
                                             <label class="form-label">Select Village </label>
 
-                                            <select class="form-select form-control" id="single-select-abc4"
+                                            <select class="form-select form-control" id="single-select-abc5"
                                                 name="village" aria-label="Village select">
                                                 <option value="" selected>Select Village</option>
                                                 @foreach ($villages as $village)
@@ -166,21 +166,50 @@
                                         </div>
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Court Case</label>
-                                            <input name="court_case_no" class="form-control"
-                                                placeholder="Enter Court Case Details" type="number"
-                                                value="{{ old('court_case_no') }}">
+                                            {{-- <input name="court_case_no" class="form-control"
+                                                placeholder="Enter Court Case Details" type="text"
+                                                value="{{ old('court_case_no') }}"> --}}
+                                                <select id="single-select-abc8" class="form-select form-control" style="width:100%;" name="court_case_no">
+                                                    <option value="" selected>Select Court Case </option>
+                                                    @foreach ($courtCaseNos as $court_case_no)
+                                                        <option value="{{ $court_case_no }}" {{ old('court_case_no') == $court_case_no ? 'selected' : '' }}>
+                                                            {{ ucwords(str_replace('_', ' ', $court_case_no)) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                         </div>
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Document No</label>
-                                            <input name="doc_no" class="form-control"
+                                            {{-- <input name="doc_no" class="form-control"
                                                 placeholder="Enter Document Number" type="number"
-                                                value="{{ old('doc_no') }}">
+                                                value="{{ old('doc_no') }}"> --}}
+
+                                                <select id="single-select-abc6" class="form-select form-control" style="width:100%;" name="doc_no">
+                                                    <option value="" selected>Select Document No</option>
+                                                    @foreach ($doc_nos as $doc_no)
+                                                        <option value="{{ $doc_no }}" {{ old('doc_no') == $doc_no ? 'selected' : '' }}>
+                                                            {{ ucwords(str_replace('_', ' ', $doc_no)) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
                                         </div>
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Survey No</label>
-                                            <input name="survey_no" class="form-control"
+                                            {{-- <input name="survey_no" class="form-control"
                                                 placeholder="Enter Survey Number" type="number"
-                                                value="{{ old('survey_no') }}">
+                                                value="{{ old('survey_no') }}"> --}}
+
+                                                <select id="single-select-abc7" class="form-select form-control" style="width:100%;" name="survey_no">
+                                                    <option value="" selected>Select Survey No</option>
+                                                    @foreach ($survey_nos as $survey_no)
+                                                        <option value="{{ $survey_no }}" {{ old('survey_no') == $survey_no ? 'selected' : '' }}>
+                                                            {{ ucwords(str_replace('_', ' ', $survey_no)) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+
                                         </div>
                                        
                                        
@@ -222,7 +251,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
 
-                                <table id="example3" class="display table-hover" style="min-width: 845px">
+                                <table id="example3" class="display table-hover" style="min-width: 845px;font-size: 12px;">
                                     <thead>
                                         <tr>
                                             {{-- <th>
@@ -234,10 +263,12 @@
                                                 </th> --}}
                                             <th scope="col">Sl. No.</th>
                                             <th scope="col">Document Name</th>
+                                            <th scope="col">Category</th>
                                             <th scope="col">Document Type</th>
                                             <th scope="col">Village</th>
                                             <th scope="col">District</th>
                                             <th scope="col">Area</th>
+                                         
 
                                             <th scope="col">Status</th>
                                             @if ($user && $user->hasPermission('Main Document View '))
@@ -252,6 +283,7 @@
 
                                                 <th scope="row">{{ $index + 1 }}</th>
                                                 <td scope="row">{{ $item->name }}</td>
+                                                <td scope="row">{{ $item->category }}</td>
                                                 <td scope="row">
                                                     {{ ucWords(str_replace('_', ' ', $item->document_type_name)) }}
                                                 </td>
@@ -264,7 +296,7 @@
                                                     {{-- ({{ $item->unit ? ($item->unit === 'acres and cents' ? 'A&C' : 'SqFt') : '--' }}) --}}
                                                     {{ $item->unit }}
                                                 </td>
-
+                                           
                                                 <td>
                                                     @php
                                                         $statusClasses = [
@@ -380,6 +412,30 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
     $("#single-select-abc4").select2();
 
     $(".single-select-abc4-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc5").select2();
+
+    $(".single-select-abc5-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc6").select2();
+
+    $(".single-select-abc6-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc7").select2();
+
+    $(".single-select-abc7-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc8").select2();
+
+    $(".single-select-abc8-placeholder").select2({
         placeholder: "Select a state",
         allowClear: true
     });

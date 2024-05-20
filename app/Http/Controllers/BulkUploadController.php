@@ -46,6 +46,7 @@ class BulkUploadController extends Controller
 
 
         $path = $request->file('document')->getRealPath();
+        // dd($path);
         $stats = $this->bulkUploadService->handleUpload($path);
 
 

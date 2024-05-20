@@ -41,30 +41,29 @@
                                         @if (count($getCategoryDocumentCounts) > 0)
                                             @foreach ($getCategoryDocumentCounts as $category => $count)
                                                 @if ($category !== '' && $category !== null)
-                                                <div class="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
-                                                <a
-                                                href="/filter-document?category=<?php echo $category; ?>">
-                                                        <div class="widget-stat card {{ $bgClasses[$classIndex] }}">
-                                                            <div class="card-body p-4">
-                                                                <div class="media">
+                                                    <div class="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
+                                                        <a href="/filter-document?category=<?php echo $category; ?>">
+                                                            <div class="widget-stat card {{ $bgClasses[$classIndex] }}">
+                                                                <div class="card-body p-4">
+                                                                    <div class="media">
 
-                                                                   
+
                                                                         <p class="mb-1"
                                                                             style="color: black; font-size: 16px;">
-                                                                            {{ ucwords($category) }}</p>
-                                                                 
+                                                                            {{ ucwords(str_replace('_', ' ', $category)) }}
 
 
 
-                                                                    <div class="media-body text-white text-end">
 
-                                                                        <h6 class="text-white">{{ $count }}
-                                                                        </h6>
+                                                                        <div class="media-body text-white text-end">
+
+                                                                            <h6 class="text-white">{{ $count }}
+                                                                            </h6>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </a>
+                                                        </a>
                                                     </div>
                                                 @endif
                                                 @php
@@ -124,8 +123,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div
-                                                        class="d-flex align-items-center justify-content-between mb-3">
+                                                    <div class="d-flex align-items-center justify-content-between mb-3">
                                                         <span class="fs-16 text-gray">
                                                             Total Documents
                                                         </span>
@@ -147,7 +145,7 @@
                                     </div>
                                 </div>
 
-                           
+
 
                             </div>
 
@@ -209,6 +207,9 @@
                                         @endphp
                                         @php
                                             $totalHoldedCount = array_sum($documentTypeWiseCounts['holdedCounts']);
+                                            $totalReviewerHoldedCount = array_sum(
+                                                $documentTypeWiseCounts['reviewerHoldCounts'],
+                                            );
                                             // dd($totalNotAcceptedCount);
                                         @endphp
                                         <div class="col-xl-6 col-sm-6">
@@ -226,14 +227,26 @@
                                                             </div>
                                                         </div>
                                                         <div class="mt-2">
-                                                            <p class="mb-0"><strong
+                                                            <p class="mb-0">
+                                                                <strong
                                                                     class="text-danger me-2">{{ $totalHoldedCount }}</strong>on
-                                                                hold</p>
+                                                                Hold  ~  <strong
+                                                                class="text-danger me-2">{{ $totalReviewerHoldedCount }}</strong>on
+                                                                Reviewer Hold
+
+                                                            </p>
+                                                            {{-- <p class="mb-0">
+                                                                <strong
+                                                                    class="text-danger me-2">{{ $totalReviewerHoldedCount }}</strong>on
+                                                                reviewer hold
+
+                                                            </p> --}}
                                                         </div>
                                                     </div>
                                                     <div>
                                                         <h2 class="fs-32 font-w700 mb-0">
-                                                            {{ $totalNotAcceptedCount + $totalHoldedCount }}</h2>
+                                                            {{ $totalNotAcceptedCount + $totalHoldedCount + $totalReviewerHoldedCount }}
+                                                        </h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -260,7 +273,8 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <h2 class="fs-32 font-w700 mb-0">{{ $totalAcceptedCount }}</h2>
+                                                        <h2 class="fs-32 font-w700 mb-0">{{ $totalAcceptedCount }}
+                                                        </h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -307,15 +321,13 @@
                                             $totalAreaAcres =
                                                 $totalAreaFeet / 43560 + $getGeographicalCounts['totalAreaAcre'];
 
-                                          
-
                                         @endphp
 
                                         <div class="col-xl-12 col-lg-12 col-sm-12">
                                             <div class="card overflow-hidden">
                                                 <div class="card-body" style="padding:0;">
                                                     <div class="text-center">
-                                                 
+
                                                     </div>
                                                 </div>
 
@@ -361,8 +373,10 @@
                                                                         </div>
                                                                         <div class="media-body">
                                                                             <h5 class="mb-1">{{ $user->name }}
-                                                                                <small class="text-muted float-right"> 
-                                                                                    <a href="/users/{{ $user->id }}/reviewed-documents" class="btn btn-primary btn-xxs shadow" style="float: right;">
+                                                                                <small class="text-muted float-right">
+                                                                                    <a href="/users/{{ $user->id }}/reviewed-documents"
+                                                                                        class="btn btn-primary btn-xxs shadow"
+                                                                                        style="float: right;">
                                                                                         <i class="fa fa-eye"></i>
                                                                                     </a>
                                                                                 </small>

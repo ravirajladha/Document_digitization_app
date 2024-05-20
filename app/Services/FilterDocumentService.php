@@ -24,16 +24,22 @@ class FilterDocumentService
         if ($court_case_no) {
             $query->where('court_case_no', 'like', '%' . $court_case_no . '%');
         }
+        // if ($category) {
+        //     $query->where('category', $category);
+        // }
         if ($category) {
-            $query->where('category', $category);
+            $query->where(function ($q) use ($category) {
+                $q->whereRaw("FIND_IN_SET(?, category)", [$category]);
+            });
         }
+
     
         if ($doc_no) {
             $query->where('doc_no',  $doc_no );
         }
     
         if ($survey_no) {
-            $query->where('survey_no', $survey_no );
+            $query->where('survey_no', 'like', '%' . $survey_no . '%');
         }
         // dd($start_date);
         if ($start_date && $end_date) {
