@@ -1,11 +1,18 @@
+<style>
+    .bootstrap-popover .btn {
+        padding: 2px 6px; /* Adjust padding for smaller size */
+        font-size: 0.75rem; /* Adjust font size for smaller text */
+    }
+</style>
 <div class="col-md-6">
     <div class="mb-3">
         <label for="documentType" class="form-label">Document Type</label>
         <div class="bootstrap-popover d-inline-block float-end ">
-            <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body"
-                data-bs-toggle="popover" data-bs-placement="top"
-                data-bs-content="THe below filter contains [xx], this indicated the number of approved documents in each stage."
-                title="Document Name Mandatory"><i class="fas fa-info-circle"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top"
+            data-bs-content="The below filter contains [xx], this indicated the number of approved documents in each stage."
+            title="Document Name Mandatory">
+            <i class="fas fa-info-circle"></i>
+        </button>
         </div>
         <select class="form-control" id="documentType" name="document_type"
             onchange="updateSelections('documentType', this.value)" required>
@@ -54,8 +61,8 @@
 <div class="col-md-12">
     <div class="mb-3">
         <label for="document" class="form-label">Document </label>
-        <div class="bootstrap-popover d-inline-block float-end mb-1">
-            <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body"
+        <div class="bootstrap-popover d-inline-block float-end ">
+            <button type="button" class="btn btn-primary btn-sm  " data-bs-container="body"
                 data-bs-toggle="popover" data-bs-placement="top"
                 data-bs-content="The document name gets filter on select of Document Type -> State -> District -> Village and the Document should be approved. "
                 title="Document Name Mandatory"><i class="fas fa-info-circle"></i></button>

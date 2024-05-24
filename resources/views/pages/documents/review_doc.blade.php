@@ -40,6 +40,25 @@
                                         overflow-x: auto;
                                     }
                                 </style>
+                                @php
+                                    if (!function_exists('addOrdinalSuffix')) {
+                                        function addOrdinalSuffix($num)
+                                        {
+                                            $num = (int) $num;
+                                            if (!in_array($num % 100, [11, 12, 13])) {
+                                                switch ($num % 10) {
+                                                    case 1:
+                                                        return $num . 'st';
+                                                    case 2:
+                                                        return $num . 'nd';
+                                                    case 3:
+                                                        return $num . 'rd';
+                                                }
+                                            }
+                                            return $num . 'th';
+                                        }
+                                    }
+                                @endphp
                                 <div class="table-responsive">
                                     <table class="table table-striped table-responsive-sm">
                                         <tbody style="padding:0 0 0 0;">
@@ -85,6 +104,19 @@
                                                             }
                                                             if ($attribute === 'latitude') {
                                                                 $latitude = $value;
+                                                            }
+                                                            if ($attribute === 'issued_date') {
+                                                                try {
+                                                                    $date = \Carbon\Carbon::createFromFormat(
+                                                                        'Y-m-d',
+                                                                        $value,
+                                                                    );
+                                                                    $issued_date = $date->format('d-M-Y');
+                                                                    $value = $issued_date;
+                                                                } catch (\Exception $e) {
+                                                                    // Handle the exception if the date format is incorrect
+                                                                    $value = $value; // Keep original value if parsing fails
+                                                                }
                                                             }
                                                         @endphp
                                                         @php
@@ -356,7 +388,8 @@
                                             <div class="card text-white bg-dark">
                                                 <ul class="list-group list-group-flush">
                                                     <li class="list-group-item d-flex justify-content-between"><span
-                                                            class="mb-0 mt-0 text-white" style="font-size: 20px;padding-right: 30px;">{{ $specialColumn['name'] }}</span><strong
+                                                            class="mb-0 mt-0 text-white"
+                                                            style="font-size: 20px;padding-right: 30px;">{{ $specialColumn['name'] }}</span><strong
                                                             class="text-white">{{ $specialColumn['value'] }}</strong>
                                                     </li>
                                                 </ul>
@@ -460,12 +493,8 @@
                                                         <tr>
                                                             <td>{{ $index + 1 }}</td>
                                                             <td>
-                                                                <span class="badge bg-{{ 
-                                                                    $log->status == 0 ? 'danger' : 
-                                                                    ($log->status == 1 ? 'success' : 
-                                                                    ($log->status == 2 ? 'dark' : 
-                                                                    'warning')) 
-                                                                }}">
+                                                                <span
+                                                                    class="badge bg-{{ $log->status == 0 ? 'danger' : ($log->status == 1 ? 'success' : ($log->status == 2 ? 'dark' : 'warning')) }}">
                                                                     @if ($log->status == 0)
                                                                         Pending
                                                                     @elseif ($log->status == 1)
@@ -476,7 +505,7 @@
                                                                         Reviewer Feedback
                                                                     @endif
                                                                 </span>
-                                                                
+
                                                             </td>
                                                             <td>{{ date('H:i:s d/m/Y ', strtotime($log->created_at)) }}
                                                             </td>
@@ -871,7 +900,7 @@
 <script>
     function fetchReceivers(receiverTypeId) {
         $.ajax({
-            url: '/get-receivers/' + receiverTypeId,
+            url: '/get-active-receivers/' + receiverTypeId,
             type: 'GET',
 
             success: function(response) {

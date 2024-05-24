@@ -66,7 +66,7 @@ class UserController extends Controller
 
         // Loop through each date
         foreach ($changedDates as $date) {
-            $formattedDate = date('d/m/Y', strtotime($date));
+            $formattedDate = date('d-M-Y', strtotime($date));
             // Get the count of each status type for the current date
             $counts = DocumentStatusLog::where('created_by', $id)
                 ->whereDate('created_at', $date)

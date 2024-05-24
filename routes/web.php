@@ -49,6 +49,8 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('receivers.update');
     Route::get('/get-receivers/{typeId}', [ReceiverProcessController::class, 'getReceiversByType'])
         ->name('receivers.byType');
+    Route::get('/get-active-receivers/{typeId}', [ReceiverProcessController::class, 'getActiveReceiversByType'])
+        ->name('activeReceivers.byType');
     Route::get('/get-updated-receivers', [ReceiverController::class, 'getUpdatedReceivers'])
         ->name('receivers.updated');
 
@@ -79,7 +81,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
 
 
     Route::get('/review_doc/{table}/{id}', [DocumentController::class, 'review_doc'])
-        ->name('documents.review');
+        ->name('documents.review.detail');
     Route::post('/add-document-data', [DocumentController::class, 'add_document_data'])
         ->name('documents.data.add');
     Route::put('/update-first-document-data/{id}', [DocumentController::class, 'updateFirstDocumentData'])

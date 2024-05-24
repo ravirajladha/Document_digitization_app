@@ -76,44 +76,69 @@ class FilterDocumentService
 
         $area_range_start  = intval($area_range_start);
         $area_range_end  = intval($area_range_end);
+        // dd($area_range_start, $area_range_end);
 // dd(232323);
-        if ($area_range_start !== null || $area_range_end !== null) {
-            $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
-                if ($area_unit) {
-                    if ($area_unit === 'Acres') {
-                        // dd(23);
-                        // dd($area_range_start,$area_range_end);
-                        // Search for both acres and cents
-                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                            $q->where('unit', 'acres and cents')
-                                ->where('area', '>=', $area_range_start)
-                                ->where('area', '<=', $area_range_end);
-                        });
-                        // Convert acres to square feet and search
-                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                            $q->where('unit', 'Square Feet')
-                                ->where('area', '>=', $area_range_start * 43560)
-                                ->where('area', '<=', $area_range_end * 43560);
-                        });
-                    } elseif ($area_unit === 'Square Feet') {
-                        // Search for square feet
-                        // dd(22);
-                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                            $q->where('unit', 'Square Feet')
-                                ->where('area', '>=', $area_range_start)
-                                ->where('area', '<=', $area_range_end);
-                        });
-                        // Convert square feet to acres and cents and search
-                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                            $q->where('unit', 'acres and cents')
-                                ->where('area', '>=', $area_range_start / 43560)
-                                ->where('area', '<=', $area_range_end / 43560);
-                        });
+if ($area_range_start !== null || $area_range_end !== null) {
+    $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
+        if ($area_unit) {
+            if ($area_unit === 'Acres') {
+                // Search for both acres and cents
+                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                    $q->where('unit', 'acres and cents');
+                    
+                    if ($area_range_start !== null && $area_range_end !== null) {
+                        $q->whereBetween('area', [$area_range_start, $area_range_end]);
+                    } elseif ($area_range_start !== null) {
+                        $q->where('area', '>=', $area_range_start);
+                    } elseif ($area_range_end !== null) {
+                        $q->where('area', '<=', $area_range_end);
                     }
-                }
-            });
+                });
+
+                // Convert acres to square feet and search
+                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                    $q->where('unit', 'Square Feet');
+                    
+                    if ($area_range_start !== null && $area_range_end !== null) {
+                        $q->whereBetween('area', [$area_range_start * 43560, $area_range_end * 43560]);
+                    } elseif ($area_range_start !== null) {
+                        $q->where('area', '>=', $area_range_start * 43560);
+                    } elseif ($area_range_end !== null) {
+                        $q->where('area', '<=', $area_range_end * 43560);
+                    }
+                });
+
+            } elseif ($area_unit === 'Square Feet') {
+                // Search for square feet
+                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                    $q->where('unit', 'Square Feet');
+                    
+                    if ($area_range_start !== null && $area_range_end !== null) {
+                        $q->whereBetween('area', [$area_range_start, $area_range_end]);
+                    } elseif ($area_range_start !== null) {
+                        $q->where('area', '>=', $area_range_start);
+                    } elseif ($area_range_end !== null) {
+                        $q->where('area', '<=', $area_range_end);
+                    }
+                });
+
+                // Convert square feet to acres and cents and search
+                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                    $q->where('unit', 'acres and cents');
+                    
+                    if ($area_range_start !== null && $area_range_end !== null) {
+                        $q->whereBetween('area', [$area_range_start / 43560, $area_range_end / 43560]);
+                    } elseif ($area_range_start !== null) {
+                        $q->where('area', '>=', $area_range_start / 43560);
+                    } elseif ($area_range_end !== null) {
+                        $q->where('area', '<=', $area_range_end / 43560);
+                    }
+                });
+            }
         }
-        
+    });
+}
+
         Log::info('Generated SQL Query: ' . $query->toSql());
 
 

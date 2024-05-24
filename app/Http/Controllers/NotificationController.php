@@ -44,7 +44,7 @@ class NotificationController extends Controller
 
         $notifications = $notificationsQuery->orderBy('created_at', 'desc')->get();
 
-        return view('pages.notifications', [
+        return view('pages.notifications.notifications', [
             'notifications' => $notifications,
             // Pass additional data as needed
         ]);

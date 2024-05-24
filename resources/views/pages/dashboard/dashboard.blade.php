@@ -98,8 +98,9 @@
                                                                 @php
                                                                     $count =
                                                                         $documentTypeWiseCounts['chartCounts'][$index];
-                                                                    $percentage =
-                                                                        $total > 0 ? round(($count / $total) * 100) : 0;
+                                                                    // $percentage =
+                                                                    //     $total > 0 ? round(($count / $total) * 100) : 0;
+                                                                        $percentage = $total > 0 ? round(($count / $total) * 100, 2) : 0;
                                                                 @endphp
                                                                 <div
                                                                     class="d-flex align-items-center justify-content-between mb-3">
@@ -527,7 +528,7 @@
                 }
             }]
         };
-
+     
         var chart = new ApexCharts(document.querySelector("#emailchart"), options);
         chart.render();
     }

@@ -15,13 +15,6 @@
 
                     </ol>
                 </div>
-
-
-
-
-
-
-
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-12">
@@ -66,11 +59,11 @@
                                                         <th scope="row">{{ $index + 1 }}</th>
                                                         <td>{{ $item->message }}</td>
 
-                                                        <td>{{ date('d-m-Y H:i:s', strtotime($item->created_at)) }}</td>
+                                                        <td>{{ date('d-M-Y H:i:s', strtotime($item->created_at)) }}</td>
                                                         <td>
-                                                            @if (isset($item->dynamic_id))
+                                                            @if (isset($item->doc_id))
                                                                 <a
-                                                                    href="{{ route('documents.review', ['table' => $item->masterDocData->document_type_name, 'id' => $item->dynamic_id]) }}">
+                                                                    href="{{ route('documents.review.detail', ['table' => $item->masterDocData->document_type_name, 'id' => $item->doc_id]) }}">
                                                                     <button type="button"
                                                                         class="btn btn-success mb-2  btn-sm">
                                                                         <i class="fas fa-eye"></i>

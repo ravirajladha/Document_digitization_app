@@ -490,7 +490,7 @@
                                                                 </td>
                                                                 <td>
 
-                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Delete PDF') @endphp
+                                                                    {{-- @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Delete PDF') @endphp --}}
                                                                 </td>
                                                                 <td></td>
                                                             </tr>
@@ -516,7 +516,7 @@
                                                                 <td></td>
                                                                 <td></td>
                                                             </tr>
-                                                            <tr>
+                                                            {{-- <tr>
                                                                 <td class="module-name">Application Settings
                                                                 </td>
                                                                 <td></td>
@@ -526,7 +526,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                            </tr>
+                                                            </tr> --}}
 
                                                             </tr>
 

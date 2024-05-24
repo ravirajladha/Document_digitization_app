@@ -1,5 +1,5 @@
 <x-app-layout>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
     <x-header />
     <x-sidebar />
@@ -30,8 +30,12 @@
 
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
-                                        <table id="example3" class="display" style="min-width: 845px">
-                                            {{-- <table id="example3" class="display"> --}}
+                                        {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
+                                            @if ($logs->isEmpty())
+                                            <p>No logs available.</p>
+                                        @else
+                                            <table  class="table table-responsive-md">
+                                         {{--    <table id="example3" class="display"> --}}
 
                                             <thead>
                                                 <tr>
@@ -47,11 +51,10 @@
                                             </thead>
                                             <tbody>
                                                 @php
-                                                   $counter = 0; // Calculate the starting index
+                                                    $counter = 0; // Calculate the starting index
                                                 @endphp
 
-@foreach ($logs->chunk(10) as $batch)
-@foreach ($batch as $log)
+                                                @foreach ($logs as $log)
                                                     @php $counter++; @endphp
                                                     <tr>
                                                         {{-- <td>{{ $counter }}</td>  --}}
@@ -62,20 +65,29 @@
                                                         <td style="max-width:200px; word-wrap:break-word;">
                                                             {{ $log->changes }}</td> {{-- Use max-width and word-wrap --}}
                                                         <td>{{ $log->action }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($log->created_at)->format('H:i d/m/Y') }}
-                                                        </td> {{-- Format the created_at timestamp --}}
+                                                        <td>{{ \Carbon\Carbon::parse($log->created_at)->format('H:i d-M-Y') }}
+                                                            
+                                                        </td> 
+                                                        
+
+                                                        {{-- <td>{{ Carbon::parse($soldLands->created_at)->format('H:i d-M-Y') }}</td> --}}
                                                         {{-- <td>{{ \Carbon\Carbon::parse($log->updated_at)->format('H:i d/m/Y') }}</td>  --}}
                                                         {{-- Format the updated_at timestamp --}}
                                                     </tr>
                                                 @endforeach
-                                                @endforeach
 
                                             </tbody>
                                         </table>
+                                        {{-- <div class="row">
+                                        {{ $logs->links() }}
 
-
-
-
+                                        </div> --}}
+                                        <div class="row">
+                                            <div class="col">
+                                                {{ $logs->links('vendor.pagination.custom') }}
+                                            </div>
+                                        </div>
+                                    @endif
                                     </div>
                                 </div>
                             </div>
@@ -93,6 +105,3 @@
 
 
 </x-app-layout>
-{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
-<!-- Latest compiled and minified jQuery -->
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}

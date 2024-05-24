@@ -70,6 +70,11 @@ class ReceiverProcessController extends Controller
         $receivers = Receiver::where('receiver_type_id', $typeId)->get();
         return response()->json(['receivers' => $receivers]);
     }
+    public function getActiveReceiversByType($typeId)
+    {
+        $receivers = Receiver::where('receiver_type_id', $typeId)->where('status',true)->get();
+        return response()->json(['receivers' => $receivers]);
+    }
 
     public function assignDocumentsToReceiver(Request $request)
     {
@@ -88,9 +93,14 @@ class ReceiverProcessController extends Controller
         $timestamp = Carbon::now()->timestamp;
         $token = Str::random(40) . '_' . $timestamp;
         $expiresAt = Carbon::now()->addHours(24);
-
+        // $receiverId = $validatedData['receiver_id'];
         // Create a new document assignment entry
         $otp = rand(1000, 9999);
+        $receiver = Receiver::find($validatedData['receiver_id']);
+        if (!$receiver || $receiver->status != 1) {
+            session()->flash('toastr', ['type' => 'error', 'message' => 'Receiver is not active.']);
+            return redirect()->back();
+        }
         // dd($otp);
         $assignment = Document_assignment::create([
             'document_type' => $validatedData['document_type'],

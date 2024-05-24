@@ -127,7 +127,7 @@
                                                         <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
                                                         </td>
                                                         <td>{{ $item->document->name }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($item->expires_at)->format('M d, Y, g:i A') }}
+                                                        <td>{{ \Carbon\Carbon::parse($item->expires_at)->format('g:i A, d-M-Y') }}
                                                         </td>
 
                                                         <td> {!! $item->first_viewed_at
@@ -165,7 +165,6 @@
 
     @include('layouts.footer')
 
-
 </x-app-layout>
 
 
@@ -193,7 +192,7 @@
 <script>
     function fetchReceivers(receiverTypeId) {
         $.ajax({
-            url: '/get-receivers/' + receiverTypeId,
+            url: '/get-active-receivers/' + receiverTypeId,
             type: 'GET',
 
             success: function(response) {

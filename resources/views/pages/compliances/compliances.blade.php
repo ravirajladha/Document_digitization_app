@@ -122,7 +122,7 @@
                                                         <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
                                                         </td>
                                                         <td>{{ $item->document->name }}</td>
-                                                        <td>{{ date('d-m-Y', strtotime($item->due_date)) }}</td>
+                                                        <td>{{ date('d-M-Y', strtotime($item->due_date)) }}</td>
 
                                                         <td> {!! $item->is_recurring
                                                             ? '<span class="badge bg-success">Yes</span>'

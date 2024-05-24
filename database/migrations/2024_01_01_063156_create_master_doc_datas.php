@@ -51,7 +51,7 @@ return new class extends Migration
             $table->string('longitude')->nullable();
             $table->string('court_case_no')->nullable();
             $table->string('doc_no')->nullable();
-            $table->string('survey_no')->nullable();
+            $table->text('survey_no')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

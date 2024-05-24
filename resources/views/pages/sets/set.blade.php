@@ -35,8 +35,8 @@
                                     <div class="table-responsive">
                                         {{-- <div class="table-responsive"> --}}
                                         {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
-                                        <table id="example3" class="display">
-
+                                        <table id="example2" class="display">
+                                            {{-- <table  class="table table-responsive-md"> --}}
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl. No.</th>
@@ -76,7 +76,11 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-
+                                        <div class="row">
+                                            <div class="col">
+                                                {{ $data->links('vendor.pagination.custom') }}
+                                            </div>
+                                        </div>
                                         <!-- Modal (outside the loop) -->
                                         <!-- Modal -->
                                         <div class="modal fade" id="exampleModalCenter">
@@ -159,100 +163,191 @@
 {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 
 <script>
-    $(document).ready(function() {
-        $('#myAjaxForm').on('submit', function(e) {
-            e.preventDefault(); // prevent the form from 'submitting'
+    // $(document).ready(function() {
+    //     $('#myAjaxForm').on('submit', function(e) {
+    //         e.preventDefault(); // prevent the form from 'submitting'
 
-            var url = $(this).attr('action'); // get the target URL
-            var formData = new FormData(this); // create a FormData object
+    //         var url = $(this).attr('action'); // get the target URL
+    //         var formData = new FormData(this); // create a FormData object
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: formData,
-                processData: false, // tell jQuery not to process the data
-                contentType: false, // tell jQuery not to set contentType
-                success: function(response) {
+    //         $.ajax({
+    //             url: url,
+    //             type: 'POST',
+    //             data: formData,
+    //             processData: false, // tell jQuery not to process the data
+    //             contentType: false, // tell jQuery not to set contentType
+    //             success: function(response) {
 
-                    if (response.success) {
-                        toastr.success(response.success); // Display success toast
-                    }
-                    loadUpdatedSets();
-                location.reload(true);
+    //                 if (response.success) {
+    //                     toastr.success(response.success); // Display success toast
+    //                 }
+    //                 loadUpdatedSets();
+    //             location.reload(true);
                     
-                    $('#myAjaxForm')[0].reset();
-                },
-                error: function(error) {
-                    console.log(error);
-                    toastr.warning("Duplicate set found");
-                    if (error.responseJSON && error.responseJSON.error) {
-                        toastr.error(error.responseJSON.error); // Display error toast
-                    }
-                }
-            });
-        });
-    });
+    //                 $('#myAjaxForm')[0].reset();
+    //             },
+    //             error: function(error) {
+    //                 console.log(error);
+    //                 toastr.warning("Duplicate set found");
+    //                 if (error.responseJSON && error.responseJSON.error) {
+    //                     toastr.error(error.responseJSON.error); // Display error toast
+    //                 }
+    //             }
+    //         });
+    //     });
+    // });
 
 
-    function loadUpdatedSets() {
-        $.ajax({
-            url: '/get-updated-sets',
-            type: 'GET',
-            success: function(sets) {
-                var newTableContent = '';
-                $.each(sets, function(index, set) {
-                    // Assuming 'set.count' is the property that has the count for each set
-                    // and 'set.id' is the property that contains the set ID.
-                    newTableContent += '<tr>' +
-                        '<th scope="row">' + (index + 1) + '</th>' +
-                        '<td>' + set.name + '</td>' +
-                        '<td>' + (set.count ?? 0) + '</td>' + // Display the count for each set
-                        '<td><a href="/documents-for-set/' + set.id +
-                        '"><button class="btn btn-secondary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
-                        '<td> <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-set-id="' +
-                        set.id + '" data-set-name="' + set.name +
-                        '"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>' +
-                        '</tr>';
-                });
-                $('#example3 tbody').html(newTableContent);
-            }
-        });
-    }
+    // function loadUpdatedSets() {
+    //     $.ajax({
+    //         url: '/get-updated-sets',
+    //         type: 'GET',
+    //         success: function(sets) {
+    //             var newTableContent = '';
+    //             $.each(sets, function(index, set) {
+    //                 // Assuming 'set.count' is the property that has the count for each set
+    //                 // and 'set.id' is the property that contains the set ID.
+    //                 newTableContent += '<tr>' +
+    //                     '<th scope="row">' + (index + 1) + '</th>' +
+    //                     '<td>' + set.name + '</td>' +
+    //                     '<td>' + (set.count ?? 0) + '</td>' + // Display the count for each set
+    //                     '<td><a href="/documents-for-set/' + set.id +
+    //                     '"><button class="btn btn-secondary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
+    //                     '<td> <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-set-id="' +
+    //                     set.id + '" data-set-name="' + set.name +
+    //                     '"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>' +
+    //                     '</tr>';
+    //             });
+    //             $('#example3 tbody').html(newTableContent);
+    //         }
+    //     });
+    // }
 
-    //set modal update
+    // //set modal update
+    // $(document).ready(function() {
+    //     $('.edit-btn').on('click', function() {
+    //         var setId = $(this).data('set-id');
+    //         var setName = $(this).data('set-name');
+
+    //         // Prefill the form
+    //         $('#updateSetForm #setName').val(setName);
+    //         $('#updateSetForm #setId').val(setId);
+    //     });
+    // });
+
+    // function submitUpdateForm() {
+    //     var formData = $('#updateSetForm').serialize(); // Serialize form data
+    //     console.log(formData);
+    //     // AJAX call to update the set
+    //     $.ajax({
+    //         url: '/update-set', // Replace with your server's update URL
+    //         type: 'POST',
+    //         data: formData,
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+    //                 'content') // Ensure this meta tag is available in your HTML
+    //         },
+    //         success: function(response) {
+    //             // Handle success (e.g., close modal, show message, update table)
+    //             toastr.success(response.success);
+    //             location.reload(true);
+
+    //             loadUpdatedSets();
+    //         },
+    //         error: function(error) {
+    //             // Handle error
+    //         }
+    //     });
+    // }
+
     $(document).ready(function() {
-        $('.edit-btn').on('click', function() {
-            var setId = $(this).data('set-id');
-            var setName = $(this).data('set-name');
+    // Attach event listener to dynamically generated edit buttons
+    $(document).on('click', '.edit-btn', function() {
+        var setId = $(this).data('set-id');
+        var setName = $(this).data('set-name');
 
-            // Prefill the form
-            $('#updateSetForm #setName').val(setName);
-            $('#updateSetForm #setId').val(setId);
-        });
+        // Prefill the form with the set's data
+        $('#updateSetForm #setName').val(setName);
+        $('#updateSetForm #setId').val(setId);
     });
 
-    function submitUpdateForm() {
-        var formData = $('#updateSetForm').serialize(); // Serialize form data
-        console.log(formData);
-        // AJAX call to update the set
+    $('#myAjaxForm').on('submit', function(e) {
+        e.preventDefault(); // prevent the form from 'submitting'
+
+        var url = $(this).attr('action'); // get the target URL
+        var formData = new FormData(this); // create a FormData object
+
         $.ajax({
-            url: '/update-set', // Replace with your server's update URL
+            url: url,
             type: 'POST',
             data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                    'content') // Ensure this meta tag is available in your HTML
-            },
+            processData: false, // tell jQuery not to process the data
+            contentType: false, // tell jQuery not to set contentType
             success: function(response) {
-                // Handle success (e.g., close modal, show message, update table)
-                toastr.success(response.success);
+                if (response.success) {
+                    toastr.success(response.success); // Display success toast
+                }
+                loadUpdatedSets();
                 location.reload(true);
 
-                loadUpdatedSets();
+                $('#myAjaxForm')[0].reset();
             },
             error: function(error) {
-                // Handle error
+                console.log(error);
+                toastr.warning("Duplicate set found");
+                if (error.responseJSON && error.responseJSON.error) {
+                    toastr.error(error.responseJSON.error); // Display error toast
+                }
             }
         });
-    }
+    });
+});
+
+function loadUpdatedSets() {
+    $.ajax({
+        url: '/get-updated-sets',
+        type: 'GET',
+        success: function(sets) {
+            var newTableContent = '';
+            $.each(sets, function(index, set) {
+                newTableContent += '<tr>' +
+                    '<th scope="row">' + (index + 1) + '</th>' +
+                    '<td>' + set.name + '</td>' +
+                    '<td>' + (set.count ?? 0) + '</td>' +
+                    '<td><a href="/documents-for-set/' + set.id +
+                    '"><button class="btn btn-secondary"><i class="fas fa-eye"></i>&nbsp;View</button></a></td>' +
+                    '<td> <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-set-id="' +
+                    set.id + '" data-set-name="' + set.name +
+                    '"><i class="fas fa-pencil"></i>&nbsp;Edit</button></td>' +
+                    '</tr>';
+            });
+            $('#example3 tbody').html(newTableContent);
+        }
+    });
+}
+
+function submitUpdateForm() {
+    var formData = $('#updateSetForm').serialize(); // Serialize form data
+    console.log(formData);
+    // AJAX call to update the set
+    $.ajax({
+        url: '/update-set', // Replace with your server's update URL
+        type: 'POST',
+        data: formData,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ensure this meta tag is available in your HTML
+        },
+        success: function(response) {
+            toastr.success(response.success);
+            location.reload(true);
+            loadUpdatedSets();
+        },
+        error: function(error) {
+            console.log(error);
+            toastr.error('Failed to update the set.');
+        }
+    });
+}
+
 </script>
+{{-- the above submission or updation was able to do from normal posts, and was achieved asynchronoulsy. but due to regular clients feedback, it was stopped and normal call was made, but the check of duplicacy of the sets are achieved through ajax --}}

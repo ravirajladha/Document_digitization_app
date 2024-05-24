@@ -16,22 +16,16 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                                 <li class="breadcrumb-item"><a href="javascript:void(0)">Sold Lands</a></li>
-                                {{-- <li class="breadcrumb-item active"><a href="javascript:void(0)">
-                                    {{ isset($soldLand) ? 'Add Sold Land Details' : 'Update Land Details' }}
-                                    </a>
-                                </li> --}}
+
                             </ol>
                         </div>
                     </div>
-                
-                    {{-- <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.update', $soldLand->id) : route('soldLand.store') }}" method="post" enctype="multipart/form-data"> --}}
-                        {{-- <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.update', $soldLand->id) : route('soldLand.store') }}" method="post" enctype="multipart/form-data"> --}}
-                            <form id="soldLandForm" action="{{ isset($soldLand) ? route('soldLand.storeOrUpdate', $soldLand->id) : route('soldLand.storeOrUpdate') }}" method="post" enctype="multipart/form-data">
 
-                            @csrf <!-- Include CSRF token -->
-                            {{-- @if(isset($soldLand))
-                                @method('PUT') 
-                            @endif --}}
+                    <form id="soldLandForm"
+                        action="{{ isset($soldLand) ? route('soldLand.storeOrUpdate', $soldLand->id) : route('soldLand.storeOrUpdate') }}"
+                        method="post" enctype="multipart/form-data">
+
+                        @csrf <!-- Include CSRF token -->
 
 
                         @csrf
@@ -59,10 +53,9 @@
                                                     <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="district_number" class="form-label">State
-                                                                </label>
-                                                            <input type="text" class="form-control"
-                                                                name="state" id="state"
-                                                                aria-describedby="emailHelp"
+                                                            </label>
+                                                            <input type="text" class="form-control" name="state"
+                                                                id="state" aria-describedby="emailHelp"
                                                                 placeholder="Enter State "
                                                                 value="{{ old('state', $soldLand->state ?? '') }}">
                                                         </div>
@@ -108,7 +101,7 @@
                                                                 value="{{ old('village', $soldLand->village ?? '') }}">
                                                         </div>
                                                     </div>
-<hr/>
+                                                    <hr />
 
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
@@ -130,13 +123,14 @@
                                                                 value="{{ old('plot', $soldLand->plot ?? '') }}">
                                                         </div>
                                                     </div>
-<hr/>
+                                                    <hr />
 
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="wet_land" class="form-label">Wet Land</label>
-                                                            <input type="text" class="form-control" name="wet_land"
-                                                                id="wet_land" aria-describedby="emailHelp"
+                                                            <input type="text" class="form-control"
+                                                                name="wet_land" id="wet_land"
+                                                                aria-describedby="emailHelp"
                                                                 placeholder="Enter Wet Land"
                                                                 value="{{ old('wet_land', $soldLand->wet_land ?? '') }}">
                                                         </div>
@@ -145,13 +139,14 @@
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="dry_land" class="form-label">Dry Land</label>
-                                                            <input type="text" class="form-control" name="dry_land"
-                                                                id="dry_land" aria-describedby="emailHelp"
+                                                            <input type="text" class="form-control"
+                                                                name="dry_land" id="dry_land"
+                                                                aria-describedby="emailHelp"
                                                                 placeholder="Enter Dry Land"
                                                                 value="{{ old('dry_land', $soldLand->dry_land ?? '') }}">
                                                         </div>
                                                     </div>
-                                                   
+
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="traditional_land"
@@ -207,9 +202,9 @@
                                                                 placeholder="Enter Total Dry Land"
                                                                 value="{{ old('total_dry_land', $soldLand->total_dry_land ?? '') }}">
                                                         </div>
-                                                        </div>
-                                                   
-<hr/>
+                                                    </div>
+
+                                                    <hr />
                                                     <div class="mb-3 col-md-6">
                                                         <div class="mb-3">
                                                             <label for="sale_amount" class="form-label">Sale
@@ -299,27 +294,31 @@
                                                                 value="{{ old('balance_land', $soldLand->balance_land ?? '') }}">
                                                         </div>
                                                     </div>
-                                           
-                                                <div class="mb-3 col-md-6">
-                                                    <div class="mb-3">
-                                                        <label for="gap" class="form-label">Gap</label>
-                                                        <input type="text" class="form-control" name="gap"
-                                                            id="gap" aria-describedby="emailHelp"
-                                                            placeholder="Enter Gap"
-                                                            value="{{ old('gap', $soldLand->gap ?? '') }}">
+
+                                                    <div class="mb-3 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label for="gap" class="form-label">Gap</label>
+                                                            <input type="text" class="form-control" name="gap"
+                                                                id="gap" aria-describedby="emailHelp"
+                                                                placeholder="Enter Gap"
+                                                                value="{{ old('gap', $soldLand->gap ?? '') }}">
+                                                        </div>
                                                     </div>
-                                                </div>
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Latitude</label>
-                                                        <input type="text" name="latitude" class="form-control" placeholder="Enter Latitude (-90 to +90)"  value="{{ old('latitude', $soldLand->latitude ?? '') }}">
+                                                        <input type="text" name="latitude" class="form-control"
+                                                            placeholder="Enter Latitude (-90 to +90)"
+                                                            value="{{ old('latitude', $soldLand->latitude ?? '') }}">
                                                     </div>
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Longitude</label>
-                                                        <input type="text" name="longitude" class="form-control" placeholder="Enter Longitude (-180 to +180)" value="{{ old('longitude', $soldLand->longitude ?? '') }}">
+                                                        <input type="text" name="longitude" class="form-control"
+                                                            placeholder="Enter Longitude (-180 to +180)"
+                                                            value="{{ old('longitude', $soldLand->longitude ?? '') }}">
                                                     </div>
                                                     <div class="mb-3 col-md-12">
                                                         <label class="form-label">Document Upload</label>
-                                                        <input type="file" name="file" class="form-control" >
+                                                        <input type="file" name="file" class="form-control">
                                                     </div>
 
 
@@ -347,8 +346,9 @@
 
                                             <div class="card-footer">
                                                 {{-- <a href="" class="btn-link"></a> --}}
-                                                <div  class="text-end">
-                                                    <button class="btn btn-primary" id="submitButton" type="submit">Submit</button>
+                                                <div class="text-end">
+                                                    <button class="btn btn-primary" id="submitButton"
+                                                        type="submit">Submit</button>
                                                 </div>
                                             </div>
 
@@ -367,7 +367,7 @@
 
 
             </div>
-        
+
         </div>
 
     </div>
@@ -406,27 +406,26 @@
     });
 </script>
 <script>
+    document.getElementById('soldLandForm').addEventListener('submit', function(event) {
+        const submitButton = document.getElementById('submitButton');
+        const submittingMessage = document.getElementById('submittingMessage');
 
-document.getElementById('soldLandForm').addEventListener('submit', function(event) {
-    const submitButton = document.getElementById('submitButton');
-    const submittingMessage = document.getElementById('submittingMessage');
-  
-    // Disable the submit button and show a visual indication
-    submitButton.disabled = true;
-    submittingMessage.style.display = 'inline';
-  
-    // Prevent default form submission (optional, if using server-side validation)
-    // event.preventDefault();
-  
-    // Simulate form submission time (optional, for user feedback)
-    setTimeout(function() {
-      // Re-enable the submit button and hide the message
-      submitButton.disabled = false;
-      submittingMessage.style.display = 'none';
-    }, 2000); // Adjust delay as needed
-  });
+        // Disable the submit button and show a visual indication
+        submitButton.disabled = true;
+        submittingMessage.style.display = 'inline';
+
+        // Prevent default form submission (optional, if using server-side validation)
+        // event.preventDefault();
+
+        // Simulate form submission time (optional, for user feedback)
+        setTimeout(function() {
+            // Re-enable the submit button and hide the message
+            submitButton.disabled = false;
+            submittingMessage.style.display = 'none';
+        }, 2000); // Adjust delay as needed
+    });
 </script>
-  
+
 
 
 

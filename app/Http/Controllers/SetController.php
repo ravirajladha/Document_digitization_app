@@ -13,7 +13,7 @@ class SetController extends Controller
 {
     public function viewSet()
     {
-        $data = Set::get();
+        $data = Set::paginate(20);
         
         // Initialize an empty array to hold the counts
         $setCounts = [];

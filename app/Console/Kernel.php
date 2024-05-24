@@ -25,9 +25,14 @@ class Kernel extends ConsoleKernel
             $notificationService = resolve('App\Services\NotificationService');
             $systemUserId = 1; 
             // Logic to check compliances due in the next 30 days
-            $upcomingCompliances = Compliance::where('due_date', '<=', now()->addDays(30))
+            $today = Carbon::today();
+
+            // Retrieve compliances with due dates from 30 days ago to today
+            $upcomingCompliances = Compliance::whereBetween('due_date', [$today->copy()->subDays(30), $today])
                                               ->where('status', 0) // Assuming 'status' field exists
                                               ->get();
+
+                                              
                                             //   dd("213232");
                // Create notifications for each upcoming compliance
             //    dd($upcomingCompliances);

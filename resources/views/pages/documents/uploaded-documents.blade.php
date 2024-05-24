@@ -101,7 +101,7 @@
 
                                                         <td>{{ $fileInfo['uploaded_date'] }}</td>
                                                         <td>
-                                                            @if ($user && $user->hasPermission('Delete PDF'))
+                                                            {{-- @if ($user && $user->hasPermission('Delete PDF'))
                                                                 <div style="display: inline-block;">
                                                                     <form
                                                                         action="{{ route('documents.delete', $fileInfo['name']) }}"
@@ -114,7 +114,7 @@
                                                                                 class="fa fa-trash btn-danger"></i></button>
                                                                     </form>
                                                                 </div>
-                                                            @endif
+                                                            @endif --}}
                                                             <div style="display: inline-block;">
                                                                 <a href="{{ url('/uploads/documents/' . $fileInfo['name']) }}"
                                                                     target="_blank" class="btn btn-primary">

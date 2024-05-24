@@ -1,3 +1,8 @@
+@php
+    use Carbon\Carbon;
+
+@endphp
+
 <x-app-layout>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -29,10 +34,10 @@
                                     </div>
                                     <div class="tools">
                                         @if ($user && $user->hasPermission('Update Sold Land'))
-                                        <a href="/sold-land/{{ $id }}/edit" target="_blank"> <button
-                                                type="button" class="btn btn-success btn-sm float-end">
-                                                <i class="fas fa-pencil"></i>&nbsp; Edit
-                                            </button></a>
+                                            <a href="/sold-land/{{ $id }}/edit" target="_blank"> <button
+                                                    type="button" class="btn btn-success btn-sm float-end">
+                                                    <i class="fas fa-pencil"></i>&nbsp; Edit
+                                                </button></a>
                                         @endif
                                         <a href="javascript:void(0);" class="expand handle"><i
                                                 class="fal fa-angle-down"></i></a>
@@ -182,10 +187,10 @@
                                                     @if ($soldLands->register_date)
                                                         <tr>
                                                             <th>Register Date</th>
-                                                            <td>{{ $soldLands->register_date }}</td>
+                                                            <td>{{ Carbon::parse($soldLands->register_date)->format('d-M-Y') }}
+                                                            </td>
                                                         </tr>
                                                     @endif
-
                                                     @if ($soldLands->book_number)
                                                         <tr>
                                                             <th>Book Number</th>
@@ -214,40 +219,44 @@
                                                         </tr>
                                                     @endif
 
-                                                    @if ($soldLands->file) <!-- Assuming 'file' contains the path to the PDF file -->
-    <tr>
-        <th> Document</th>
-        <td>
-            <a href="{{ asset($soldLands->file) }}" target="_blank">View PDF</a>
-            <!-- Or embed a PDF viewer if you prefer -->
-            <!-- <embed src="{{ asset($soldLands->file) }}" type="application/pdf" width="100%" height="600px" /> -->
-        </td>
-    </tr>
-@endif
+                                                    @if ($soldLands->file)
+                                                        <!-- Assuming 'file' contains the path to the PDF file -->
+                                                        <tr>
+                                                            <th> Document</th>
+                                                            <td>
+                                                                <a href="{{ asset($soldLands->file) }}"
+                                                                    target="_blank">View PDF</a>
+                                                                <!-- Or embed a PDF viewer if you prefer -->
+                                                                <!-- <embed src="{{ asset($soldLands->file) }}" type="application/pdf" width="100%" height="600px" /> -->
+                                                            </td>
+                                                        </tr>
+                                                    @endif
 
 
                                                     @if ($soldLands->created_at)
+                                                    <tr>
+                                                        <th>Created At</th>
+                                                        <td>{{ Carbon::parse($soldLands->created_at)->format('H:i d-M-Y') }}</td>
+                                                    </tr>
+                                                @endif
+                                                    @if ($soldLands->latitude && $soldLands->longitude)
                                                         <tr>
-                                                            <th>Created At</th>
-                                                            <td>{{ $soldLands->created_at }}</td>
+                                                            <th>Latitude</th>
+                                                            <td>{{ $soldLands->latitude }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Longitude</th>
+                                                            <td>{{ $soldLands->longitude }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>View on Map</th>
+                                                            <td>
+                                                                <a href="https://www.google.com/maps/search/?api=1&query={{ $soldLands->latitude }},{{ $soldLands->longitude }}"
+                                                                    target="_blank" class="btn btn-primary">View on
+                                                                    Google Maps</a>
+                                                            </td>
                                                         </tr>
                                                     @endif
-                                                    @if ($soldLands->latitude && $soldLands->longitude)
-    <tr>
-        <th>Latitude</th>
-        <td>{{ $soldLands->latitude }}</td>
-    </tr>
-    <tr>
-        <th>Longitude</th>
-        <td>{{ $soldLands->longitude }}</td>
-    </tr>
-    <tr>
-        <th>View on Map</th>
-        <td>
-            <a href="https://www.google.com/maps/search/?api=1&query={{ $soldLands->latitude }},{{ $soldLands->longitude }}" target="_blank" class="btn btn-primary">View on Google Maps</a>
-        </td>
-    </tr>
-@endif
 
                                                     <!-- Continue with other attributes -->
                                                 </tbody>

@@ -135,7 +135,7 @@ $user = Auth::user();
                                         @endif
 										<div class="media-body">
 											<h6 class="mb-1">{{ $item->message }}</h6>
-											<small class="d-block">{{ $item->created_at->format('F j, Y, g:i a') }}</small>
+											<small class="d-block">{{ $item->created_at->format('j F, Y, g:i a') }}</small>
 
 										</div>
 									</div>

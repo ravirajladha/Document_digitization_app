@@ -1,5 +1,7 @@
+@php
+use Carbon\Carbon;
+@endphp
 <x-app-layout>
-
 
     <x-header />
     <x-sidebar />
@@ -94,6 +96,7 @@
                                                     @foreach($data as $date => $counts)
                                                     <tr>
                                                         <td>{{ $date }}</td>
+                                                        {{-- <td>{{ Carbon::parse($date)->format('d-M-Y') }}</td> --}}
                                                         <td>{{ $counts['Pending'] }}</td>
                                                         <td>{{ $counts['Approved'] }}</td>
                                                         <td>{{ $counts['Hold'] }}</td>
