@@ -259,6 +259,30 @@
                                                         <input type="text" name="survey_no" class="form-control" placeholder="Enter Survey Number">
                                                     </div>
                                                     <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Dry Land</label>
+                                                        <input type="text" name="dry_land" class="form-control"
+                                                            placeholder="Enter Dry Land Area"
+                                                          >
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Wet Land</label>
+                                                        <input type="text" name="wet_land" class="form-control"
+                                                            placeholder="Enter Wet Land Area"
+                                                           >
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Area</label>
+                                                        <input type="text" name="area" class="form-control"
+                                                            placeholder="Enter Area"
+                                                           >
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Unit</label>
+                                                        <input type="text" name="unit" class="form-control"
+                                                            placeholder="Enter Unit (acres and cents  or square feet)"
+                                                           >
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
                                                         <label class="form-label">Longitude</label>
                                                         <input type="text" name="longitude" class="form-control" placeholder="Enter Longitude (-180 to +180)">
                                                     </div>

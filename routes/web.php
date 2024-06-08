@@ -93,6 +93,11 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('documents.basic_detail.edit');
     Route::post('/update_document', [DocumentController::class, 'update_document'])
         ->name('documents.updateStatus');
+    Route::post('/update_document', [DocumentController::class, 'update_document'])
+        ->name('documents.updateStatus');
+    Route::put('/update-status-message/{log}', [DocumentController::class, 'updateStatusMessage'])
+        ->name('documents.statusMessage');
+        // Route::put('/update-status-message/{log}', 'DocumentController@updateStatusMessage')->name('update.statusMessage');
 
     //view documents
     Route::get('/filter-document', [FilterDocumentController::class, 'filterDocument'])

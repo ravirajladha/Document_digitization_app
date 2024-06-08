@@ -1,23 +1,5 @@
 <x-app-layout>
-    @php
-        if (!function_exists('addOrdinalSuffix')) {
-            function addOrdinalSuffix($num)
-            {
-                $num = (int) $num;
-                if (!in_array($num % 100, [11, 12, 13])) {
-                    switch ($num % 10) {
-                        case 1:
-                            return $num . 'st';
-                        case 2:
-                            return $num . 'nd';
-                        case 3:
-                            return $num . 'rd';
-                    }
-                }
-                return $num . 'th';
-            }
-        }
-    @endphp
+
 
     <x-header />
     <x-sidebar />
@@ -33,265 +15,17 @@
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Details</a></li>
                 </ol>
             </div>
-            
             <div class="container-fluid">
-                @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
-               
-            @endif
                 <div class="row">
 
                     <div class="split-pane">
                         <div class="pane left-pane">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Data </h4>
-                                    <a class="btn btn-primary float-end"
-                                    href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                    rel="noopener noreferrer"><i class="fa fa-pencil"></i> Edit</a>
+                                    <h4 class="card-title">Card 1</h4>
                                 </div>
                                 <div class="card-body">
-                                    {{-- <div class="card"> --}}
-                                    {{-- <div class="card-header">
-                                            <h4 class="card-title">Data</h4> --}}
-
-
-                                    {{-- @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
-                                                <a class="btn btn-primary float-end"
-                                                    href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                                    rel="noopener noreferrer">Edit</a>
-                                            @endif --}}
-                                    {{-- </div> --}}
-                                    {{-- <div class="card-body"> --}}
-                                    {{-- <style>
-                                                .table-responsive {
-                                                    width: 100%;
-                                                   
-                                                }
-            
-                                                .table {
-                                                    overflow-x: auto;
-                                                }
-                                            </style> --}}
-
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-responsive-sm">
-                                            <tbody >
-                                                @if ($master_data)
-                                                    @php
-                                                        $latitude = null;
-                                                        $longitude = null;
-                                                    @endphp
-                                                    {{-- @dd($master_data->getAttributes()) --}}
-                                                    @foreach ($master_data->getAttributes() as $attribute => $value)
-                                                        @if (
-                                                            !(
-                                                                $attribute == 'created_by' ||
-                                                                $attribute == 'created_at' ||
-                                                                $attribute == 'updated_at' ||
-                                                                $attribute == 'status_id' ||
-                                                                $attribute == 'set_id' ||
-                                                                $attribute == 'batch_id' ||
-                                                                $attribute == 'document_type' ||
-                                                                $attribute == 'rejection_timestamp' ||
-                                                                $attribute == 'bulk_uploaded' ||
-                                                                $attribute == 'physically' ||
-                                                                $attribute == 'temp_id' ||
-                                                                $attribute == 'id'
-                                                            ) &&
-                                                                $value !== null &&
-                                                                $value !== '')
-                                                            @php
-                                                                if ($attribute === 'document_type_name') {
-                                                                    $value = ucWords(str_replace('_', ' ', $value));
-                                                                }
-                                                                if ($attribute === 'unit') {
-                                                                    if ($value == 1) {
-                                                                        $value = 'Acres and Cents';
-                                                                    } elseif ($value == 2) {
-                                                                        $vlaue = 'Square Feet';
-                                                                    }
-                                                                }
-                                                                // Check for latitude and longitude
-
-                                                                if ($attribute === 'longitude') {
-                                                                    $longitude = $value;
-                                                                }
-                                                                if ($attribute === 'latitude') {
-                                                                    $latitude = $value;
-                                                                }
-                                                                if ($attribute === 'issued_date') {
-                                                                    try {
-                                                                        $date = \Carbon\Carbon::createFromFormat(
-                                                                            'Y-m-d',
-                                                                            $value,
-                                                                        );
-                                                                        $issued_date = $date->format('d-M-Y');
-                                                                        $value = $issued_date;
-                                                                    } catch (\Exception $e) {
-                                                                        // Handle the exception if the date format is incorrect
-                                                                        $value = $value; // Keep original value if parsing fails
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            @php
-                                                                $truncatedValue =
-                                                                    strlen($value) > 35
-                                                                        ? substr($value, 0, 35)
-                                                                        : $value;
-                                                            @endphp
-                                                            <tr style="white-space: nowrap; overflow: hidden;">
-                                                                <th style="padding: 5px;">
-                                                                    {{ ucwords(str_replace('_', ' ', $attribute)) }}
-                                                                </th>
-
-                                                                <td style="padding: 5px;">
-                                                                    @if (strlen($value) > 35)
-                                                                        {{ $truncatedValue }}
-                                                                        <span data-bs-toggle="modal"
-                                                                            data-bs-target="#{{ $attribute }}Modal"
-                                                                            style="cursor: pointer; text-decoration: underline;">
-                                                                            ...
-                                                                        </span>
-                                                                    @else
-                                                                        {{ $value }}
-                                                                    @endif
-
-
-                                                                </td>
-                                                            </tr>
-
-                                                            {{-- Remove comment to debug latitude and longitude --}}
-                                                            <div class="modal fade" id="{{ $attribute }}Modal"
-                                                                tabindex="-1" role="dialog"
-                                                                aria-labelledby="{{ $attribute }}ModalLabel"
-                                                                aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered"
-                                                                    role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title"
-                                                                                id="{{ $attribute }}ModalLabel">
-                                                                                {{ ucwords(str_replace('_', ' ', $attribute)) }}
-                                                                            </h5>
-                                                                            <button type="button" class="btn-close"
-                                                                                data-bs-dismiss="modal"
-                                                                                aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            {{ $value }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-
-                                                            {{-- {{ dd($latitude) }} --}}
-                                                            @if ($latitude !== null && $longitude !== null)
-                                                                <tr>
-                                                                    <th style="padding: 5px;">Location</th>
-                                                                    <td style="padding: 5px;">
-                                                                        <a href="https://www.google.com/maps/search/{{ $latitude }},{{ $longitude }}"
-                                                                            target="_blank" class="btn btn-primary"><i
-                                                                                class="fa fa-location"></i></a>
-                                                                    </td>
-                                                                </tr>
-                                                            @endif
-                                                        @endif
-                                                    @endforeach
-
-
-                                                @endif
-
-                                                <tr style="height: 20px;"></tr>
-                                                @php
-                                                    $normalColumns = [];
-                                                    $specialColumns = [];
-                                                @endphp
-
-                                                @foreach ($columnMetadata as $meta)
-                                                    @if (!in_array($meta->column_name, ['id', 'created_at', 'updated_at', 'status']))
-                                                        @if (!in_array($meta->data_type, [3, 4, 6]))
-                                                            @php
-                                                                $columnName = ucwords(
-                                                                    str_replace('_', ' ', $meta->column_name),
-                                                                );
-                                                                $value = $document->{$meta->column_name} ?? null;
-                                                                $truncatedValue =
-                                                                    strlen($value) > 35
-                                                                        ? substr($value, 0, 35)
-                                                                        : $value;
-                                                                $modalTarget = $meta->column_name . 'Modal';
-                                                                $isSpecial = $meta->special == 1; // Ensure you're comparing values, not types
-                                                            @endphp
-
-                                                            @if ($isSpecial)
-                                                                @php
-                                                                    $specialColumns[] = [
-                                                                        'name' => $columnName,
-                                                                        'value' => $value,
-                                                                        'modalTarget' => $modalTarget,
-                                                                    ];
-                                                                @endphp
-                                                            @else
-                                                                @php
-                                                                    $normalColumns[] = [
-                                                                        'name' => $columnName,
-                                                                        'value' => $value,
-                                                                        'truncatedValue' => $truncatedValue,
-                                                                        'modalTarget' => $modalTarget,
-                                                                    ];
-                                                                @endphp
-                                                            @endif
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-
-                                                @foreach ($normalColumns as $column)
-                                                    @if ($column['value'] !== null && $column['value'] !== '')
-                                                        <tr style="padding:0 0 0 0;">
-                                                            <th style="padding: 5px;">{{ $column['name'] }}</th>
-                                                            <td>
-                                                                @if (strlen($column['value']) > 35)
-                                                                    {{ $column['truncatedValue'] }}
-                                                                    <span data-bs-toggle="modal"
-                                                                        data-bs-target="#{{ $column['modalTarget'] }}"
-                                                                        style="cursor: pointer; text-decoration: underline; padding: 0;">
-                                                                        ...
-                                                                    </span>
-                                                                @else
-                                                                    {{ $column['value'] }}
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                        <div class="modal fade" id="{{ $column['modalTarget'] }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="{{ $column['modalTarget'] }}Label"
-                                                            aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered"
-                                                                role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title"
-                                                                            id="{{ $column['modalTarget'] }}Label">
-                                                                            {{ $column['name'] }}</h5>
-                                                                        <button type="button" class="btn-close"
-                                                                            data-bs-dismiss="modal"
-                                                                            aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        {{ $column['value'] }}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {{-- </div> --}}
-                                    {{-- </div> --}}
+                                    Content of card 1
                                 </div>
                             </div>
                         </div>
@@ -299,106 +33,359 @@
                         <div class="pane right-pane">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Files</h4>
+                                    <h4 class="card-title">Card 2</h4>
                                 </div>
                                 <div class="card-body">
-
-
-                                    <h3>File</h3>
-                                    <div class="row">
-                                        @php $counter = 0; @endphp
-                                        @foreach ($columnMetadata as $column)
-                                            @if (
-                                                !(
-                                                    $column->column_name == 'id' ||
-                                                    $column->column_name == 'created_at' ||
-                                                    $column->column_name == 'updated_at' ||
-                                                    $column->column_name == 'status'
-                                                ))
-                                                @php
-                                                    $columnName = ucWords(str_replace('_', ' ', $column->column_name));
-                                                    $value = $document->{$column->column_name} ?? null;
-                                                @endphp
-                                                @if ($value !== null)
-                                                    @if ($column->data_type == 3 || $column->data_type == 4 || $column->data_type == 6)
-                                                        <h4 class="mt-2">{{ $columnName }}</h4>
-                                                        @php $counter++; @endphp
-                                                    @endif
-                                                    @if ($column->data_type == 3)
-                                                        <img src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}"
-                                                            alt="{{ $columnName }}" oncontextmenu="return false;">
-                                                            <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}" target="_blank" rel="noopener noreferrer">Open Image in new tab</a>
-                                                            
-                                                        @php $counter++; @endphp
-                                                    @elseif($column->data_type == 4)
-                                                        <div class="pointer-events: auto;">
-                                                            <div class="content-wrapper" onclick="toggleFullscreen(this)">
-                                                            <iframe
-                                                                src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
-                                                                width="100%" height="600"
-                                                                oncontextmenu="return false;"></iframe>
-                                                            </div>
-                                                            <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath  }}" target="_blank" rel="noopener noreferrer">Open PDF in new tab</a>
-                                                        </div>
-                                                        {{-- #toolbar=0 --}}
-                                                        @php $counter++; @endphp
-                                                    @elseif($column->data_type == 6)
-                                                        <video width="100%" height="500" controls
-                                                            controlsList="nodownload">
-                                                            <source
-                                                                src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultVideoPath }}"
-                                                                type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                        @php $counter++; @endphp
-                                                    @endif
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                        @if ($document->pdf_file_path)
-                                            @php
-                                                // Get the file extension
-                                                $extension = strtolower(
-                                                    pathinfo($document->pdf_file_path, PATHINFO_EXTENSION),
-                                                );
-                                            @endphp
-
-                                            @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']))
-                                                <h4 class="mt-2">Image File</h4>
-                                                <div>
-                                                
-                                                        <img src="{{ url($document->pdf_file_path) }}" width="100%" alt="Document Image">
-                                                        <a href="{{ url($document->pdf_file_path) }}" target="_blank" rel="noopener noreferrer">Open Image in new tab</a>
-                                                </div>
-                                            @elseif($extension === 'pdf')
-                                                <h4 class="mt-2">PDF File</h4>
-                                                {{-- <div class="pointer-events: auto;"> --}}
-                                                    <a href="{{ url($document->pdf_file_path) }}" target="_blank" rel="noopener noreferrer">
-                                                        <iframe src="{{ url($document->pdf_file_path) }}" width="100%" height="600" frameborder="0" oncontextmenu="return false;"></iframe>
-                                                    </a>
-                                                    <a href="{{ url($document->pdf_file_path) }}" target="_blank" rel="noopener noreferrer">Open PDF in new tab</a>
-                                                {{-- </div> --}}
-                                            @else
-                                                <div class="col-lg-12">
-                                                    <p>No files to display.</p>
-                                                </div>
-                                            @endif
-                                        @elseif ($counter == 0)
-                                            <div class="col-lg-12">
-                                                <p>No files to display.</p>
-                                            </div>
-                                        @endif
-
-                                    </div>
-
+                                    Content of card 2
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    
+
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Data</h4>
 
 
+                                @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
+                                    <a class="btn btn-primary float-end"
+                                        href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
+                                        rel="noopener noreferrer">Edit</a>
+                                @endif
+                            </div>
+                            <div class="card-body">
+                                <style>
+                                    .table-responsive {
+                                        width: 100%;
+                                        /* Adjust the width as needed */
+                                    }
 
+                                    .table {
+                                        overflow-x: auto;
+                                    }
+                                </style>
+                                @php
+                                    if (!function_exists('addOrdinalSuffix')) {
+                                        function addOrdinalSuffix($num)
+                                        {
+                                            $num = (int) $num;
+                                            if (!in_array($num % 100, [11, 12, 13])) {
+                                                switch ($num % 10) {
+                                                    case 1:
+                                                        return $num . 'st';
+                                                    case 2:
+                                                        return $num . 'nd';
+                                                    case 3:
+                                                        return $num . 'rd';
+                                                }
+                                            }
+                                            return $num . 'th';
+                                        }
+                                    }
+                                @endphp
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-responsive-sm">
+                                        <tbody style="padding:0 0 0 0;">
+                                            @if ($master_data)
+                                                @php
+                                                    $latitude = null;
+                                                    $longitude = null;
+                                                @endphp
+                                                {{-- @dd($master_data->getAttributes()) --}}
+                                                @foreach ($master_data->getAttributes() as $attribute => $value)
+                                                    @if (
+                                                        !(
+                                                            $attribute == 'created_by' ||
+                                                            $attribute == 'created_at' ||
+                                                            $attribute == 'updated_at' ||
+                                                            $attribute == 'status_id' ||
+                                                            $attribute == 'set_id' ||
+                                                            $attribute == 'batch_id' ||
+                                                            $attribute == 'document_type' ||
+                                                            $attribute == 'rejection_timestamp' ||
+                                                            $attribute == 'bulk_uploaded' ||
+                                                            $attribute == 'physically' ||
+                                                            $attribute == 'temp_id' ||
+                                                            $attribute == 'id'
+                                                        ) &&
+                                                            $value !== null &&
+                                                            $value !== '')
+                                                        @php
+                                                            if ($attribute === 'document_type_name') {
+                                                                $value = ucWords(str_replace('_', ' ', $value));
+                                                            }
+                                                            if ($attribute === 'unit') {
+                                                                if ($value == 1) {
+                                                                    $value = 'Acres and Cents';
+                                                                } elseif ($value == 2) {
+                                                                    $vlaue = 'Square Feet';
+                                                                }
+                                                            }
+                                                            // Check for latitude and longitude
+
+                                                            if ($attribute === 'longitude') {
+                                                                $longitude = $value;
+                                                            }
+                                                            if ($attribute === 'latitude') {
+                                                                $latitude = $value;
+                                                            }
+                                                            if ($attribute === 'issued_date') {
+                                                                try {
+                                                                    $date = \Carbon\Carbon::createFromFormat(
+                                                                        'Y-m-d',
+                                                                        $value,
+                                                                    );
+                                                                    $issued_date = $date->format('d-M-Y');
+                                                                    $value = $issued_date;
+                                                                } catch (\Exception $e) {
+                                                                    // Handle the exception if the date format is incorrect
+                                                                    $value = $value; // Keep original value if parsing fails
+                                                                }
+                                                            }
+                                                        @endphp
+                                                        @php
+                                                            $truncatedValue =
+                                                                strlen($value) > 35 ? substr($value, 0, 35) : $value;
+                                                        @endphp
+                                                        <tr style="white-space: nowrap; overflow: hidden;">
+                                                            <th style="padding: 5px;">
+                                                                {{ ucwords(str_replace('_', ' ', $attribute)) }}</th>
+
+                                                            <td style="padding: 5px;">
+                                                                @if (strlen($value) > 35)
+                                                                    {{ $truncatedValue }}
+                                                                    <span data-bs-toggle="modal"
+                                                                        data-bs-target="#{{ $attribute }}Modal"
+                                                                        style="cursor: pointer; text-decoration: underline;">
+                                                                        ...
+                                                                    </span>
+                                                                @else
+                                                                    {{ $value }}
+                                                                @endif
+
+
+                                                            </td>
+                                                        </tr>
+
+                                                        {{-- Remove comment to debug latitude and longitude --}}
+                                                        <div class="modal fade" id="{{ $attribute }}Modal"
+                                                            tabindex="-1" role="dialog"
+                                                            aria-labelledby="{{ $attribute }}ModalLabel"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered"
+                                                                role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"
+                                                                            id="{{ $attribute }}ModalLabel">
+                                                                            {{ ucwords(str_replace('_', ' ', $attribute)) }}
+                                                                        </h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {{ $value }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        {{-- {{ dd($latitude) }} --}}
+                                                        @if ($latitude !== null && $longitude !== null)
+                                                            <tr>
+                                                                <th style="padding: 5px;">Location</th>
+                                                                <td style="padding: 5px;">
+                                                                    <a href="https://www.google.com/maps/search/{{ $latitude }},{{ $longitude }}"
+                                                                        target="_blank" class="btn btn-primary"><i
+                                                                            class="fa fa-location"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endif
+                                                @endforeach
+
+
+                                            @endif
+
+                                            <tr style="height: 20px;"></tr>
+                                            @php
+                                                $normalColumns = [];
+                                                $specialColumns = [];
+                                            @endphp
+
+                                            @foreach ($columnMetadata as $meta)
+                                                @if (!in_array($meta->column_name, ['id', 'created_at', 'updated_at', 'status']))
+                                                    @if (!in_array($meta->data_type, [3, 4, 6]))
+                                                        @php
+                                                            $columnName = ucwords(
+                                                                str_replace('_', ' ', $meta->column_name),
+                                                            );
+                                                            $value = $document->{$meta->column_name} ?? null;
+                                                            $truncatedValue =
+                                                                strlen($value) > 35 ? substr($value, 0, 35) : $value;
+                                                            $modalTarget = $meta->column_name . 'Modal';
+                                                            $isSpecial = $meta->special == 1; // Ensure you're comparing values, not types
+                                                        @endphp
+
+                                                        @if ($isSpecial)
+                                                            @php
+                                                                $specialColumns[] = [
+                                                                    'name' => $columnName,
+                                                                    'value' => $value,
+                                                                    'modalTarget' => $modalTarget,
+                                                                ];
+                                                            @endphp
+                                                        @else
+                                                            @php
+                                                                $normalColumns[] = [
+                                                                    'name' => $columnName,
+                                                                    'value' => $value,
+                                                                    'truncatedValue' => $truncatedValue,
+                                                                    'modalTarget' => $modalTarget,
+                                                                ];
+                                                            @endphp
+                                                        @endif
+                                                    @endif
+                                                @endif
+                                            @endforeach
+
+                                            @foreach ($normalColumns as $column)
+                                                @if ($column['value'] !== null && $column['value'] !== '')
+                                                    <tr style="padding:0 0 0 0;">
+                                                        <th style="padding: 5px;">{{ $column['name'] }}</th>
+                                                        <td>
+                                                            @if (strlen($column['value']) > 35)
+                                                                {{ $column['truncatedValue'] }}
+                                                                <span data-bs-toggle="modal"
+                                                                    data-bs-target="#{{ $column['modalTarget'] }}"
+                                                                    style="cursor: pointer; text-decoration: underline; padding: 0;">
+                                                                    ...
+                                                                </span>
+                                                            @else
+                                                                {{ $column['value'] }}
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <div class="modal fade" id="{{ $column['modalTarget'] }}"
+                                                        tabindex="-1" role="dialog"
+                                                        aria-labelledby="{{ $column['modalTarget'] }}Label"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title"
+                                                                        id="{{ $column['modalTarget'] }}Label">
+                                                                        {{ $column['name'] }}</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {{ $column['value'] }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>File</h3>
+                                <div class="row">
+                                    @php $counter = 0; @endphp
+                                    @foreach ($columnMetadata as $column)
+                                        @if (
+                                            !(
+                                                $column->column_name == 'id' ||
+                                                $column->column_name == 'created_at' ||
+                                                $column->column_name == 'updated_at' ||
+                                                $column->column_name == 'status'
+                                            ))
+                                            @php
+                                                $columnName = ucWords(str_replace('_', ' ', $column->column_name));
+                                                $value = $document->{$column->column_name} ?? null;
+                                            @endphp
+                                            @if ($value !== null)
+                                                @if ($column->data_type == 3 || $column->data_type == 4 || $column->data_type == 6)
+                                                    <h4 class="mt-2">{{ $columnName }}</h4>
+                                                    @php $counter++; @endphp
+                                                @endif
+                                                @if ($column->data_type == 3)
+                                                    <img src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}"
+                                                        alt="{{ $columnName }}" oncontextmenu="return false;">
+                                                    @php $counter++; @endphp
+                                                @elseif($column->data_type == 4)
+                                                    <div class="pointer-events: auto;">
+                                                        <iframe
+                                                            src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
+                                                            width="100%" height="600"
+                                                            oncontextmenu="return false;"></iframe>
+                                                    </div>
+                                                    {{-- #toolbar=0 --}}
+                                                    @php $counter++; @endphp
+                                                @elseif($column->data_type == 6)
+                                                    <video width="100%" height="500" controls
+                                                        controlsList="nodownload">
+                                                        <source
+                                                            src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultVideoPath }}"
+                                                            type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                    @php $counter++; @endphp
+                                                @endif
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                    @if ($document->pdf_file_path)
+                                        @php
+                                            // Get the file extension
+                                            $extension = strtolower(
+                                                pathinfo($document->pdf_file_path, PATHINFO_EXTENSION),
+                                            );
+                                        @endphp
+
+                                        @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']))
+                                            <h4 class="mt-2">Image File</h4>
+                                            <div>
+                                                <img src="{{ url($document->pdf_file_path) }}" width="100%"
+                                                    alt="Document Image">
+                                            </div>
+                                        @elseif($extension === 'pdf')
+                                            <h4 class="mt-2">PDF File</h4>
+                                            <div class="pointer-events: auto;">
+                                                <iframe src="{{ url($document->pdf_file_path) }}" width="100%"
+                                                    height="600" frameborder="0" oncontextmenu="return false;">
+                                                </iframe>
+                                            </div>
+                                        @else
+                                            <div class="col-lg-12">
+                                                <p>No files to display.</p>
+                                            </div>
+                                        @endif
+                                    @elseif ($counter == 0)
+                                        <div class="col-lg-12">
+                                            <p>No files to display.</p>
+                                        </div>
+                                    @endif
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <script>
                     $(function() {
@@ -445,7 +432,7 @@
 
                 @if ($user && $user->hasPermission('Update Document Status'))
 
-                    <div class="row mb-2" id="docVerification">
+                    <div class="row mb-2">
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header">
@@ -526,7 +513,6 @@
                                                         <th>Date</th>
                                                         <th>Reason</th>
                                                         <th>Created By</th>
-                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -548,50 +534,17 @@
                                                                 </span>
 
                                                             </td>
-                                                            <td>{{ date('H:i:s d/M/Y ', strtotime($log->created_at)) }}
+                                                            <td>{{ date('H:i:s d/m/Y ', strtotime($log->created_at)) }}
                                                             </td>
                                                             <td>{{ $log->message ? $log->message : 'N/A' }}</td>
                                                             <td>{{ $log->creator_name }}</td>
-                                                            <td>
-                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $log->id }}">
-                                                                    <i class="fa fa-pencil"></i>  Edit
-                                                                </button>
-                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
                                     @endif
-                                    @foreach ($document_logs as $index => $log)
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="editModal{{ $log->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editModalLabel">Edit Message</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('documents.statusMessage', $log->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="id" value="{{ $document->id }}">
-                                            <input type="hidden" name="type" value="{{ $tableName }}">
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="messageText" class="form-label">Message</label>
-                                                            <textarea class="form-control" id="messageText" name="message" rows="3" required>{{ $log->message }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
+
 
                                 </div>
 
@@ -1098,59 +1051,33 @@
         });
     });
 </script>
-<style>
-.split-pane {
+<style>.split-pane {
     display: flex;
+    align-items: stretch;
+    justify-content: stretch;
     width: 100%;
-    height: auto; /* Adjust based on your needs */
+    height: 600px; /* or any other height */
 }
 
 .pane {
     flex-grow: 1;
-    flex-basis: 50%; /* Initially each pane takes up half the container */
     overflow: auto;
-    transition: flex-basis 0.1s ease; /* Smooth transition for resizing */
 }
 
 .divider {
     background-color: #666;
     cursor: ew-resize;
-    width: 5px; /* Adjust for handle width */
+    width: 5px; /* adjustable width for easier handling */
 }
-.content-wrapper {
-    cursor: pointer; /* Indicates the element is clickable */
-    overflow: hidden; /* Keeps everything neat */
-}
-
-iframe, img {
-    width: 100%; /* Ensures content fills the wrapper */
-    height: auto; /* Maintains aspect ratio for images */
-}
-
-
-
-    
 </style>
 
 <script>
-    function toggleFullscreen(element) {
-    if (!document.fullscreenElement && element.requestFullscreen) {
-        element.requestFullscreen().catch(err => {
-            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-        });
-    } else if (document.exitFullscreen) {
-        document.exitFullscreen();
-    }
-}
-
-
-   document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     const divider = document.querySelector('.divider');
     let isDragging = false;
 
     divider.addEventListener('mousedown', function(e) {
         isDragging = true;
-        e.preventDefault();
         document.addEventListener('mousemove', handleDrag, false);
         document.addEventListener('mouseup', stopDrag, false);
     });
@@ -1159,10 +1086,15 @@ iframe, img {
         if (!isDragging) return;
         const splitPane = divider.closest('.split-pane');
         const leftPane = splitPane.querySelector('.left-pane');
-        const deltaX = e.clientX - divider.getBoundingClientRect().left;
+        const rightPane = splitPane.querySelector('.right-pane');
+        let deltaX = e.clientX - divider.offsetLeft;
         
-        const leftFlexBasis = ((e.clientX - splitPane.offsetLeft) / splitPane.offsetWidth) * 100;
-        leftPane.style.flexBasis = `${leftFlexBasis}%`;
+        let leftWidth = leftPane.offsetWidth + deltaX;
+        let rightWidth = rightPane.offsetWidth - deltaX;
+
+        leftPane.style.width = `${leftWidth}px`;
+        rightPane.style.width = `${rightWidth}px`;
+        e.preventDefault();
     }
 
     function stopDrag(e) {

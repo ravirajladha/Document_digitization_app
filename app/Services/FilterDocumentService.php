@@ -14,7 +14,7 @@ class FilterDocumentService
     public function filterDocuments($typeId = null, $state = null, $district = null, $village = null, $locker_no = null, $start_date = null, $end_date = null, $area_range_start = null, $area_range_end = null, $area_unit = null, $court_case_no = null, $doc_no = null, $survey_no = null,$category = null): Collection
     {
         $query = Master_doc_data::query();
-
+// dd("category", $category);
         if ($typeId) {
             $query->where('document_type', explode('|', $typeId)[0]);
         }
@@ -24,9 +24,7 @@ class FilterDocumentService
         if ($court_case_no) {
             $query->where('court_case_no', 'like', '%' . $court_case_no . '%');
         }
-        // if ($category) {
-        //     $query->where('category', $category);
-        // }
+       
         if ($category) {
             $query->where(function ($q) use ($category) {
                 $q->whereRaw("FIND_IN_SET(?, category)", [$category]);

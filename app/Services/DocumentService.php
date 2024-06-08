@@ -8,21 +8,22 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+
 class DocumentService
 {
     public function saveDocumentData($data, $doc_id = null)
     {
 
         $nameUniqueRule = Rule::unique('master_doc_datas', 'name');
-    if ($doc_id) {
-        // Exclude the current document from the unique check
-        $nameUniqueRule->ignore($doc_id);
-    }
+        if ($doc_id) {
+            // Exclude the current document from the unique check
+            $nameUniqueRule->ignore($doc_id);
+        }
         $validator = Validator::make($data, [
             'name' => [
                 'required',
                 'string',
-                $nameUniqueRule, // Use the prepared unique rule here
+                // $nameUniqueRule, 
             ],
             'location' => 'nullable|string',
             'locker_id' => 'nullable|numeric',
@@ -51,10 +52,12 @@ class DocumentService
             'court_case_no' => 'nullable|string',
             'doc_no' => 'nullable|string',
             'survey_no' => 'nullable|string',
-            'latitude' => ['nullable','string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
-            'longitude' => ['nullable','string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
-            
-        
+            'wet_land' => 'nullable|string',
+            'dry_land' => 'nullable|string',
+            'unit' => 'nullable|string',
+            'area' => 'nullable|string',
+            'latitude' => ['nullable', 'string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['nullable', 'string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
         ]);
 
         if ($validator->fails()) {
@@ -75,21 +78,20 @@ class DocumentService
                 ];
             }
             $masterDocData = new Master_doc_data;
-
         }
         [$id, $tableName] = explode('|', $data['type'], 2);
-        $selectedSets =isset($data['set']) ? $data['set'] : [];
+        $selectedSets = isset($data['set']) ? $data['set'] : [];
         $setsAsString = json_encode($selectedSets);
         // dd($data);
         $masterDocData->fill([
             'name' => $data['name'],
             'location' => $data['location'],
-            'locker_id' => $data['locker_id'] ,
+            'locker_id' => $data['locker_id'],
             'number_of_page' => $data['number_of_page'],
             'document_type' => $id,
             'document_type_name' => $tableName,
             // 'current_state' => $data['current_state'], 
-            'state' =>$data['state'] ?? null,
+            'state' => $data['state'] ?? null,
             'current_state' => $data['current_state'] ?? null,
             'alternate_state' => $data['alternate_state'] ?? null,
             'current_district' => $data['current_district'],
@@ -108,9 +110,13 @@ class DocumentService
             'old_locker_number' => $data['old_locker_number'],
             'physically' => $data['physically'],
             'category' => $data['category'],
-            'court_case_no' => 'nullable|string',
-            'doc_no' => 'nullable|string',
-            'survey_no' => 'nullable|string',
+            'court_case_no' => $data['court_case_no'],
+            'doc_no' => $data['doc_no'],
+            'survey_no' => $data['survey_no'],
+            'dry_land' => $data['dry_land'],
+            'wet_land' => $data['wet_land'],
+            'unit' => $data['unit'],
+            'area' =>  $data['area'],
             'latitude' => $data['latitude'],
             'longitude' => $data['longitude'],
             'set_id' => $setsAsString,
@@ -123,34 +129,27 @@ class DocumentService
 
         // Handle the extra logic for sets if required
         // ...
-// dd($tableName);
+        // dd($tableName);
         // Update or insert into the dynamic table
         $tableName = explode('|', $data['type'], 2)[1];
         if (Schema::hasTable($tableName)) {
-            if(!$doc_id){
+            if (!$doc_id) {
                 $newDocumentId =   DB::table($tableName)->insert([
                     'doc_id' => $masterDocData->id, // Assuming 'doc_id' is the column name in the dynamic table
                     'doc_type' => $tableName,
                     'document_name' => $data['name'],
-    
+
                 ]);
-            }else{
+            } else {
                 DB::table($tableName)->where('doc_id', $doc_id)->update([
                     // Update the fields as necessary
                     'document_name' => $data['name']
                 ]);
             }
-       
         }
 
-
-
         $document_data = DB::table($tableName)->where('doc_id', $masterDocData->id)->first();
-
-
-    //  dd($document_data);
-
-
+        //  dd($document_data);
 
         return [
             'status' => 'success',

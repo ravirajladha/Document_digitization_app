@@ -38,11 +38,14 @@
                                             $bgClasses = ['bg-success', 'bg-info', 'bg-danger', 'bg-primary'];
                                             $classIndex = 0;
                                         @endphp
+                                         @php
+                                        //  dd($getCategoryDocumentCounts);
+                                     @endphp
                                         @if (count($getCategoryDocumentCounts) > 0)
                                             @foreach ($getCategoryDocumentCounts as $category => $count)
                                                 @if ($category !== '' && $category !== null)
                                                     <div class="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
-                                                        <a href="/filter-document?category=<?php echo $category; ?>">
+                                                        <a href="/filter-document?category={{ urlencode($category) }}">
                                                             <div class="widget-stat card {{ $bgClasses[$classIndex] }}">
                                                                 <div class="card-body p-4">
                                                                     <div class="media">

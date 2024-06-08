@@ -234,9 +234,27 @@ class DocumentController extends Controller
         session()->flash('toastr', ['type' => 'success', 'message' => 'Document status updated successfully']);
 
         // Redirect back with a success message or to a different page
-        return redirect('/review_doc/' . $tableName . '/' . $id)->with('success', 'Document status updated successfully');
+        return redirect('/review_doc/' . $tableName . '/' . $id.'#docVerification')->with('success', 'Document status updated successfully');
     }
-
+    public function updateStatusMessage(Request $request, $logId)
+    {
+        // Validate the request
+        $validatedData = $request->validate([
+            'id' => 'required', // Ensuring 'id' is not empty
+            'type' => 'required', // Ensuring 'type' is not empty
+            'message' => 'required' // Ensuring 'message' is not empty
+        ]);
+    
+        // If validation passes, execute the rest of the code
+        $log = DocumentStatusLog::findOrFail($logId);
+        $log->message = $request->message;
+        $log->save();
+    
+        // Redirect back to the specific document section with a success message
+        return redirect('/review_doc/' . $request->type . '/' . $request->id . '#docVerification')
+               ->with('success', 'Document status updated successfully');
+    }
+    
 
     public function add_document_data(Request $req, DocumentService $documentService)
     {

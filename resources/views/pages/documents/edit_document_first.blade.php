@@ -19,6 +19,7 @@
                             </ol>
                         </div>
                     </div>
+                    
                     <form action="{{ url('/') }}/update-first-document-data/{{ $document->id }}" method="post"
                         enctype="multipart/form-data">
                         @csrf
@@ -49,7 +50,6 @@
                                                 <div class="row">
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Select Type *</label>
-
 
                                                         <select class="form-select form-control"
                                                             aria-label="Default select example" name="type" required
@@ -313,6 +313,30 @@
                                                         <input type="text" name="survey_no" class="form-control"
                                                             placeholder="Enter Survey Number"
                                                             value="{{ $document->survey_no }}">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Dry Land</label>
+                                                        <input type="text" name="dry_land" class="form-control"
+                                                            placeholder="Enter Dry Land Area"
+                                                            value="{{ $document->dry_land }}">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Wet Land</label>
+                                                        <input type="text" name="wet_land" class="form-control"
+                                                            placeholder="Enter Wet Land Area"
+                                                            value="{{ $document->wet_land }}">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Area</label>
+                                                        <input type="text" name="area" class="form-control"
+                                                            placeholder="Enter Area"
+                                                            value="{{ $document->area }}">
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Unit</label>
+                                                        <input type="text" name="unit" class="form-control"
+                                                            placeholder="Enter Unit (acres and cents  or square feet)"
+                                                            value="{{ $document->unit }}">
                                                     </div>
 
                                                     <div class="mb-3 col-md-6">
