@@ -16,7 +16,8 @@ use App\Services\DocumentTableService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Schema\Blueprint;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog};
+use Illuminate\Support\Facades\Response;
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog, Advocate_documents, Advocate, Document_transaction,Category};
 
 class DocumentController extends Controller
 {
@@ -69,7 +70,8 @@ class DocumentController extends Controller
         $doc_type = Master_doc_type::orderBy('name')->get();
         $sets = Set::get();
         $states = State::all();
-        return view('pages.documents.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states]);
+        $categories = Category::with('subcategories')->get();
+        return view('pages.documents.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states,'categories'=> $categories]);
     }
 
     public function documentCreationContinue(Request $req)
@@ -99,13 +101,11 @@ class DocumentController extends Controller
 
     public function add_document(Request $req)
     {
-        // Log request data for debugging
+
         // Log::info('Request Data: ', $req->all());
-        // dd($req->all());
         $tableName = $req->type;
         $master_doc_id = $req->master_doc_id;
-        // dd($master_doc_id,$tableName);
-        // Check if the table exists
+
         if (Schema::hasTable($tableName)) {
             $columns = Schema::getColumnListing($tableName);
         }
@@ -123,16 +123,6 @@ class DocumentController extends Controller
                         $file_paths[] = 'uploads/' . $filename;
                     }
                     $updateData[$column] = implode(',', $file_paths);
-                    // } elseif ($existingRecord && $existingRecord->$column !== null) {
-                    //     // If no file is uploaded, keep the existing value
-
-                    //     $updateData[$column] = $existingRecord->$column;
-                    // } else {
-                    //     // If it's not a file and there's a new value, update with the new value
-                    //     $updateData[$column] = $req->input($column);
-                    // }
-
-
                 } elseif ($req->input($column) !== null) {
                     // If there's a new value, update with the new value
                     $updateData[$column] = $req->input($column);
@@ -142,10 +132,7 @@ class DocumentController extends Controller
                 }
             }
         }
-        // Log update data for debugging
-        // Log::info('Update Data: ', $updateData);
-        // Check if a record with this doc_id exists and update or insert accordingly
-        // $existingRecord = DB::table($tableName)->where('doc_id', $master_doc_id)->first();
+
         if ($existingRecord) {
             // Update the existing record
             // dd($tableName, $updateData);
@@ -234,7 +221,7 @@ class DocumentController extends Controller
         session()->flash('toastr', ['type' => 'success', 'message' => 'Document status updated successfully']);
 
         // Redirect back with a success message or to a different page
-        return redirect('/review_doc/' . $tableName . '/' . $id.'#docVerification')->with('success', 'Document status updated successfully');
+        return redirect('/review_doc/' . $tableName . '/' . $id . '#docVerification')->with('success', 'Document status updated successfully');
     }
     public function updateStatusMessage(Request $request, $logId)
     {
@@ -244,17 +231,17 @@ class DocumentController extends Controller
             'type' => 'required', // Ensuring 'type' is not empty
             'message' => 'required' // Ensuring 'message' is not empty
         ]);
-    
+
         // If validation passes, execute the rest of the code
         $log = DocumentStatusLog::findOrFail($logId);
         $log->message = $request->message;
         $log->save();
-    
+
         // Redirect back to the specific document section with a success message
         return redirect('/review_doc/' . $request->type . '/' . $request->id . '#docVerification')
-               ->with('success', 'Document status updated successfully');
+            ->with('success', 'Document status updated successfully');
     }
-    
+
 
     public function add_document_data(Request $req, DocumentService $documentService)
     {
@@ -548,7 +535,7 @@ class DocumentController extends Controller
 
         // Retrieve the document by id
         $document = Master_doc_data::where('id', $id)->first();
-
+        $categories = Category::with('subcategories')->get();
         // If document not found or status_id is 1, show error page
         if (!$document || $document->status_id == 1) {
             // Use abort(404) if you want a "Not Found" response
@@ -559,12 +546,18 @@ class DocumentController extends Controller
         // Proceed if document exists and status_id is not 1
         $states = State::all();
         $sets = Set::all();
-
+ // Split comma-separated IDs into arrays
+ $selectedCategories = explode(',', $document->category_id);
+ $selectedSubcategories = explode(',', $document->subcategory_id);
+//  dd($selectedCategories, $selectedSubcategories);
         return view('pages.documents.edit_document_first', [
             'doc_type' => $doc_type,
             'document' => $document,
             'sets' => $sets,
-            'states' => $states
+            'states' => $states,
+            'categories' => $categories,
+            'selectedCategories' => $selectedCategories,
+            'selectedSubcategories' => $selectedSubcategories,
         ]);
     }
     public function review_doc($table, $id)
@@ -587,6 +580,23 @@ class DocumentController extends Controller
             ->select('document_status_logs.*', 'users.name as creator_name')
             ->get();
 
+              // Fetch category and subcategory names
+    $categoryNames = [];
+    $subcategoryNames = [];
+
+    if (!empty($get_document_master_data->category_id)) {
+        $categoryIds = explode(',', $get_document_master_data->category_id);
+        $categoryNames = DB::table('categories')
+            ->whereIn('id', $categoryIds)
+            ->pluck('name', 'id');
+    }
+
+    if (!empty($get_document_master_data->subcategory_id)) {
+        $subcategoryIds = explode(',', $get_document_master_data->subcategory_id);
+        $subcategoryNames = DB::table('subcategories')
+            ->whereIn('id', $subcategoryIds)
+            ->pluck('name', 'id');
+    }
         // dd($get_document_logs);
         // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
@@ -622,7 +632,12 @@ class DocumentController extends Controller
         $assigned_docs = Document_assignment::with(['documentType', 'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')
             ->get();
         $receiverTypes = Receiver_type::where('status', 1)->get();
-
+        $assigned_advocate_docs =   Advocate_documents::with(['advocate',  'document'])->where('doc_id', $document->doc_id)->orderBy('created_at', 'desc')->get();
+        $advocates = Advocate::orderBy('created_at', 'desc')->get();
+        $documentTransactions = Document_transaction::where('doc_id', $document->doc_id)
+            ->with('creator') // Eager load the creator relationship
+            ->get();
+// dd($categoryNames, $subcategoryNames);
         // dd($master_doc_type->id);
         return view('pages.documents.review_doc', [
             'columnMetadata' => $columnMetadata,
@@ -637,20 +652,15 @@ class DocumentController extends Controller
             'doc_type' => $master_doc_type,
             'documentAssignments' => $assigned_docs,
             'receiverTypes' => $receiverTypes,
-
+            'assigned_advocate_docs' => $assigned_advocate_docs,
+            'advocates' => $advocates,
+            'document_transactions' => $documentTransactions,
+            'categoryNames' => $categoryNames,
+            'subcategoryNames' => $subcategoryNames,
         ]);
     }
 
 
-    public function configure()
-    {
-        $receiver_type_count = Receiver_type::count();
-        // dd($receiver_type_count);
-        $data = [
-            'receiver_type_count' => $receiver_type_count,
-        ];
-        return view('pages.data-sets.data-sets', $data);
-    }
 
 
     public function viewUploadedDocuments()
@@ -735,5 +745,149 @@ class DocumentController extends Controller
         }
         // Return an error response if no files were uploaded
         return response()->json(['message' => 'No files uploaded'], 400);
+    }
+    public function storeTransaction(Request $request)
+    {
+        Log::info("asdding the transaction has been", ['data', $request->all()]);
+        $request->validate([
+            'doc_id' => 'required|integer',
+
+            'transaction_type' => 'required|in:taken,returned',
+            'notes' => 'nullable|string',
+        ]);
+
+        //         $documentTypeName = DB::table('master_doc_datas')
+        //         ->where('id', $request->doc_id)
+        //         ->value('document_type_name');
+        // dd($documentTypeName);
+        $transaction = Document_transaction::create([
+            'doc_id' => $request->doc_id,
+            'created_by' => Auth::user()->id,
+            'transaction_type' => $request->transaction_type,
+            'notes' => $request->notes,
+        ]);
+        // return redirect()->route('documents.review.detail', ['table' => 'master_doc_data', 'id' => $request->doc_id])
+        // ->with('success', 'Transaction created successfully. Document Type: ' . $documentTypeName);
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction created successfully']);
+
+        return redirect()->back()->with('success', 'Transaction created successfully.');
+    }
+
+    public function updateTransaction(Request $request, $id)
+    {
+        $request->validate([
+            'transaction_type' => 'required|in:taken,returned',
+            'notes' => 'nullable|string',
+        ]);
+
+        $transaction = Document_transaction::findOrFail($id);
+        $transaction->update([
+            'transaction_type' => $request->transaction_type,
+            'notes' => $request->notes,
+        ]);
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction updated successfully']);
+
+        return redirect()->back()->with('success', 'Transaction updated successfully.');
+    }
+
+    public function destroyTransaction($id)
+    {
+        $transaction = Document_transaction::findOrFail($id);
+        $transaction->delete();
+        session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction deleted successfully']);
+        return redirect()->back()->with('success', 'Transaction deleted successfully.');
+    }
+    public function getDocumentTransactionById($id)
+    {
+        Log::info("edit document transaction detail", ['id' => $id]);
+        $transaction = Document_transaction::find($id);
+        if (!$transaction) {
+            return response()->json(['error' => 'Document transaction not found.'], 404);
+        }
+
+        return response()->json($transaction);
+    }
+    public function fetchDistricts($state)
+    {
+        try {
+            // Fetch the data from the database
+            $districtsData = Master_doc_data::where('current_state', $state)
+                ->pluck('current_district'); // Use pluck to get the column directly
+
+            // Initialize an empty collection to store districts
+            $districts = collect();
+
+            // Process each district data
+            foreach ($districtsData as $data) {
+                // Split by comma and trim spaces
+                $splitDistricts = collect(explode(',', $data))->map(function ($item) {
+                    return Str::of($item)->trim();
+                });
+
+                // Merge with the main districts collection
+                $districts = $districts->merge($splitDistricts);
+            }
+
+            // Remove duplicates, sort, and reject empty/null values
+            $districts = $districts->unique()
+                ->sort()
+                ->reject(function ($value) {
+                    $stringValue = (string) $value;
+                    return $stringValue === '' || is_null($stringValue);
+                })
+                ->values();
+
+            // Log the districts array for debugging
+            Log::info('Fetched districts', ['districts' => $districts]);
+
+            // Return the response as JSON
+            return Response::json($districts);
+        } catch (\Exception $e) {
+            // Log any exception that occurs
+            Log::error('Error fetching districts', ['error' => $e->getMessage()]);
+            return Response::json(['error' => 'An error occurred while fetching districts'], 500);
+        }
+    }
+
+    public function fetchVillages($district)
+    {
+        try {
+            // Fetch the data from the database
+            $villagesData = Master_doc_data::where('current_district', $district)
+                ->pluck('current_village'); // Use pluck to get the column directly
+
+            // Initialize an empty collection to store villages
+            $villages = collect();
+
+            // Process each village data
+            foreach ($villagesData as $data) {
+                // Split by comma and trim spaces
+                $splitVillages = collect(explode(',', $data))->map(function ($item) {
+                    return Str::of($item)->trim();
+                });
+
+                // Merge with the main villages collection
+                $villages = $villages->merge($splitVillages);
+            }
+
+            // Remove duplicates, sort, and reject empty/null values
+            $villages = $villages->unique()
+                ->sort()
+                ->reject(function ($value) {
+                    $stringValue = (string) $value;
+                    return $stringValue === '' || is_null($stringValue);
+                })
+                ->values();
+
+            // Log the villages array for debugging
+            Log::info('Fetched villages', ['villages' => $villages]);
+
+            // Return the response as JSON
+            return Response::json($villages);
+        } catch (\Exception $e) {
+            // Log any exception that occurs
+            Log::error('Error fetching villages', ['error' => $e->getMessage()]);
+            return Response::json(['error' => 'An error occurred while fetching villages'], 500);
+        }
     }
 }

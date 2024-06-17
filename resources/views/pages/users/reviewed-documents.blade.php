@@ -44,7 +44,7 @@ use Carbon\Carbon;
                             <div class="col-xl-8 col-lg-8 col-sm-8">
                                 <div class="card">
                                     <div class="card-header border-0 pb-0">
-                                        <h2 class="card-title">Today Reviewed Document Count</h2>
+                                        <h2 class="card-title">Today's Reviewed Document Count</h2>
                                     </div>
                                     <div class="card-body pb-0">
                                        
@@ -72,7 +72,46 @@ use Carbon\Carbon;
                                     </div>
                                 </div>
                             </div>
+                            {{-- {{ dd($data['Total']['Pending']) }} --}}
 
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card text-black">
+            {{-- <div class="card-header">
+                <h3>Total Counts</h3>
+            </div> --}}
+          
+            <div class="card-footer pt-0 pb-0 text-center">
+                <div class="row">
+                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #f8f9fa;">
+                        <h3 class="mb-1 text-dark">Total Counts</h3>
+                        {{-- <span>Total Counts</span> --}}
+                    </div>
+                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #e9ecef;">
+                        <h3 class="mb-1 text-primary">{{ $data['Total']['Pending'] }}</h3>
+                        <span>Pending</span>
+                    </div>
+                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #dee2e6;">
+                        <h3 class="mb-1 text-primary">{{ $data['Total']['Approved'] }}</h3>
+                        <span>Approved</span>
+                    </div>
+                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #ced4da;">
+                        <h3 class="mb-1 text-primary">{{ $data['Total']['Hold'] }}</h3>
+                        <span>Hold</span>
+                    </div>
+                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #adb5bd;">
+                        <h3 class="mb-1 text-primary">{{ $data['Total']['Reviewer Feedback'] }}</h3>
+                        <span>Review Feedback</span>
+                    </div>
+                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #6c757d;">
+                        <h3 class="mb-1 text-primary">{{ $data['Total']['Total'] }}</h3>
+                        <span>Total </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                             <div class="col-xl-12 col-lg-12 col-xxl-12 col-sm-12">
                                 <div class="card">
                                     <div class="card-header">

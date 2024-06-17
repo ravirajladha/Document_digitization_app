@@ -82,13 +82,15 @@ class User extends Authenticatable
         parent::boot();
     
         static::creating(function ($model) {
+            $attributes = $model->getAttributes();
+            $changes = !empty($attributes) ? json_encode($attributes) : json_encode([]);
             // Log the creation of a new record
             DB::table('log_changes')->insert([
                 'user_id' => auth()->id(),
                 'model_id' => 1,
                 'model_type' => get_class($model),
                 'action' => 'create',
-                'changes' => json_encode($model->getAttributes()),
+                'changes' => $changes,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -118,6 +120,7 @@ class User extends Authenticatable
                 'user_id' => auth()->id(),
                 'model_id' => $model->id,
                 'model_type' => get_class($model),
+                'changes' => null, 
                 'action' => 'delete',
                 'original_values' => json_encode($model->getAttributes()),
                 'created_at' => now(),

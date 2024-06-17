@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Log;
 use App\Models\Set;
 use App\Models\State;
 use Illuminate\Http\Request;
@@ -10,6 +9,8 @@ use App\Models\Master_doc_data;
 use App\Models\Master_doc_type;
 use Illuminate\Support\Facades\DB;
 use App\Services\BulkUploadService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as Enter;
 
 
 class BulkUploadController extends Controller
@@ -97,9 +98,13 @@ class BulkUploadController extends Controller
 //comment out the log for the mannual check below
 //used for assign document, compliances and in receivers to assign doc
 //component created for this function as document-type-select
-    public function fetchData(Request $request, $type, $id)
+    public function fetchData(Request $request, $type, $id,$isStatus)
     {
-        
+            // Explicitly cast isStatus to boolean if necessary
+    $isStatus = filter_var($isStatus, FILTER_VALIDATE_BOOLEAN);
+
+    Log::info("Fetching status", ['isStatus' => $isStatus]);
+        // $isStatus = true;
         $query = DB::table('master_doc_datas');
         // \Log::info('Received type:', ['type' => $type]);
         // \Log::info('Received id:', ['id' => $id]);
@@ -114,7 +119,7 @@ class BulkUploadController extends Controller
                         $approved_documents_count = DB::table('master_doc_datas')
                             ->where('document_type', $id)
                             ->where('current_state', $state->name)
-                            ->where('status_id', 1)
+                            ->where('status_id', $isStatus)
                             ->count();
         
                         $state->approved_documents = $approved_documents_count;
@@ -138,7 +143,8 @@ class BulkUploadController extends Controller
                             ->where('document_type', $request->doc_type_id)
                             ->where('current_state', $id)
                             ->where('current_district', $district->name)
-                            ->where('status_id', 1)
+                            ->where('status_id', $isStatus)
+
                             ->count();
         
                         $district->approved_documents = $approved_documents_count;
@@ -170,7 +176,7 @@ class BulkUploadController extends Controller
                                 ->where('current_state', $request->state_name)
                                 ->where('current_district', $id)
                                 ->where('current_village', 'like', '%' . $villageName . '%')
-                                ->where('status_id', 1)
+                                ->where('status_id', $isStatus)
                                 ->count();
                 
                             // Add village name and approved document count to results
@@ -189,7 +195,7 @@ class BulkUploadController extends Controller
                     ->where('current_state', $request->state_name)
                     ->where('current_district', $request->district_name)
                     ->where('current_village', 'like', '%' . $id . '%')
-                    ->where('status_id', 1)
+                    ->where('status_id', $isStatus)
                     ->get(['id as document_id', 'name as name']);
 
                 $results = $data->map(function ($item) {

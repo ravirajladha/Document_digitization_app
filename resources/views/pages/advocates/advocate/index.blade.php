@@ -11,7 +11,7 @@
                 <div class="row page-titles">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Receivers</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Advocates</a></li>
                     </ol>
                 </div>
 
@@ -20,91 +20,97 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4>Receivers</h4>
-
-                                    @if ($user && $user->hasPermission('Add Receivers'))
-                                        <button type="button" class="btn btn-success mb-2 float-end"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModalCenter1"><i
-                                                class="fas fa-plus-square"></i>&nbsp;Add
-                                            Receiver</button>
-                                    @endif
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h4>Advocates</h4>
+                                    <span class="float-end">
+                                        <button id="exportButton" class="btn btn-secondary btn-sm" style="margin-right: 1px;">
+                                            <i class="fas fa-file-export"></i>&nbsp;Export
+                                        </button>
+                                        @if ($user && $user->hasPermission('Add Assigned Docs to Advocate'))
+                                            <button type="button" class="btn btn-warning btn-sm" style="margin-right: 1px;" data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
+                                                <i class="fas fa-plus-square"></i>&nbsp; Bulk Upload Assign Doc to Advocate
+                                            </button>
+                                        @endif
+                                        @if ($user && $user->hasPermission('Add Advocates'))
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModalCenter1">
+                                                <i class="fas fa-plus-square"></i>&nbsp;Add Advocate
+                                            </button>
+                                        @endif
+                                    </span>
                                 </div>
+                                
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        {{-- <h4>Receivers</h4> --}}
 
-
-                                        {{-- <div class="table-responsive"> --}}
-                                        {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
                                         <table id="example3" class="display">
 
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl. No.</th>
+                                                    <th scope="col">Advocate Id</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Phone</th>
-                                                    <th scope="col">City</th>
+                                                    <th scope="col">Address</th>
                                                     <th scope="col">Email Id</th>
-                                                    <th scope="col">Type</th>
+
                                                     <th scope="col">No. of Document</th>
                                                     <th scope="col">Status</th>
-                                                    <th scope="col">View Assigned Documents</th>
-                                                    @if ($user && $user->hasPermission('Update Receivers'))
-                                                        <th scope="col">Action</th>
-                                                    @endif
-                                                    @if ($user && $user->hasPermission('Assign Document'))
-                                                        <th scope="col">Assign Document</th>
-                                                    @endif
+                                                    {{-- <th scope="col">View Assigned Documents</th> --}}
+
+                                                    <th scope="col">Action</th>
+
+
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($data as $index => $item)
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
+                                                        <td>Advocate: {{ $item->id }}</td>
                                                         <td>{{ $item->name }}</td>
                                                         <td>{{ $item->phone }}</td>
-                                                        <td>{{ $item->city }}</td>
+                                                        <td>{{ $item->address }}</td>
                                                         <td>{{ $item->email }}</td>
-                                                        <td>{{ optional($item->receiverType)->name }}</td>
+
                                                         <td> {{ $item->document_assignments_count }}
                                                         </td>
-                                                     
+
                                                         <td>{!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
-   <td> <a href="/user-assign-documents/{{ $item->id }}" title="View Assigned Documents"><u><b><span
-    class="btn btn-secondary btn-sm edit-btn"><i
-    class="fas fa-eye"></i></span></b></u></a>
-</td>
+
                                                         <!-- Assuming you have a relation to get the receiver type name -->
-                                                        @if ($user && $user->hasPermission('Update Receivers'))
-                                                            <td>
-                                                                <button title="Edit Reciever" class="btn btn-primary btn-sm edit-btn"
+
+
+
+                                                        <td>
+                                                            @if ($user && $user->hasPermission('View Assigned Docs to Advocate'))
+                                                                <a href="/advocate-assign-documents/{{ $item->id }}"
+                                                                    title="View Assigned Documents"><u><b><span
+                                                                                class="btn btn-secondary btn-sm edit-btn"><i
+                                                                                    class="fas fa-eye"></i></span></b></u></a>
+                                                            @endif
+                                                            @if ($user && $user->hasPermission('Update Advocates'))
+                                                                <button title="Edit Reciever"
+                                                                    class="btn btn-primary btn-sm edit-btn"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#exampleModalCenter"
                                                                     data-receiver-id="{{ $item->id }}"
                                                                     data-receiver-name="{{ $item->name }}"
                                                                     data-receiver-phone="{{ $item->phone }}"
-                                                                    data-receiver-city="{{ $item->city }}"
+                                                                    data-receiver-address="{{ $item->address }}"
                                                                     data-receiver-email="{{ $item->email }}"
                                                                     data-receiver-type-id="{{ $item->receiver_type_id }}"
                                                                     data-receiver-status="{{ $item->status }}"><i
                                                                         class="fas fa-pencil-square"></i>&nbsp;</button>
-                                                            </td>
-                                                        @endif
-                                                        @if ($user && $user->hasPermission('Assign Document'))
-                                                            <td>
-                                                                <button class="btn btn-success btn-sm assign-doc-btn" title="Assign Document to the Receiver"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#assignDocumentModal"
-                                                                    data-receiver-id="{{ $item->id }}"
-                                                                    data-receiver-type-id="{{ $item->receiver_type_id }}"><i
-                                                                        class="fas fa-plus-square"></i>&nbsp;
-                                                                </button>
+                                                            @endif
 
-                                                            </td>
-                                                        @endif
+                                                            @if ($user && !$user->hasPermission('View Assigned Docs to Advocate') && !user->hasPermission('Update Advocates'))
+                                                                --
+                                                            @endif
+                                                        </td>
+
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -129,55 +135,44 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Receiver</h5>
+                    <h5 class="modal-title">Add Advocate</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal">
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form theme-form projectcreate">
-                        <form id="myAjaxForm" action="{{ route('receivers.store') }}" method="POST"
+                        <form id="myAjaxForm" action="{{ route('advocates.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label for="receiverName" class="form-label">Name&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="name" id="receiverName"
                                             placeholder="Enter Receiver's Name">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverEmail" class="form-label">Email&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="email" id="receiverEmail"
                                             placeholder="Enter Receiver's Email">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverPhone" class="form-label">Phone&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="phone" id="receiverPhone"
                                             placeholder="Enter Receiver's Phone Number" pattern="\d{0,10}$"
                                             title="Please enter a valid phone number with up to 10 digits."
                                             maxlength="10">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="receiverCity" class="form-label">City&nbsp;<span
-                                            class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="city" id="receiverCity"
-                                            placeholder="Enter Receiver's City">
+                                        <label for="receiverCity" class="form-label">Address&nbsp;<span
+                                                class="text-danger">*</span></label>
+                                        <textarea class="form-control" name="address" id="receiverCity" placeholder="Enter Receiver's Address"></textarea>
+
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="receiverType" class="form-label">Receiver
-                                            Type&nbsp;<span
-                                            class="text-danger">*</span></label>
-                                        <select class="form-control" id="receiverType" name="receiver_type_id">
-                                            <option selected value="">Select Receiver Type</option>
-                                            @foreach ($receiverTypes as $type)
-                                                <option value="{{ $type->id }}">{{ $type->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+
                                 </div>
 
                             </div>
@@ -193,67 +188,6 @@
         </div>
     </div>
     {{-- edit receiver modal starts --}}
-    {{-- assign document to individual receiver starts --}}
-
-    <div class="modal fade" id="assignDocumentModal">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Assign Document</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Update Form -->
-                    <form action="{{ url('/') }}/assign-documents-to-receiver" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" id="receiverId" name="id">
-                        <!-- Hidden fields inside the form -->
-                        <input type="hidden" id="modalReceiverId" name="receiver_id">
-                        <input type="hidden" id="modalReceiverTypeId" name="receiver_type">
-                        <input type="hidden" name="location" value="user">
-                        {{-- <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="documentType" class="form-label">Document
-                                    Type</label>
-                                <select class="form-control" id="documentType" name="document_type"
-                                    onchange="fetchDocuments(this.value)" required>
-                                    <option value="">Select Document Type
-                                    </option>
-                                    @foreach ($documentTypes as $type)
-                                        <option value="{{ $type->id }}">
-                                            {{ ucwords(str_replace('_', ' ', $type->name)) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="document" class="form-label">Document <i><span
-                                            style="font-size:10px;">(Only the approved documents are shown
-                                            here.)</span></i></label>
-                                <select class="form-control" id="document" name="document_id" required>
-                                    <option value="">Select Document</option>
-                                   
-                                </select>
-                            </div>
-                        </div> --}}
-                        <div class="row">
-                            <x-document-type-select :is_status="1" />
-
-
-
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Assign Document</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
 
     {{-- assign document to individual receiver ends --}}
@@ -261,12 +195,12 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Receiver</h5>
+                    <h5 class="modal-title">Edit Advocate</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Update Form -->
-                    <form id="updateReceiverForm">
+                    <form id="updateAdvocateForm">
                         <input type="hidden" id="receiverId" name="id">
                         <div class="mb-3">
                             <label for="receiverName" class="form-label">Name</label>
@@ -277,23 +211,15 @@
                             <input type="text" class="form-control" id="receiverPhone" name="phone">
                         </div>
                         <div class="mb-3">
-                            <label for="receiverCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="receiverCity" name="city">
+                            <label for="receiverCity" class="form-label">Address</label>
+                            <textarea class="form-control" name="address" id="receiverAddress" placeholder="Enter Receiver's Address"></textarea>
+
                         </div>
                         <div class="mb-3">
                             <label for="receiverEmail" class="form-label">Email</label>
                             <input type="email" class="form-control" id="receiverEmail" name="email">
                         </div>
-                        <div class="mb-3">
-                            <label for="receiverType" class="form-label">Receiver
-                                Type</label>
-                            <select class="form-control" id="receiverType" name="receiver_type_id">
-                                @foreach ($receiverTypes as $type)
-                                    <option value="{{ $type->id }}">
-                                        {{ $type->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+
                         <div class="mb-3">
                             <label for="receiverStatus" class="form-label">Status</label>
                             <select class="form-control" id="receiverStatus" name="status">
@@ -318,35 +244,50 @@
 
 </x-app-layout>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<div class="modal fade" id="addDocumentTypeModal" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="card-title">Bulk Upload Assign Document to Advocate</h4>
 
+            <div class="d-flex align-items-center">
+                <a href="/assets/sample/advocate_documents_sample.csv" download="sample.csv">
+                    <button type="button" class="btn btn-dark btn-sm">
+                        <i class="fas fa-download"></i>&nbsp; Download Sample CSV File
+                    </button>
+                </a>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="card overflow-hidden">
+
+                <div class="card-body">
+                    <form action="{{ url('/') }}/bulk-upload-advocate-assign-document" method="post"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label">Bulk Upload (in csv file format)</label>
+                                <div class="fallback">
+                                    <input name="document" type="file" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 
 <script>
-    // $(document).ready(function() {
-    //     $('.edit-btn').on('click', function() {
-    //         var receiverId = $(this).data('receiver-id');
-    //         var receiverName = $(this).data('receiver-name');
-    //         var receiverPhone = $(this).data('receiver-phone');
-    //         var receiverCity = $(this).data('receiver-city');
-    //         var receiverEmail = $(this).data('receiver-email');
-    //         var receiverTypeId = $(this).data('receiver-type-id');
-    //         var receiverStatus = $(this).data('receiver-status');
-
-    //         // Console log the data for debugging
-    //         console.log('Receiver ID:', receiverId);
-    //         console.log('Receiver Name:', receiverName);
-    //         console.log('Receiver Phone:', receiverPhone);
-    //         console.log('Receiver City:', receiverCity);
-    //         console.log('Receiver Email:', receiverEmail);
-    //         console.log('Receiver Type ID:', receiverTypeId);
-    //         console.log('Receiver Status:', receiverStatus);
-
-
-    //     });
-    // });
-
-
-
-
     $(document).ready(function() {
         $('#myAjaxForm').on('submit', function(e) {
             e.preventDefault(); // prevent the form from 'submitting'
@@ -406,10 +347,11 @@
 
                         '<td>' + receiver.receiver_type_name + '</td>' +
                         '<td>' + receiver.document_assignments_count + '</td>' +
-                      
+
 
                         '<td>' + statusBadge + '</td>' +
-                        '<td><a title="View Assigned Documents" href="/user-assign-documents/' + receiver.id +
+                        '<td><a title="View Assigned Documents" href="/user-assign-documents/' +
+                        receiver.id +
                         '"><u><b><span class="badge bg-secondary"><i class="fas fa-eye"></i> </span></b></u></a></td>' +
                         // Make sure you have the receiver type name available
                         '<td><Button title="Edit Receiver" class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-receiver-id="' +
@@ -417,7 +359,8 @@
                         '" data-receiver-phone="' + receiver.phone + '" data-receiver-city="' +
                         receiver.city + '" data-receiver-email="' + receiver.email +
                         '" data-receiver-type-id="' + receiver.receiver_type_id +
-                        '" data-receiver-status="' + receiver.status + '"><i class="fas fa-pencil-square"></i></Button></td>' +
+                        '" data-receiver-status="' + receiver.status +
+                        '"><i class="fas fa-pencil-square"></i></Button></td>' +
 
                         '<td>' + assignDocButton + '</td>' +
 
@@ -433,29 +376,29 @@
             var receiverId = $(this).data('receiver-id');
             var receiverName = $(this).data('receiver-name');
             var receiverPhone = $(this).data('receiver-phone');
-            var receiverCity = $(this).data('receiver-city');
+            var receiverAddress = $(this).data('receiver-address');
             var receiverEmail = $(this).data('receiver-email');
             var receiverTypeId = $(this).data('receiver-type-id');
             var receiverStatus = $(this).data('receiver-status');
 
             // Update the form fields
-            $('#updateReceiverForm #receiverId').val(receiverId);
-            $('#updateReceiverForm #receiverName').val(receiverName);
-            $('#updateReceiverForm #receiverPhone').val(receiverPhone);
-            $('#updateReceiverForm #receiverCity').val(receiverCity);
-            $('#updateReceiverForm #receiverEmail').val(receiverEmail);
-            $('#updateReceiverForm #receiverTypeId').val(receiverTypeId);
-            $('#updateReceiverForm #receiverStatus').val(receiverStatus);
+            $('#updateAdvocateForm #receiverId').val(receiverId);
+            $('#updateAdvocateForm #receiverName').val(receiverName);
+            $('#updateAdvocateForm #receiverPhone').val(receiverPhone);
+            $('#updateAdvocateForm #receiverAddress').val(receiverAddress);
+            $('#updateAdvocateForm #receiverEmail').val(receiverEmail);
+            $('#updateAdvocateForm #receiverTypeId').val(receiverTypeId);
+            $('#updateAdvocateForm #receiverStatus').val(receiverStatus);
         });
     });
 
     // Submit the updated receiver form
     function submitUpdateForm() {
-        var formData = $('#updateReceiverForm').serialize();
+        var formData = $('#updateAdvocateForm').serialize();
         // console.log(formData);
         // AJAX call to update the receiver
         $.ajax({
-            url: '/update-receiver', // Replace with your server's update URL
+            url: '/update-advocate', // Replace with your server's update URL
             type: 'POST',
             data: formData,
             headers: {
@@ -500,18 +443,54 @@
             }
         });
     }
+</script>
+<script>
+    document.getElementById('exportButton').addEventListener('click', function() {
+        var table = document.getElementById('example3'); // Your table ID
+        var rows = table.querySelectorAll('tr');
+        var csv = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const assignDocButtons = document.querySelectorAll('.assign-doc-btn');
-        assignDocButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                const receiverId = button.getAttribute('data-receiver-id');
-                const receiverTypeId = button.getAttribute('data-receiver-type-id');
+        for (var i = 0; i < rows.length; i++) {
+            var row = [],
+                cols = rows[i].querySelectorAll('td, th');
 
-                // Set the receiver's ID and type in the hidden fields
-                document.getElementById('modalReceiverId').value = receiverId;
-                document.getElementById('modalReceiverTypeId').value = receiverTypeId;
-            });
-        });
+            for (var j = 0; j < cols.length - 1; j++) {
+                // Clean the text content from the cell and escape double quotes
+                var data = cols[j].innerText.replace(/"/g, '""');
+                data = '"' + data + '"';
+                row.push(data);
+            }
+            csv.push(row.join(','));
+        }
+
+        downloadCSV(csv.join('\n'));
     });
+
+    function downloadCSV(csv) {
+        var csvFile;
+        var downloadLink;
+
+        // CSV file
+        csvFile = new Blob([csv], {
+            type: "text/csv"
+        });
+
+        // Download link
+        downloadLink = document.createElement("a");
+
+        // File name
+        downloadLink.download = 'export.csv';
+
+        // Create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+
+        // Hide download link
+        downloadLink.style.display = "none";
+
+        // Add the link to DOM
+        document.body.appendChild(downloadLink);
+
+        // Click download link
+        downloadLink.click();
+    }
 </script>

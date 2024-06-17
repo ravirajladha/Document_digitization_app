@@ -78,8 +78,6 @@ class ReceiverProcessController extends Controller
 
     public function assignDocumentsToReceiver(Request $request)
     {
-        // Your validation logic here...
-        // Validate the request...
         // dd($request->all());
         $validatedData = $request->validate([
             'document_type' => 'required', // Assuming this is an ID or a code
@@ -118,16 +116,6 @@ class ReceiverProcessController extends Controller
             $receiverEmail = $receiver->email; // Assuming the 'email' column exists in the receivers table
             $receiverName = $receiver->name; // Assuming the 'email' column exists in the receivers table
             $verificationUrl = url('/otp/' . $token);
-            // $this->notificationService->createDocumentAssignmentNotification('assigned', $assignment);
-            // if (!$receiverEmail) {
-
-            //     session()->flash('toastr', ['type' => 'error', 'message' => 'Receiver email not found.']);
-            //     return redirect('/assign-documents');
-            // }
-
-            // $verificationUrl = url('/otp/' . $token);
-
-            // Mail::to($receiverEmail)->send(new AssignDocumentEmail($verificationUrl, $expiresAt, $receiverName, $otp));
 
             if ($this->sendAssignmentEmail($receiverEmail, $verificationUrl, $expiresAt, $receiverName, $otp)) {
                 session()->flash('toastr', ['type' => 'success', 'message' => 'Documents assigned successfully. Verification email sent.']);
@@ -296,23 +284,6 @@ class ReceiverProcessController extends Controller
     }
 
 
-
-    //old function, when the assignment was activateo or deactivated thorugh ajax call, but after that  new email need to be sent was told to activate
-    // public function toggleStatus(Request $request, $id)
-    // {
-    //     $assignment = Document_assignment::findOrFail($id);
-    //     $assignment->status = !$assignment->status; // Toggle the status
-    //     // $this->notificationService->createDocumentAssignmentNotification('updated', $assignment);
-
-    //     $assignment->save();
-
-    //     return response()->json([
-
-    //         'success' => 'Document assigned successfully.',
-    //         'newStatus' => $assignment->status
-    //     ]);
-    // }
-
     public function showOtpForm($token)
     {
 
@@ -346,7 +317,6 @@ class ReceiverProcessController extends Controller
 
         // Get the input OTP from the request
         $inputOtp = $request->input('otp');
-        // dd($inputOtp,$documentAssignment->otp);
         // Check if the input OTP matches the OTP stored in the database
         if ($inputOtp == $documentAssignment->otp) {
             // Mark the OTP as validated in the session

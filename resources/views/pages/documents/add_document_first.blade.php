@@ -65,6 +65,28 @@
                                                         <input type="text" name="name" class="form-control"
                                                             placeholder="Enter Name" required>
                                                     </div>
+
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Select Categories </label>
+                                    <select class="form-select form-control" id="category-select" name="categories[]" multiple >
+                                        <option selected disabled>Select Categories</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label">Select Subcategories </label>
+                                    <select class="form-select form-control" id="subcategory-select" name="subcategories[]" multiple >
+                                        <!-- Subcategories will be populated dynamically -->
+                                    </select>
+                                </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Document Identifier Id </label>
+                                                        <input type="text" name="doc_identifier_id" class="form-control"
+                                                            placeholder="Enter Document Identifier Id" >
+                                                    </div>
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Category</label>
                                                         <input type="text" name="category"
@@ -96,9 +118,10 @@
                                                     </div>
 
                                                     <div class="mb-3 col-md-6">
-                                                        <label class="form-label">Current State</label>
+                                                        <label class="form-label">Current State&nbsp;<span
+                                                            class="text-danger">*</span></label>
                                                         <select id="single-select-abc2" name="current_state"
-                                                            class="default-select form-control ">
+                                                            class="default-select form-control " required>
                                                             <option selected disabled>Choose State...</option>
                                                             @foreach ($states as $state)
                                                                 <option value="{{ $state->name }}">{{ $state->name }}
@@ -132,9 +155,10 @@
                                                     </div>
 
                                                     <div class="mb-3 col-md-6">
-                                                        <label class="form-label">Current District</label>
+                                                        <label class="form-label">Current District&nbsp;<span
+                                                            class="text-danger">*</span></label>
                                                         <input type="text" name="current_district"
-                                                            class="form-control" placeholder="Enter Current District">
+                                                            class="form-control" placeholder="Enter Current District" required>
                                                     </div>
 
                                                     <div class="mb-3 col-md-6">
@@ -168,9 +192,10 @@
                                                     </div>
 
                                                     <div class="mb-3 col-md-6">
-                                                        <label class="form-label">Current Village</label>
+                                                        <label class="form-label">Current Village&nbsp;<span
+                                                            class="text-danger">*</span></label>
                                                         <input type="text" name="current_village"
-                                                            class="form-control" placeholder="Enter Current Village">
+                                                            class="form-control" placeholder="Enter Current Village" required>
                                                     </div>
 
                                                     <div class="mb-3 col-md-6">
@@ -186,13 +211,6 @@
                                                             placeholder="Enter Alternate Village">
                                                     </div>
 
-                                                  
-
-                                                    {{-- <div class="mb-3 col-md-6">
-                                            <label class="form-label">Document Sub Type</label>
-                                            <input type="text" name="document_sub_type" class="form-control" placeholder="Enter Document Sub Type">
-                                        </div>
-                                         --}}
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Current Town</label>
                                                         <input type="text" name="current_town"
@@ -211,9 +229,10 @@
                                                             class="form-control" placeholder="Enter Alternate Town">
                                                     </div>
                                                     <div class="mb-3 col-md-6">
-                                                        <label class="form-label">Locker ID</label>
+                                                        <label class="form-label">Locker ID&nbsp;<span
+                                                            class="text-danger">*</span></label>
                                                         <input type="number" name="locker_id" class="form-control"
-                                                            placeholder="Enter Locker ID">
+                                                            placeholder="Enter Locker ID" required>
                                                     </div>
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Old Locker Number</label>
@@ -226,20 +245,12 @@
                                                         <input type="text" name="physically" class="form-control"
                                                             placeholder="Enter physically">
                                                     </div>
-                                                    {{-- <div class="mb-3 col-md-6">
-                                            <label class="form-label">Status Description</label>
-                                            <input type="text" name="status_description" class="form-control" placeholder="Enter status_description ">
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label">Review</label>
-                                            <input type="text" name="review" class="form-control" placeholder="Enter review">
-                                        </div> --}}
+                                                    
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Set</label>
                                                         <select class="select2-width-75" name="set[]"
                                                             multiple="multiple" style="width: 75%">
                                                             <option selected disabled>Choose Set...</option>
-
                                                             @foreach ($sets as $set)
                                                                 <option value="{{ $set->id }}">
                                                                     {{ $set->name }}</option>
@@ -289,30 +300,15 @@
                                                     <div class="mb-3 col-md-6">
                                                         <label class="form-label">Latitude</label>
                                                         <input type="text" name="latitude" class="form-control" placeholder="Enter Latitude (-180 to +180)">
-                                                    </div>
-                                                    
-
+                                                    </div>  
 
                                                 </div>
-
-                                                {{-- <div class="mb-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox">
-                                            <label class="form-check-label">
-                                                Check me out
-                                            </label>
-                                        </div>
-                                    </div> --}}
-
                                                 <div class="card-footer">
                                                     <a href="" class="btn-link"></a>
                                                     <div class="text-end"><button class="btn btn-primary"
                                                             type="submit">Next</button>
                                                     </div>
-                                                </div>
-
-
-                                                {{-- <button type="submit" class="btn btn-primary">Next</button> --}}
+                                                </div>      
 
                                             </div>
                                         </div>
@@ -362,4 +358,56 @@
         placeholder: "Select a state",
         allowClear: true
     });
+    $("#category-select").select2();
+
+    $(".category-select-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#subcategory-select").select2();
+
+    $(".subcategory-select-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+</script>
+{{-- scripts for fetching usubcategory a/c to the category --}}
+<script>
+    $(document).ready(function() {
+    $('#category-select').on('change', function() {
+        populateSubcategories();
+    });
+
+    // Populate subcategories on page load based on pre-selected categories
+    populateSubcategories();
+
+    function populateSubcategories() {
+        var selectedCategories = $('#category-select').val();
+        var subcategories = [];
+
+        // Collect selected subcategories to retain selection
+        var previouslySelectedSubcategories = $('#subcategory-select').val() || [];
+
+        @foreach ($categories as $category)
+            if (selectedCategories && selectedCategories.includes('{{ $category->id }}')) {
+                @foreach ($category->subcategories as $subcategory)
+                    subcategories.push({ id: '{{ $subcategory->id }}', name: '{{ $subcategory->name }}', category: '{{ $category->name }}' });
+                @endforeach
+            }
+        @endforeach
+
+        var subcategorySelect = $('#subcategory-select');
+        subcategorySelect.empty();
+
+        if (subcategories.length > 0) {
+            subcategories.forEach(function(subcategory) {
+                var isSelected = previouslySelectedSubcategories.includes(subcategory.id.toString()) ? 'selected' : '';
+                subcategorySelect.append('<option value="' + subcategory.id + '" ' + isSelected + '>' + subcategory.category + ' - ' + subcategory.name + '</option>');
+            });
+        } else {
+            subcategorySelect.append('<option selected disabled>No Subcategories Available</option>');
+        }
+    }
+});
+
 </script>

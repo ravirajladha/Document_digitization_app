@@ -1,3 +1,7 @@
+@php
+    use Carbon\Carbon;
+@endphp
+
 <x-app-layout>
     @php
         if (!function_exists('addOrdinalSuffix')) {
@@ -33,11 +37,10 @@
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">Document Details</a></li>
                 </ol>
             </div>
-            
+
             <div class="container-fluid">
                 @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
-               
-            @endif
+                @endif
                 <div class="row">
 
                     <div class="split-pane">
@@ -46,36 +49,15 @@
                                 <div class="card-header">
                                     <h4 class="card-title">Data </h4>
                                     <a class="btn btn-primary float-end"
-                                    href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                    rel="noopener noreferrer"><i class="fa fa-pencil"></i> Edit</a>
+                                        href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
+                                        rel="noopener noreferrer"><i class="fa fa-pencil"></i> Edit</a>
                                 </div>
                                 <div class="card-body">
-                                    {{-- <div class="card"> --}}
-                                    {{-- <div class="card-header">
-                                            <h4 class="card-title">Data</h4> --}}
-
-
-                                    {{-- @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
-                                                <a class="btn btn-primary float-end"
-                                                    href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                                    rel="noopener noreferrer">Edit</a>
-                                            @endif --}}
-                                    {{-- </div> --}}
-                                    {{-- <div class="card-body"> --}}
-                                    {{-- <style>
-                                                .table-responsive {
-                                                    width: 100%;
-                                                   
-                                                }
-            
-                                                .table {
-                                                    overflow-x: auto;
-                                                }
-                                            </style> --}}
+                              
 
                                     <div class="table-responsive">
                                         <table class="table table-striped table-responsive-sm">
-                                            <tbody >
+                                            <tbody>
                                                 @if ($master_data)
                                                     @php
                                                         $latitude = null;
@@ -132,8 +114,26 @@
                                                                         $value = $value; // Keep original value if parsing fails
                                                                     }
                                                                 }
-                                                            @endphp
-                                                            @php
+                                                      
+                                                                // Handle category_id and subcategory_id
+                                                                if ($attribute === 'category_id') {
+                                                                    $categoryIds = explode(',', $value);
+                                                                    $categoryNamesArray = [];
+                                                                    foreach ($categoryIds as $id) {
+                                                                        $categoryNamesArray[] = $categoryNames[$id] ?? $id;
+                                                                    }
+                                                                    $value = implode(', ', $categoryNamesArray);
+                                                                }
+                                            
+                                                                if ($attribute === 'subcategory_id') {
+                                                                    $subcategoryIds = explode(',', $value);
+                                                                    $subcategoryNamesArray = [];
+                                                                    foreach ($subcategoryIds as $id) {
+                                                                        $subcategoryNamesArray[] = $subcategoryNames[$id] ?? $id;
+                                                                    }
+                                                                    $value = implode(', ', $subcategoryNamesArray);
+                                                                }
+                                                          
                                                                 $truncatedValue =
                                                                     strlen($value) > 35
                                                                         ? substr($value, 0, 35)
@@ -327,18 +327,23 @@
                                                     @if ($column->data_type == 3)
                                                         <img src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}"
                                                             alt="{{ $columnName }}" oncontextmenu="return false;">
-                                                            <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}" target="_blank" rel="noopener noreferrer">Open Image in new tab</a>
-                                                            
+                                                        <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultImagePath }}"
+                                                            target="_blank" rel="noopener noreferrer">Open Image in new
+                                                            tab</a>
+
                                                         @php $counter++; @endphp
                                                     @elseif($column->data_type == 4)
                                                         <div class="pointer-events: auto;">
-                                                            <div class="content-wrapper" onclick="toggleFullscreen(this)">
-                                                            <iframe
-                                                                src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
-                                                                width="100%" height="600"
-                                                                oncontextmenu="return false;"></iframe>
+                                                            <div class="content-wrapper"
+                                                                onclick="toggleFullscreen(this)">
+                                                                <iframe
+                                                                    src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
+                                                                    width="100%" height="600"
+                                                                    oncontextmenu="return false;"></iframe>
                                                             </div>
-                                                            <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath  }}" target="_blank" rel="noopener noreferrer">Open PDF in new tab</a>
+                                                            <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
+                                                                target="_blank" rel="noopener noreferrer">Open PDF in
+                                                                new tab</a>
                                                         </div>
                                                         {{-- #toolbar=0 --}}
                                                         @php $counter++; @endphp
@@ -366,17 +371,23 @@
                                             @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']))
                                                 <h4 class="mt-2">Image File</h4>
                                                 <div>
-                                                
-                                                        <img src="{{ url($document->pdf_file_path) }}" width="100%" alt="Document Image">
-                                                        <a href="{{ url($document->pdf_file_path) }}" target="_blank" rel="noopener noreferrer">Open Image in new tab</a>
+
+                                                    <img src="{{ url($document->pdf_file_path) }}" width="100%"
+                                                        alt="Document Image">
+                                                    <a href="{{ url($document->pdf_file_path) }}" target="_blank"
+                                                        rel="noopener noreferrer">Open Image in new tab</a>
                                                 </div>
                                             @elseif($extension === 'pdf')
                                                 <h4 class="mt-2">PDF File</h4>
                                                 {{-- <div class="pointer-events: auto;"> --}}
-                                                    <a href="{{ url($document->pdf_file_path) }}" target="_blank" rel="noopener noreferrer">
-                                                        <iframe src="{{ url($document->pdf_file_path) }}" width="100%" height="600" frameborder="0" oncontextmenu="return false;"></iframe>
-                                                    </a>
-                                                    <a href="{{ url($document->pdf_file_path) }}" target="_blank" rel="noopener noreferrer">Open PDF in new tab</a>
+                                                <a href="{{ url($document->pdf_file_path) }}" target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    <iframe src="{{ url($document->pdf_file_path) }}" width="100%"
+                                                        height="600" frameborder="0"
+                                                        oncontextmenu="return false;"></iframe>
+                                                </a>
+                                                <a href="{{ url($document->pdf_file_path) }}" target="_blank"
+                                                    rel="noopener noreferrer">Open PDF in new tab</a>
                                                 {{-- </div> --}}
                                             @else
                                                 <div class="col-lg-12">
@@ -553,8 +564,10 @@
                                                             <td>{{ $log->message ? $log->message : 'N/A' }}</td>
                                                             <td>{{ $log->creator_name }}</td>
                                                             <td>
-                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $log->id }}">
-                                                                    <i class="fa fa-pencil"></i>  Edit
+                                                                <button type="button" class="btn btn-primary"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#editModal{{ $log->id }}">
+                                                                    <i class="fa fa-pencil"></i> Edit
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -564,33 +577,41 @@
                                         </div>
                                     @endif
                                     @foreach ($document_logs as $index => $log)
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="editModal{{ $log->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editModalLabel">Edit Message</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('documents.statusMessage', $log->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="id" value="{{ $document->id }}">
-                                            <input type="hidden" name="type" value="{{ $tableName }}">
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="messageText" class="form-label">Message</label>
-                                                            <textarea class="form-control" id="messageText" name="message" rows="3" required>{{ $log->message }}</textarea>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="editModal{{ $log->id }}" tabindex="-1"
+                                            aria-labelledby="editModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalLabel">Edit Message</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('documents.statusMessage', $log->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="id"
+                                                            value="{{ $document->id }}">
+                                                        <input type="hidden" name="type"
+                                                            value="{{ $tableName }}">
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="messageText"
+                                                                    class="form-label">Message</label>
+                                                                <textarea class="form-control" id="messageText" name="message" rows="3" required>{{ $log->message }}</textarea>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                                    </div>
-                                                </form>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Save
+                                                                changes</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @endforeach
 
                                 </div>
@@ -854,7 +875,205 @@
                         </div>
                     </div>
                 </div>
+                {{-- start asssigned advocate document table --}}
+                @if ($user && $user->hasPermission('View Assigned Docs to Advocate'))
 
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-header">
+                                        <h4>Assigned Advocates</h4>
+                                        @if ($user && $user->hasPermission('Add Assigned Docs to Advocate'))
+                                            <button class="btn btn-success btn-sm assign-doc-btn float-end flex"
+                                                title="Assign Document to the Receiver" data-bs-toggle="modal"
+                                                data-bs-target="#assignDocumentModal"
+                                                data-document-id="{{ $document_id }}"><i
+                                                    class="fas fa-plus-square"></i>&nbsp;Assign Advocate
+                                            </button>
+                                        @endif
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="example3" class="display" style="min-width: 845px">
+
+
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Sl. No.</th>
+
+
+                                                    <th scope="col">Advocate Name </th>
+                                                    <th scope="col">Case Name </th>
+                                                    <th scope="col">Case Status </th>
+                                                    <th scope="col">Start Date </th>
+                                                    <th scope="col">End Date </th>
+                                                    <th scope="col">Court Name </th>
+                                                    <th scope="col">Court Case Location </th>
+                                                    <th scope="col">Plaintiff Name </th>
+                                                    <th scope="col">Defendent Name </th>
+                                                    <th scope="col">Urgency Level </th>
+                                                    <th scope="col">Notes </th>
+                                                    <th scope="col">Submission Deadline </th>
+                                                    <th scope="col">Status </th>
+                                                    <th scope="col">Action </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                              
+                                                @foreach ($assigned_advocate_docs as $index => $item)
+                                                    <tr>
+                                                        <th scope="row">{{ $index + 1 }}</th>
+
+                                                        <td>{{ $item->advocate->name }}
+
+                                                        </td>
+                                                       
+
+
+                                                        <td>{{ $item->case_name ?? '--' }}</td>
+
+                                                        <td>{{ $item->case_status ?? '--' }}</td>
+                                                        <td>
+                                                            {{ $item->start_date ? Carbon::parse($item->start_date)->format('d-M-Y') : '--' }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->end_date ? Carbon::parse($item->end_date)->format('d-M-Y') : '--' }}
+                                                        </td>
+
+                                                        <td>{{ $item->court_name ?? '--' }}</td>
+                                                        <td>{{ $item->court_case_location ?? '--' }}</td>
+                                                        <td>{{ $item->plaintiff_name ?? '--' }}</td>
+                                                        <td>{{ $item->defendant_name ?? '--' }}</td>
+                                                        <td>{{ $item->urgency_level ?? '--' }}</td>
+                                                        <td>{{ $item->notes ?? '--' }}</td>
+                                                        <td>
+                                                            {{ $item->submission_deadline ? Carbon::parse($item->submission_deadline)->format('d-M-Y') : '--' }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $item->created_at ? Carbon::parse($item->created_at)->format('d-M-Y') : '--' }}
+                                                        </td>
+                                                        <td>
+                                                            @if ($user && $user->hasPermission('Update Assigned Docs to Advocate'))
+                                                                <button class="btn btn-primary btn-sm edit-doc-btn"
+                                                                    title="Edit Document Assignment"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#editDocumentModal"
+                                                                    data-id="{{ $item->id }}">
+                                                                    <i class="fas fa-edit"></i> Edit
+                                                                </button>
+                                                            @endif
+                                                            @if ($user && $user->hasPermission('Delete Assigned Docs to Advocate'))
+                                                                <form
+                                                                    action="{{ route('documentAdvocateAssignment.destroy', $item->id) }}"
+                                                                    method="POST" style="display:inline-block;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger btn-sm"
+                                                                        onclick="return confirm('Are you sure you want to delete this assignment?');">
+                                                                        <i class="fas fa-trash"></i> Delete
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                            @if (
+                                                                $user &&
+                                                                    !$user->hasPermission('Delete Assigned Docs to Advocate') &&
+                                                                    !$user->hasPermission('Update Assigned Docs to Advocate'))
+                                                                --
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                {{-- end asssigned advocate document table --}}
+                {{-- start document transactions table --}}
+                @if ($user && $user->hasPermission('View Document Logs'))
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card" id="documentTransactionsCard">
+                                <div class="card-body">
+                                    <div class="card-header">
+                                        <h4>Document Logs</h4>
+                                        @if ($user && $user->hasPermission('Add Document Logs'))
+                                            <button class="btn btn-success btn-sm assign-doc-btn float-end flex"
+                                                title="Assign Document to the Receiver" data-bs-toggle="modal"
+                                                data-bs-target="#documentTransactionModal"
+                                                data-document-id="{{ $document_id }}"><i
+                                                    class="fas fa-plus-square"></i>
+                                                Add Document Log&nbsp;
+                                            </button>
+                                        @endif
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="example3" class="display" style="min-width: 845px">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl. No.</th>
+                                                    <th>Created By</th>
+                                                    <th>Log Type</th>
+                                                    <th>Notes</th>
+                                                    <th>Created At</th>
+                                                    <th>Updated At</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @foreach ($document_transactions as $index => $item)
+                                                    <tr>
+                                                        <th scope="row">{{ $index + 1 }}</th>
+                                                        <td>{{ $item->creator->name }}</td>
+                                                        <td>{{ $item->transaction_type }}</td>
+                                                        <td>{{ $item->notes }}</td>
+                                                        <td>{{ date('H:i:s d/M/Y ', strtotime($item->created_at)) }}
+                                                        <td>{{ date('H:i:s d/M/Y ', strtotime($item->updated_at)) }}
+
+                                                        <td>
+                                                            @if ($user && $user->hasPermission('Update Document Logs'))
+                                                                <button
+                                                                    class="btn btn-primary btn-sm edit-transaction-btn"
+                                                                    data-id="{{ $item->id }}"> <i
+                                                                        class="fas fa-edit"></i> Edit</button>
+                                                            @endif
+                                                            @if ($user && $user->hasPermission('Delete Document Logs'))
+                                                                <form
+                                                                    action="{{ route('documentTransaction.destroy', $item->id) }}"
+                                                                    method="POST" style="display:inline-block;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger btn-sm"
+                                                                        onclick="return confirm('Are you sure you want to delete this document log?');">
+                                                                        <i class="fas fa-trash"></i> Delete
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                            @if ($user && !$user->hasPermission('Update Document Logs') && !$user->hasPermission('Delete Document Logs'))
+                                                                --
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                {{-- end document transactions table --}}
+
+                {{-- start assign document modal --}}
 
                 <div class="modal fade" id="exampleModalCenter1">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -919,7 +1138,7 @@
                         </div>
                     </div>
                 </div>
-
+                {{-- end assign document modal --}}
             </div>
         </div>
     </div>
@@ -946,7 +1165,418 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- start add transaction modal --}}
 
+<!-- Document Transaction Modal -->
+<div class="modal fade" id="documentTransactionModal" tabindex="-1" role="dialog"
+    aria-labelledby="documentTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="documentTransactionModalLabel">Document Logs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="documentTransactionForm" action="{{ url('/document-transactions') }}" method="POST">
+                    @csrf
+                    <input type="hidden" value="{{ $document_id }}" name="doc_id">
+
+
+                    <div class="mb-3">
+                        <label for="transaction_type" class="form-label">Transaction Type</label>
+                        <select class="form-control" id="transaction_type" name="transaction_type">
+                            <option value="taken">Taken</option>
+                            <option value="returned">Returned</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- end add transaction modal --}}
+{{-- start modal edit for transaction --}}
+<!-- Edit Document Log Modal -->
+<div class="modal fade" id="editDocumentTransactionModal" tabindex="-1" role="dialog"
+    aria-labelledby="editDocumentTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDocumentTransactionModalLabel">Edit Document
+                    Log</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editDocumentTransactionForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="edit_doc_id" name="doc_id">
+                    <div class="mb-3">
+                        <label for="edit_transaction_type" class="form-label">Log Type</label>
+                        <select class="form-control" id="edit_transaction_type" name="transaction_type">
+                            <option value="taken">Taken</option>
+                            <option value="returned">Returned</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="edit_notes" name="notes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{-- end modal edit for transaction --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const transactionButtons = document.querySelectorAll('.transaction-btn');
+        transactionButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const docId = button.getAttribute('data-document-id');
+                alert(docId, "docu,ent_id")
+                console.log('Document ID:', docId);
+                document.getElementById('document_id').value = docId;
+                console.log('Hidden input value:', document.getElementById('document_id')
+                .value); // Debug log
+                document.getElementById('documentTransactionForm').reset();
+                document.getElementById('documentTransactionForm').action =
+                    '{{ url('/document-transactions') }}';
+                document.getElementById('documentTransactionForm').method = 'POST';
+                document.getElementById('documentTransactionModalLabel').textContent =
+                    'Create Document Transaction';
+                $('#documentTransactionModal').modal('show');
+            });
+        });
+
+        const editTransactionButtons = document.querySelectorAll('.edit-transaction-btn');
+        editTransactionButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const transactionId = button.getAttribute('data-id');
+                console.log('Fetching transaction with ID:', transactionId); // Debug log
+                const url = "{{ route('documentTransaction.show', ['id' => ':id']) }}"
+                    .replace(
+                        ':id', transactionId);
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // if(data.success) {
+                        console.log('Transaction data:', data); // Debug log
+                        document.getElementById('edit_doc_id').value = data.doc_id;
+                        document.getElementById('edit_transaction_type').value = data
+                            .transaction_type;
+                        document.getElementById('edit_notes').value = data.notes;
+                        document.getElementById('editDocumentTransactionForm').action = url;
+                        document.getElementById('editDocumentTransactionModalLabel')
+                            .textContent = 'Edit Document Log';
+                        $('#editDocumentTransactionModal').modal('show');
+                        // } else {
+                        //     console.error('Failed to fetch transaction data');
+                        // }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching transaction data:', error);
+                    });
+            });
+        });
+
+
+    });
+</script>
+
+
+
+
+{{-- end  add transaction modal --}}
+{{-- assign document --}}
+<div class="modal fade" id="assignDocumentModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Advocate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Update Form -->
+                <form action="{{ url('/') }}/assign-documents-to-advocate" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="documentId" name="document_id">
+
+                    <input type="hidden" name="location" value="review">
+
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="advocate_id" class="form-label">Select Advocate</label>
+                                    <select class="form-control" id="advocate_id" name="advocate_id" required>
+                                        <!-- Assuming you have an array of advocates -->
+                                        @foreach ($advocates as $advocate)
+                                            <option value="{{ $advocate->id }}">{{ $advocate->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="case_name" class="form-label">Case Name</label>
+                                    <input type="text" class="form-control" id="case_name" name="case_name">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="case_status" class="form-label">Case Status</label>
+                                    <input type="text" class="form-control" id="case_status" name="case_status">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="start_date" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="end_date" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="court_name" class="form-label">Court Name</label>
+                                    <input type="text" class="form-control" id="court_name" name="court_name">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="court_case_location" class="form-label">Court Case Location</label>
+                                    <input type="text" class="form-control" id="court_case_location"
+                                        name="court_case_location">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="plantiff_name" class="form-label">Plaintiff Name</label>
+                                    <input type="text" class="form-control" id="plantiff_name"
+                                        name="plantiff_name">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="defendant_name" class="form-label">Defendant Name</label>
+                                    <input type="text" class="form-control" id="defendant_name"
+                                        name="defendant_name">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="urgency_level" class="form-label">Urgency Level</label>
+                                    <input type="text" class="form-control" id="urgency_level"
+                                        name="urgency_level">
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="submission_deadline" class="form-label">Submission Deadline</label>
+                                    <input type="date" class="form-control" id="submission_deadline"
+                                        name="submission_deadline">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">Notes</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const assignDocButtons = document.querySelectorAll('.assign-doc-btn');
+        assignDocButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const documentId = button.getAttribute('data-document-id');
+                document.getElementById('documentId').value = documentId;
+            });
+        });
+    });
+</script>
+{{-- end assign document modal --}}
+{{-- start edit assign document modal --}}
+<div class="modal fade" id="editDocumentModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Assigned Advocate Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Edit Form -->
+                {{-- <form action="{{ url('/') }}/update-document-assignment" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT') --}}
+                <form id="editDocumentForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="editAssignmentId" name="assignment_id">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="edit_document_name" class="form-label">Document Name</label>
+                                <input type="text" class="form-control" id="edit_document_name"
+                                    name="document_name" readonly>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_case_name" class="form-label">Case Name</label>
+                                <input type="text" class="form-control" id="edit_case_name" name="case_name">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_case_status" class="form-label">Case Status</label>
+                                <input type="text" class="form-control" id="edit_case_status" name="case_status">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="edit_start_date" name="start_date">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="edit_end_date" name="end_date">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_court_name" class="form-label">Court Name</label>
+                                <input type="text" class="form-control" id="edit_court_name" name="court_name">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_court_case_location" class="form-label">Court Case Location</label>
+                                <input type="text" class="form-control" id="edit_court_case_location"
+                                    name="court_case_location">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_plantiff_name" class="form-label">Plaintiff Name</label>
+                                <input type="text" class="form-control" id="edit_plantiff_name"
+                                    name="plantiff_name">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_defendant_name" class="form-label">Defendant Name</label>
+                                <input type="text" class="form-control" id="edit_defendant_name"
+                                    name="defendant_name">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_urgency_level" class="form-label">Urgency Level</label>
+                                <input type="text" class="form-control" id="edit_urgency_level"
+                                    name="urgency_level">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="edit_submission_deadline" class="form-label">Submission Deadline</label>
+                                <input type="date" class="form-control" id="edit_submission_deadline"
+                                    name="submission_deadline">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="edit_notes" class="form-label">Notes</label>
+                                <textarea class="form-control" id="edit_notes" name="notes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const assignDocButtons = document.querySelectorAll('.assign-doc-btn');
+        const editDocButtons = document.querySelectorAll('.edit-doc-btn');
+
+        assignDocButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const receiverId = button.getAttribute('data-receiver-id');
+                document.getElementById('modalReceiverId').value = receiverId;
+            });
+        });
+
+        editDocButtons.forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const assignmentId = button.getAttribute('data-id');
+                const response = await fetch(`/document-assignment/${assignmentId}/edit`);
+                const assignment = await response.json();
+                console.log("assignment", assignment)
+                document.getElementById('editAssignmentId').value = assignment.id;
+                document.getElementById('edit_document_name').value = assignment.document
+                    .name;
+                document.getElementById('edit_case_name').value = assignment.case_name;
+                document.getElementById('edit_case_status').value = assignment.case_status;
+                document.getElementById('edit_start_date').value = assignment.start_date;
+                document.getElementById('edit_end_date').value = assignment.end_date;
+                document.getElementById('edit_court_name').value = assignment.court_name;
+                document.getElementById('edit_court_case_location').value = assignment
+                    .court_case_location;
+                document.getElementById('edit_plantiff_name').value = assignment
+                    .plantiff_name;
+                document.getElementById('edit_defendant_name').value = assignment
+                    .defendant_name;
+                document.getElementById('edit_urgency_level').value = assignment
+                    .urgency_level;
+                document.getElementById('edit_submission_deadline').value = assignment
+                    .submission_deadline;
+                document.getElementById('edit_notes').value = assignment.notes;
+                const form = document.getElementById('editDocumentForm');
+                form.action = `/document-assignment/${assignment.id}`;
+            });
+        });
+    });
+</script>
+
+{{-- end edit assign document modal --}}
 <script>
     function handleStatusChange(select) {
         if (select.value == "2") { // Assuming '2' is the value for 'Hold'
@@ -955,7 +1585,8 @@
                 document.getElementById('holdReason').value = reason;
                 select.form.submit();
             } else {
-                select.value = "{{ $document->status }}"; // Revert back to the original value if no reason is provided
+                select.value =
+                    "{{ $document->status }}"; // Revert back to the original value if no reason is provided
             }
         } else if (select.value == "3") {
             const reason = window.prompt("Please enter the feedback: (* Mandatory)");
@@ -963,7 +1594,8 @@
                 document.getElementById('holdReason').value = reason;
                 select.form.submit();
             } else {
-                select.value = "{{ $document->status }}"; // Revert back to the original value if no reason is provided
+                select.value =
+                    "{{ $document->status }}"; // Revert back to the original value if no reason is provided
             }
         } else {
             select.form.submit();
@@ -1099,77 +1731,82 @@
     });
 </script>
 <style>
-.split-pane {
-    display: flex;
-    width: 100%;
-    height: auto; /* Adjust based on your needs */
-}
+    .split-pane {
+        display: flex;
+        width: 100%;
+        height: auto;
+        /* Adjust based on your needs */
+    }
 
-.pane {
-    flex-grow: 1;
-    flex-basis: 50%; /* Initially each pane takes up half the container */
-    overflow: auto;
-    transition: flex-basis 0.1s ease; /* Smooth transition for resizing */
-}
+    .pane {
+        flex-grow: 1;
+        flex-basis: 50%;
+        /* Initially each pane takes up half the container */
+        overflow: auto;
+        transition: flex-basis 0.1s ease;
+        /* Smooth transition for resizing */
+    }
 
-.divider {
-    background-color: #666;
-    cursor: ew-resize;
-    width: 5px; /* Adjust for handle width */
-}
-.content-wrapper {
-    cursor: pointer; /* Indicates the element is clickable */
-    overflow: hidden; /* Keeps everything neat */
-}
+    .divider {
+        background-color: #666;
+        cursor: ew-resize;
+        width: 5px;
+        /* Adjust for handle width */
+    }
 
-iframe, img {
-    width: 100%; /* Ensures content fills the wrapper */
-    height: auto; /* Maintains aspect ratio for images */
-}
+    .content-wrapper {
+        cursor: pointer;
+        /* Indicates the element is clickable */
+        overflow: hidden;
+        /* Keeps everything neat */
+    }
 
-
-
-    
+    iframe,
+    img {
+        width: 100%;
+        /* Ensures content fills the wrapper */
+        height: auto;
+        /* Maintains aspect ratio for images */
+    }
 </style>
-
+{{-- split window javascript --}}
 <script>
     function toggleFullscreen(element) {
-    if (!document.fullscreenElement && element.requestFullscreen) {
-        element.requestFullscreen().catch(err => {
-            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        if (!document.fullscreenElement && element.requestFullscreen) {
+            element.requestFullscreen().catch(err => {
+                alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            });
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const divider = document.querySelector('.divider');
+        let isDragging = false;
+
+        divider.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            e.preventDefault();
+            document.addEventListener('mousemove', handleDrag, false);
+            document.addEventListener('mouseup', stopDrag, false);
         });
-    } else if (document.exitFullscreen) {
-        document.exitFullscreen();
-    }
-}
 
+        function handleDrag(e) {
+            if (!isDragging) return;
+            const splitPane = divider.closest('.split-pane');
+            const leftPane = splitPane.querySelector('.left-pane');
+            const deltaX = e.clientX - divider.getBoundingClientRect().left;
 
-   document.addEventListener('DOMContentLoaded', function() {
-    const divider = document.querySelector('.divider');
-    let isDragging = false;
+            const leftFlexBasis = ((e.clientX - splitPane.offsetLeft) / splitPane.offsetWidth) * 100;
+            leftPane.style.flexBasis = `${leftFlexBasis}%`;
+        }
 
-    divider.addEventListener('mousedown', function(e) {
-        isDragging = true;
-        e.preventDefault();
-        document.addEventListener('mousemove', handleDrag, false);
-        document.addEventListener('mouseup', stopDrag, false);
+        function stopDrag(e) {
+            isDragging = false;
+            document.removeEventListener('mousemove', handleDrag, false);
+            document.removeEventListener('mouseup', stopDrag, false);
+        }
     });
-
-    function handleDrag(e) {
-        if (!isDragging) return;
-        const splitPane = divider.closest('.split-pane');
-        const leftPane = splitPane.querySelector('.left-pane');
-        const deltaX = e.clientX - divider.getBoundingClientRect().left;
-        
-        const leftFlexBasis = ((e.clientX - splitPane.offsetLeft) / splitPane.offsetWidth) * 100;
-        leftPane.style.flexBasis = `${leftFlexBasis}%`;
-    }
-
-    function stopDrag(e) {
-        isDragging = false;
-        document.removeEventListener('mousemove', handleDrag, false);
-        document.removeEventListener('mouseup', stopDrag, false);
-    }
-});
-
 </script>

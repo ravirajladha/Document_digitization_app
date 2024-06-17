@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('temp_id')->nullable();
             $table->string('name')->nullable();
+            $table->string('doc_identifier_id')->nullable();
             $table->string('location')->nullable();
             $table->unsignedBigInteger('locker_id')->nullable();
             $table->integer('number_of_page')->nullable();
             $table->string('category')->nullable();
+            $table->string('category_id')->nullable();
+            $table->string('sub_category_id')->nullable();
             $table->unsignedBigInteger('document_type')->nullable();
             $table->string('document_type_name')->nullable();
             $table->string('current_state')->nullable();

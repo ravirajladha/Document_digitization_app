@@ -26,6 +26,7 @@ class DocumentService
                 // $nameUniqueRule, 
             ],
             'location' => 'nullable|string',
+            'doc_identifier_id' => 'nullable|string',
             'locker_id' => 'nullable|numeric',
             'number_of_page' => 'nullable|integer',
             'document_type' => 'nullable|integer',
@@ -56,6 +57,10 @@ class DocumentService
             'dry_land' => 'nullable|string',
             'unit' => 'nullable|string',
             'area' => 'nullable|string',
+          
+            'categories.*' => 'exists:categories,id',
+          
+            'subcategories.*' => 'exists:subcategories,id',
             'latitude' => ['nullable', 'string', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
             'longitude' => ['nullable', 'string', 'regex:/^[-]?(([1]?[0-7]?[0-9])\.(\d+))|(180(\.0+)?)$/'],
         ]);
@@ -66,7 +71,19 @@ class DocumentService
                 'errors' => $validator->errors()->all()
             ];
         }
+        if(isset($data['categories'])){
 
+            $categories = implode(',', $data['categories']);
+        }else{
+            $categories= null;
+        }
+        if(isset($data['subcategories'])){
+
+            $subcategories = implode(',', $data['subcategories']);
+        }else{
+            $subcategories  = null;
+        }
+      
         if ($doc_id) {
             $masterDocData = Master_doc_data::findOrFail($doc_id);
         } else {
@@ -86,6 +103,7 @@ class DocumentService
         $masterDocData->fill([
             'name' => $data['name'],
             'location' => $data['location'],
+            'doc_identifier_id' => $data['doc_identifier_id'],
             'locker_id' => $data['locker_id'],
             'number_of_page' => $data['number_of_page'],
             'document_type' => $id,
@@ -119,9 +137,13 @@ class DocumentService
             'area' =>  $data['area'],
             'latitude' => $data['latitude'],
             'longitude' => $data['longitude'],
+            'category_id' => $categories,
+            'subcategory_id' => $subcategories,
             'set_id' => $setsAsString,
+            
             // ... assign other fields ...
             'created_by' =>  Auth::user()->id,
+
             // ... continue assigning fields ...
         ]);
 

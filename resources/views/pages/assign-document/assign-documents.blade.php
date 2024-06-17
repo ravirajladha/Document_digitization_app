@@ -1,9 +1,6 @@
 <x-app-layout>
-
-
     <x-header />
     <x-sidebar />
-
     <div class="content-body default-height">
         <!-- row -->
         <div class="container-fluid">
@@ -13,11 +10,8 @@
                         <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Assign Document</a></li>
-
                     </ol>
                 </div>
-            
-
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalCenter">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -35,8 +29,8 @@
                                         @csrf
                                         <div class="row">
                                             <input type="hidden" name="location" value="all">
-                                           
-                                            <x-document-type-select />
+                                            <x-document-type-select :is_status="1" />
+
 
                                             <div class="col-md-12">
                                                 <div class="mb-3">
@@ -62,9 +56,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                         </div>
-
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -79,9 +71,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
 
                 <div class="container-fluid">
                     <div class="row">
@@ -98,8 +87,6 @@
                                     </div>
                                     <div class="table-responsive">
                                         <table id="example3" class="display" style="min-width: 845px">
-
-
                                             <thead>
                                                 <tr>
                                                     <th scope="col">Sl. No.</th>
@@ -108,7 +95,6 @@
                                                     <th scope="col">Document Name </th>
                                                     <th scope="col">Document Type </th>
                                                     <th scope="col">Expires At </th>
-
                                                     <th scope="col">Email Viewed </th>
                                                     <th scope="col">Status </th>
                                                     @if ($user && $user->hasPermission('Update Document Assignment Status'))
@@ -137,7 +123,7 @@
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
 
-                                                     
+
                                                         @if ($user && $user->hasPermission('Update Document Assignment Status'))
                                                             <td>
                                                                 <button type="button"

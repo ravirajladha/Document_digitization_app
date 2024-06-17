@@ -10,54 +10,7 @@ use App\Models\{Receiver, Receiver_type, Master_doc_type};
 class ReceiverController extends Controller
 {
     //receiver types function
-    public function receiverType()
-    {
-        $data = Receiver_type::get();
-        return view('pages.data-sets.receiver-type', ['data' => $data]);
-    }
-
-    public function addReceiverType(Request $request)
-    {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required|string|max:255|unique:receiver_types', // Adjust the table name as needed
-        ]);
-
-        // Create a new receiver type
-        $receiverType = new Receiver_type;
-        $receiverType->name = $request->name;
-        // Assign other fields as necessary
-        $receiverType->created_by =  Auth::user()->id;
-        // Save the receiver type to the database
-        $receiverType->save();
-
-        return response()->json(['success' => 'Receiver type added successfully.']);
-    }
-
-    public function updateReceiverType(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:receiver_types,id',
-            'name' => 'required|string|max:255', // Validation rules as per your requirements
-        ]);
-
-        try {
-            $receiverType = Receiver_type::findOrFail($request->id);
-            $receiverType->name = $request->name;
-            // Update other fields as necessary
-
-            $receiverType->save();
-
-            return response()->json(['success' => 'Receiver type updated successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while updating the receiver type.'], 500);
-        }
-    }
-    public function getUpdatedReceiverTypes()
-    {
-        $receiverTypes = Receiver_type::get(); // Assuming ReceiverType is your model name
-        return response()->json($receiverTypes);
-    }
+   
     //receivers
     public function showReceivers()
     {

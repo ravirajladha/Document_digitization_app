@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Models\DocumentStatusLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use App\Models\{Receiver, Master_doc_data,User};
+use App\Models\{Receiver, Master_doc_data,User,Advocate,Advocate_documents};
 
 class DashboardService
 {
@@ -197,5 +197,21 @@ class DashboardService
 
    //     dd($usersWithCounts);
         return $usersWithCounts;
+    }
+    public function getAdvocateDocumentCounts()
+    {
+        // Fetch all advocates with their documents
+        $advocatesWithDocuments = Advocate_documents::with('advocate')->get();
+
+        // Process the data if needed (e.g., count documents per advocate)
+        $advocateDocumentCounts = $advocatesWithDocuments->groupBy('advocate_id')->map(function ($documents) {
+            return [
+                'advocate_id' => $documents->first()->advocate_id,
+                'document_count' => $documents->count(),
+                'advocate_name' => $documents->first()->advocate->name, // Assuming there is a name field in the advocate model
+            ];
+        });
+
+        return $advocateDocumentCounts;
     }
 }

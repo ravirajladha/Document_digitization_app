@@ -38,9 +38,9 @@
                                             $bgClasses = ['bg-success', 'bg-info', 'bg-danger', 'bg-primary'];
                                             $classIndex = 0;
                                         @endphp
-                                         @php
-                                        //  dd($getCategoryDocumentCounts);
-                                     @endphp
+                                        @php
+                                            //  dd($getCategoryDocumentCounts);
+                                        @endphp
                                         @if (count($getCategoryDocumentCounts) > 0)
                                             @foreach ($getCategoryDocumentCounts as $category => $count)
                                                 @if ($category !== '' && $category !== null)
@@ -103,7 +103,10 @@
                                                                         $documentTypeWiseCounts['chartCounts'][$index];
                                                                     // $percentage =
                                                                     //     $total > 0 ? round(($count / $total) * 100) : 0;
-                                                                        $percentage = $total > 0 ? round(($count / $total) * 100, 2) : 0;
+                                                                    $percentage =
+                                                                        $total > 0
+                                                                            ? round(($count / $total) * 100, 2)
+                                                                            : 0;
                                                                 @endphp
                                                                 <div
                                                                     class="d-flex align-items-center justify-content-between mb-3">
@@ -234,8 +237,8 @@
                                                             <p class="mb-0">
                                                                 <strong
                                                                     class="text-danger me-2">{{ $totalHoldedCount }}</strong>on
-                                                                Hold  ~  <strong
-                                                                class="text-danger me-2">{{ $totalReviewerHoldedCount }}</strong>on
+                                                                Hold ~ <strong
+                                                                    class="text-danger me-2">{{ $totalReviewerHoldedCount }}</strong>on
                                                                 Reviewer Hold
 
                                                             </p>
@@ -425,8 +428,31 @@
                                             </div>
                                         </div>
 
-
-
+                                        @if ($user && $user->hasPermission('View Advocates'))
+                                        <div class="col-xl-12 col-lg-12 col-xxl-12 col-sm-12">
+                                            <div class="card text-black">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <a href="{{ route('advocates.index') }}"> <span
+                                                                class="mb-0">Advocates List</span></a>
+                                                        <p>Document Counts</p>
+                                                    </li>
+                                                    @foreach ($getAdvocateDocumentCounts as $advocate)
+                                                        <a
+                                                            href="{{ route('advocate.documents.assigned.show', $advocate['advocate_id']) }}">
+                                                            <li class="list-group-item d-flex justify-content-between">
+                                                                <span
+                                                                    class="mb-0">{{ $advocate['advocate_name'] }}</span>
+                                                                <strong>
+                                                                    <u> {{ $advocate['document_count'] }}</u>
+                                                                </strong>
+                                                            </li>
+                                                        </a>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
 
 
@@ -531,7 +557,7 @@
                 }
             }]
         };
-     
+
         var chart = new ApexCharts(document.querySelector("#emailchart"), options);
         chart.render();
     }

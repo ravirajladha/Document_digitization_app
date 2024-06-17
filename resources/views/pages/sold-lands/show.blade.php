@@ -48,17 +48,7 @@
                                         <div class="table-responsive">
                                             <table
                                                 class="table table-bordered table-striped verticle-middle table-responsive-sm">
-                                                {{-- <tbody>
-                                                    @foreach ($soldLands->getAttributes() as $attribute => $value)
-                                                        @php
-                                                            $formattedAttribute = ucwords(str_replace('_', ' ', $attribute));
-                                                        @endphp
-                                                        <tr>
-                                                            <th>{{ $formattedAttribute }}</th>
-                                                            <td>{{ $value }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody> --}}
+                                             
                                                 <tbody>
                                                     @if ($soldLands->district_number)
                                                         <tr>

@@ -33,7 +33,7 @@ class PageTitle extends Component
             case 'receiverTypes.view':
                 $this->pageName = 'Receiver Type';
                 break;
-            case 'showReceivers':
+            case 'receivers.index':
                 $this->pageName = 'Receivers';
                 break;
             case 'receiverTypes':
@@ -44,6 +44,12 @@ class PageTitle extends Component
                 break;
             case 'user.documents.assigned.show':
                 $this->pageName = 'Assigned Documents';
+                break;
+            case 'advocates.index':
+                $this->pageName = 'Advocates';
+                break;
+            case 'advocate.documents.assigned.show':
+                $this->pageName = 'Advocate Assigned Documents';
                 break;
             case 'document_types.index':
                 $this->pageName = 'Document Type';
@@ -66,6 +72,12 @@ class PageTitle extends Component
             case 'configure':
                 $this->pageName = 'Data Sets';
                 break;
+            case 'categories.show':
+                $this->pageName = 'Category';
+                break;
+            case 'subcategories.show':
+                $this->pageName = 'Subcategory';
+                break;
             case 'master_data.bulk_upload':
                 $this->pageName = 'Bulk Upload Documents';
                 break;
@@ -77,6 +89,9 @@ class PageTitle extends Component
                 break;
             case 'users.index':
                 $this->pageName = 'Users';
+                break;
+            case 'users.show_reviewed_documents_users':
+                $this->pageName = 'Users Document Reviewing Logs';
                 break;
             case 'soldLand.view':
                 $this->pageName = 'Sold Lands';

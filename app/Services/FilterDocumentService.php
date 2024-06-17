@@ -2,40 +2,71 @@
 // File: app/Services/DocumentTableService.php
 
 namespace App\Services;
+
 use Carbon\Carbon;
 use App\Models\Master_doc_data;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
-
+use Illuminate\Pagination\LengthAwarePaginator;
 class FilterDocumentService
 {
 
-    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null, $locker_no = null, $start_date = null, $end_date = null, $area_range_start = null, $area_range_end = null, $area_unit = null, $court_case_no = null, $doc_no = null, $survey_no = null,$category = null): Collection
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null, $start_date = null, $end_date = null, $area_range_start = null, $area_range_end = null, $area_unit = null, $court_case_no = null, $doc_no = null, $survey_no = null, $category_id = null,$subcategory_id = null,$doc_name = null,$doc_identifier_id = null,$locker_id = null,$perPage = 10):  LengthAwarePaginator
     {
+        // dd($category_id);
         $query = Master_doc_data::query();
-// dd("category", $category);
+        // dd("category", $category);
         if ($typeId) {
             $query->where('document_type', explode('|', $typeId)[0]);
         }
-        if ($locker_no) {
-            $query->where('locker_id', $locker_no);
-        }
+        // if ($locker_no) {
+        //     $query->where('locker_id', $locker_no);
+        // }
         if ($court_case_no) {
             $query->where('court_case_no', 'like', '%' . $court_case_no . '%');
         }
-       
-        if ($category) {
-            $query->where(function ($q) use ($category) {
-                $q->whereRaw("FIND_IN_SET(?, category)", [$category]);
+        if ($locker_id) {
+            $lockerNos = is_array($locker_id) ? $locker_id : explode(',', $locker_id);
+            $query->where(function ($q) use ($lockerNos) {
+                foreach ($lockerNos as $locker_id) {
+                    $q->orWhere('locker_id', 'like', '%' . $locker_id . '%');
+                }
+            });
+        }
+        if ($doc_identifier_id) {
+            $docIdentifiers = is_array($doc_identifier_id) ? $doc_identifier_id : explode(',', $doc_identifier_id);
+            $query->where(function ($q) use ($docIdentifiers) {
+                foreach ($docIdentifiers as $docIdentifier) {
+                    $q->orWhere('doc_identifier_id', 'like', '%' . $docIdentifier . '%');
+                }
+            });
+        }
+        if ($category_id) {
+            $categories = is_array($category_id) ? $category_id : explode(',', $category_id);
+            $query->where(function ($q) use ($categories) {
+                foreach ($categories as $cat) {
+                    $q->orWhereRaw("FIND_IN_SET(?, category_id)", [$cat]);
+                }
+            });
+        }
+        if ($subcategory_id) {
+            $subcategories = is_array($subcategory_id) ? $subcategory_id : explode(',', $subcategory_id);
+            $query->where(function ($q) use ($subcategories) {
+                foreach ($subcategories as $subcat) {
+                    $q->orWhereRaw("FIND_IN_SET(?, subcategory_id)", [$subcat]);
+                }
             });
         }
 
-    
+
         if ($doc_no) {
-            $query->where('doc_no',  $doc_no );
+            $query->where('doc_no',  $doc_no);
         }
-    
+
+        if ($doc_name) {
+            $query->where('name', 'like', '%' . $doc_name . '%');
+        }
         if ($survey_no) {
             $query->where('survey_no', 'like', '%' . $survey_no . '%');
         }
@@ -66,81 +97,91 @@ class FilterDocumentService
                 $q->whereRaw("FIND_IN_SET(?, current_district)", [$district]);
             });
         }
+        // if ($village) {
+        //     // dd($village);
+        //     $query->where(function ($q) use ($village) {
+        //         $q->whereRaw("FIND_IN_SET(?, REPLACE(current_village, ' ', ''))", [$village]);
+        //     });
+        // }
+        // if ($village) {
+        //     $query->where(function ($q) use ($village) {
+        //         $q->whereRaw("FIND_IN_SET(?, REPLACE(REPLACE(current_village, ' ', ''), ',', ''))", [$village]);
+        //     });
+        // }
         if ($village) {
             $query->where(function ($q) use ($village) {
-                $q->whereRaw("FIND_IN_SET(?, REPLACE(current_village, ' ', ''))", [$village]);
+                $q->where('current_village', 'like', '%' . $village . '%');
             });
         }
-
         $area_range_start  = intval($area_range_start);
         $area_range_end  = intval($area_range_end);
         // dd($area_range_start, $area_range_end);
-// dd(232323);
-if ($area_range_start !== null || $area_range_end !== null) {
-    $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
-        if ($area_unit) {
-            if ($area_unit === 'Acres') {
-                // Search for both acres and cents
-                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                    $q->where('unit', 'acres and cents');
-                    
-                    if ($area_range_start !== null && $area_range_end !== null) {
-                        $q->whereBetween('area', [$area_range_start, $area_range_end]);
-                    } elseif ($area_range_start !== null) {
-                        $q->where('area', '>=', $area_range_start);
-                    } elseif ($area_range_end !== null) {
-                        $q->where('area', '<=', $area_range_end);
-                    }
-                });
+        // dd(232323);
+        if ($area_range_start !== null || $area_range_end !== null) {
+            $query->where(function ($q) use ($area_range_start, $area_range_end, $area_unit) {
+                if ($area_unit) {
+                    if ($area_unit === 'Acres') {
+                        // Search for both acres and cents
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'acres and cents');
 
-                // Convert acres to square feet and search
-                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                    $q->where('unit', 'Square Feet');
-                    
-                    if ($area_range_start !== null && $area_range_end !== null) {
-                        $q->whereBetween('area', [$area_range_start * 43560, $area_range_end * 43560]);
-                    } elseif ($area_range_start !== null) {
-                        $q->where('area', '>=', $area_range_start * 43560);
-                    } elseif ($area_range_end !== null) {
-                        $q->where('area', '<=', $area_range_end * 43560);
-                    }
-                });
+                            if ($area_range_start !== null && $area_range_end !== null) {
+                                $q->whereBetween('area', [$area_range_start, $area_range_end]);
+                            } elseif ($area_range_start !== null) {
+                                $q->where('area', '>=', $area_range_start);
+                            } elseif ($area_range_end !== null) {
+                                $q->where('area', '<=', $area_range_end);
+                            }
+                        });
 
-            } elseif ($area_unit === 'Square Feet') {
-                // Search for square feet
-                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                    $q->where('unit', 'Square Feet');
-                    
-                    if ($area_range_start !== null && $area_range_end !== null) {
-                        $q->whereBetween('area', [$area_range_start, $area_range_end]);
-                    } elseif ($area_range_start !== null) {
-                        $q->where('area', '>=', $area_range_start);
-                    } elseif ($area_range_end !== null) {
-                        $q->where('area', '<=', $area_range_end);
-                    }
-                });
+                        // Convert acres to square feet and search
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'Square Feet');
 
-                // Convert square feet to acres and cents and search
-                $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
-                    $q->where('unit', 'acres and cents');
-                    
-                    if ($area_range_start !== null && $area_range_end !== null) {
-                        $q->whereBetween('area', [$area_range_start / 43560, $area_range_end / 43560]);
-                    } elseif ($area_range_start !== null) {
-                        $q->where('area', '>=', $area_range_start / 43560);
-                    } elseif ($area_range_end !== null) {
-                        $q->where('area', '<=', $area_range_end / 43560);
+                            if ($area_range_start !== null && $area_range_end !== null) {
+                                $q->whereBetween('area', [$area_range_start * 43560, $area_range_end * 43560]);
+                            } elseif ($area_range_start !== null) {
+                                $q->where('area', '>=', $area_range_start * 43560);
+                            } elseif ($area_range_end !== null) {
+                                $q->where('area', '<=', $area_range_end * 43560);
+                            }
+                        });
+                    } elseif ($area_unit === 'Square Feet') {
+                        // Search for square feet
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'Square Feet');
+
+                            if ($area_range_start !== null && $area_range_end !== null) {
+                                $q->whereBetween('area', [$area_range_start, $area_range_end]);
+                            } elseif ($area_range_start !== null) {
+                                $q->where('area', '>=', $area_range_start);
+                            } elseif ($area_range_end !== null) {
+                                $q->where('area', '<=', $area_range_end);
+                            }
+                        });
+
+                        // Convert square feet to acres and cents and search
+                        $q->orWhere(function ($q) use ($area_range_start, $area_range_end) {
+                            $q->where('unit', 'acres and cents');
+
+                            if ($area_range_start !== null && $area_range_end !== null) {
+                                $q->whereBetween('area', [$area_range_start / 43560, $area_range_end / 43560]);
+                            } elseif ($area_range_start !== null) {
+                                $q->where('area', '>=', $area_range_start / 43560);
+                            } elseif ($area_range_end !== null) {
+                                $q->where('area', '<=', $area_range_end / 43560);
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
         }
-    });
-}
+        Log::info('SQL Query', ['query' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
         Log::info('Generated SQL Query: ' . $query->toSql());
 
 
-        $filteredData = $query->get();
+        $filteredData = $query->paginate($perPage);
         // dd($filteredData);
         // dd($filteredData);
         foreach ($filteredData as $item) {

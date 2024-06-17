@@ -83,12 +83,6 @@ class DatabaseSeeder extends Seeder
             ['name' => 'documents.basic_detail.edit', 'display_name' => 'Update Basic Document Detail', 'action' => 2],
             ['name' => 'documents.updateStatus', 'display_name' => 'Update Document Status', 'action' => 3],
 
-            // ['name' => 'documents.creation.continue', 'display_name' => 'Add Advance Details Document Form ', 'action' => 2],
-            // ['name' => 'documents.data.add', 'display_name' => 'Add or Update Advance Details Document Form ', 'action' => 1],
-
-            //             ['name' => 'documents.store', 'display_name' => 'Add Other Document Details ', 'action' => 1],
-            //  ['name' => 'documents.data.first.update', 'display_name' => 'Update Basic Details Document Form Permission ', 'action' => 3],
-
             //sets
             ['name' => 'sets.view', 'display_name' => 'View Sets', 'action' => 2],
             // ['name' => 'sets.viewUpdated', 'display_name' => 'View Sets ', 'action' => 2],
@@ -112,17 +106,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'documents.assigned.toggleStatus', 'display_name' => 'Update Document Assignment Status', 'action' => 3],
             ['name' => 'user.documents.assigned.show', 'display_name' => 'View Assigned Documents', 'action' => 2],
 
-            //recievers type
-            // ['name' => 'receiverTypes.view', 'display_name' => 'View Receiver Type ', 'action' => 2],
-            //ajax response to get the receiver types
-            // ['name' => 'receiverTypes.updated', 'display_name' => 'Update Receiver Type ', 'action' => 2],
-            // ['name' => 'receiverTypes.add', 'display_name' => 'Create Receiver Type', 'action' => 1],
-            // ['name' => 'receiverTypes.update', 'display_name' => 'Update Receiver Type ', 'action' => 3],
-
-            //get receivers by type
-            // ['name' => 'receivers.byType', 'display_name' => 'View Receivers By Type ', 'action' => 2],
-            // ['name' => 'receivers.updated', 'display_name' => 'View Updated Receivers ', 'action' => 2],
-            //document assignment
+          
 
             //document types
             ['name' => 'document_types.index', 'display_name' => 'View Document Types', 'action' => 2],
@@ -163,6 +147,24 @@ class DatabaseSeeder extends Seeder
             ['name' => 'documents.viewUploadedDocuments', 'display_name' => 'View Uploaded PDF', 'action' => 2],
             ['name' => 'upload.files', 'display_name' => 'Add PDF', 'action' => 1],
             ['name' => 'documents.delete', 'display_name' => 'Delete PDF', 'action' => 3],
+
+             //advocates
+             ['name' => 'advocates.index', 'display_name' => 'View Advocates', 'action' => 1],
+             ['name' => 'advocates.store', 'display_name' => 'Add Advocates', 'action' => 2],
+             ['name' => 'advocates.update', 'display_name' => 'Update Advocates', 'action' => 3],
+ 
+            //assign docs to advocates
+             
+            ['name' => 'documents.assign.toAdvocate', 'display_name' => 'Add Assigned Docs to Advocate', 'action' => 1],
+            ['name' => 'advocate.documents.assigned.show', 'display_name' => 'View Assigned Docs to Advocate', 'action' => 2],
+            ['name' => 'documentAdvocateAssignment.update', 'display_name' => 'Update Assigned Docs to Advocate', 'action' => 4],
+            ['name' => 'documentAdvocateAssignment.destroy', 'display_name' => 'Delete Assigned Docs to Advocate', 'action' => 5],
+ 
+             //document transaction logs
+             ['name' => 'storeTransaction', 'display_name' => 'Add Document Logs', 'action' => 1],
+             ['name' => 'documentTransaction.show', 'display_name' => 'View Document Logs', 'action' => 2],
+             ['name' => 'updateTransaction', 'display_name' => 'Add Document Logs', 'action' => 3],
+             ['name' => 'destroyTransaction', 'display_name' => 'Add Document Logs', 'action' => 5],
         ];
 
    

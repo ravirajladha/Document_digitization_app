@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController, ProjectSettingsController};
+use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController, ProjectSettingsController, AdvocateController,DataSetController};
 use Illuminate\Support\Facades\Route;
 
 
@@ -32,13 +32,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::post('/add_set', [SetController::class, 'addSet'])->name('sets.add');
     Route::post('/update-set', [SetController::class, 'updateSet'])->name('sets.update');
 
-    //receiver type
 
-    Route::get('/receiver-type', [ReceiverController::class, 'receiverType'])->name('receiverTypes.view');
-    //ajax response (read)
-    Route::get('/get-updated-receiver-types', [ReceiverController::class, 'getUpdatedReceiverTypes'])->name('receiverTypes.updated');
-    Route::post('/add-receiver-type', [ReceiverController::class, 'addReceiverType'])->name('receiverTypes.add');
-    Route::post('/update-receiver-type', [ReceiverController::class, 'updateReceiverType'])->name('receiverTypes.update');
 
     // receivers
     Route::get('/receivers', [ReceiverController::class, 'showReceivers'])
@@ -97,7 +91,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('documents.updateStatus');
     Route::put('/update-status-message/{log}', [DocumentController::class, 'updateStatusMessage'])
         ->name('documents.statusMessage');
-        // Route::put('/update-status-message/{log}', 'DocumentController@updateStatusMessage')->name('update.statusMessage');
+    // Route::put('/update-status-message/{log}', 'DocumentController@updateStatusMessage')->name('update.statusMessage');
 
     //view documents
     Route::get('/filter-document', [FilterDocumentController::class, 'filterDocument'])
@@ -112,11 +106,24 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::get('/get-documents/{typeId}', [BulkUploadController::class, 'getDocumentsByType'])
         ->name('documents.getByType');
 
-    Route::get('/api/fetch/{type}/{id}', [BulkUploadController::class, 'fetchData']);
+    Route::get('/api/fetch/{type}/{id}/{isStatus}', [BulkUploadController::class, 'fetchData']);
 
+    //data sets start
+    Route::get('/data-sets', [DataSetController::class, 'configure'])->name('configure');
+    //receiver type
+    Route::get('/receiver-type', [DataSetController::class, 'receiverType'])->name('receiverTypes.view');
+    Route::post('/add-receiver-type', [DataSetController::class, 'addReceiverType'])->name('receiverTypes.add');
+    Route::post('/update-receiver-type', [DataSetController::class, 'updateReceiverType'])->name('receiverTypes.update');
+    //category
+    Route::get('/categories', [DataSetController::class, 'showCategories'])->name('categories.show');
+    Route::post('/categories', [DataSetController::class, 'addCategory'])->name('categories.add');
+    Route::put('/categories', [DataSetController::class, 'updateCategory'])->name('categories.update');
+    // Subcategory routes
+Route::get('/subcategories', [DataSetController::class, 'showSubcategories'])->name('subcategories.show');
+Route::post('/subcategories', [DataSetController::class, 'addSubcategory'])->name('subcategories.add');
+Route::put('/subcategories', [DataSetController::class, 'updateSubcategory'])->name('subcategories.update');
 
-    //data sets
-    Route::get('/data-sets', [DocumentController::class, 'configure'])->name('configure');
+    //data sets end
 
     //bulk upload documents 
     Route::get('/bulk-upload-master-data', [BulkUploadController::class, 'bulkUploadMasterData'])
@@ -142,7 +149,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('notifications.index');
 
     //user
-    //useres//subadmin
+    //users//subadmin
     Route::get('/users', [UserController::class, 'showUsers'])
         ->name('users.index');
     Route::get('/users/{id}/reviewed-documents', [UserController::class, 'showReviewedDocumentsUsers'])
@@ -175,6 +182,36 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::put('/project-settings', [ProjectSettingsController::class, 'update'])->name('project-settings.update');
 
 
+    // advocates
+    Route::get('/advocates', [AdvocateController::class, 'showAdvocates'])
+        ->name('advocates.index');
+    Route::post('/add-advocate', [AdvocateController::class, 'addAdvocate'])
+        ->name('advocates.store');
+    Route::post('/update-advocate', [AdvocateController::class, 'updateAdvocate'])
+        ->name('advocates.update');
+        Route::post('/bulk-upload-advocate-assign-document', [AdvocateController::class, 'bulkUploadAdvocateAssignDocument'])
+        ->name('documentToAdvocate.bulk_upload');
+
+    // assigning documents to advocate
+
+    Route::get('/advocate-assign-documents/{advocate_id}', [AdvocateController::class, 'showAdvocateAssignedDocument'])
+        ->name('advocate.documents.assigned.show');
+    Route::post('/assign-documents-to-advocate', [AdvocateController::class, 'assignDocumentsToAdvocate'])
+        ->name('documents.assign.toAdvocate');
+    Route::put('/document-assignment/{id}', [AdvocateController::class, 'updateDocumentAssignment'])->name('documentAdvocateAssignment.update');
+    Route::get('/document-assignment/{id}/edit', [AdvocateController::class, 'editDocumentAssignment'])->name('documentAdvocateAssignment.edit');
+    Route::delete('/document-assignment/{id}', [AdvocateController::class, 'destroy'])->name('documentAdvocateAssignment.destroy');
+
+    //document transaction logs
+    Route::get('/document-transactions/{id}', [DocumentController::class, 'getDocumentTransactionById'])->name('documentTransaction.show');
+    Route::post('/document-transactions', [DocumentController::class, 'storeTransaction']);
+    Route::put('/document-transactions/{id}', [DocumentController::class, 'updateTransaction']);
+    Route::delete('/document-transactions/{id}', [DocumentController::class, 'destroyTransaction'])->name('documentTransaction.destroy');
+
+    // Route::get('/document-transactions/{id}/edit', [AdvocateController::class, 'getDocumentTransactionById'])->name('getDocumentTransactionByIdAPI.edit');
+
+    Route::get('/api/fetch/districts/{state}', [DocumentController::class, 'fetchDistricts']);
+    Route::get('/api/fetch/villages/{district}', [DocumentController::class, 'fetchVillages']);
     Route::get('/action-logs', [LogController::class, 'actionLogsIndex'])->name('logs.action-logs');
     Route::get('/http-request-logs', [LogController::class, 'httpRequestLogs'])->name('logs.http-request-logs');
 });

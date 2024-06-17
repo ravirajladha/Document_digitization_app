@@ -13,19 +13,14 @@ return new class extends Migration
     {
        // database/migrations/xxxx_xx_xx_xxxxxx_create_log_changes_table.php
 
-Schema::create('log_changes', function (Blueprint $table) {
-    $table->id();
-    $table->unsignedBigInteger('user_id')->nullable();
-    $table->string('model_type');
-    $table->unsignedBigInteger('model_id');
-    $table->text('changes');
-    $table->text('action');
-    $table->text('original_values')->nullable();
-    $table->timestamps();
-
-    $table->foreign('user_id')->references('id')->on('users');
-});
-
+       Schema::table('log_changes', function (Blueprint $table) {
+        $table->unsignedBigInteger('user_id')->nullable()->change();
+        $table->string('model_type')->nullable()->change();
+        $table->unsignedBigInteger('model_id')->nullable()->change();
+        $table->text('changes')->nullable()->change();
+        $table->text('action')->nullable()->change();
+        $table->text('original_values')->nullable()->change();
+    });
     }
 
     /**

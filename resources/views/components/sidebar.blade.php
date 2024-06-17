@@ -57,16 +57,7 @@
                             </ul>
                         </li>
                     @endif
-                    {{-- <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
-						<i class="fas fa-info-circle"></i>
-							<span class="nav-text">Receivers</span>
-						</a>
-                        <ul aria-expanded="false">
-                            <li><a href="{{ url('/')}}/receivers">Add Receiver</a></li>
-                           
-                         
-                        </ul>
-                    </li> --}}
+                 
                     @if ($user && $user->hasPermission('View Sold Land'))
                         <li><a href="{{ url('/') }}/sold-land" aria-expanded="false">
                                 <i class="fas fa-landmark"></i>
@@ -89,6 +80,14 @@
                             </a>
                         </li>
                     @endif
+                    @if ($user && $user->hasPermission('View Advocates'))
+                        <li><a href="{{ url('/') }}/advocates" aria-expanded="false">
+                                {{-- <i class="fas fa-user-circle"></i> --}}
+                                <i class="fas fa-journal-whills"></i>
+                                <span class="nav-text">Advocates</span>
+                            </a>
+                        </li>
+                        @endif
                     @if ($user && $user->hasPermission('View Users'))
                         <li><a href="{{ url('/') }}/users" aria-expanded="false" disabled>
                                 <i class="fas fa-user-circle"></i>

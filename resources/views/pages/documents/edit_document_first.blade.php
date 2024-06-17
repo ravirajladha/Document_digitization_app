@@ -74,6 +74,36 @@
                                                             placeholder="Enter Name" value="{{ $document->name }}"
                                                             required>
                                                     </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Select Categories </label>
+                                                        <select class="form-select form-control" id="category-select" name="categories[]" multiple >
+                                                            @foreach ($categories as $category)
+                                                                <option value="{{ $category->id }}" @if(in_array($category->id, $selectedCategories)) selected @endif>
+                                                                    {{ $category->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                    
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Select Subcategories</label>
+                                                        <select class="form-select form-control" id="subcategory-select" name="subcategories[]" multiple >
+                                                            @foreach ($categories as $category)
+                                                                @if(in_array($category->id, $selectedCategories))
+                                                                    @foreach ($category->subcategories as $subcategory)
+                                                                        <option value="{{ $subcategory->id }}" @if(in_array($subcategory->id, $selectedSubcategories)) selected @endif>
+                                                                            {{ $category->name }} - {{ $subcategory->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label class="form-label">Document Identifier Id </label>
+                                                        <input type="text" name="doc_identifier_id" class="form-control"
+                                                            placeholder="Enter Document Identifier Id"  value="{{ $document->doc_identifier_id }}">
+                                                    </div>
                                                     {{-- <div class="mb-3 col-md-6">
                                                             <label class="form-label">Temp id</label> --}}
                                                     <input type="text" name="temp_id" hidden class="form-control"
@@ -407,5 +437,70 @@
     $(".single-select-abc3-placeholder").select2({
         placeholder: "Select a state",
         allowClear: true
+    });
+    $("#category-select").select2();
+
+    $(".category-select-placeholder").select2({
+        placeholder: "Select a category",
+        allowClear: true
+    });
+    $("#subcategory-select").select2();
+
+    $(".subcategory-select-placeholder").select2({
+        placeholder: "Select a subcategory",
+        allowClear: true
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Prepare the subcategory data in a JavaScript variable
+        var categorySubcategoryMap = @json($categories->mapWithKeys(function($category) {
+            return [$category->id => $category->subcategories->map(function($subcategory) use ($category) {
+                return [
+                    'id' => $subcategory->id,
+                    'name' => $subcategory->name,
+                    'category' => $category->name
+                ];
+            })];
+        }));
+
+        // Get the selected subcategories from PHP
+        var selectedSubcategories = @json($selectedSubcategories);
+
+        // Populate subcategories on page load based on pre-selected categories
+        populateSubcategories();
+
+        $('#category-select').on('change', function() {
+            populateSubcategories();
+        });
+
+        function populateSubcategories() {
+            var selectedCategories = $('#category-select').val();
+            var subcategories = [];
+
+            if (selectedCategories) {
+                selectedCategories.forEach(function(categoryId) {
+                    if (categorySubcategoryMap[categoryId]) {
+                        categorySubcategoryMap[categoryId].forEach(function(subcategory) {
+                            subcategories.push(subcategory);
+                        });
+                    }
+                });
+            }
+
+            var subcategorySelect = $('#subcategory-select');
+            subcategorySelect.empty();
+
+            if (subcategories.length > 0) {
+                console.log(subcategories); // Debugging: Log subcategories to check structure
+                subcategories.forEach(function(subcategory) {
+                    var isSelected = selectedSubcategories.includes(subcategory.id.toString()) ? 'selected' : '';
+                    subcategorySelect.append('<option value="' + subcategory.id + '" ' + isSelected + '>' + subcategory.category + ' - ' + subcategory.name + '</option>');
+                });
+            } else {
+                subcategorySelect.append('<option selected disabled>No Subcategories Available</option>');
+            }
+        }
     });
 </script>

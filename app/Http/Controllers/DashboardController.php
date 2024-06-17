@@ -22,8 +22,9 @@ class DashboardController extends Controller
         $documentTypeWiseCounts = $this->dashboardService->getDocumentCountsByType();
         $users = $this->dashboardService->getUsersWithTodayCounts();
         $getCategoryDocumentCounts = $this->dashboardService->getCategoryDocumentCounts();
-        // dd($getCategoryDocumentCounts);
-//        dd($users);
-        return view('pages.dashboard.dashboard', compact('documentCount', 'getRecieverCount', 'documentTypeWiseCounts', 'getGeographicalCounts','users','getCategoryDocumentCounts'));
+        $getAdvocateDocumentCounts = $this->dashboardService->getAdvocateDocumentCounts();
+   
+// \Log::info('Advocate Document Counts:', ['data' => $getAdvocateDocumentCounts]);
+        return view('pages.dashboard.dashboard', compact('documentCount', 'getRecieverCount', 'documentTypeWiseCounts', 'getGeographicalCounts','users','getCategoryDocumentCounts','getAdvocateDocumentCounts'));
     }
 }

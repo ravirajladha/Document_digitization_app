@@ -51,7 +51,6 @@ class UserController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
 
-
         // Get the counts for each status type for all documents
         $today = Carbon::now()->toDateString();
 
@@ -59,6 +58,7 @@ class UserController extends Controller
         $changedDates = DocumentStatusLog::where('created_by', $id)
             ->selectRaw('DATE(created_at) as date')
             ->distinct()
+            ->orderBy('date', 'desc')
             ->pluck('date');
 
         // Initialize an array to store the data

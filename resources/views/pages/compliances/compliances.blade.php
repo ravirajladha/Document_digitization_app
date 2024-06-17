@@ -34,7 +34,8 @@
                                         @csrf
                                         <div class="row">
 
-                                            <x-document-type-select />
+                                            <x-document-type-select :is_status="1" />
+
                                             <div class="col-md-12">
                                                 <div class="mb-3">
                                                     <label for="document" class="form-label">Name</label>

@@ -78,7 +78,7 @@ let dataSet = [
             $(row).addClass('selected')
         },
 
-        "scrollY":        "42vh",
+        "scrollY":        "70vh",
         "scrollCollapse": true,
         "paging":         false
     });
@@ -100,7 +100,7 @@ let dataSet = [
 	// dataTable1
 	var table = $('#dataTable1').DataTable({
 		searching: false,
-		paging:true,
+		paging:false,
 		select: false,         
 		lengthChange:false ,
 		
@@ -108,7 +108,7 @@ let dataSet = [
 	// dataTable2
 	var table = $('#dataTable2').DataTable({
 		searching: false,
-		paging:true,
+		paging:false,
 		select: false,         
 		lengthChange:false ,
 		
