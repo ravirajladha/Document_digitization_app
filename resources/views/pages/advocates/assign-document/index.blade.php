@@ -104,7 +104,12 @@
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
 
-                                                        <td>{{ $item->document->name }}
+                                                        <td>
+                                                            <a href="/review_doc/{{ $item->document->document_type_name }}/{{ $item->child_id }}" style="color: #1714c9; text-decoration: underline;">
+                                                                {{ $item->document->name }}
+                                                            </a>
+                                                        </td>
+                                                        
                                                         </td>
                                                         <td>
                                                             {{ $item->document->document_type_name ? formatDocumentType($item->document->document_type_name) : '--' }}
@@ -134,6 +139,7 @@
                                                             {{ $item->created_at ? Carbon::parse($item->created_at)->format('d-M-Y') : '--' }}
                                                         </td>
                                                         <td>
+                                                            <div class="d-flex">
                                                             @if ($user && $user->hasPermission('Update Assigned Docs to Advocate'))
                                                                 <button class="btn btn-primary btn-sm edit-doc-btn"
                                                                     title="Edit Document Assignment"
@@ -161,6 +167,7 @@
                                                                     !$user->hasPermission('Delete Assigned Docs to Advocate'))
                                                                 --
                                                             @endif
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @endforeach

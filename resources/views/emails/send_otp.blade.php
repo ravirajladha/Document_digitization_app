@@ -14,7 +14,7 @@
         <tbody style="padding:0px 30px; display: block;">
             <tr>
                 <td style="padding: 56px 0 24px 26px;height:110px;" >
-                    <img src="/assets/logo/logo.jpg">
+                    <img src="https://ahobila.kods.app/assets/logo/logo.jpg">
                 </td>
             </tr>
             <tr>

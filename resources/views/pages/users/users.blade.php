@@ -375,7 +375,7 @@
                                                                 <td class="module-name">Assign Document to Receivers</td>
                                                                 <td>
 
-                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'View Assigned Documents') @endphp
+                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Assign Document') @endphp
 
                                                                 </td>
                                                                 <td>

@@ -29,41 +29,101 @@ class ReceiverProcessController extends Controller
 
     public function showAssignedDocument()
     {
-        $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])->orderBy('created_at', 'desc')
+        $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])
+            ->orderBy('created_at', 'desc')
             ->get();
-
+    
         $documentTypes = Master_doc_type::orderBy('name')->get();
         $receiverTypes = Receiver_type::where('status', 1)->get();
-
+    
+        // Process each document assignment to retrieve the child_id
+        $processedDocumentAssignments = $documentAssignments->map(function ($assignment) {
+            $documentTypeName = $assignment->documentType->name;
+    
+            // Build the table name dynamically
+            $childDocument = DB::table($documentTypeName)
+                ->where('doc_id', $assignment->doc_id)
+                ->first();
+    
+            if ($childDocument) {
+                $assignment->child_id = $childDocument->id;
+            }
+    
+            return $assignment;
+        });
+    
         return view('pages.assign-document.assign-documents', [
-            'documentAssignments' => $documentAssignments,
+            'documentAssignments' => $processedDocumentAssignments,
             'documentTypes' => $documentTypes,
             'receiverTypes' => $receiverTypes
         ]);
     }
+    
 
-    public function showUserAssignedDocument($receiverId)
-    {
-        // Filter the document assignments by the passed receiver ID
-        $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])
-            ->where('receiver_id', $receiverId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+//     public function showUserAssignedDocument($receiverId)
+//     {
+//         // Filter the document assignments by the passed receiver ID
+//         $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])
+//             ->where('receiver_id', $receiverId)
+//             ->orderBy('created_at', 'desc')
+//             ->get();
 
-        // If you still need the lists of document types and receiver types for dropdowns or other UI elements
-        $documentTypes = Master_doc_type::all();
-        $receiverTypes = Receiver_type::where('status', 1)->get();
+//         // If you still need the lists of document types and receiver types for dropdowns or other UI elements
+//         $documentTypes = Master_doc_type::all();
+//         $receiverTypes = Receiver_type::where('status', 1)->get();
 
-        // You can also get the receiver details if needed, for example to display their name on the page
-        $receiver = Receiver::find($receiverId);
+//         // You can also get the receiver details if needed, for example to display their name on the page
+//         $receiver = Receiver::find($receiverId);
+// // dd($documentAssignments);
+//         return view('pages.assign-document.user-document-assignments', [
+//             'documentAssignments' => $documentAssignments,
+//             'documentTypes' => $documentTypes,
+//             'receiverTypes' => $receiverTypes,
+//             'receiver' => $receiver, // Pass the receiver details to the view if needed
+//         ]);
+//     }
 
-        return view('pages.assign-document.user-document-assignments', [
-            'documentAssignments' => $documentAssignments,
-            'documentTypes' => $documentTypes,
-            'receiverTypes' => $receiverTypes,
-            'receiver' => $receiver, // Pass the receiver details to the view if needed
-        ]);
-    }
+public function showUserAssignedDocument($receiverId)
+{
+    // Filter the document assignments by the passed receiver ID
+    $documentAssignments = Document_assignment::with(['receiver', 'receiverType', 'documentType', 'document'])
+        ->where('receiver_id', $receiverId)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // Retrieve the lists of document types and receiver types for dropdowns or other UI elements
+    $documentTypes = Master_doc_type::all();
+    $receiverTypes = Receiver_type::where('status', 1)->get();
+
+    // Retrieve the receiver details
+    $receiver = Receiver::find($receiverId);
+
+    // Process each document assignment to retrieve the child_id
+    $processedDocumentAssignments = $documentAssignments->map(function ($assignment) {
+        $documentTypeName = $assignment->documentType->name;
+
+        // Build the table name dynamically
+        $childDocument = DB::table($documentTypeName)
+            ->where('doc_id', $assignment->doc_id)
+            ->first();
+
+        if ($childDocument) {
+            $assignment->child_id = $childDocument->id;
+        }
+
+        return $assignment;
+    });
+// dd($processedDocumentAssignments);
+    // Return the view with the processed document assignments
+    return view('pages.assign-document.user-document-assignments', [
+        'documentAssignments' => $processedDocumentAssignments,
+        'documentTypes' => $documentTypes,
+        'receiverTypes' => $receiverTypes,
+        'receiver' => $receiver,
+    ]);
+}
+
+
 
     public function getReceiversByType($typeId)
     {

@@ -92,8 +92,9 @@
                                                     <th scope="col">Sl. No.</th>
                                                     <th scope="col">Receiver Name</th>
                                                     <th scope="col">Receiver Type</th>
-                                                    <th scope="col">Document Name </th>
+                                            
                                                     <th scope="col">Document Type </th>
+                                                    <th scope="col">Document Name </th>
                                                     <th scope="col">Expires At </th>
                                                     <th scope="col">Email Viewed </th>
                                                     <th scope="col">Status </th>
@@ -112,7 +113,7 @@
                                                         <td>{{ $item->receiverType->name }}</td>
                                                         <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
                                                         </td>
-                                                        <td>{{ $item->document->name }}</td>
+                                                        <td>  <a style="color: #1714c9; text-decoration: underline;" href="/review_doc/{{ $item->documentType->name }}/{{ $item->child_id }}">{{ $item->document->name }}</a></td>
                                                         <td>{{ \Carbon\Carbon::parse($item->expires_at)->format('g:i A, d-M-Y') }}
                                                         </td>
 

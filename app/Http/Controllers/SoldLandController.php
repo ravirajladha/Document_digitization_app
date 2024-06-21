@@ -114,7 +114,7 @@ class SoldLandController extends Controller
         $uniqueDistricts = DB::table('sold_lands')->whereNotNull('district')->where('district', '<>', '')->distinct()->pluck('district')->toArray();
         $uniqueStates = DB::table('sold_lands')->whereNotNull('state')->where('state', '<>', '')->distinct()->pluck('state')->toArray();
 
-
+// dd($uniqueVillages);
         // Log the SQL query being executed
         $sql = $query->toSql();
         $bindings = $query->getBindings();

@@ -217,7 +217,7 @@ class UserController extends Controller
             $user->email = strtolower($validatedData['email']); // Store the email in lowercase
 
             // If a new password was provided, hash and update it
-            if ($request->filled('password') == $request->filled('password_confirmation')) {
+            if ($request->filled('password') && $request->filled('password_confirmation') && $request->password == $request->password_confirmation) {
                 $user->password = Hash::make($request->password);
             }
 

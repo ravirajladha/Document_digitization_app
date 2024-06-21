@@ -55,7 +55,7 @@
         <tbody style="padding:0px 10px; display: block;">
             <tr>
                 <td style="padding: 56px 0 24px 26px;height:75px;text-align: center;">
-                    <img src="/assets/logo/logo.jpg" style="height:100px;width:55%;">
+                    <img src="https://ahobila.kods.app/assets/logo/logo.jpg" style="height:100px;width:55%;">
                 </td>
             </tr>
             <tr>

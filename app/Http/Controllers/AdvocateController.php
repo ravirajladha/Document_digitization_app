@@ -97,29 +97,66 @@ class AdvocateController extends Controller
         ]);
     }
 
-    public function showAdvocateAssignedDocument($advocateId)
-    {
-        // Filter the document assignments by the passed receiver ID
-        $documentAssignments = Advocate_documents::with(['advocate', 'document'])
-            ->where('advocate_id', $advocateId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10); 
-// dd($documentAssignments);
-        // If you still need the lists of document types and receiver types for dropdowns or other UI elements
-        $documentTypes = Master_doc_type::all();
-        $receiverTypes = Receiver_type::where('status', 1)->get();
+//     public function showAdvocateAssignedDocument($advocateId)
+//     {
+//         // Filter the document assignments by the passed receiver ID
+//         $documentAssignments = Advocate_documents::with(['advocate', 'document'])
+//             ->where('advocate_id', $advocateId)
+//             ->orderBy('created_at', 'desc')
+//             ->paginate(10); 
+// // dd($documentAssignments);
+//         // If you still need the lists of document types and receiver types for dropdowns or other UI elements
+//         $documentTypes = Master_doc_type::all();
+//         $receiverTypes = Receiver_type::where('status', 1)->get();
 
-        // You can also get the receiver details if needed, for example to display their name on the page
-        $advocate = Advocate::find($advocateId);
+//         // You can also get the receiver details if needed, for example to display their name on the page
+//         $advocate = Advocate::find($advocateId);
        
-        return view('pages.advocates.assign-document.index', [
-            'documentAssignments' => $documentAssignments,
-            'documentTypes' => $documentTypes,
-            'receiverTypes' => $receiverTypes,
-            'advocate' => $advocate, 
-            'advocateId' => $advocateId
-        ]);
+//         return view('pages.advocates.assign-document.index', [
+//             'documentAssignments' => $documentAssignments,
+//             'documentTypes' => $documentTypes,
+//             'receiverTypes' => $receiverTypes,
+//             'advocate' => $advocate, 
+//             'advocateId' => $advocateId
+//         ]);
+//     }
+public function showAdvocateAssignedDocument($advocateId)
+{
+    // Filter the document assignments by the passed advocate ID
+    $documentAssignments = Advocate_documents::with(['advocate', 'document.documentType'])
+        ->where('advocate_id', $advocateId)
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    // Retrieve the lists of document types and receiver types for dropdowns or other UI elements
+    $documentTypes = Master_doc_type::all();
+    $receiverTypes = Receiver_type::where('status', 1)->get();
+
+    // Retrieve the advocate details
+    $advocate = Advocate::find($advocateId);
+
+    // Process each document assignment to retrieve the child_id
+    foreach ($documentAssignments as $assignment) {
+        $documentTypeName = $assignment->document->documentType->name;
+
+        // Build the table name dynamically
+        $childDocument = DB::table($documentTypeName)
+            ->where('doc_id', $assignment->doc_id)
+            ->first();
+
+        if ($childDocument) {
+            $assignment->child_id = $childDocument->id;
+        }
     }
+
+    return view('pages.advocates.assign-document.index', [
+        'documentAssignments' => $documentAssignments,
+        'documentTypes' => $documentTypes,
+        'receiverTypes' => $receiverTypes,
+        'advocate' => $advocate,
+        'advocateId' => $advocateId
+    ]);
+}
 
     public function getReceiversByType($typeId)
     {

@@ -84,31 +84,33 @@
 
 
                                                         <td>
-                                                            @if ($user && $user->hasPermission('View Assigned Docs to Advocate'))
-                                                                <a href="/advocate-assign-documents/{{ $item->id }}"
-                                                                    title="View Assigned Documents"><u><b><span
-                                                                                class="btn btn-secondary btn-sm edit-btn"><i
-                                                                                    class="fas fa-eye"></i></span></b></u></a>
-                                                            @endif
-                                                            @if ($user && $user->hasPermission('Update Advocates'))
-                                                                <button title="Edit Reciever"
-                                                                    class="btn btn-primary btn-sm edit-btn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#exampleModalCenter"
-                                                                    data-receiver-id="{{ $item->id }}"
-                                                                    data-receiver-name="{{ $item->name }}"
-                                                                    data-receiver-phone="{{ $item->phone }}"
-                                                                    data-receiver-address="{{ $item->address }}"
-                                                                    data-receiver-email="{{ $item->email }}"
-                                                                    data-receiver-type-id="{{ $item->receiver_type_id }}"
-                                                                    data-receiver-status="{{ $item->status }}"><i
-                                                                        class="fas fa-pencil-square"></i>&nbsp;</button>
-                                                            @endif
-
-                                                            @if ($user && !$user->hasPermission('View Assigned Docs to Advocate') && !user->hasPermission('Update Advocates'))
-                                                                --
-                                                            @endif
+                                                            <div class="d-flex">
+                                                                @if ($user && $user->hasPermission('View Assigned Docs to Advocate'))
+                                                                    <a href="/advocate-assign-documents/{{ $item->id }}" title="View Assigned Documents" class="me-2">
+                                                                        <span class="btn btn-secondary btn-sm edit-btn"><i class="fas fa-eye"></i></span>
+                                                                    </a>
+                                                                @endif
+                                                                @if ($user && $user->hasPermission('Update Advocates'))
+                                                                    <button title="Edit Receiver"
+                                                                        class="btn btn-primary btn-sm edit-btn"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#exampleModalCenter"
+                                                                        data-receiver-id="{{ $item->id }}"
+                                                                        data-receiver-name="{{ $item->name }}"
+                                                                        data-receiver-phone="{{ $item->phone }}"
+                                                                        data-receiver-address="{{ $item->address }}"
+                                                                        data-receiver-email="{{ $item->email }}"
+                                                                        data-receiver-type-id="{{ $item->receiver_type_id }}"
+                                                                        data-receiver-status="{{ $item->status }}">
+                                                                        <i class="fas fa-pencil-square"></i>
+                                                                    </button>
+                                                                @endif
+                                                                @if ($user && !$user->hasPermission('View Assigned Docs to Advocate') && !user->hasPermission('Update Advocates'))
+                                                                    --
+                                                                @endif
+                                                            </div>
                                                         </td>
+                                                        
 
 
                                                     </tr>

@@ -122,7 +122,7 @@
                                                         <td>{{ $item->name }}</td>
                                                         <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
                                                         </td>
-                                                        <td>{{ $item->document->name }}</td>
+                                                        <td><a style="color: #1714c9; text-decoration: underline;" href="/review_doc/{{ $item->documentType->name }}/{{ $item->child_id }}">{{ $item->document->name }}</a></td>
                                                         <td>{{ date('d-M-Y', strtotime($item->due_date)) }}</td>
 
                                                         <td> {!! $item->is_recurring

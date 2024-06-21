@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Response;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog, Advocate_documents, Advocate, Document_transaction,Category};
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog, Advocate_documents, Advocate, Document_transaction,Category,Sold_land};
 
 class DocumentController extends Controller
 {
@@ -855,6 +855,89 @@ class DocumentController extends Controller
             // Fetch the data from the database
             $villagesData = Master_doc_data::where('current_district', $district)
                 ->pluck('current_village'); // Use pluck to get the column directly
+
+            // Initialize an empty collection to store villages
+            $villages = collect();
+
+            // Process each village data
+            foreach ($villagesData as $data) {
+                // Split by comma and trim spaces
+                $splitVillages = collect(explode(',', $data))->map(function ($item) {
+                    return Str::of($item)->trim();
+                });
+
+                // Merge with the main villages collection
+                $villages = $villages->merge($splitVillages);
+            }
+
+            // Remove duplicates, sort, and reject empty/null values
+            $villages = $villages->unique()
+                ->sort()
+                ->reject(function ($value) {
+                    $stringValue = (string) $value;
+                    return $stringValue === '' || is_null($stringValue);
+                })
+                ->values();
+
+            // Log the villages array for debugging
+            Log::info('Fetched villages', ['villages' => $villages]);
+
+            // Return the response as JSON
+            return Response::json($villages);
+        } catch (\Exception $e) {
+            // Log any exception that occurs
+            Log::error('Error fetching villages', ['error' => $e->getMessage()]);
+            return Response::json(['error' => 'An error occurred while fetching villages'], 500);
+        }
+    }
+    public function fetchDistrictsForSold($state)
+    {
+        try {
+            // Fetch the data from the database
+            $districtsData = Sold_land::where('state', $state)
+                ->pluck('district'); // Use pluck to get the column directly
+
+            // Initialize an empty collection to store districts
+            $districts = collect();
+
+            // Process each district data
+            foreach ($districtsData as $data) {
+                // Split by comma and trim spaces
+                $splitDistricts = collect(explode(',', $data))->map(function ($item) {
+                    return Str::of($item)->trim();
+                });
+
+                // Merge with the main districts collection
+                $districts = $districts->merge($splitDistricts);
+            }
+
+            // Remove duplicates, sort, and reject empty/null values
+            $districts = $districts->unique()
+                ->sort()
+                ->reject(function ($value) {
+                    $stringValue = (string) $value;
+                    return $stringValue === '' || is_null($stringValue);
+                })
+                ->values();
+
+            // Log the districts array for debugging
+            Log::info('Fetched districts', ['districts' => $districts]);
+
+            // Return the response as JSON
+            return Response::json($districts);
+        } catch (\Exception $e) {
+            // Log any exception that occurs
+            Log::error('Error fetching districts', ['error' => $e->getMessage()]);
+            return Response::json(['error' => 'An error occurred while fetching districts'], 500);
+        }
+    }
+
+    public function fetchVillagesForSold($district)
+    {
+        try {
+            // Fetch the data from the database
+            $villagesData = Sold_land::where('district', $district)
+                ->pluck('village'); // Use pluck to get the column directly
 
             // Initialize an empty collection to store villages
             $villages = collect();

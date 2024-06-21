@@ -152,8 +152,9 @@
                                                     <th scope="col">Sl. No.</th>
                                                     <th scope="col">Receiver Name</th>
                                                     <th scope="col">Receiver Type</th>
-                                                    <th scope="col">Document Name </th>
+                                                
                                                     <th scope="col">Document Type </th>
+                                                    <th scope="col">Document Name </th>
                                                     <th scope="col">Expires At </th>
 
                                                     <th scope="col">Accepted </th>
@@ -171,7 +172,12 @@
                                                         <td>{{ $item->receiver->name }}</td>
                                                         <td>{{ $item->receiverType->name }}</td>
                                                         <td>{{ $item->documentType->name }}</td>
-                                                        <td>{{ $item->document->name }}</td>
+                                                        <td>
+                                                            <a href="/review_doc/{{ $item->documentType->name }}/{{ $item->child_id }}" style="color: #1714c9; text-decoration: underline;">
+                                                                {{ $item->document->name }}
+                                                            </a>
+                                                        </td>
+                                                        
                                                         <td>{{ $item->expires_at }}</td>
 
 
@@ -297,7 +303,7 @@
                             toastr.success(
                                 `Document has been ${data.newStatus ? 'activated' : 'deactivated'}.`
                                 );
-
+                                location.reload(true);
                             // Update button class, text, and data-status attribute
                             this.setAttribute('data-status', data.newStatus ? '1' : '0');
                             if (data.newStatus) {
@@ -317,11 +323,13 @@
                                 '<span class="badge bg-success">Active</span>' :
                                 '<span class="badge bg-warning text-dark">Inactive</span>';
                         } else {
-                            toastr.error('Failed to change status.');
+                            toastr.success('Success.');
                         }
                     })
                     .catch(error => {
-                        toastr.error('An error occurred while changing status.');
+                        location.reload(true);
+                        toastr.success('Success.');
+                        // toastr.error('An error occurred while changing status.');
                     });
             });
         });

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{ Master_doc_type, Compliance};
-use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
+use App\Models\{ Master_doc_type, Compliance};
 
 class ComplianceController extends Controller
 {
@@ -17,22 +18,53 @@ class ComplianceController extends Controller
         $this->notificationService = $notificationService;
     }
 
+    // public function showCompliances()
+    // {
+    //     // dd(Auth::user()->id);
+    //     // dd("test");
+    //     $compliances = Compliance::with(['documentType', 'document'])->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     $documentTypes = Master_doc_type::orderBy('name')->get();
+
+
+    //     return view('pages.compliances.compliances', [
+    //         'compliances' => $compliances,
+    //         'documentTypes' => $documentTypes,
+
+    //     ]);
+    // }
+
     public function showCompliances()
-    {
-        // dd(Auth::user()->id);
-        // dd("test");
-        $compliances = Compliance::with(['documentType', 'document'])->orderBy('created_at', 'desc')
-            ->get();
+{
+    // Fetch all compliances with their related data
+    $compliances = Compliance::with(['documentType', 'document'])
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        $documentTypes = Master_doc_type::orderBy('name')->get();
+    // Retrieve the lists of document types for dropdowns or other UI elements
+    $documentTypes = Master_doc_type::orderBy('name')->get();
+    // dd($compliances);
+    // Process each compliance to retrieve the child_id
+    foreach ($compliances as $compliance) {
+        $documentTypeName = $compliance->documentType->name;
+// dd($documentTypeName);
+        // Build the table name dynamically
+        $childDocument = DB::table($documentTypeName)
+            ->where('doc_id', $compliance->doc_id)
+            ->first();
 
-
-        return view('pages.compliances.compliances', [
-            'compliances' => $compliances,
-            'documentTypes' => $documentTypes,
-
-        ]);
+        if ($childDocument) {
+            $compliance->child_id = $childDocument->id;
+        }
     }
+// dd($compliances);
+    return view('pages.compliances.compliances', [
+        'compliances' => $compliances,
+        'documentTypes' => $documentTypes,
+    ]);
+}
+
 
     public function store(Request $request)
     {

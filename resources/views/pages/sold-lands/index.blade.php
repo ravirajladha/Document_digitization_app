@@ -1,5 +1,5 @@
 <x-app-layout>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
     <x-header />
     <x-sidebar />
@@ -35,57 +35,46 @@
                                     <form action="{{ url('/') }}/sold-land" method="GET">
                                         @csrf
                                         <div class="row">
-                                            <div class="mb-3 col-md-6 col-xl-6">
+                                            <div class="mb-3 col-md-12 col-xl-12">
                                                 <label class="form-label">Survey Number</label>
                                                 <input name="survey_number" class="form-control"
                                                     placeholder="Enter Survery Number"
                                                     value="{{ request()->input('survey_number') }}">
                                             </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select State </label>
-                                                <select class="form-select form-control" id="single-select-abc3"
+                                            <div class="mb-3 col-md-4">
+                                                <label class="form-label"> State</label>
+                                                <select class="form-select form-control" id="single-select-abctest3"
                                                     name="state" aria-label="State select">
                                                     <option value="" selected>Select State</option>
+                                                    {{-- {{ dd($uniqueStates) }} --}}
                                                     @foreach ($uniqueStates as $state)
                                                         <option value="{{ $state }}"
-                                                            {{ request()->input('state') == $state ? 'selected' : '' }}>
+                                                            {{ old('state') == $state ? 'selected' : '' }}>
                                                             {{ $state }}
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                <div id="loader-3" class="loader" style="display:none;"></div>
                                             </div>
-
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select District </label>
-
-                                                <select class="form-select form-control" id="single-select-abc2"
-                                                    name="district" aria-label="Village select">
+    
+                                            <div class="mb-3 col-md-4">
+                                                <label class="form-label"> District</label>
+                                                <select class="form-select form-control" id="single-select-abctest4"
+                                                    name="district" aria-label="District select">
                                                     <option value="" selected>Select District</option>
-                                                    @foreach ($uniqueDistricts as $district)
-                                                        <option value="{{ $district }}"
-                                                            {{ request()->input('district') == $district ? 'selected' : '' }}>
-                                                            {{ $district }}
-                                                        </option>
-                                                    @endforeach
                                                 </select>
-
+                                                <div id="loader-4" class="loader" style="display:none;"></div>
                                             </div>
-                                            <div class="mb-3 col-md-6">
-                                                <label class="form-label">Select Village </label>
-
-                                                <select class="form-select form-control" id="single-select-abc1"
+    
+                                            <div class="mb-3 col-md-4">
+                                                <label class="form-label"> Village</label>
+                                                <select class="form-select form-control" id="single-select-abctest5"
                                                     name="village" aria-label="Village select">
                                                     <option value="" selected>Select Village</option>
-                                                    @foreach ($uniqueVillages as $village)
-                                                        <option value="{{ $village }}"
-                                                            {{ request()->input('village') == $village ? 'selected' : '' }}>
-                                                            {{ $village }}
-                                                        </option>
-                                                    @endforeach
                                                 </select>
-
+                                                <div id="loader-5" class="loader" style="display:none;"></div>
                                             </div>
-
+    
 
 
                                             <div class="mb-3 col-md-6">
@@ -108,14 +97,14 @@
                                                 </div>
                                             </div>
 
-                                            <div class="mb-3 col-md-4 col-xl-3">
+                                            <div class="mb-3 col-md-4 col-xl-4">
                                                 <label class="form-label">Minimum Area Size</label>
                                                 <input name="area_range_start" class="form-control"
                                                     placeholder="Enter Minimum Area Size"
                                                     value="{{ request()->input('area_range_start') }}">
                                             </div>
 
-                                            <div class="mb-3 col-md-4 col-xl-3">
+                                            <div class="mb-3 col-md-4 col-xl-4">
                                                 <label class="form-label">Maximum Area Size</label>
                                                 <input name="area_range_end" class="form-control"
                                                     placeholder="Enter Maximum Area Size"
@@ -172,7 +161,7 @@
                                             <i class="fas fa-plus-square"></i>&nbsp; Bulk Upload
                                         </button>
                                         {{-- Add Sold Land Details button --}}
-                                        <a href="/sold-land-actions" target="_blank">
+                                        <a href="/sold-land-actions" >
                                             <button type="button" class="btn btn-success btn-sm float-end">
                                                 <i class="fas fa-plus-square"></i>&nbsp; Add
                                             </button>
@@ -542,4 +531,144 @@
         // Click download link
         downloadLink.click();
     }
+</script>
+<style>
+    .loader {
+        border: 4px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 4px solid #3498db;
+        width: 20px;
+        height: 20px;
+        animation: spin 2s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<script>
+    function resetDropdown(id) {
+        const dropdown = document.getElementById(id);
+        const text = id.replace('single-select-abctest', ''); // Extract number suffix
+        const label = {
+            '3': 'State',
+            '4': 'District',
+            '5': 'Village'
+        } [text] || 'Select'; // Map number to label, default to 'Select'
+
+        dropdown.innerHTML = `<option value="" selected>Select ${label}</option>`;
+    }
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    document.getElementById('single-select-abctest3').addEventListener('change', function() {
+        updateSelections('state', this.value);
+    });
+
+    document.getElementById('single-select-abctest4').addEventListener('change', function() {
+        updateSelections('district', this.value);
+    });
+
+    function updateSelections(type, value) {
+        if (type === 'state') {
+            resetDropdown('single-select-abctest4');
+            resetDropdown('single-select-abctest5');
+        } else if (type === 'district') {
+            resetDropdown('single-select-abctest5');
+        }
+
+        let url = '';
+        switch (type) {
+            case 'state':
+                url = `/api/fetchForSold/districts/${value}`;
+                fetchDropdownData(url, 'single-select-abctest4');
+                targetId = 'single-select-abctest4';
+                break;
+            case 'district':
+                url = `/api/fetchForSold/villages/${value}`;
+                fetchDropdownData(url, 'single-select-abctest5');
+                targetId = 'single-select-abctest5';
+                break;
+            default:
+                console.error('Unhandled selection type:', type);
+                return;
+        }
+        showLoader(targetId);
+        fetchDropdownData(url, targetId);
+    }
+
+    function fetchDropdownData(url, targetId, selectedValue = '') {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const dropdown = document.getElementById(targetId);
+                const loader = document.getElementById('loader-' + targetId.replace('single-select-abctest', ''));
+                console.log("data", data);
+                resetDropdown(targetId); // Reset with correct default text
+                if (Array.isArray(data)) {
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item;
+                        option.textContent = item;
+                        if (item === selectedValue) {
+                            option.selected = true;
+                        }
+                        dropdown.appendChild(option);
+                    });
+                } else {
+                    console.error('Data format error:', data);
+                }
+                hideLoader(targetId);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                hideLoader(targetId);
+            });
+    }
+
+    function showLoader(targetId) {
+        const loaderId = 'loader-' + targetId.replace('single-select-abctest', '');
+        const loader = document.getElementById(loaderId);
+        if (loader) {
+            loader.style.display = 'inline-block';
+        }
+    }
+
+    function hideLoader(targetId) {
+        const loaderId = 'loader-' + targetId.replace('single-select-abctest', '');
+        const loader = document.getElementById(loaderId);
+        if (loader) {
+            loader.style.display = 'none';
+        }
+    }
+    // Initialize dropdowns based on previous selections
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectedState = document.getElementById('single-select-abctest3').value;
+        const selectedDistrict = document.getElementById('single-select-abctest4').value;
+
+        if (selectedState) {
+            updateSelections('state', selectedState);
+        }
+
+        if (selectedState && selectedDistrict) {
+            setTimeout(() => {
+                updateSelections('district', selectedDistrict);
+            }, 500); // Adjust timeout as necessary to ensure state dropdown is populated first
+        }
+    });
 </script>

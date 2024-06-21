@@ -60,11 +60,11 @@
                                                         {{-- <td>{{ $counter }}</td>  --}}
                                                         <td>{{ $log->id }}</td> {{-- Display the user name --}}
                                                         <td>{{ $log->user_name }}</td> {{-- Display the user name --}}
-                                                        <td>{{ class_basename($log->model_type) }}</td>
+                                                        <td>{{ ucwords(str_replace('_', ' ', class_basename($log->model_type))) }}</td>
                                                         {{-- Remove namespace prefix --}}
                                                         <td style="max-width:200px; word-wrap:break-word;">
                                                             {{ $log->changes }}</td> {{-- Use max-width and word-wrap --}}
-                                                        <td>{{ $log->action }}</td>
+                                                        <td>{{ ucwords($log->action)}}</td>
                                                         <td>{{ \Carbon\Carbon::parse($log->created_at)->format('H:i d-M-Y') }}
                                                             
                                                         </td> 

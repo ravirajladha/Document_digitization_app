@@ -40,7 +40,8 @@
                                                     <th scope="col">Sl. No.</th>
                                                     <th scope="col">Document type</th>
                                                     <th scope="col">Number of Documents </th>
-                                                    @if ($user && $user->hasPermission('View Documents By Doc Type'))
+                                                    @if ($user && $user->hasPermission('View Documents by Doc Type'))
+                                       
                                                         <th scope="col">View Documents </th>
                                                     @endif
 

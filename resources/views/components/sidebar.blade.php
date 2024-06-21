@@ -88,13 +88,7 @@
                             </a>
                         </li>
                         @endif
-                    @if ($user && $user->hasPermission('View Users'))
-                        <li><a href="{{ url('/') }}/users" aria-expanded="false" disabled>
-                                <i class="fas fa-user-circle"></i>
-                                <span class="nav-text">Users</span>
-                            </a>
-                        </li>
-                    @endif
+                  
                     @if ($user && $user->hasPermission('View Compliances'))
                         <li><a href="{{ url('/') }}/compliances" aria-expanded="false">
                                 <i class="fas fa-procedures"></i>
@@ -102,6 +96,13 @@
                             </a>
                         </li>
                     @endif
+                    @if ($user && $user->hasPermission('View Users'))
+                    <li><a href="{{ url('/') }}/users" aria-expanded="false" disabled>
+                            <i class="fas fa-user-circle"></i>
+                            <span class="nav-text">Users</span>
+                        </a>
+                    </li>
+                @endif
                     @if ($user && $user->hasPermission('Configure'))
                         <li><a href="{{ url('/') }}/data-sets" aria-expanded="false">
                                 {{-- <i class="fas fa-scale-balanced"></i> --}}

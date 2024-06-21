@@ -212,6 +212,8 @@ Route::put('/subcategories', [DataSetController::class, 'updateSubcategory'])->n
 
     Route::get('/api/fetch/districts/{state}', [DocumentController::class, 'fetchDistricts']);
     Route::get('/api/fetch/villages/{district}', [DocumentController::class, 'fetchVillages']);
+    Route::get('/api/fetchForSold/districts/{state}', [DocumentController::class, 'fetchDistrictsForSold']);
+    Route::get('/api/fetchForSold/villages/{district}', [DocumentController::class, 'fetchVillagesForSold']);
     Route::get('/action-logs', [LogController::class, 'actionLogsIndex'])->name('logs.action-logs');
     Route::get('/http-request-logs', [LogController::class, 'httpRequestLogs'])->name('logs.http-request-logs');
 });

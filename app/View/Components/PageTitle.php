@@ -70,7 +70,7 @@ class PageTitle extends Component
                 $this->pageName = 'Update Document Details';
                 break;
             case 'configure':
-                $this->pageName = 'Data Sets';
+                $this->pageName = 'Configure';
                 break;
             case 'categories.show':
                 $this->pageName = 'Category';

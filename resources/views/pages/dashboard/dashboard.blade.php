@@ -45,7 +45,7 @@
                                             @foreach ($getCategoryDocumentCounts as $category => $count)
                                                 @if ($category !== '' && $category !== null)
                                                     <div class="col-xl-6 col-xxl-6 col-lg-6 col-sm-6">
-                                                        <a href="/filter-document?category={{ urlencode($category) }}">
+                                                        {{-- <a href="/filter-document?category={{ urlencode($category) }}"> --}}
                                                             <div class="widget-stat card {{ $bgClasses[$classIndex] }}">
                                                                 <div class="card-body p-4">
                                                                     <div class="media">
@@ -66,7 +66,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </a>
+                                                        {{-- </a> --}}
                                                     </div>
                                                 @endif
                                                 @php

@@ -237,7 +237,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                
+
 
                                     <div class="card-footer">
 
@@ -726,7 +726,7 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
             if (subcategories.length > 0) {
                 subcategories.forEach(function(subcategory) {
                     var isSelected = previouslySelectedSubcategories.includes(subcategory.id
-                    .toString()) ? 'selected' : '';
+                        .toString()) ? 'selected' : '';
                     subcategorySelect.append('<option value="' + subcategory.id + '" ' + isSelected +
                         '>' + subcategory.category + ' - ' + subcategory.name + '</option>');
                 });
