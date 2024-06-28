@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 
 use App\Models\DocumentStatusLog;
-use App\Models\{User, Permission};
+use App\Models\{User, Permission, Master_doc_data};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +44,7 @@ class UserController extends Controller
     public function showReviewedDocumentsUsers($id)
     {
         $user_detail = User::find($id);
-      
+
         // Check if the user exists
         if (!$user_detail) {
             // Handle the case where the user doesn't exist
@@ -112,12 +112,30 @@ class UserController extends Controller
             ->selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->pluck('count', 'status');
+
+        // Get the counts from the master_doc_datas table
+        $masterDocCounts = Master_doc_data::where('reviewed_by', $id)
+            ->selectRaw('status_id, COUNT(*) as count')
+            ->groupBy('status_id')
+            ->pluck('count', 'status_id');
+
+        // Initialize an array to store the master doc counts
+        $masterDocStatusCounts = [
+            'Pending' => $masterDocCounts[0] ?? 0,
+            'Approved' => $masterDocCounts[1] ?? 0,
+            'Hold' => $masterDocCounts[2] ?? 0,
+            'Reviewer Feedback' => $masterDocCounts[3] ?? 0,
+            'Total' => ($masterDocCounts[0] ?? 0) + ($masterDocCounts[1] ?? 0) + ($masterDocCounts[2] ?? 0) + ($masterDocCounts[3] ?? 0),
+        ];
+        $data['MasterDocData'] = $masterDocStatusCounts;
+        // dd($masterDocStatusCounts);
         //dd($data, $todayCounts);
         // Return the view with the counts
         return view('pages.users.reviewed-documents', [
             'data' => $data,
             'todayCounts' => $todayCounts,
             'user_detail' => $user_detail,
+
         ]);
     }
 
@@ -126,7 +144,6 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|integer|digits:10',
-
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', 'string', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'], // Add regex rule for password strength
             'password_confirmation' => 'required',

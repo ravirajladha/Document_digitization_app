@@ -158,12 +158,12 @@
                         @method('PUT')
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="fieldName" class="form-label">Update Field Name {{ $column->special }}<span
+                                <label for="fieldName" class="form-label">Update Field Name <span
                                         class="text-danger">*</span></span></label>
                                 <div class="bootstrap-popover d-inline-block float-end mb-2">
                                     <button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body"
                                         data-bs-toggle="popover" data-bs-placement="top"
-                                        data-bs-content="Provide the Document Field without any space, sepereated thorugh underscore. It would work other way, but, mostly preferred without space."
+                                        data-bs-content="Provide the Document Field without any space, separated thorugh underscore. It would work other way, but, mostly preferred without space."
                                         title="Verification Guidelines"><i class="fas fa-info-circle"></i></button>
                                 </div>
                                 <input type="text" class="form-control" name="newFieldName" id="fieldName"

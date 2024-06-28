@@ -42,7 +42,11 @@
                                                     value="{{ request()->input('survey_number') }}">
                                             </div>
                                             <div class="mb-3 col-md-4">
-                                                <label class="form-label"> State</label>
+                                                <label class="form-label"> State <span data-bs-container="body" data-bs-toggle="popover"
+                                                    data-bs-placement="top"
+                                                    data-bs-content="The selection of State is mandatory to select District and Village. District and Village gets filter through the selection of State.">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </span></label>
                                                 <select class="form-select form-control" id="single-select-abctest3"
                                                     name="state" aria-label="State select">
                                                     <option value="" selected>Select State</option>

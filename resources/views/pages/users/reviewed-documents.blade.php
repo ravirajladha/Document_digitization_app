@@ -88,23 +88,23 @@ use Carbon\Carbon;
                         {{-- <span>Total Counts</span> --}}
                     </div>
                     <div class="col-2 pt-3 pb-3 border-end" style="background-color: #e9ecef;">
-                        <h3 class="mb-1 text-primary">{{ $data['Total']['Pending'] }}</h3>
+                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Pending'] }}</h3>
                         <span>Pending</span>
                     </div>
                     <div class="col-2 pt-3 pb-3 border-end" style="background-color: #dee2e6;">
-                        <h3 class="mb-1 text-primary">{{ $data['Total']['Approved'] }}</h3>
+                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Approved'] }}</h3>
                         <span>Approved</span>
                     </div>
                     <div class="col-2 pt-3 pb-3 border-end" style="background-color: #ced4da;">
-                        <h3 class="mb-1 text-primary">{{ $data['Total']['Hold'] }}</h3>
+                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Hold'] }}</h3>
                         <span>Hold</span>
                     </div>
                     <div class="col-2 pt-3 pb-3 border-end" style="background-color: #adb5bd;">
-                        <h3 class="mb-1 text-primary">{{ $data['Total']['Reviewer Feedback'] }}</h3>
+                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Reviewer Feedback'] }}</h3>
                         <span>Review Feedback</span>
                     </div>
                     <div class="col-2 pt-3 pb-3 border-end" style="background-color: #6c757d;">
-                        <h3 class="mb-1 text-primary">{{ $data['Total']['Total'] }}</h3>
+                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Total'] }}</h3>
                         <span>Total </span>
                     </div>
                 </div>

@@ -2,6 +2,8 @@
     use Carbon\Carbon;
 @endphp
 
+
+
 <x-app-layout>
     @php
         if (!function_exists('addOrdinalSuffix')) {
@@ -338,7 +340,7 @@
                                                                 onclick="toggleFullscreen(this)">
                                                                 <iframe
                                                                     src="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
-                                                                    width="100%" height="600"
+                                                                    width="100%" height="800"
                                                                     oncontextmenu="return false;"></iframe>
                                                             </div>
                                                             <a href="{{ $document->{$column->column_name} ? url($document->{$column->column_name}) : $defaultPdfPath }}"
@@ -360,6 +362,8 @@
                                                 @endif
                                             @endif
                                         @endforeach
+                                        
+
                                         @if ($document->pdf_file_path)
                                             @php
                                                 // Get the file extension
@@ -383,7 +387,7 @@
                                                 <a href="{{ url($document->pdf_file_path) }}" target="_blank"
                                                     rel="noopener noreferrer">
                                                     <iframe src="{{ url($document->pdf_file_path) }}" width="100%"
-                                                        height="600" frameborder="0"
+                                                        height="800" frameborder="0"
                                                         oncontextmenu="return false;"></iframe>
                                                 </a>
                                                 <a href="{{ url($document->pdf_file_path) }}" target="_blank"
@@ -1761,13 +1765,13 @@
         /* Keeps everything neat */
     }
 
-    iframe,
-    img {
-        width: 100%;
+    /*iframe,*/
+    /*img {*/
+    /*    width: 100%;*/
         /* Ensures content fills the wrapper */
-        height: auto;
+    /*    height: auto;*/
         /* Maintains aspect ratio for images */
-    }
+    /*}*/
 </style>
 {{-- split window javascript --}}
 <script>

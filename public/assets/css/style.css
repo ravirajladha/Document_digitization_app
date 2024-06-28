@@ -25343,7 +25343,7 @@ table.dataTable > tbody > tr.child span.dtr-title {
       height: auto;
       cursor: all-scroll; }
   .kanban-bx::-webkit-scrollbar {
-    background-color: #ECECEC;
+    background-color: #fff;
     width: 8px;
     height: 8px; }
   .kanban-bx::-webkit-scrollbar-thumb {

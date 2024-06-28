@@ -34,13 +34,17 @@ return [
     | Supported: "session"
     |
     */
-
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+//session time , when clicked on remember me
+  'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+        'remember' => [
+            'lifetime' => 24, // Time in minutes (e.g., 30 days)
         ],
     ],
+],
+
 
     /*
     |--------------------------------------------------------------------------

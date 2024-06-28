@@ -105,7 +105,8 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="documentType" class="form-label">Document Type</label>
+                            <label for="documentType" class="form-label">Document Type<span
+                                class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="type" id="documentType"
                                 placeholder="Enter Document Type">
                         </div>

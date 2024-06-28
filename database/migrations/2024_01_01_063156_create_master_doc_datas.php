@@ -60,6 +60,8 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('status_id')->default(0); // 0 for inactive, 1 for active
             $table->text('rejection_message')->nullable();
+            $table->foreign('reviewed_by')->references('id')->on('users')->nullable(); // Assuming you have a users table
+
             $table->timestamp('rejection_timestamp')->nullable();
             $table->foreign('document_type')->references('id')->on('master_doc_types')->onDelete('set null');
         });
