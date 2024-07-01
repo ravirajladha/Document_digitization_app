@@ -171,6 +171,7 @@ public function showAdvocateAssignedDocument($advocateId)
 
     public function assignDocumentsToAdvocate(Request $request)
     {
+        // dd($request->all());
         // Define validation rules
         $rules = [
             'document_id' => 'required|exists:master_doc_datas,id', // Assuming documents table exists
@@ -184,6 +185,7 @@ public function showAdvocateAssignedDocument($advocateId)
             'plantiff_name' => 'nullable|string|max:255',
             'defendant_name' => 'nullable|string|max:255',
             'urgency_level' => 'nullable|string|max:255',
+            'case_result' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'submission_deadline' => 'nullable|date'
         ];
@@ -197,6 +199,7 @@ public function showAdvocateAssignedDocument($advocateId)
             session()->flash('toastr', ['type' => 'error', 'message' => 'Advocate is not active.']);
             return redirect()->back();
         }
+        // dd($validatedData['case_result']);
     $advocate_id = $validatedData['advocate_id'];
         // Create the assignment
         $assignment = Advocate_documents::create([
@@ -211,6 +214,7 @@ public function showAdvocateAssignedDocument($advocateId)
             'plantiff_name' => $validatedData['plantiff_name'] ?? null,
             'defendant_name' => $validatedData['defendant_name'] ?? null,
             'urgency_level' => $validatedData['urgency_level'] ?? null,
+            'case_result' => $validatedData['case_result'] ?? null,
             'notes' => $validatedData['notes'] ?? null,
             'submission_deadline' => $validatedData['submission_deadline'] ?? null,
             'created_by' => Auth::user()->id,
@@ -251,6 +255,8 @@ public function showAdvocateAssignedDocument($advocateId)
         'plantiff_name' => 'nullable|string|max:255',
         'defendant_name' => 'nullable|string|max:255',
         'urgency_level' => 'nullable|string|max:255',
+        'case_result' => 'nullable|string|max:255',
+        
         'notes' => 'nullable|string',
         'submission_deadline' => 'nullable|date'
     ];
@@ -321,6 +327,7 @@ public function bulkUploadAdvocateAssignDocument(Request $request)
                         'submission_deadline' => $submissionDeadline,
                         'advocate_id' => $line[13] ?? null,
                         'status' => $line[14] ?? null,
+                        // case result is pending here, and check for priority
                         'created_by' => Auth::user()->id,
                     ];
 
@@ -338,6 +345,7 @@ public function bulkUploadAdvocateAssignDocument(Request $request)
                         'notes' => 'nullable|string',
                         'submission_deadline' => 'nullable|date',
                         'advocate_id' => 'required|exists:advocates,id',
+                        // case result is pending here
                         'status' => 'nullable|boolean',
                     ]);
 
@@ -363,6 +371,7 @@ public function bulkUploadAdvocateAssignDocument(Request $request)
                 }
             }
         }
+
         DB::commit();
 
         // Close the file

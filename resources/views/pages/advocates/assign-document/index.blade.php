@@ -83,7 +83,8 @@
                                                     <th scope="col">Court Case Location </th>
                                                     <th scope="col">Plaintiff Name </th>
                                                     <th scope="col">Defendent Name </th>
-                                                    <th scope="col">Urgency Level </th>
+                                                    <th scope="col">Priority Level </th>
+                                                    <th scope="col">Case Result </th>
                                                     <th scope="col">Notes </th>
                                                     <th scope="col">Submission Deadline </th>
                                                     <th scope="col">Status </th>
@@ -130,7 +131,30 @@
                                                         <td>{{ $item->court_case_location ?? '--' }}</td>
                                                         <td>{{ $item->plantiff_name ?? '--' }}</td>
                                                         <td>{{ $item->defendant_name ?? '--' }}</td>
-                                                        <td>{{ $item->urgency_level ?? '--' }}</td>
+                                                        <td>
+                                                            @if(isset($item->urgency_level))
+                                                                @switch($item->urgency_level)
+                                                                    @case('high')
+                                                                        <span class="badge bg-danger">High</span>
+                                                                        @break
+                                                        
+                                                                    @case('medium')
+                                                                        <span class="badge bg-warning">Medium</span>
+                                                                        @break
+                                                        
+                                                                    @case('low')
+                                                                        <span class="badge bg-success">Low</span>
+                                                                        @break
+                                                        
+                                                                    @default
+                                                                        <span>{{ $item->urgency_level }}</span>
+                                                                @endswitch
+                                                            @else
+                                                                --
+                                                            @endif
+                                                        </td>
+                                                        
+                                                        <td>{{ $item->case_result ?? '--' }}</td>
                                                         <td>{{ $item->notes ?? '--' }}</td>
                                                         <td>
                                                             {{ $item->submission_deadline ? Carbon::parse($item->submission_deadline)->format('d-M-Y') : '--' }}
@@ -270,21 +294,35 @@
                                         name="defendant_name">
                                 </div>
                             </div>
-                            <div class="col-6">
+                           
+                            <div class="col-4">
                                 <div class="mb-3">
-                                    <label for="urgency_level" class="form-label">Urgency Level</label>
-                                    <input type="text" class="form-control" id="urgency_level"
-                                        name="urgency_level">
+                                    <label for="edit_urgency_level" class="form-label">Priority Level</label>
+                                    <select class="form-control" id="urgency_level" name="urgency_level">
+                                        <option value="high">High</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="low">Low</option>
+                                    </select>
                                 </div>
                             </div>
+                            
 
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="mb-3">
                                     <label for="submission_deadline" class="form-label">Submission Deadline</label>
                                     <input type="date" class="form-control" id="submission_deadline"
                                         name="submission_deadline">
                                 </div>
                             </div>
+
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <label for="submission_deadline" class="form-label">Case Result</label>
+                                    <input type="text" class="form-control" id="case_result"
+                                        name="case_result">
+                                </div>
+                            </div>
+
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label for="notes" class="form-label">Notes</label>
@@ -380,18 +418,29 @@
                                     name="defendant_name">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="mb-3">
-                                <label for="edit_urgency_level" class="form-label">Urgency Level</label>
-                                <input type="text" class="form-control" id="edit_urgency_level"
-                                    name="urgency_level">
+                                <label for="edit_urgency_level" class="form-label">Priority Level</label>
+                                <select class="form-control" id="edit_urgency_level" name="urgency_level">
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-6">
+                        
+                        <div class="col-4">
                             <div class="mb-3">
                                 <label for="edit_submission_deadline" class="form-label">Submission Deadline</label>
                                 <input type="date" class="form-control" id="edit_submission_deadline"
                                     name="submission_deadline">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label for="edit_submission_deadline" class="form-label">Case Result</label>
+                                <input type="text" class="form-control" id="edit_case_result"
+                                    name="case_result">
                             </div>
                         </div>
                         <div class="col-12">
@@ -437,14 +486,16 @@
                 document.getElementById('edit_start_date').value = assignment.start_date;
                 document.getElementById('edit_end_date').value = assignment.end_date;
                 document.getElementById('edit_court_name').value = assignment.court_name;
+                document.getElementById('edit_case_result').value = assignment.case_result;
                 document.getElementById('edit_court_case_location').value = assignment
                     .court_case_location;
                 document.getElementById('edit_plantiff_name').value = assignment
                     .plantiff_name;
                 document.getElementById('edit_defendant_name').value = assignment
                     .defendant_name;
-                document.getElementById('edit_urgency_level').value = assignment
-                    .urgency_level;
+                // document.getElementById('edit_urgency_level').value = assignment
+                //     .urgency_level;
+                    document.getElementById('edit_urgency_level').value = assignment.urgency_level.toLowerCase(); // Ensure the value matches "high", "medium", or "low"
                 document.getElementById('edit_submission_deadline').value = assignment
                     .submission_deadline;
                 document.getElementById('edit_notes').value = assignment.notes;

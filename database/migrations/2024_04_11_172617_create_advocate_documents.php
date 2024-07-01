@@ -24,6 +24,7 @@ return new class extends Migration
         $table->string('plantiff_name')->nullable();
         $table->string('defendant_name')->nullable();
         $table->string('urgency_level')->nullable();
+        $table->string('case_result')->nullable();
         $table->text('notes')->nullable();
         $table->date('submission_deadline')->nullable();
         $table->unsignedBigInteger('advocate_id');

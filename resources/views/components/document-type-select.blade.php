@@ -10,15 +10,22 @@
 {{-- @if ($isStatus) --}}
 <div class="col-md-6">
     <div class="mb-3">
-        <label for="documentType" class="form-label">Document Type</label>
+        <label for="documentType" class="form-label">Document Type </label>
         <div class="bootstrap-popover d-inline-block float-end ">
             @if ($isStatus)
             <button type="button" class="btn btn-primary btn-sm" data-bs-container="body" data-bs-toggle="popover"
                 data-bs-placement="top"
-                data-bs-content="The below filter contains [xx], this indicated the number of approved documents in each stage."
+                data-bs-content="The below filter contains [xx], this indicated the number of approved documents in each stage. To select the document, the user needs to select Document Type -> State -> District -> Village to filter and easily access the Document."
                 title="Document Name Mandatory">
                 <i class="fas fa-info-circle"></i>
             </button>
+            @else
+            <button type="button" class="btn btn-primary btn-sm" data-bs-container="body" data-bs-toggle="popover"
+            data-bs-placement="top"
+            data-bs-content="The below filter contains [xx], this indicated the number of documents in each stage. To select the document, the user needs to select Document Type -> State -> District -> Village to filter and easily access the Document."
+            title="Document Name Mandatory">
+            <i class="fas fa-info-circle"></i>
+        </button>
             @endif
         </div>
         <select class="form-control" id="documentType" name="document_type"
@@ -68,7 +75,7 @@
 
 <div class="col-md-12">
     <div class="mb-3">
-        <label for="document" class="form-label">Document </label>
+        <label for="document" class="form-label">Document <span class="text-danger">*</span></label>
         <div class="bootstrap-popover d-inline-block float-end ">
             @if ($isStatus)
             <button type="button" class="btn btn-primary btn-sm  " data-bs-container="body" data-bs-toggle="popover"
