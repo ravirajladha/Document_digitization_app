@@ -41,8 +41,8 @@
             </div>
 
             <div class="container-fluid">
-                @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
-                @endif
+                {{-- @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
+                @endif --}}
                 <div class="row">
 
                     <div class="split-pane">
@@ -50,12 +50,15 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">Data </h4>
+                                    @if ($user && $user->hasPermission('Update Basic Document Detail') && $master_data->status_id != 1)
                                     <a class="btn btn-primary float-end"
-                                        href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
-                                        rel="noopener noreferrer"><i class="fa fa-pencil"></i> Edit</a>
+                                    href="{{ url('/') }}/edit_document_basic_detail/{{ $document->doc_id }}"
+                                    rel="noopener noreferrer"><i class="fa fa-pencil"></i> Edit</a>
+                                    @endif
+                                  
                                 </div>
                                 <div class="card-body">
-                              
+
 
                                     <div class="table-responsive">
                                         <table class="table table-striped table-responsive-sm">
@@ -116,26 +119,28 @@
                                                                         $value = $value; // Keep original value if parsing fails
                                                                     }
                                                                 }
-                                                      
+
                                                                 // Handle category_id and subcategory_id
                                                                 if ($attribute === 'category_id') {
                                                                     $categoryIds = explode(',', $value);
                                                                     $categoryNamesArray = [];
                                                                     foreach ($categoryIds as $id) {
-                                                                        $categoryNamesArray[] = $categoryNames[$id] ?? $id;
+                                                                        $categoryNamesArray[] =
+                                                                            $categoryNames[$id] ?? $id;
                                                                     }
                                                                     $value = implode(', ', $categoryNamesArray);
                                                                 }
-                                            
+
                                                                 if ($attribute === 'subcategory_id') {
                                                                     $subcategoryIds = explode(',', $value);
                                                                     $subcategoryNamesArray = [];
                                                                     foreach ($subcategoryIds as $id) {
-                                                                        $subcategoryNamesArray[] = $subcategoryNames[$id] ?? $id;
+                                                                        $subcategoryNamesArray[] =
+                                                                            $subcategoryNames[$id] ?? $id;
                                                                     }
                                                                     $value = implode(', ', $subcategoryNamesArray);
                                                                 }
-                                                          
+
                                                                 $truncatedValue =
                                                                     strlen($value) > 35
                                                                         ? substr($value, 0, 35)
@@ -362,7 +367,7 @@
                                                 @endif
                                             @endif
                                         @endforeach
-                                        
+
 
                                         @if ($document->pdf_file_path)
                                             @php
@@ -468,9 +473,8 @@
                                     <div class="bootstrap-popover d-inline-block float-end">
                                         <button type="button" class="btn btn-primary btn-sm px-4 "
                                             data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top"
-                                            data-bs-content="Three stages: Pending, Hold,
-                                            Approve. To keep the document on hold, message is mandatory. Once approved, the
-                                            document status can't be changed."
+                                            data-bs-content="Four stages: Pending, Hold,
+                                            Approve and Reviewer Feedback. To keep the document on hold and Reviewer Feedback, message is mandatory. "
                                             title="Verification Guidelines"><i
                                                 class="fas fa-info-circle"></i></button>
                                     </div>
@@ -478,7 +482,7 @@
 
                                 <div class="card-body">
                                     {{-- Status Form --}}
-                                    @if ($document->status == 0 || $document->status == 2 || $document->status == 3)
+                                    {{-- @if ($document->status == 0 || $document->status == 2 || $document->status == 3) --}}
                                         <form action="{{ url('/') }}/update_document" method="post"
                                             class="mb-3">
                                             @csrf
@@ -490,7 +494,7 @@
                                                     <option value="0"
                                                         {{ $document->status == 0 ? 'selected' : '' }}>
                                                         Pending</option>
-                                                    <option value="1">Approve</option>
+                                                    <option value="1"    {{ $document->status == 1 ? 'selected' : '' }}>Approve</option>
                                                     <option value="2"
                                                         {{ $document->status == 2 ? 'selected' : '' }}>
                                                         Hold</option>
@@ -502,12 +506,12 @@
 
                                             </div>
                                         </form>
-                                    @else
+                                    {{-- @else
                                         <div class="alert alert-success">
                                             <strong>Approved</strong>
 
                                         </div>
-                                    @endif
+                                    @endif --}}
 
                                     {{-- Rejection Message --}}
                                     @if ($document->status == 2 && $master_data->rejection_message)
@@ -531,7 +535,7 @@
                                         </div>
                                     @endif
                                     {{-- Document Status Logs --}}
-                                    @if ($document->status != 1)
+                                    {{-- @if ($document->status != 1) --}}
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
@@ -579,7 +583,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    @endif
+                                    {{-- @endif --}}
                                     @foreach ($document_logs as $index => $log)
                                         <!-- Modal -->
                                         <div class="modal fade" id="editModal{{ $log->id }}" tabindex="-1"
@@ -920,12 +924,13 @@
                                                     <th scope="col">Notes </th>
                                                     <th scope="col">Submission Deadline </th>
                                                     <th scope="col">Status </th>
+                                                    <th scope="col">Created At </th>
                                                     <th scope="col">Action </th>
 
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                              
+
                                                 @foreach ($assigned_advocate_docs as $index => $item)
                                                     <tr>
                                                         <th scope="row">{{ $index + 1 }}</th>
@@ -933,7 +938,7 @@
                                                         <td>{{ $item->advocate->name }}
 
                                                         </td>
-                                                       
+
 
 
                                                         <td>{{ $item->case_name ?? '--' }}</td>
@@ -951,20 +956,20 @@
                                                         <td>{{ $item->plaintiff_name ?? '--' }}</td>
                                                         <td>{{ $item->defendant_name ?? '--' }}</td>
                                                         <td>
-                                                            @if(isset($item->urgency_level))
+                                                            @if (isset($item->urgency_level))
                                                                 @switch($item->urgency_level)
                                                                     @case('high')
                                                                         <span class="badge bg-danger">High</span>
-                                                                        @break
-                                                        
+                                                                    @break
+
                                                                     @case('medium')
                                                                         <span class="badge bg-warning">Medium</span>
-                                                                        @break
-                                                        
+                                                                    @break
+
                                                                     @case('low')
                                                                         <span class="badge bg-success">Low</span>
-                                                                        @break
-                                                        
+                                                                    @break
+
                                                                     @default
                                                                         <span>{{ $item->urgency_level }}</span>
                                                                 @endswitch
@@ -978,10 +983,31 @@
                                                             {{ $item->submission_deadline ? Carbon::parse($item->submission_deadline)->format('d-M-Y') : '--' }}
                                                         </td>
                                                         <td>
+                                                            @if(isset($item->status))
+                                                                @switch($item->status)
+                                                                    @case('1')
+                                                                        <span class="badge bg-success">Active</span>
+                                                                        @break
+                                                        
+                                                                    @case('0')
+                                                                        <span class="badge bg-warning">Inactive</span>
+                                                                        @break
+                                                        
+                                                                   
+                                                        
+                                                                    @default
+                                                                        <span>{{ $item->status }}</span>
+                                                                @endswitch
+                                                            @else
+                                                                --
+                                                            @endif
+                                                        </td>
+                                                        <td>
                                                             {{ $item->created_at ? Carbon::parse($item->created_at)->format('d-M-Y') : '--' }}
                                                         </td>
                                                         <td>
                                                             @if ($user && $user->hasPermission('Update Assigned Docs to Advocate'))
+                                                            @if($item->status==1)
                                                                 <button class="btn btn-primary btn-sm edit-doc-btn"
                                                                     title="Edit Document Assignment"
                                                                     data-bs-toggle="modal"
@@ -989,8 +1015,7 @@
                                                                     data-id="{{ $item->id }}">
                                                                     <i class="fas fa-edit"></i> Edit
                                                                 </button>
-                                                            @endif
-                                                            @if ($user && $user->hasPermission('Delete Assigned Docs to Advocate'))
+                                                        
                                                                 <form
                                                                     action="{{ route('documentAdvocateAssignment.destroy', $item->id) }}"
                                                                     method="POST" style="display:inline-block;">
@@ -998,15 +1023,19 @@
                                                                     @method('DELETE')
                                                                     <button type="submit"
                                                                         class="btn btn-danger btn-sm"
-                                                                        onclick="return confirm('Are you sure you want to delete this assignment?');">
-                                                                        <i class="fas fa-trash"></i> Delete
+                                                                        onclick="return confirm('Are you sure you want to disable this assignment?');">
+                                                                        <i class="fas fa-trash"></i> Disable
                                                                     </button>
-                                                                </form>
+                                                                </form>   
+                                                                @else
+                                                                <button type="button" class="btn btn-primary btn-sm  " data-bs-container="body" data-bs-toggle="popover"
+                                                                data-bs-placement="top"
+                                                                data-bs-content="The assigned document is already inactive, due to \ edit option is no more avaiable."><i class="fas fa-info-circle"></i></button>
+                                                                @endif
                                                             @endif
                                                             @if (
                                                                 $user &&
-                                                                    !$user->hasPermission('Delete Assigned Docs to Advocate') &&
-                                                                    !$user->hasPermission('Update Assigned Docs to Advocate'))
+                                                                    !$user->hasPermission('Delete Assigned Docs to Advocate') )
                                                                 --
                                                             @endif
                                                         </td>
@@ -1065,28 +1094,36 @@
                                                         <td>{{ date('H:i:s d/M/Y ', strtotime($item->updated_at)) }}
 
                                                         <td>
-                                                            @if ($user && $user->hasPermission('Update Document Logs'))
+                                                            {{-- @if ($user && $user->hasPermission('Update Document Logs'))
                                                                 <button
                                                                     class="btn btn-primary btn-sm edit-transaction-btn"
                                                                     data-id="{{ $item->id }}"> <i
                                                                         class="fas fa-edit"></i> Edit</button>
-                                                            @endif
-                                                            @if ($user && $user->hasPermission('Delete Document Logs'))
+                                                            @endif --}}
+                                                            @if ($user && $user->hasPermission('Update Document Logs'))
+                                                            @if ($item->transaction_type == 'taken')
                                                                 <form
-                                                                    action="{{ route('documentTransaction.destroy', $item->id) }}"
+                                                                    action="{{ route('documentTransaction.update', $item->id) }}"
                                                                     method="POST" style="display:inline-block;">
                                                                     @csrf
-                                                                    @method('DELETE')
+                                                                    @method('PUT')
+                                                                    <input type="hidden" name="transaction_type"
+                                                                        value="returned">
                                                                     <button type="submit"
-                                                                        class="btn btn-danger btn-sm"
-                                                                        onclick="return confirm('Are you sure you want to delete this document log?');">
-                                                                        <i class="fas fa-trash"></i> Delete
+                                                                        class="btn btn-warning btn-sm"
+                                                                        onclick="return confirm('Are you sure you want to settle this transaction?');">
+                                                                        <i class="fas fa-check"></i> Settle
                                                                     </button>
                                                                 </form>
+                                                            @else
+                                                                <button type="submit" class="btn btn-success btn-sm">
+                                                                    <i class="fas fa-check"></i> Settled
+                                                                </button>
                                                             @endif
-                                                            @if ($user && !$user->hasPermission('Update Document Logs') && !$user->hasPermission('Delete Document Logs'))
-                                                                --
+
                                                             @endif
+                                                         
+                                                         
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -1208,12 +1245,11 @@
                     @csrf
                     <input type="hidden" value="{{ $document_id }}" name="doc_id">
 
-
                     <div class="mb-3">
-                        <label for="transaction_type" class="form-label">Transaction Type</label>
+                        <label for="transaction_type" class="form-label">Transaction Type <span class="text-danger">*</span></label>
                         <select class="form-control" id="transaction_type" name="transaction_type">
-                            <option value="taken">Taken</option>
-                            <option value="returned">Returned</option>
+                            <option value="taken" selected>Taken</option>
+                            <option value="returned" disabled>Returned (Disabled)</option>
                         </select>
                     </div>
 
@@ -1222,9 +1258,18 @@
                         <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary float-right">Save</button>
                 </form>
+
+                <div class="alert alert-info mt-3" role="alert">
+                 ~   By default, a document needs to be taken. You can settle it later by updating the transaction type
+                    to "Returned".
+                </div>
+                <div class="alert alert-info mt-3" role="alert">
+                 ~   Document cant store transaction until an existing document is not settled.
+                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -1275,7 +1320,7 @@
                 console.log('Document ID:', docId);
                 document.getElementById('document_id').value = docId;
                 console.log('Hidden input value:', document.getElementById('document_id')
-                .value); // Debug log
+                    .value); // Debug log
                 document.getElementById('documentTransactionForm').reset();
                 document.getElementById('documentTransactionForm').action =
                     '{{ url('/document-transactions') }}';
@@ -1347,7 +1392,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <label for="advocate_id" class="form-label">Select Advocate</label>
+                                    <label for="advocate_id" class="form-label">Select Advocate <span class="text-danger">*</span></label>
                                     <select class="form-control" id="advocate_id" name="advocate_id" required>
                                         <!-- Assuming you have an array of advocates -->
                                         @foreach ($advocates as $advocate)
@@ -1429,8 +1474,7 @@
                             <div class="col-4">
                                 <div class="mb-3">
                                     <label for="submission_deadline" class="form-label">Case Result</label>
-                                    <input type="text" class="form-control" id="case_result"
-                                        name="case_result">
+                                    <input type="text" class="form-control" id="case_result" name="case_result">
                                 </div>
                             </div>
 
@@ -1540,7 +1584,7 @@
                                     name="defendant_name">
                             </div>
                         </div>
-                      <div class="col-4">
+                        <div class="col-4">
                             <div class="mb-3">
                                 <label for="edit_urgency_level" class="form-label">Priority Level</label>
                                 <select class="form-control" id="edit_urgency_level" name="urgency_level">
@@ -1560,8 +1604,7 @@
                         <div class="col-4">
                             <div class="mb-3">
                                 <label for="edit_submission_deadline" class="form-label">Case Result</label>
-                                <input type="text" class="form-control" id="edit_case_result"
-                                    name="case_result">
+                                <input type="text" class="form-control" id="edit_case_result" name="case_result">
                             </div>
                         </div>
                         <div class="col-12">
@@ -1615,7 +1658,8 @@
                     .plantiff_name;
                 document.getElementById('edit_defendant_name').value = assignment
                     .defendant_name;
-                    document.getElementById('edit_urgency_level').value = assignment.urgency_level.toLowerCase();
+                document.getElementById('edit_urgency_level').value = assignment
+                    .urgency_level.toLowerCase();
                 document.getElementById('edit_submission_deadline').value = assignment
                     .submission_deadline;
                 document.getElementById('edit_notes').value = assignment.notes;
@@ -1814,9 +1858,9 @@
     /*iframe,*/
     /*img {*/
     /*    width: 100%;*/
-        /* Ensures content fills the wrapper */
+    /* Ensures content fills the wrapper */
     /*    height: auto;*/
-        /* Maintains aspect ratio for images */
+    /* Maintains aspect ratio for images */
     /*}*/
 </style>
 {{-- split window javascript --}}

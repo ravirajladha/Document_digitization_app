@@ -24,6 +24,8 @@
                                 $user->hasPermission('View Assigned Documents') ||
                                 $user->hasPermission('View Bulk Upload') ||
                                 $user->hasPermission('View Profile') ||
+                                $user->hasPermission('View Document Logs') ||
+                                $user->hasPermission('View Uploaded PDF') ||
                                 $user->hasPermission('View Document Types ')))
                         <li>
                             <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
@@ -46,13 +48,15 @@
                                 @if ($user && $user->hasPermission('View Document Types'))
                                     <li><a href="{{ url('/') }}/document_type">Document Type</a></li>
                                 @endif
+       
+
+                                @if ($user && $user->hasPermission('View Document Logs'))
+                                    <li><a href="{{ url('/') }}/document-transactions">Document Logs</a></li>
+                                @endif
                                 @if ($user && $user->hasPermission('View Uploaded PDF'))
                                     <li><a href="{{ url('/') }}/view-uploaded-documents">Uploaded PDF's</a></li>
                                 @endif
-                                {{-- <li><a href="{{ url('/')}}/add_fields_first">Document Field</a></li> --}}
-                                {{-- <li><a href="{{ url('/')}}/view_doc_first">View Documents</a></li>		 --}}
-
-                                {{-- <li><a href="{{ url('/')}}/profile">Change password</a></li>		 --}}
+                       
 
                             </ul>
                         </li>
@@ -103,16 +107,33 @@
                         </a>
                     </li>
                 @endif
-                    @if ($user && $user->hasPermission('Configure'))
+                    {{-- @if ($user && $user->hasPermission('Configure'))
                         <li><a href="{{ url('/') }}/data-sets" aria-expanded="false">
-                                {{-- <i class="fas fa-scale-balanced"></i> --}}
+                       
                                 <i class="fas fa-table"></i>
                                 <span class="nav-text">Configure</span>
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
+                    @if ($user && $user->hasPermission('Configure'))
+                    <li><a  class="has-arrow " href="javascript:void()" aria-expanded="false">
+                        <i class="fas fa-table"></i>
+                        <span class="nav-text">Configure</span>
+                    </a>
 
-
+                    <ul aria-expanded="false">
+                            <li><a href="{{ url('/') }}/receiver-type">Receiver Type</a></li>
+               
+                            <li><a href="{{ url('/') }}/categories">Category</a></li>
+                  
+                     
+                            <li><a href="{{ url('/') }}/subcategories">Subcategory</a></li>
+                  
+                      
+                       
+                    </ul>
+                </li>
+@endif
 
 
                     <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
@@ -150,6 +171,8 @@
                             </li>
                         </ul>
                     </li>
+
+                 
 
 
 

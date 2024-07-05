@@ -88,6 +88,7 @@
                                                     <th scope="col">Notes </th>
                                                     <th scope="col">Submission Deadline </th>
                                                     <th scope="col">Status </th>
+                                                    <th scope="col">Created At </th>
                                                     <th scope="col">Action </th>
 
                                                 </tr>
@@ -160,11 +161,34 @@
                                                             {{ $item->submission_deadline ? Carbon::parse($item->submission_deadline)->format('d-M-Y') : '--' }}
                                                         </td>
                                                         <td>
-                                                            {{ $item->created_at ? Carbon::parse($item->created_at)->format('d-M-Y') : '--' }}
+                                                            @if(isset($item->status))
+                                                                @switch($item->status)
+                                                                    @case('1')
+                                                                        <span class="badge bg-success">Active</span>
+                                                                        @break
+                                                        
+                                                                    @case('0')
+                                                                        <span class="badge bg-warning">Inactive</span>
+                                                                        @break
+                                                        
+                                                                   
+                                                        
+                                                                    @default
+                                                                        <span>{{ $item->status }}</span>
+                                                                @endswitch
+                                                            @else
+                                                                --
+                                                            @endif
                                                         </td>
                                                         <td>
+                                                            {{ $item->created_at ? Carbon::parse($item->created_at)->format('d-M-Y') : '--' }}
+                                                        </td>
+
+                                                        <td>
                                                             <div class="d-flex">
+                                                              
                                                             @if ($user && $user->hasPermission('Update Assigned Docs to Advocate'))
+                                                            @if($item->status==1)
                                                                 <button class="btn btn-primary btn-sm edit-doc-btn"
                                                                     title="Edit Document Assignment"
                                                                     data-bs-toggle="modal"
@@ -172,23 +196,27 @@
                                                                     data-id="{{ $item->id }}">
                                                                     <i class="fas fa-edit"></i> Edit
                                                                 </button>
-                                                            @endif
-                                                            @if ($user && $user->hasPermission('Delete Assigned Docs to Advocate'))
+                                                            
+                                                         
                                                                 <form
                                                                     action="{{ route('documentAdvocateAssignment.destroy', $item->id) }}"
                                                                     method="POST" style="display:inline-block;">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <button type="submit" class="btn btn-danger btn-sm"
-                                                                        onclick="return confirm('Are you sure you want to delete this assignment?');">
-                                                                        <i class="fas fa-trash"></i> Delete
+                                                                        onclick="return confirm('Are you sure you want to disable this assignment?');">
+                                                                        <i class="fas fa-trash"></i> Disable
                                                                     </button>
                                                                 </form>
+                                                                @else
+                                                                <button type="button" class="btn btn-primary btn-sm  " data-bs-container="body" data-bs-toggle="popover"
+                                                                data-bs-placement="top"
+                                                                data-bs-content="The assigned document is already inactive, due to which edit option is no more avaiable."><i class="fas fa-info-circle"></i></button>
+                                                                @endif
                                                             @endif
                                                             @if (
                                                                 $user &&
-                                                                    !$user->hasPermission('Update Assigned Docs to Advocate') &&
-                                                                    !$user->hasPermission('Delete Assigned Docs to Advocate'))
+                                                                    !$user->hasPermission('Update Assigned Docs to Advocate'))
                                                                 --
                                                             @endif
                                                             </div>

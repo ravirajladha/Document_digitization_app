@@ -240,6 +240,58 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        {{-- <select class="form-select form-control" id="single-select-abctest3"
+                                        name="state" aria-label="State select">
+                                        <option value="" selected>Select State</option>
+                                        @foreach ($states as $state)
+                                            <option value="{{ $state }}"
+                                                {{ old('state') == $state ? 'selected' : '' }}>
+                                                {{ $state }}
+                                            </option>
+                                        @endforeach
+                                    </select> --}}
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label"> Status </label>
+                                            <select class="form-select form-control" id="single-select-abc11"
+                                                name="doc_status">
+                                                <option selected disabled>Select Document Status</option>
+                                                <option value="0"
+                                                    {{ collect(old('doc_status'))->contains('0') ? 'selected' : '' }}>
+                                                    Pending
+                                                </option>
+                                                <option value="1"
+                                                    {{ collect(old('doc_status'))->contains('1') ? 'selected' : '' }}>
+                                                    Approve
+                                                </option>
+                                                <option value="2"
+                                                    {{ collect(old('doc_status'))->contains('2') ? 'selected' : '' }}>
+                                                    Hold
+                                                </option>
+                                                <option value="3"
+                                                    {{ collect(old('doc_status'))->contains('3') ? 'selected' : '' }}>
+                                                    Reviewer Feedback
+                                                </option>
+
+
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label class="form-label"> Document Logs </label>
+                                            <select class="form-select form-control" id="single-select-abc12"
+                                                name="logs">
+                                                <option selected disabled>Select Document Logs</option>
+
+                                                <option value="taken"
+                                                    {{ collect(old('logs'))->contains('taken') ? 'selected' : '' }}>
+                                                    Taken
+                                                </option>
+                                                <option value="returned"
+                                                    {{ collect(old('logs'))->contains('returned') ? 'selected' : '' }}>
+                                                    Returned
+                                                </option>
+
+                                            </select>
+                                        </div>
                                     </div>
 
 
@@ -484,6 +536,18 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
 
     $(".single-select-abc10-placeholder").select2({
         placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc11").select2();
+
+    $(".single-select-abc11-placeholder").select2({
+        placeholder: "Select a doc log",
+        allowClear: true
+    });
+    $("#single-select-abc12").select2();
+
+    $(".single-select-abc12-placeholder").select2({
+        placeholder: "Select the doc status",
         allowClear: true
     });
     // $("#single-select-abctest3").select2();

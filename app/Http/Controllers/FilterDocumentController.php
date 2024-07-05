@@ -39,6 +39,8 @@ class FilterDocumentController extends Controller
         $locker_id = $request->input('locker_id');
         $category_id = $request->input('categories');
         $subcategory_id = $request->input('subcategories');
+        $doc_status = $request->input('doc_status');
+        $logs = $request->input('logs');
         $request->flash();
 
         //     $categories = Master_doc_data::pluck('category')
@@ -166,12 +168,12 @@ class FilterDocumentController extends Controller
                 ->where('doc_identifier_id', '!=', '')
                 ->distinct()
                 ->pluck('doc_identifier_id');
-        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit', 'court_case_no', 'doc_no', 'survey_no', 'category','doc_name']);
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit', 'court_case_no', 'doc_no', 'survey_no', 'category','doc_name','doc_status', 'logs']);
         $filterSet = count(array_filter($filters, function ($value) {
             return !is_null($value) && $value !== '';
         }));
 
-        $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit, $court_case_no, $doc_no, $survey_no, $category_id,$subcategory_id,$doc_name,$doc_identifier_id, $locker_id,10);
+        $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit, $court_case_no, $doc_no, $survey_no, $category_id,$subcategory_id,$doc_name,$doc_identifier_id, $locker_id,$doc_status,$logs,10);
         // dd($survey_nos);
         $data = [
             'documents' => $documents,

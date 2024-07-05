@@ -108,13 +108,13 @@ class PermissionSeeder extends Seeder
              ['name' => 'documents.assign.toAdvocate', 'display_name' => 'Add Assigned Docs to Advocate', 'action' => 1],
              ['name' => 'advocate.documents.assigned.show', 'display_name' => 'View Assigned Docs to Advocate', 'action' => 2],
              ['name' => 'documentAdvocateAssignment.update', 'display_name' => 'Update Assigned Docs to Advocate', 'action' => 4],
-             ['name' => 'documentAdvocateAssignment.destroy', 'display_name' => 'Delete Assigned Docs to Advocate', 'action' => 5],
+            //  ['name' => 'documentAdvocateAssignment.destroy', 'display_name' => 'Delete Assigned Docs to Advocate', 'action' => 5],
  
              //document transaction logs
              ['name' => 'storeTransaction', 'display_name' => 'Add Document Logs', 'action' => 1],
              ['name' => 'documentTransaction.show', 'display_name' => 'View Document Logs', 'action' => 2],
-             ['name' => 'updateTransaction', 'display_name' => 'Update Document Logs', 'action' => 3],
-             ['name' => 'destroyTransaction', 'display_name' => 'Delete Document Logs', 'action' => 5],
+             ['name' => 'documentTransaction.update', 'display_name' => 'Update Document Logs', 'action' => 3],
+           
         ];
 
    

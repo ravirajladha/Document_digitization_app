@@ -150,7 +150,7 @@ public function showUserAssignedDocument($receiverId)
         // Generate a unique token with the current timestamp
         $timestamp = Carbon::now()->timestamp;
         $token = Str::random(40) . '_' . $timestamp;
-        $expiresAt = Carbon::now()->addHours(24);
+        $expiresAt = Carbon::now()->addHours(48);
         // $receiverId = $validatedData['receiver_id'];
         // Create a new document assignment entry
         $otp = rand(1000, 9999);
@@ -324,7 +324,7 @@ public function showUserAssignedDocument($receiverId)
         else {
             $newOtp = rand(1000, 9999); // Generate a new OTP
             $assignment->otp = $newOtp;
-            $assignment->expires_at = Carbon::now()->addHours(24); // Set new expiry
+            $assignment->expires_at = Carbon::now()->addHours(48); // Set new expiry
             $assignment->status = true; // Set status to active
             $assignment->save();
 
@@ -339,7 +339,7 @@ public function showUserAssignedDocument($receiverId)
             $this->sendAssignmentEmail($receiverEmail, $verificationUrl, $expiresAt, $receiverName, $newOtp);
 
             session()->flash('toastr', ['type' => 'success', 'message' => 'Document assignment reactivated with a new OTP and extended expiry time.']);
-            return redirect()->back()->with('success', 'Document assignment reactivated with a new 24-hour expiry.');
+            return redirect()->back()->with('success', 'Document assignment reactivated with a new 48-hour expiry.');
         }
     }
 

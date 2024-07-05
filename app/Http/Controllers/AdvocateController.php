@@ -284,12 +284,16 @@ public function destroy($id)
         return redirect()->back()->with('error', 'Document assignment not found.');
     }
 
-    $assignment->delete();
-    return redirect()->back()->with('success', 'Assignment deleted successfully.');
+    // Update the status to 0 instead of deleting
+    $assignment->status = 0;
+    $assignment->save();
+
+    return redirect()->back()->with('success', 'Assignment status updated successfully.');
 
     // return redirect()->route('advocate.documents.assigned.show', ['advocate_id' => $assignment->advocate_id])
-    //                  ->with('success', 'Assignment deleted successfully.');
+    //                  ->with('success', 'Assignment status updated successfully.');
 }
+
 public function bulkUploadAdvocateAssignDocument(Request $request)
 {
     $request->validate([

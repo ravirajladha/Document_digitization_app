@@ -12,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class FilterDocumentService
 {
 
-    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null, $start_date = null, $end_date = null, $area_range_start = null, $area_range_end = null, $area_unit = null, $court_case_no = null, $doc_no = null, $survey_no = null, $category_id = null,$subcategory_id = null,$doc_name = null,$doc_identifier_id = null,$locker_id = null,$perPage = 10):  LengthAwarePaginator
+    public function filterDocuments($typeId = null, $state = null, $district = null, $village = null, $start_date = null, $end_date = null, $area_range_start = null, $area_range_end = null, $area_unit = null, $court_case_no = null, $doc_no = null, $survey_no = null, $category_id = null,$subcategory_id = null,$doc_name = null,$doc_identifier_id = null,$locker_id = null,$doc_status = null,$logs= null,$perPage = 10):  LengthAwarePaginator
     {
         // dd($category_id);
         $query = Master_doc_data::query();
@@ -59,9 +59,16 @@ class FilterDocumentService
             });
         }
 
-
+// dd($doc_status);
         if ($doc_no) {
             $query->where('doc_no',  $doc_no);
+        }
+        if ($doc_status!=null) {
+            $query->where('status_id', $doc_status);
+        }
+        // dd($logs);
+        if ($logs) {
+            $query->where('transaction_type',  $logs);
         }
 
         if ($doc_name) {

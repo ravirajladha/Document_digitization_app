@@ -87,8 +87,8 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('documents.basic_detail.edit');
     Route::post('/update_document', [DocumentController::class, 'update_document'])
         ->name('documents.updateStatus');
-    Route::post('/update_document', [DocumentController::class, 'update_document'])
-        ->name('documents.updateStatus');
+    // Route::post('/update_document', [DocumentController::class, 'update_document'])
+    //     ->name('documents.updateStatus');
     Route::put('/update-status-message/{log}', [DocumentController::class, 'updateStatusMessage'])
         ->name('documents.statusMessage');
     // Route::put('/update-status-message/{log}', 'DocumentController@updateStatusMessage')->name('update.statusMessage');
@@ -205,8 +205,10 @@ Route::put('/subcategories', [DataSetController::class, 'updateSubcategory'])->n
     //document transaction logs
     Route::get('/document-transactions/{id}', [DocumentController::class, 'getDocumentTransactionById'])->name('documentTransaction.show');
     Route::post('/document-transactions', [DocumentController::class, 'storeTransaction']);
-    Route::put('/document-transactions/{id}', [DocumentController::class, 'updateTransaction']);
-    Route::delete('/document-transactions/{id}', [DocumentController::class, 'destroyTransaction'])->name('documentTransaction.destroy');
+    // Route::put('/document-transactions/{id}', [DocumentController::class, 'updateTransaction']);
+    // Route::delete('/document-transactions/{id}', [DocumentController::class, 'destroyTransaction'])->name('documentTransaction.destroy');
+    Route::put('/document-transactions/{id}', [DocumentController::class, 'updateTransaction'])->name('documentTransaction.update');
+    Route::get('/document-transactions', [DocumentController::class, 'showDocumentTransactions'])->name('document.transactions');
 
     // Route::get('/document-transactions/{id}/edit', [AdvocateController::class, 'getDocumentTransactionById'])->name('getDocumentTransactionByIdAPI.edit');
 

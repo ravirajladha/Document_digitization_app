@@ -1,5 +1,5 @@
 <x-app-layout>
-
+{{-- the page was not used for now, as before the page was connected to show the receiver types, categories, and subcategories containing inside congifure of the project. Now, it was given directly in the navbar. --}}
 
     <x-header />
     <x-sidebar />

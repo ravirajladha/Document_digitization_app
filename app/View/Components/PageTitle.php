@@ -69,6 +69,9 @@ class PageTitle extends Component
             case 'edit_document_basic_detail':
                 $this->pageName = 'Update Document Details';
                 break;
+            case 'document.transactions':
+                $this->pageName = 'View Document Logs';
+                break;
             case 'configure':
                 $this->pageName = 'Configure';
                 break;

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Response;
-use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog, Advocate_documents, Advocate, Document_transaction,Category,Sold_land};
+use App\Models\{Receiver, Receiver_type, Master_doc_type, Master_doc_data, Table_metadata, Document_assignment, Compliance, Set, State, DocumentStatusLog, Advocate_documents, Advocate, Document_transaction, Category, Sold_land};
 
 class DocumentController extends Controller
 {
@@ -71,7 +71,7 @@ class DocumentController extends Controller
         $sets = Set::get();
         $states = State::all();
         $categories = Category::with('subcategories')->get();
-        return view('pages.documents.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states,'categories'=> $categories]);
+        return view('pages.documents.add_document_first', ['doc_type' => $doc_type, 'sets' => $sets, 'states' => $states, 'categories' => $categories]);
     }
 
     public function documentCreationContinue(Request $req)
@@ -172,10 +172,10 @@ class DocumentController extends Controller
             return redirect()->back()->withErrors(['error' => 'Document not found']);
         }
 
-        if ($document->status == 1) {
-            // Document is already approved, return with an error message
-            return redirect()->back()->withErrors(['error' => 'Document is already approved']);
-        }
+        // if ($document->status == 1) {
+        //     // Document is already approved, return with an error message
+        //     return redirect()->back()->withErrors(['error' => 'Document is already approved']);
+        // }
 
         // Prepare data for updating the individual document table
         $updateData = ['status' => $status];
@@ -546,10 +546,10 @@ class DocumentController extends Controller
         // Proceed if document exists and status_id is not 1
         $states = State::all();
         $sets = Set::all();
- // Split comma-separated IDs into arrays
- $selectedCategories = explode(',', $document->category_id);
- $selectedSubcategories = explode(',', $document->subcategory_id);
-//  dd($selectedCategories, $selectedSubcategories);
+        // Split comma-separated IDs into arrays
+        $selectedCategories = explode(',', $document->category_id);
+        $selectedSubcategories = explode(',', $document->subcategory_id);
+        //  dd($selectedCategories, $selectedSubcategories);
         return view('pages.documents.edit_document_first', [
             'doc_type' => $doc_type,
             'document' => $document,
@@ -580,23 +580,23 @@ class DocumentController extends Controller
             ->select('document_status_logs.*', 'users.name as creator_name')
             ->get();
 
-              // Fetch category and subcategory names
-    $categoryNames = [];
-    $subcategoryNames = [];
+        // Fetch category and subcategory names
+        $categoryNames = [];
+        $subcategoryNames = [];
 
-    if (!empty($get_document_master_data->category_id)) {
-        $categoryIds = explode(',', $get_document_master_data->category_id);
-        $categoryNames = DB::table('categories')
-            ->whereIn('id', $categoryIds)
-            ->pluck('name', 'id');
-    }
+        if (!empty($get_document_master_data->category_id)) {
+            $categoryIds = explode(',', $get_document_master_data->category_id);
+            $categoryNames = DB::table('categories')
+                ->whereIn('id', $categoryIds)
+                ->pluck('name', 'id');
+        }
 
-    if (!empty($get_document_master_data->subcategory_id)) {
-        $subcategoryIds = explode(',', $get_document_master_data->subcategory_id);
-        $subcategoryNames = DB::table('subcategories')
-            ->whereIn('id', $subcategoryIds)
-            ->pluck('name', 'id');
-    }
+        if (!empty($get_document_master_data->subcategory_id)) {
+            $subcategoryIds = explode(',', $get_document_master_data->subcategory_id);
+            $subcategoryNames = DB::table('subcategories')
+                ->whereIn('id', $subcategoryIds)
+                ->pluck('name', 'id');
+        }
         // dd($get_document_logs);
         // Since SQL stores set_id as text, ensure the IDs are cast to string if they are not already
         $set_ids = json_decode($get_document_master_data->set_id, true) ?? [];
@@ -637,7 +637,7 @@ class DocumentController extends Controller
         $documentTransactions = Document_transaction::where('doc_id', $document->doc_id)
             ->with('creator') // Eager load the creator relationship
             ->get();
-// dd($categoryNames, $subcategoryNames);
+        // dd($categoryNames, $subcategoryNames);
         // dd($master_doc_type->id);
         return view('pages.documents.review_doc', [
             'columnMetadata' => $columnMetadata,
@@ -751,28 +751,35 @@ class DocumentController extends Controller
         Log::info("asdding the transaction has been", ['data', $request->all()]);
         $request->validate([
             'doc_id' => 'required|integer',
-
             'transaction_type' => 'required|in:taken,returned',
             'notes' => 'nullable|string',
         ]);
 
-        //         $documentTypeName = DB::table('master_doc_datas')
-        //         ->where('id', $request->doc_id)
-        //         ->value('document_type_name');
-        // dd($documentTypeName);
+        // Check for existing transactions with the same doc_id that are not returned
+        $existingTransaction = Document_transaction::where('doc_id', $request->doc_id)
+            ->where('transaction_type', '!=', 'returned')
+            ->first();
+        if ($existingTransaction) {
+            // Return response indicating the document needs to be settled first
+            session()->flash('toastr', ['type' => 'error', 'message' => 'A document log already exists that is not returned. Please settle the previous transaction first.']);
+            return redirect()->back()->withErrors('A document log already exists that is not returned. Please settle the previous transaction first.');
+        }
+
         $transaction = Document_transaction::create([
             'doc_id' => $request->doc_id,
             'created_by' => Auth::user()->id,
             'transaction_type' => $request->transaction_type,
             'notes' => $request->notes,
         ]);
-        // return redirect()->route('documents.review.detail', ['table' => 'master_doc_data', 'id' => $request->doc_id])
-        // ->with('success', 'Transaction created successfully. Document Type: ' . $documentTypeName);
+        $masterDocData = Master_doc_data::where('id', $request->doc_id)->first();
+        if ($masterDocData) {
+            $masterDocData->transaction_type = $request->transaction_type;
+            $masterDocData->save();
+        }
         session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction created successfully']);
 
         return redirect()->back()->with('success', 'Transaction created successfully.');
     }
-
     public function updateTransaction(Request $request, $id)
     {
         $request->validate([
@@ -785,18 +792,41 @@ class DocumentController extends Controller
             'transaction_type' => $request->transaction_type,
             'notes' => $request->notes,
         ]);
+          // Update the transaction_type in the master_doc_data table
+    $masterDocData = Master_doc_data::where('id', $transaction->doc_id)->first();
+    if ($masterDocData) {
+        $masterDocData->transaction_type = $request->transaction_type;
+        $masterDocData->save();
+    }
         session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction updated successfully']);
 
         return redirect()->back()->with('success', 'Transaction updated successfully.');
     }
 
-    public function destroyTransaction($id)
-    {
-        $transaction = Document_transaction::findOrFail($id);
-        $transaction->delete();
-        session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction deleted successfully']);
-        return redirect()->back()->with('success', 'Transaction deleted successfully.');
-    }
+    // public function updateTransaction(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'transaction_type' => 'required|in:taken,returned',
+    //         'notes' => 'nullable|string',
+    //     ]);
+
+    //     $transaction = Document_transaction::findOrFail($id);
+    //     $transaction->update([
+    //         'transaction_type' => $request->transaction_type,
+    //         'notes' => $request->notes,
+    //     ]);
+    //     session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction updated successfully']);
+
+    //     return redirect()->back()->with('success', 'Transaction updated successfully.');
+    // }
+
+    // public function destroyTransaction($id)
+    // {
+    //     $transaction = Document_transaction::findOrFail($id);
+    //     $transaction->delete();
+    //     session()->flash('toastr', ['type' => 'success', 'message' => 'Transaction deleted successfully']);
+    //     return redirect()->back()->with('success', 'Transaction deleted successfully.');
+    // }
     public function getDocumentTransactionById($id)
     {
         Log::info("edit document transaction detail", ['id' => $id]);
@@ -972,5 +1002,48 @@ class DocumentController extends Controller
             Log::error('Error fetching villages', ['error' => $e->getMessage()]);
             return Response::json(['error' => 'An error occurred while fetching villages'], 500);
         }
+    }
+
+    // $documentTransactions = Document_transaction::where('doc_id', $document->doc_id)
+    // ->with('creator') // Eager load the creator relationship
+    // ->get();
+    // public function showDocumentTransactionLogs()
+    // {
+    //     $data = Document_transaction::withCount('documentAssignments') // Add the count of document assignments
+    //         ->orderBy('created_at', 'desc')
+    //         ->with('creator')
+    //         ->get();
+
+    //     return view('pages.documents.document-logs', [
+    //         'data' => $data,
+    //     ]);
+    // }
+
+    public function showDocumentTransactions()
+    {
+        Log::info(["document transaction", []]);
+
+        $documentTransactions = Document_transaction::with('creator')->orderBy('created_at', 'desc')->paginate(10);
+        // dd($documentTransactions);
+        foreach ($documentTransactions as $transaction) {
+            // Fetch the document type name dynamically based on the doc_id
+            $masterDocData = Master_doc_data::where('id', $transaction->doc_id)->first();
+
+            if ($masterDocData) {
+                // Build the table name dynamically
+                $transaction->document_name = $masterDocData->name;
+                $transaction->document_type_name = $masterDocData->document_type_name;
+                $childDocument = DB::table($masterDocData->document_type_name)
+                    ->where('doc_id', $transaction->doc_id)
+                    ->first();
+
+                if ($childDocument) {
+                    $transaction->child_id = $childDocument->id;
+                }
+            }
+        }
+
+        Log::info(["document transaction", $documentTransactions]);
+        return view('pages.documents.document-logs', compact('documentTransactions'));
     }
 }

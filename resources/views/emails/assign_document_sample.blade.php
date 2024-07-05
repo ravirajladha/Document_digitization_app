@@ -81,7 +81,7 @@
                     style="padding:1px 24px 22px; color:#606060; font-size:14px; font-family:  Arial; line-height: 1.5;">
                     You have requested to access a document provided by Sri Ahobila Mutt.<br />
                     A One-Time Password (OTP) has been generated. This OTP is time and case sensitive and valid time
-                    sensitive and valid for 24 hours.<br>
+                    sensitive and valid for 48 hours.<br>
                     {{-- This OTP is time sensitive and valid for 10 minutes. --}}
                 </td>
 

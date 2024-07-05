@@ -242,7 +242,7 @@
                                                                 <th>Read</th>
                                                                 <th>Update</th>
                                                                 <th>Update Status</th>
-                                                                <th>Delete</th>
+                                                           
                                                             </tr>
                                                             <tr>
 
@@ -270,7 +270,7 @@
                                                                     @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Status') @endphp
 
                                                                 </td>
-                                                                <td></td>
+                                                           
                                                             </tr>
 
                                                             <tr>
@@ -287,7 +287,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                <td></td>
+                                                        
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Document Field</td>
@@ -306,7 +306,7 @@
 
                                                                 </td>
                                                                 <td></td>
-                                                                <td></td>
+                                                           
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Bulk Upload</td>
@@ -318,7 +318,8 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                <td></td>
+                                                           
+                                                            
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Sold Land</td>
@@ -328,7 +329,7 @@
                                                                 </td>
                                                                 <td> @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Sold Land') @endphp</td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                              
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Sets</td>
@@ -348,7 +349,7 @@
 
                                                                 </td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                               
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Receivers</td>
@@ -368,7 +369,7 @@
 
                                                                 </td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                              
                                                             </tr>
                                                             
                                                             <tr>
@@ -389,7 +390,7 @@
                                                                     @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Document Assignment Status') @endphp
 
                                                                 </td>
-                                                                <td></td>
+                                                               
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Advocates</td>
@@ -409,7 +410,7 @@
 
                                                                 </td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                               
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Assign Docs to Advocates</td>
@@ -429,11 +430,7 @@
 
                                                                 </td>
                                                                 <td></td>
-                                                                <td>
-
-                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Delete Assigned Docs to Advocate') @endphp
-
-                                                                </td>
+                                                               
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Compliances</td>
@@ -458,7 +455,7 @@
                                                                     @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Update Compliances Status') @endphp
 
                                                                 </td>
-                                                                <td></td>
+                                                             
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Document Logs</td>
@@ -480,9 +477,7 @@
 
                                                                 <td>
                                                                 </td>
-                                                                <td>
-                                                                    @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Delete Document Logs') @endphp
-                                                                </td>
+                                                               
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Configure</td>
@@ -494,7 +489,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                <td></td>
+                                                      
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">Profile</td>
@@ -510,7 +505,7 @@
 
                                                                 </td>
                                                                 <td></td>
-                                                                <td></td>
+                                                        
                                                             </tr>
                                                            
                                                             <tr>
@@ -523,7 +518,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                              
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">View Documents By Document Type
@@ -536,7 +531,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                           
                                                             </tr>
 
                                                             <tr>
@@ -548,7 +543,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                       
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">View Uploaded PDF's</td>
@@ -565,7 +560,7 @@
                                                                     {{-- @php generatePermissionCheckbox($userPermissionsDisplayNames, 'Delete PDF') @endphp --}}
                                                                 </td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                          
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">View Compliances Notification
@@ -577,7 +572,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                               
                                                             </tr>
                                                             <tr>
                                                                 <td class="module-name">View Receipients Notification
@@ -589,7 +584,7 @@
                                                                 </td>
                                                                 <td></td>
                                                                 <td></td>
-                                                                  <td></td>
+                                                              
                                                             </tr>
                                                           
 
