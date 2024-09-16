@@ -34,9 +34,10 @@
                                         class="fal fa-angle-down"></i></a>
                             </div>
                         </div>
+                        {{-- {{ dd($request->all()) }} --}}
                         <div class="cm-content-body  form excerpt">
                             <div class="card-body">
-                                <form action="{{ url('/') }}/filter-document" method="GET">
+                                <form action="{{ url('/') }}/filter-document" method="POST">
                                     @csrf
                                     <div class="row">
 
@@ -47,7 +48,7 @@
                                                 <option value="" selected>Select Document Type</option>
                                                 @foreach ($doc_type as $item)
                                                     <option value="{{ $item->id }}"
-                                                        {{ old('type') == $item->id ? 'selected' : '' }}>
+                                                        {{ old('type', $filters['type'] ?? '') == $item->id ? 'selected' : '' }}>
                                                         {{ ucwords(str_replace('_', ' ', $item->name)) }}
                                                     </option>
                                                 @endforeach
@@ -57,7 +58,7 @@
                                             <label class="form-label">Document Name</label>
                                             <input name="doc_name" class="form-control"
                                                 placeholder="Enter Document Name" type="text"
-                                                value="{{ old('doc_name') }}">
+                                              value="{{ old('doc_name', $filters['doc_name'] ?? '') }}">
                                         </div>
                                         <div class="mb-3 col-md-4">
                                             <label class="form-label"> State <span data-bs-container="body"
@@ -70,7 +71,7 @@
                                                 <option value="" selected>Select State</option>
                                                 @foreach ($states as $state)
                                                     <option value="{{ $state }}"
-                                                        {{ old('state') == $state ? 'selected' : '' }}>
+                                                        {{ old('state',$filters['state'] ?? '') == $state ? 'selected' : '' }}>
                                                         {{ $state }}
                                                     </option>
                                                 @endforeach
@@ -101,15 +102,16 @@
                                             <label class="form-label">Document Date (Start)</label>
                                             <div class="input-hasicon">
                                                 <input name="start_date" type="date" class="form-control  solid"
-                                                    value="{{ old('start_date') }}">
+                                                    value="{{ old('start_date', $filters['start_date'] ?? '') }}">
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
+                                      
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Document Date (End)</label>
                                             <div class="input-hasicon">
                                                 <input name="end_date" type="date" class="form-control  solid"
-                                                    value="{{ old('end_date') }}">
+                                                    value="{{ old('end_date', $filters['end_date'] ?? '') }}">
                                                 <div class="icon"><i class="far fa-calendar"></i></div>
                                             </div>
                                         </div>
@@ -118,58 +120,54 @@
                                             <label class="form-label">Minimum Area Size</label>
                                             <input name="area_range_start" class="form-control"
                                                 placeholder="Enter Minimum Area Size" type="number"
-                                                value="{{ old('area_range_start') }}">
+                                                value="{{ old('area_range_start', $filters['area_range_start'] ?? '') }}">
                                         </div>
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Maximum Area Size</label>
                                             <input name="area_range_end" class="form-control"
                                                 placeholder="Enter Maximum Area Size" type="number"
-                                                value="{{ old('area_range_end') }}">
+                                                value="{{ old('area_range_end', $filters['area_range_end'] ?? '' ) }}">
                                         </div>
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Select Area Unit (Optional)</label>
                                             <select class="form-control" id="area-unit-dropdown" name="area_unit">
                                                 <option value="">Select Unit</option>
-                                                <option value="Acres"
-                                                    {{ request()->input('area_unit') == 'Acres' ? 'selected' : '' }}>
-                                                    Acres and Cents</option>
-                                                <option value="Square Feet"
-                                                    {{ request()->input('area_unit') == 'Square Feet' ? 'selected' : '' }}>
-                                                    Square Feet</option>
+                                                <option value="Acres" {{ old('area_unit', $filters['area_unit'] ?? '') == 'Acres' ? 'selected' : '' }}>
+                                                    Acres and Cents
+                                                </option>
+                                                <option value="Square Feet" {{ old('area_unit', $filters['area_unit'] ?? '') == 'Square Feet' ? 'selected' : '' }}>
+                                                    Square Feet
+                                                </option>
                                             </select>
                                         </div>
+                                        
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Court Case</label>
-                                            {{-- <input name="court_case_no" class="form-control"
-                                                placeholder="Enter Court Case Details" type="text"
-                                                value="{{ old('court_case_no') }}"> --}}
-                                            <select id="single-select-abc8" class="form-select form-control"
-                                                style="width:100%;" name="court_case_no">
-                                                <option value="" selected>Select Court Case </option>
+                                            <select id="single-select-abc8" class="form-select form-control" style="width:100%;" name="court_case_no">
+                                                <option value="" selected>Select Court Case</option>
                                                 @foreach ($courtCaseNos as $court_case_no)
-                                                    <option value="{{ $court_case_no }}"
-                                                        {{ old('court_case_no') == $court_case_no ? 'selected' : '' }}>
+                                                    <option value="{{ $court_case_no }}" {{ old('court_case_no', $filters['court_case_no'] ?? '') == $court_case_no ? 'selected' : '' }}>
                                                         {{ ucwords(str_replace('_', ' ', $court_case_no)) }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
+                                        
                                         <div class="mb-3 col-md-4 col-xl-4">
                                             <label class="form-label">Document No</label>
                                             {{-- <input name="doc_no" class="form-control"
                                                 placeholder="Enter Document Number" type="number"
                                                 value="{{ old('doc_no') }}"> --}}
 
-                                            <select id="single-select-abc6" class="form-select form-control"
-                                                style="width:100%;" name="doc_no">
-                                                <option value="" selected>Select Document No</option>
-                                                @foreach ($doc_nos as $doc_no)
-                                                    <option value="{{ $doc_no }}"
-                                                        {{ old('doc_no') == $doc_no ? 'selected' : '' }}>
-                                                        {{ ucwords(str_replace('_', ' ', $doc_no)) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                                <select id="single-select-abc6" class="form-select form-control" style="width:100%;" name="doc_no">
+                                                    <option value="" selected>Select Document No</option>
+                                                    @foreach ($doc_nos as $doc_no)
+                                                        <option value="{{ $doc_no }}" {{ old('doc_no', $filters['doc_no'] ?? '') == $doc_no ? 'selected' : '' }}>
+                                                            {{ ucwords(str_replace('_', ' ', $doc_no)) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                
 
                                         </div>
                                         <div class="mb-3 col-md-4 col-xl-4">
@@ -183,7 +181,7 @@
                                                 <option value="" selected>Select Survey No</option>
                                                 @foreach ($survey_nos as $survey_no)
                                                     <option value="{{ $survey_no }}"
-                                                        {{ old('survey_no') == $survey_no ? 'selected' : '' }}>
+                                                        {{ old('survey_no', $filters['survey_no'] ?? '') == $survey_no ? 'selected' : '' }}>
                                                         {{ ucwords(str_replace('_', ' ', $survey_no)) }}
                                                     </option>
                                                 @endforeach
@@ -192,18 +190,17 @@
 
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="form-label"> Categories </label>
-                                            <select class="form-select form-control" id="category-select"
-                                                name="categories[]" multiple>
+                                            <label class="form-label">Categories</label>
+                                            <select class="form-select form-control" id="category-select" name="categories[]" multiple>
                                                 <option selected disabled>Select Categories</option>
                                                 @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}"
-                                                        {{ collect(old('categories'))->contains($category->id) ? 'selected' : '' }}>
+                                                    <option value="{{ $category->id }}" {{ collect(old('categories', $filters['categories'] ?? []))->contains($category->id) ? 'selected' : '' }}>
                                                         {{ $category->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
+                                        
 
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label"> Subcategories </label>
@@ -220,7 +217,7 @@
                                                 <option selected disabled>Select Locker IDs</option>
                                                 @foreach ($lockers as $locker)
                                                     <option value="{{ $locker }}"
-                                                        {{ collect(old('locker_ids'))->contains($locker) ? 'selected' : '' }}>
+                                                        {{ collect(old('locker_ids', $filters['locker_ids'] ?? []))->contains($locker) ? 'selected' : '' }}>
                                                         {{ $locker }}
                                                     </option>
                                                 @endforeach
@@ -234,83 +231,57 @@
                                                 <option selected disabled>Select Document Identifiers</option>
                                                 @foreach ($docIdentifiers as $docIdentifier)
                                                     <option value="{{ $docIdentifier }}"
-                                                        {{ collect(old('doc_identifiers'))->contains($docIdentifier) ? 'selected' : '' }}>
+                                                        {{ collect(old('doc_identifiers' , $filters['doc_identifiers'] ?? []))->contains($docIdentifier) ? 'selected' : '' }}>
                                                         {{ $docIdentifier }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        {{-- <select class="form-select form-control" id="single-select-abctest3"
-                                        name="state" aria-label="State select">
-                                        <option value="" selected>Select State</option>
-                                        @foreach ($states as $state)
-                                            <option value="{{ $state }}"
-                                                {{ old('state') == $state ? 'selected' : '' }}>
-                                                {{ $state }}
-                                            </option>
-                                        @endforeach
-                                    </select> --}}
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label"> Status </label>
-                                            <select class="form-select form-control" id="single-select-abc11"
-                                                name="doc_status">
-                                                <option selected disabled>Select Document Status</option>
-                                                <option value="0"
-                                                    {{ collect(old('doc_status'))->contains('0') ? 'selected' : '' }}>
-                                                    Pending
-                                                </option>
-                                                <option value="1"
-                                                    {{ collect(old('doc_status'))->contains('1') ? 'selected' : '' }}>
-                                                    Approve
-                                                </option>
-                                                <option value="2"
-                                                    {{ collect(old('doc_status'))->contains('2') ? 'selected' : '' }}>
-                                                    Hold
-                                                </option>
-                                                <option value="3"
-                                                    {{ collect(old('doc_status'))->contains('3') ? 'selected' : '' }}>
-                                                    Reviewer Feedback
-                                                </option>
-
-
-                                            </select>
-                                        </div>
-                                        <div class="mb-3 col-md-6">
-                                            <label class="form-label"> Document Logs </label>
-                                            <select class="form-select form-control" id="single-select-abc12"
-                                                name="logs">
-                                                <option selected disabled>Select Document Logs</option>
-
-                                                <option value="taken"
-                                                    {{ collect(old('logs'))->contains('taken') ? 'selected' : '' }}>
-                                                    Taken
-                                                </option>
-                                                <option value="returned"
-                                                    {{ collect(old('logs'))->contains('returned') ? 'selected' : '' }}>
-                                                    Returned
-                                                </option>
-
-                                            </select>
-                                        </div>
+                                       
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Status</label>
+                                        <select class="form-select form-control" id="single-select-abc11" name="doc_status">
+                                            <option selected disabled>Select Document Status</option>
+                                            <option value="0" {{ old('doc_status', $filters['doc_status'] ?? '') == '0' ? 'selected' : '' }}>Pending</option>
+                                            <option value="1" {{ old('doc_status', $filters['doc_status'] ?? '') == '1' ? 'selected' : '' }}>Approve</option>
+                                            <option value="2" {{ old('doc_status', $filters['doc_status'] ?? '') == '2' ? 'selected' : '' }}>Hold</option>
+                                            <option value="3" {{ old('doc_status', $filters['doc_status'] ?? '') == '3' ? 'selected' : '' }}>Reviewer Feedback</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3 col-md-6">
+                                        <label class="form-label">Document Logs</label>
+                                        <select class="form-select form-control" id="single-select-abc12" name="logs">
+                                            <option selected disabled>Select Document Logs</option>
+                                            <option value="taken" {{ old('logs', $filters['logs'] ?? '') == 'taken' ? 'selected' : '' }}>Taken</option>
+                                            <option value="returned" {{ old('logs', $filters['logs'] ?? '') == 'returned' ? 'selected' : '' }}>Returned</option>
+                                        </select>
+                                    </div>
                                     </div>
 
 
                                     <div class="card-footer">
-
                                         <div class="text-end">
                                             {{-- <a href="{{ url('/') }}/filter-document" class="btn-link"><button class="btn btn-dark"><i
                                                 class="fas fa-filter"></i>&nbsp;Reset Filter</button></a> --}}
                                             <a href="{{ url('/') }}/filter-document"
                                                 class="btn btn-dark">Reset</a>
-
+                                               
                                             <button class="btn btn-secondary" type="submit"><i
                                                     class="fas fa-filter"></i>&nbsp;Filter</button>
                                         </div>
                                     </div>
-
+                                    <form method="POST" action="{{ route('documents.export') }}">
+                                        @csrf
+                                        <input type="hidden" name="filters" value="{{ json_encode($documents) }}">
+                                        <button type="submit" class="btn btn-primary">Export CSV</button>
+                                    </form>
 
                             </div>
                             </form>
+                            <!-- In your view -->
+
+
                         </div>
                     </div>
                 </div>
@@ -322,8 +293,22 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">Document</h4>
-                            <button id="exportButton" class="btn btn-primary float-end"><i
-                                    class="fas fa-file-export"></i>&nbsp;Export</button>
+                            {{-- <button id="exportButton" class="btn btn-primary float-end"><i
+                                    class="fas fa-file-export"></i>&nbsp;Export</button> --}}
+                                    {{-- <form action="{{ route('documents.export') }}" method="GET">
+                                        <button type="submit" class="btn btn-primary float-end"><i
+                                            class="fas fa-file-export"></i>&nbsp;Export to Excel</button>
+                                    </form> --}}
+                                    <!-- Hidden form for exporting data -->
+                                    {{-- <form id="export-form" action="{{ route('documents.export') }}" method="POST" style="display:none;">
+                                        @csrf
+                                        <textarea name="documents">{{ json_encode($documents->items()) }}</textarea>
+                                    </form> --}}
+                                    
+
+<!-- Export button -->
+{{-- <button onclick="document.getElementById('export-form').submit();" class="btn btn-success">Export to Excel</button> --}}
+                                    
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -434,7 +419,9 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
                                 </div> --}}
                                     <div class="row">
                                         <div class="col">
-                                            {{ $documents->links('vendor.pagination.custom') }}
+                                            {{-- {{ $documents->links('vendor.pagination.custom') }} --}}
+                                            {{ $documents->appends(request()->except('page'))->links('vendor.pagination.custom') }}
+
                                         </div>
                                     </div>
                                 </div>
@@ -558,58 +545,7 @@ $statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn
     // });
 </script>
 
-{{-- <script src="/assets/vendor/nouislider/nouislider.min.js"></script>
-<script src="/assets/js/plugins-init/nouislider-init.js"></script> --}}
-<script>
-    document.getElementById('exportButton').addEventListener('click', function() {
-        var table = document.getElementById('filter-table'); // Your table ID
-        var rows = table.querySelectorAll('tr');
-        var csv = [];
 
-        for (var i = 0; i < rows.length; i++) {
-            var row = [],
-                cols = rows[i].querySelectorAll('td, th');
-
-            for (var j = 0; j < cols.length - 1; j++) {
-                // Clean the text content from the cell and escape double quotes
-                var data = cols[j].innerText.replace(/"/g, '""');
-                data = '"' + data + '"';
-                row.push(data);
-            }
-            csv.push(row.join(','));
-        }
-
-        downloadCSV(csv.join('\n'));
-    });
-
-    function downloadCSV(csv) {
-        var csvFile;
-        var downloadLink;
-
-        // CSV file
-        csvFile = new Blob([csv], {
-            type: "text/csv"
-        });
-
-        // Download link
-        downloadLink = document.createElement("a");
-
-        // File name
-        downloadLink.download = 'export.csv';
-
-        // Create a link to the file
-        downloadLink.href = window.URL.createObjectURL(csvFile);
-
-        // Hide download link
-        downloadLink.style.display = "none";
-
-        // Add the link to DOM
-        document.body.appendChild(downloadLink);
-
-        // Click download link
-        downloadLink.click();
-    }
-</script>
 <style>
     .loader {
         border: 4px solid #f3f3f3;

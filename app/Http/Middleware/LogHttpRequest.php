@@ -11,6 +11,8 @@ class LogHttpRequest
 {
     public function handle(Request $request, Closure $next)
     {
+        // dd($request->all());
+        // dd($request);
         // Call the next middleware and store the response
         $response = $next($request);
 

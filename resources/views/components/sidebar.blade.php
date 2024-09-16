@@ -48,7 +48,7 @@
                                 @if ($user && $user->hasPermission('View Document Types'))
                                     <li><a href="{{ url('/') }}/document_type">Document Type</a></li>
                                 @endif
-       
+
 
                                 @if ($user && $user->hasPermission('View Document Logs'))
                                     <li><a href="{{ url('/') }}/document-transactions">Document Logs</a></li>
@@ -56,12 +56,12 @@
                                 @if ($user && $user->hasPermission('View Uploaded PDF'))
                                     <li><a href="{{ url('/') }}/view-uploaded-documents">Uploaded PDF's</a></li>
                                 @endif
-                       
+
 
                             </ul>
                         </li>
                     @endif
-                 
+
                     @if ($user && $user->hasPermission('View Sold Land'))
                         <li><a href="{{ url('/') }}/sold-land" aria-expanded="false">
                                 <i class="fas fa-landmark"></i>
@@ -91,8 +91,8 @@
                                 <span class="nav-text">Advocates</span>
                             </a>
                         </li>
-                        @endif
-                  
+                    @endif
+
                     @if ($user && $user->hasPermission('View Compliances'))
                         <li><a href="{{ url('/') }}/compliances" aria-expanded="false">
                                 <i class="fas fa-procedures"></i>
@@ -101,53 +101,56 @@
                         </li>
                     @endif
                     @if ($user && $user->hasPermission('View Users'))
-                    <li><a href="{{ url('/') }}/users" aria-expanded="false" disabled>
-                            <i class="fas fa-user-circle"></i>
-                            <span class="nav-text">Users</span>
-                        </a>
-                    </li>
-                @endif
-                    {{-- @if ($user && $user->hasPermission('Configure'))
-                        <li><a href="{{ url('/') }}/data-sets" aria-expanded="false">
-                       
+                        <li><a href="{{ url('/') }}/users" aria-expanded="false" disabled>
+                                <i class="fas fa-user-circle"></i>
+                                <span class="nav-text">Users</span>
+                            </a>
+                        </li>
+                    @endif
+                 
+                    @if ($user && $user->hasPermission('Configure'))
+                        <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
                                 <i class="fas fa-table"></i>
                                 <span class="nav-text">Configure</span>
                             </a>
-                        </li>
-                    @endif --}}
-                    @if ($user && $user->hasPermission('Configure'))
-                    <li><a  class="has-arrow " href="javascript:void()" aria-expanded="false">
-                        <i class="fas fa-table"></i>
-                        <span class="nav-text">Configure</span>
-                    </a>
 
-                    <ul aria-expanded="false">
-                            <li><a href="{{ url('/') }}/receiver-type">Receiver Type</a></li>
-               
-                            <li><a href="{{ url('/') }}/categories">Category</a></li>
-                  
-                     
-                            <li><a href="{{ url('/') }}/subcategories">Subcategory</a></li>
-                  
-                      
-                       
-                    </ul>
-                </li>
-@endif
+                            <ul aria-expanded="false">
+                                <li><a href="{{ url('/') }}/receiver-type">Receiver Type</a></li>
+                                <li><a href="{{ url('/') }}/categories">Category</a></li>
+                                <li><a href="{{ url('/') }}/subcategories">Subcategory</a></li>
+                            </ul>
+                        </li>
+                    @endif
+{{--only filters required  --}}
+{{-- <li><a href="{{ url('/') }}/categories">Receivers</a></li>
+<li><a href="{{ url('/') }}/subcategories">Advocates</a></li> --}}
+
+
+                 {{-- report generation --}}
+                    <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
+                            <i class="fas fa-table"></i>
+                            <span class="nav-text">Report Generation</span>
+                        </a>
+
+                        <ul aria-expanded="false">
+                            <li><a href="{{ url('/') }}/receiver-type">Documents (with child data) <span class="badge bg-warning text-dark">In Progress</span></a></li>
+                            <li><a href="{{ url('/') }}/documents-assigned-to-receivers" > Assigned Documents to Receivers <span class="badge bg-success text-dark">New</span></a></li>
+                            <li><a href="{{ url('/') }}/documents-assigned-to-advocates" >Assigned Documents to Advocates <span class="badge bg-success text-dark">New</span></a></li>
+                            <li><a href="{{ url('/') }}/subcategories">Users Work Progress <span class="badge bg-warning text-dark">In Progress</span></a></li>
+                        </ul>
+                        
+                    </li>
+{{-- compliances quartly work is pending --}}
 
 
                     <li><a class="has-arrow " href="javascript:void()" aria-expanded="false">
                             <i class="fas fa-tools"></i>
                             <span class="nav-text">Settings</span>
                         </a>
-
                         <ul aria-expanded="false">
                             @if ($user && $user->hasPermission('View Profile'))
                                 <li><a href="{{ url('/') }}/profile">Profile</a></li>
                             @endif
-                            {{-- @if ($user && $user->hasPermission('Project Settings'))
-                                <li><a href="{{ url('/') }}/project-settings/edit">Change Logo & Project Name</a></li>
-                            @endif --}}
                             @if ($user && ($user->hasPermission('Http Request Logs') || $user->hasPermission('Action Logs')))
                                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Logs</a>
                                     <ul aria-expanded="false">
@@ -170,57 +173,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-
-                 
-
-
-
-
-                    {{-- 				
-					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-						@csrf
-					</form>
-					<li><a href="" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" aria-expanded="false">
-					
-						<i class="fas fa-sign-out"></i>
-							<span class="nav-text">Logout</span>
-						</a>
-                    </li> --}}
-
-
-                    {{-- <li>
-						<a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
-							<i class="fas fa-tools"></i>
-							<span class="nav-text">Settings </span>
-						</a>
-                        <ul aria-expanded="false">
-							<li><a href="{{ url('/')}}/profile">Profile</a></li>	
-							
-							<li><a href="{{ url('/')}}/add_document_first" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>	
-							
-							<li class="nav-item dropdown notification_dropdown">
-								<a class="nav-link bell dz-theme-mode" href="javascript:void(0);">
-									<i id="icon-light" class="fas fa-sun">Day Mode</i> 
-									<i id="icon-dark" class="fas fa-moon">Night Mode</i> 
-								</a>
-							</li>
-							
-						
-						</ul>
-                    </li> --}}
-
-                    {{-- <li>
-						<a  href="javascript:void(0);" aria-expanded="false">
-						
-							&nbsp;
-						</a>
-                        <ul aria-expanded="false">
-							 <li><a href="{{ url('/')}}/document_type"></a></li>
-							
-						
-						</ul>
-                    </li> --}}
+                    </li> 
 
                 </ul>
                 <style>

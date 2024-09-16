@@ -159,6 +159,12 @@
                                                             <td>{{ $soldLands->total_sale_amount }}</td>
                                                         </tr>
                                                     @endif
+                                                    @if ($soldLands->sale_date)
+                                                        <tr>
+                                                            <th>Sale Date</th>
+                                                            <td>{{ Carbon::parse($soldLands->sale_date)->format('d-M-Y') }}
+                                                        </tr>
+                                                    @endif
 
                                                     @if ($soldLands->registration_office)
                                                         <tr>

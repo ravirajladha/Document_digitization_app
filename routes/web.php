@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController, ProjectSettingsController, AdvocateController,DataSetController};
+use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController, ProjectSettingsController, AdvocateController, DataSetController, ReportController};
 use Illuminate\Support\Facades\Route;
 
 
@@ -33,10 +33,23 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::post('/update-set', [SetController::class, 'updateSet'])->name('sets.update');
 
 
+    //reports
+    Route::get('/documents-assigned-to-receivers', [ReportController::class, 'documentsAssignedToReceivers'])->name('documentsAssignedToReceivers.index');
+    Route::get('/assignedDocumentsToReceivers/export', [ReportController::class, 'documentsAssignedToReceiversExport'])->name('assignedDocumentsToReceivers.export');
+    Route::get('/documents-assigned-to-advocates', [ReportController::class, 'documentsAssignedToAdvocates'])->name('documentsAssignedToAdvocates.index');
+    // assignedDocumentsToAdvocates
+    Route::get('/assignedDocumentsToAdvocates/export', [ReportController::class, 'documentsAssignedToAdvocatesExport'])->name('assignedDocumentsToAdvocates.export');
+    // Route::get('/assignedDocumentsToReceivers/export', [ReportController::class, 'export'])->name('assignedDocumentsToReceivers.export');
+    //in the receivers page
+    Route::get('/export-receivers', [ReceiverController::class, 'exportReceivers'])->name('receivers.export');
+    Route::get('/export-advocates', [AdvocateController::class, 'exportAdvocates'])->name('advocates.export');
+
+    Route::post('/export-documents', [FilterDocumentController::class, 'exportFilteredDocuments'])->name('documents.export');
 
     // receivers
     Route::get('/receivers', [ReceiverController::class, 'showReceivers'])
         ->name('receivers.index');
+
     Route::post('/add-receiver', [ReceiverController::class, 'addReceiver'])
         ->name('receivers.store');
     Route::post('/update-receiver', [ReceiverController::class, 'updateReceiver'])
@@ -89,22 +102,21 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
         ->name('documents.updateStatus');
     // Route::post('/update_document', [DocumentController::class, 'update_document'])
     //     ->name('documents.updateStatus');
-    Route::put('/update-status-message/{log}', [DocumentController::class, 'updateStatusMessage'])
-        ->name('documents.statusMessage');
+    Route::put('/update-status-message/{log}', [DocumentController::class, 'updateStatusMessage'])->name('documents.statusMessage');
     // Route::put('/update-status-message/{log}', 'DocumentController@updateStatusMessage')->name('update.statusMessage');
 
     //view documents
-    Route::get('/filter-document', [FilterDocumentController::class, 'filterDocument'])
-        ->name('documents.review');
+    Route::GET('/filter-document', [FilterDocumentController::class, 'filterDocument'])->name('documents.review');
+    Route::post('/filter-document', [FilterDocumentController::class, 'filterDocument'])->name('documents.review');
+    // Route::post('/documents/export', [FilterDocumentController::class, 'export'])->name('documents.export');
+
     Route::get('/documents-for-set/{setId}', [SetController::class, 'viewDocumentsForSet'])->name('sets.viewDocuments');
     Route::get('/view-uploaded-documents/{page?}', [DocumentController::class, 'viewUploadedDocuments'])->name('documents.viewUploadedDocuments');
     Route::delete('/documents/{filename}', [DocumentController::class, 'deleteFile'])->name('documents.delete');
     Route::post('/upload-files', [DocumentController::class, 'uploadFiles'])->name('upload.files');
 
-
     //ajax call to get the documen from doc_type
-    Route::get('/get-documents/{typeId}', [BulkUploadController::class, 'getDocumentsByType'])
-        ->name('documents.getByType');
+    Route::get('/get-documents/{typeId}', [BulkUploadController::class, 'getDocumentsByType'])->name('documents.getByType');
 
     Route::get('/api/fetch/{type}/{id}/{isStatus}', [BulkUploadController::class, 'fetchData']);
 
@@ -119,9 +131,9 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::post('/categories', [DataSetController::class, 'addCategory'])->name('categories.add');
     Route::put('/categories', [DataSetController::class, 'updateCategory'])->name('categories.update');
     // Subcategory routes
-Route::get('/subcategories', [DataSetController::class, 'showSubcategories'])->name('subcategories.show');
-Route::post('/subcategories', [DataSetController::class, 'addSubcategory'])->name('subcategories.add');
-Route::put('/subcategories', [DataSetController::class, 'updateSubcategory'])->name('subcategories.update');
+    Route::get('/subcategories', [DataSetController::class, 'showSubcategories'])->name('subcategories.show');
+    Route::post('/subcategories', [DataSetController::class, 'addSubcategory'])->name('subcategories.add');
+    Route::put('/subcategories', [DataSetController::class, 'updateSubcategory'])->name('subcategories.update');
 
     //data sets end
 
@@ -189,7 +201,7 @@ Route::put('/subcategories', [DataSetController::class, 'updateSubcategory'])->n
         ->name('advocates.store');
     Route::post('/update-advocate', [AdvocateController::class, 'updateAdvocate'])
         ->name('advocates.update');
-        Route::post('/bulk-upload-advocate-assign-document', [AdvocateController::class, 'bulkUploadAdvocateAssignDocument'])
+    Route::post('/bulk-upload-advocate-assign-document', [AdvocateController::class, 'bulkUploadAdvocateAssignDocument'])
         ->name('documentToAdvocate.bulk_upload');
 
     // assigning documents to advocate

@@ -10,8 +10,7 @@ use App\Services\FilterDocumentService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use App\Models\{Master_doc_type, Master_doc_data, Category};
-use App\Exports\DocumentsExport;
-use Maatwebsite\Excel\Facades\Excel;
+
 class FilterDocumentController extends Controller
 {
     protected $filterdocumentService;
@@ -21,27 +20,39 @@ class FilterDocumentController extends Controller
         $this->filterdocumentService = $filterdocumentService;
     }
 
+    
     public function filterDocument(Request $request)
     {
-        $filters = $request->only([
-            'type', 'number_of_pages', 'state', 'district', 'village', 'locker_no', 'start_date',
-            'end_date', 'area_range_start', 'area_range_end', 'area_unit', 'court_case_no',
-            'doc_no', 'survey_no', 'categories', 'subcategories', 'locker_ids', 'doc_identifiers', 'doc_name', 'doc_status', 'logs'
-        ]);
+        $documents = collect();
+        $typeId = $request->input('type');
+        $state = $request->input('state');
+        $district = $request->input('district');
+        $village = $request->input('village');
+        // $locker_no = $request->input('locker_no');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+        $area_range_start = $request->input('area_range_start');
+        $area_range_end = $request->input('area_range_end');
+        $area_unit = $request->input('area_unit');
+        $court_case_no = $request->input('court_case_no');
+        $doc_no = $request->input('doc_no');
+        $survey_no = $request->input('survey_no');
+        // $category = $request->input('category');
+        $doc_name = $request->input('doc_name');
+        $doc_identifier_id = $request->input('doc_identifiers');
+        $locker_id = $request->input('locker_id');
+        $category_id = $request->input('categories');
+        $subcategory_id = $request->input('subcategories');
+        $doc_status = $request->input('doc_status');
+        $logs = $request->input('logs');
+        $request->flash();
 
-        // Store filters in session
-        session(['document_filters' => $filters]);
-        
-        // dd($filters);
-        return $this->getFilteredDocuments($filters);
-
-    }
-    public function getFilteredDocuments($filters = null)
-    {
-        if (!$filters) {
-            $filters = session('document_filters', []);
-            // dd($filters);
-        }
+        //     $categories = Master_doc_data::pluck('category')
+        // ->reject(function ($value) {
+        //     return empty($value);
+        // })
+        // ->unique()
+        // ->values();
 
         $courtCaseNos = Master_doc_data::pluck('court_case_no')
             ->unique()
@@ -149,71 +160,87 @@ class FilterDocumentController extends Controller
             ->where('doc_identifier_id', '!=', '')
             ->distinct()
             ->pluck('doc_identifier_id');
-        // $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit', 'court_case_no', 'doc_no', 'survey_no', 'category', 'doc_name', 'doc_status', 'logs']);
-        // $filterSet = count(array_filter($filters, function ($value) {
-        //     return !is_null($value) && $value !== '';
-        // }));
+        $filters = $request->only(['type', 'number_of_pages', 'state', 'district', 'village', 'locker_no',  'start_date', 'end_date', 'area_range_start', 'area_range_end', 'area_unit', 'court_case_no', 'doc_no', 'survey_no', 'category', 'doc_name', 'doc_status', 'logs']);
+        $filterSet = count(array_filter($filters, function ($value) {
+            return !is_null($value) && $value !== '';
+        }));
 
-        // $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit, $court_case_no, $doc_no, $survey_no, $category_id, $subcategory_id, $doc_name, $doc_identifier_id, $locker_id, $doc_status, $logs, 10);
-
-        $documents = $this->filterdocumentService->filterDocuments(
-            $filters['type'] ?? null,
-            $filters['state'] ?? null,
-            $filters['district'] ?? null,
-            $filters['village'] ?? null,
-            $filters['start_date'] ?? null,
-            $filters['end_date'] ?? null,
-            $filters['area_range_start'] ?? null,
-            $filters['area_range_end'] ?? null,
-            $filters['area_unit'] ?? null,
-            $filters['court_case_no'] ?? null,
-            $filters['doc_no'] ?? null,
-            $filters['survey_no'] ?? null,
-            $filters['categories'] ?? null,
-            $filters['subcategories'] ?? null,
-            $filters['doc_name'] ?? null,
-            $filters['doc_identifiers'] ?? null,
-            $filters['locker_ids'] ?? null,
-            $filters['doc_status'] ?? null,
-            $filters['logs'] ?? null,
-            10
-        );
-
-
+        $documents = $this->filterdocumentService->filterDocuments($typeId, $state, $district, $village, $start_date, $end_date, $area_range_start, $area_range_end, $area_unit, $court_case_no, $doc_no, $survey_no, $category_id, $subcategory_id, $doc_name, $doc_identifier_id, $locker_id, $doc_status, $logs, 10);
         // dd($survey_nos);
         $data = [
             'documents' => $documents,
             'doc_type' => Master_doc_type::orderBy('name')->get(),
-            'selected_type' =>  $filters['type'] ?? null,
+            'selected_type' => $typeId,
             'states' => $states,
             'districts' => $districts,
             'villages' => $villages,
-            'area_unit' =>  $filters['area_unit'] ?? null,
+            'area_unit' => $area_unit,
             'categories' => $categories,
             'lockers' => $lockers,
             'docIdentifiers' => $docIdentifiers,
             'survey_nos' => $survey_nos,
             'doc_nos' => $doc_nos,
             'courtCaseNos' => $courtCaseNos,
-            'filters' => $filters,
         ];
 
         return view('pages.documents.filter-document', $data);
     }
-  
-    // public function exportFilteredDocuments()
-    // {
-    //     $filters = session('document_filters', []);
-    
-    //     return Excel::download(new DocumentsExport($filters), 'filtered_documents.xlsx');
-    // }
+    public function export(Request $request)
+    {
+        Log::info(['request', $request->all()]);
+        dd($request->all());
+        $filters = json_decode($request->input('filters'), true);
 
+        // Retrieve filtered documents based on the filters
+        $documents = $this->filterdocumentService->filterDocuments(
+            $filters['type'],
+            $filters['state'],
+            $filters['district'],
+            $filters['village'],
+            $filters['start_date'],
+            $filters['end_date'],
+            $filters['area_range_start'],
+            $filters['area_range_end'],
+            $filters['area_unit'],
+            $filters['court_case_no'],
+            $filters['doc_no'],
+            $filters['survey_no'],
+            $filters['category'],
+            $filters['doc_name'],
+            $filters['doc_status'],
+            $filters['logs'],
+            null // No pagination for export
+        );
 
-    public function exportFilteredDocuments(Request $request)
-{
-    $documents = json_decode($request->input('documents'), true);
+        // Define the columns you want to include in the CSV
+        $columns = [
+            'column1_name',
+            'column2_name',
+            'column3_name',
+            // Add more columns as needed
+        ];
 
-    return Excel::download(new DocumentsExport($documents), 'filtered_documents.xlsx');
-}
+        // Create a CSV file
+        $csvContent = implode(',', $columns) . "\n";
 
+        foreach ($documents as $document) {
+            $csvContent .= implode(',', [
+                $document->column1_name,
+                $document->column2_name,
+                $document->column3_name,
+                // Add more columns as needed
+            ]) . "\n";
+        }
+
+        $fileName = 'documents_export_' . date('Y-m-d_H-i-s') . '.csv';
+
+        // Save the CSV file to the storage
+        Storage::disk('local')->put($fileName, $csvContent);
+
+        // Return the CSV file as a download response
+        return Response::download(storage_path("app/{$fileName}"), $fileName, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
+    }
 }

@@ -205,7 +205,7 @@
                                                     </div>
 
                                                     <hr />
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="sale_amount" class="form-label">Sale
                                                                 Amount</label>
@@ -216,7 +216,7 @@
                                                                 value="{{ old('sale_amount', $soldLand->sale_amount ?? '') }}">
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3 col-md-6">
+                                                    <div class="mb-3 col-md-4">
                                                         <div class="mb-3">
                                                             <label for="total_sale_amount" class="form-label">Total
                                                                 Sale Amount</label>
@@ -225,6 +225,17 @@
                                                                 aria-describedby="emailHelp"
                                                                 placeholder="Enter Total Sale Amount"
                                                                 value="{{ old('total_sale_amount', $soldLand->total_sale_amount ?? '') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 col-md-4">
+                                                        <div class="mb-3">
+                                                            <label for="total_sale_amount" class="form-label">Sale Date
+                                                </label>
+                                                            <input type="date" class="form-control"
+                                                                name="sale_date" id="sale_date"
+                                                                aria-describedby="emailHelp"
+                                                               
+                                                                value="{{ old('sale_date', $soldLand->sale_date ?? '') }}">
                                                         </div>
                                                     </div>
                                                     <div class="mb-3 col-md-4">

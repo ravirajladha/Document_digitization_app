@@ -309,6 +309,7 @@ class SoldLandController extends Controller
             'registration_office' => 'nullable|string|max:255',
             'register_number' => 'nullable|string|max:255',
             'register_date' => 'nullable|date',
+            'sale_date' => 'nullable|date',
             'book_number' => 'nullable|string|max:255',
             'name_of_the_purchaser' => 'nullable|string|max:255',
             'balance_land' => 'nullable|string|max:255',
@@ -455,6 +456,7 @@ class SoldLandController extends Controller
                             'name_of_the_purchaser' => $line[23] ?? null,
                             'balance_land' => $line[24] ?? null,
                             'remark' => $line[25] ?? null,
+                            'sale_date' => $line[26] ?? null,
                             'created_by' => Auth::user()->id,
 
 
@@ -487,6 +489,7 @@ class SoldLandController extends Controller
                             'name_of_the_purchaser' => 'nullable|string|max:255',
                             'balance_land' => 'nullable|string|max:255',
                             'remark' => 'nullable|string|max:255',
+                            'sale_date' => 'nullable|string|max:255',
                             // Add validation rules for other fields...
                         ]);
 

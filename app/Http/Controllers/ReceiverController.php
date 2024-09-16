@@ -4,32 +4,60 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
-use App\Models\{Receiver, Receiver_type, Master_doc_type};
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReceiversExport;
+use App\Models\{Receiver, Receiver_type, Master_doc_type,Master_doc_data};
 
 class ReceiverController extends Controller
 {
     //receiver types function
    
     //receivers
-    public function showReceivers()
+    public function showReceivers(Request $request)
     {
-        $data = Receiver::with('receiverType')
-            ->withCount('documentAssignments') // Add the count of document assignments
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Receiver::with('receiverType')
+            ->withCount('documentAssignments');
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->input('email') . '%');
+        }
+
+        if ($request->filled('phone')) {
+            $query->where('phone', 'like', '%' . $request->input('phone') . '%');
+        }
+
+        if ($request->filled('receiver_type')) {
+            $query->where('receiver_type_id', $request->input('receiver_type'));
+        }
+// dd($request->input('doc_id'));
+        if ($request->filled('doc_id')) {
+            $query->whereHas('documentAssignments', function($q) use ($request) {
+                $q->where('doc_id', $request->input('doc_id'));
+            });
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
 
         $receiverTypes = Receiver_type::all();
         $documentTypes = Master_doc_type::orderBy('name')->get();
+        $documents = Master_doc_data::select('id','name')->get();
 
         return view('pages.receivers.receivers', [
             'data' => $data,
             'receiverTypes' => $receiverTypes,
-            'documentTypes' => $documentTypes
-
+            'documentTypes' => $documentTypes,
+            'documents' => $documents
         ]);
     }
 
+    public function exportReceivers(Request $request)
+    {
+        return Excel::download(new ReceiversExport($request->all()), 'receivers.xlsx');
+    }
 
     public function getUpdatedReceivers()
     {

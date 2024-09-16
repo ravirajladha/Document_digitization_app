@@ -16,196 +16,313 @@
                     </ol>
                 </div>
 
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModalCenter">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Add Compliances</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                </button>
+                {{-- Filter card start --}}
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="filter cm-content-box box-primary">
+                            <div class="content-title SlideToolHeader">
+                                <h4>
+                                    Search Compliances
+                                </h4>
+                                <div class="tools">
+                                    <a href="javascript:void(0);" class="expand handle"><i
+                                            class="fal fa-angle-down"></i></a>
+                                </div>
                             </div>
-                            <div class="modal-body">
+                            <div class="cm-content-body form excerpt">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form action="{{ route('compliances.index') }}" method="GET">
+                                                <div class="row">
+                                                    <div class="mb-3 col-md-4">
+                                                        <label for="document_type" class="form-label">Document
+                                                            Type</label>
+                                                        <select id="document_type" class="form-select form-control"
+                                                            id="single-select-abc1" name="document_type">
+                                                            <option value="">Select Document Type</option>
+                                                            @foreach ($documentTypes as $type)
+                                                                <option value="{{ $type->id }}"
+                                                                    {{ old('document_type') == $type->id ? 'selected' : '' }}>
+                                                                    {{ $type->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
 
-                                <div class="form theme-form projectcreate">
-                                    <form id="myAjaxForm" action="{{ url('/') }}/create-compliances" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row">
+                                                    <div class="mb-3 col-md-4">
+                                                        <label for="document_name" class="form-label">Document
+                                                            Name</label>
+                                                        <select id="document_name" class="form-select form-control"
+                                                            id="single-select-abc2" name="document_name">
+                                                            <option value="">Select Document Name</option>
+                                                            @foreach ($documents as $document)
+                                                                <option value="{{ $document->id }}"
+                                                                    {{ old('document_name') == $document->id ? 'selected' : '' }}>
+                                                                    {{ $document->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
 
-                                            <x-document-type-select :is_status="1" />
+                                                    <div class="mb-3 col-md-4">
+                                                        <label for="start_due_date" class="form-label">Start Due
+                                                            Date</label>
+                                                        <input type="date" id="start_due_date" class="form-control"
+                                                            name="start_due_date" value="{{ old('start_due_date') }}">
+                                                    </div>
 
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="document" class="form-label">Name</label>
-                                                    <input class="form-control" type="text" name="name"
-                                                        placeholder="Enter name for the Compliance" required required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="mb-3">
-                                                    <label for="document" class="form-label">Due Date</label>
-                                                    <input class="form-control" type="date" name="due_date" required
-                                                        required>
-                                                </div>
-                                            </div>
+                                                    <div class="mb-3 col-md-4">
+                                                        <label for="end_due_date" class="form-label">End Due
+                                                            Date</label>
+                                                        <input type="date" id="end_due_date" class="form-control"
+                                                            name="end_due_date" value="{{ old('end_due_date') }}">
+                                                    </div>
 
-                                            <div class="mb-3 row">
-                                                <div class="col-sm-6">Is Recurring ?</div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" name="is_recurring"
-                                                            type="checkbox" value="1">
-                                                        <label class="form-check-label">
-                                                            Yes
-                                                        </label>
+                                                    <div class="mb-3 col-md-4">
+                                                        <label for="is_recurring" class="form-label">Is
+                                                            Recurring?</label>
+                                                        <select id="is_recurring" class="form-select form-control"
+                                                            id="single-select-abc3" name="is_recurring">
+                                                            <option value="">Select Recurring</option>
+                                                            <option value="1"
+                                                                {{ old('is_recurring') == '1' ? 'selected' : '' }}>Yes
+                                                            </option>
+                                                            <option value="0"
+                                                                {{ old('is_recurring') == '0' ? 'selected' : '' }}>No
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3 col-md-4">
+                                                        <label for="status" class="form-label">Status</label>
+                                                        <select id="status" class="form-select form-control"
+                                                            id="single-select-abc4" name="status">
+                                                            <option value="">Select Status</option>
+                                                            <option value="1"
+                                                                {{ old('status') == '1' ? 'selected' : '' }}>Active
+                                                            </option>
+                                                            <option value="0"
+                                                                {{ old('status') == '0' ? 'selected' : '' }}>Inactive
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3 col-md-4">
+                                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                                        <a href="{{ url('/') }}/compliances"
+                                                            class="btn btn-dark ms-2">Reset</a>
                                                     </div>
                                                 </div>
-                                            </div>
-
+                                            </form>
                                         </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger light"
-                                    data-bs-dismiss="modal">Close</button>
-                                <div id="loader" style="display: none;">
-                                    Loading...
-                                </div>
-                                <button type="submit" class="btn btn-success" id="submitBtn">Submit Form</button>
-                            </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card">
-                                <div class="card-body">
-
-                                    <div class="table-responsive">
-                                        <table id="example3" class="display" style="min-width: 845px">
-                                            @if ($user && $user->hasPermission('Add Compliances'))
-                                                <button type="button" class="btn btn-success mb-2 float-end btn-sm"
-                                                    data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
-                                                        class="fas fa-square-plus"></i>&nbsp;Add Compliance</button>
-                                            @endif
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Sl. No.</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Document Type </th>
-                                                    <th scope="col">Document Name </th>
-                                                    <th scope="col">Due Date</th>
-                                                    <th scope="col">Is Recurring </th>
-                                                    
-                                                    {{-- <th scope="col">Status </th> --}}
-                                                    @if ($user && $user->hasPermission('Update Compliances Status'))
-                                                    <th scope="col">Submit </th>
-                                                    @endif
-                                                    @if ($user && $user->hasPermission('Update Compliance Recurring Status'))
-                                                    <th scope="col">Is Recurring Action</th>
-@endif
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($compliances as $index => $item)
-                                                    <tr data-item-id="{{ $item->id }}">
-                                                        <th scope="row">{{ $index + 1 }}</th>
-
-                                                        <td>{{ $item->name }}</td>
-                                                        <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
-                                                        </td>
-                                                        <td><a style="color: #1714c9; text-decoration: underline;" href="/review_doc/{{ $item->documentType->name }}/{{ $item->child_id }}">{{ $item->document->name }}</a></td>
-                                                        <td>{{ date('d-M-Y', strtotime($item->due_date)) }}</td>
-
-                                                        <td> {!! $item->is_recurring
-                                                            ? '<span class="badge bg-success">Yes</span>'
-                                                            : '<span class="badge bg-danger">No</span>' !!}</td>
-                                                        {{-- <td class="status-cell">
-                                                            @switch($item->status)
-                                                                @case(0)
-                                                                    <span class="badge bg-warning text-dark">Pending</span>
-                                                                    @break
-                                                                @case(1)
-                                                                    <span class="badge bg-success">Settled</span>
-                                                                    @break
-                                                                @case(2)
-                                                                    <span class="badge bg-danger">Cancelled</span>
-                                                                    @break
-                                                            @endswitch
-                                                        </td> --}}
-                                                        <!-- ... other cells ... -->
-
-                                                        @if ($user && $user->hasPermission('Update Compliances Status'))
-                                                            <td class="action-cell" style="padding:0 0">
-                                                                <!-- Action buttons based on status -->
-                                                                @if ($item->status == 0)
-                                                                <!-- Show buttons only if status is Pending -->
-                                                                <button class="btn btn-sm btn-success toggle-status"
-                                                                data-id="{{ $item->id }}"
-                                                                data-action="settle"><i class="fas fa-thumbs-up"
-                                                                title="Click to Settle the Compliances"></i></button>
-                                                                <button class="btn btn-sm btn-danger toggle-status"
-                                                                data-id="{{ $item->id }}"
-                                                                data-action="cancel"
-                                                                title="Click to Cancel the Compliances"><i
-                                                                class="fas fa-cancel"></i></button>
-                                                                @elseif($item->status == 1)
-                                                                <span class="badge bg-success" title="Click to Settle the Compliance Status">Settled</span>
-                                                                @elseif($item->status == 2)
-                                                                <span class="badge bg-danger" title="Click to Cancel the Compliance Status">Cancelled</span>
-                                                                @else
-                                                                <span class="badge bg-success">Unknown data</span>
-                                                                @endif
-                                                            </td>
-                                                            @endif
-                                                            @if ($user && $user->hasPermission('Update Compliance Recurring Status'))
-                                                            <td>
-                                                                <button type="button" title="{{  $item->is_recurring ? 'Click to disable the recurring status of the Compliance' : 'Click to activate the Recurring Status of the Compliance' }}"  class="btn btn-sm {{ $item->is_recurring ? 'btn-danger' : 'btn-success' }}" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-action="{{ route('compliances.isRecurring.toggle', $item->id) }}">
-                                                                    {{ $item->is_recurring ? 'Deactivate' : 'Activate' }}
-                                                                </button>
-                                                            </td>
-                                                            @endif
-                                                        </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
+
+                {{-- Filter card end --}}
+                {{-- Main complaince data table start --}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table id="example3" class="display" style="min-width: 845px">
+                                        @if ($user && $user->hasPermission('Add Compliances'))
+                                            <button type="button" class="btn btn-success mb-2 float-end btn-sm"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i
+                                                    class="fas fa-square-plus"></i>&nbsp;Add Compliance</button>
+                                        @endif
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Sl. No.</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Document Type </th>
+                                                <th scope="col">Document Name </th>
+                                                <th scope="col">Due Date</th>
+                                                <th scope="col">Is Recurring </th>
+                                                <th scope="col">Recurrence Months </th>
+
+                                                {{-- <th scope="col">Status </th> --}}
+                                                @if ($user && $user->hasPermission('Update Compliances Status'))
+                                                    <th scope="col">Submit </th>
+                                                @endif
+                                                @if ($user && $user->hasPermission('Update Compliance Recurring Status'))
+                                                    <th scope="col">Is Recurring Action</th>
+                                                @endif
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($compliances as $index => $item)
+                                                <tr data-item-id="{{ $item->id }}">
+                                                    <th scope="row">{{ $index + 1 }}</th>
+
+                                                    <td>{{ $item->name }}</td>
+                                                    <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
+                                                    </td>
+                                                    <td><a style="color: #1714c9; text-decoration: underline;"
+                                                            href="/review_doc/{{ $item->documentType->name }}/{{ $item->child_id }}">{{ $item->document->name }}</a>
+                                                    </td>
+                                                    <td>{{ date('d-M-Y', strtotime($item->due_date)) }}</td>
+
+                                                    <td> {!! $item->is_recurring
+                                                        ? '<span class="badge bg-success">Yes</span>'
+                                                        : '<span class="badge bg-danger">No</span>' !!}</td>
+                                                    <td>
+                                                        @if ($item->is_recurring)
+                                                            <span class="badge bg-success">Yes
+                                                                ({{ $item->recurrence_months }} months)</span>
+                                                        @else
+                                                            <span class="badge bg-danger">No</span>
+                                                        @endif
+                                                    </td>
+
+
+                                                    @if ($user && $user->hasPermission('Update Compliances Status'))
+                                                        <td class="action-cell" style="padding:0 0">
+                                                            <!-- Action buttons based on status -->
+                                                            @if ($item->status == 0)
+                                                                <!-- Show buttons only if status is Pending -->
+                                                                <button class="btn btn-sm btn-success toggle-status"
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-action="settle"><i class="fas fa-thumbs-up"
+                                                                        title="Click to Settle the Compliances"></i></button>
+                                                                <button class="btn btn-sm btn-danger toggle-status"
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-action="cancel"
+                                                                    title="Click to Cancel the Compliances"><i
+                                                                        class="fas fa-cancel"></i></button>
+                                                            @elseif($item->status == 1)
+                                                                <span class="badge bg-success"
+                                                                    title="Click to Settle the Compliance Status">Settled</span>
+                                                            @elseif($item->status == 2)
+                                                                <span class="badge bg-danger"
+                                                                    title="Click to Cancel the Compliance Status">Cancelled</span>
+                                                            @else
+                                                                <span class="badge bg-success">Unknown data</span>
+                                                            @endif
+                                                        </td>
+                                                    @endif
+                                                    @if ($user && $user->hasPermission('Update Compliance Recurring Status'))
+                                                        <td>
+                                                            <button type="button"
+                                                                title="{{ $item->is_recurring ? 'Click to disable the recurring status of the Compliance' : 'Click to activate the Recurring Status of the Compliance' }}"
+                                                                class="btn btn-sm {{ $item->is_recurring ? 'btn-danger' : 'btn-success' }}"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#confirmationModal"
+                                                                data-action="{{ route('compliances.isRecurring.toggle', $item->id) }}">
+                                                                {{ $item->is_recurring ? 'Deactivate' : 'Activate' }}
+                                                            </button>
+                                                        </td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- Main complaince data table end --}}
+
 
             </div>
         </div>
     </div>
 
-    {{-- modal starts for making the is_recurring of the complainces activate and deactivate --}}
-    <div class="modal fade" id="confirmationModal" >
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter">
         <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalLabel">Confirm Action</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal">
-            </button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to <span id="actionType">activate/deactivate</span> this compliances Is Recurring Status?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
-          </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Compliances</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form theme-form projectcreate">
+                        <form id="myAjaxForm" action="{{ url('/') }}/create-compliances" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="row">
+
+                                <x-document-type-select :is_status="1" />
+
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="document" class="form-label">Name</label>
+                                        <input class="form-control" type="text" name="name"
+                                            placeholder="Enter name for the Compliance" required required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="document" class="form-label">Due Date</label>
+                                        <input class="form-control" type="date" name="due_date" required required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <div class="col-sm-6">Is Recurring?</div>
+                                    <div class="col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="is_recurring_checkbox"
+                                                name="is_recurring" type="checkbox" value="1">
+                                            <label class="form-check-label" for="is_recurring_checkbox">
+                                                Yes
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="recurrence_months_field" style="display: none;" class="mb-3">
+                                    <label class="form-label">Recurrence Months</label>
+                                    <input class="form-control" type="number" name="recurrence_months"
+                                        id="recurrence_months" placeholder="in months (minimum 1)">
+                                </div>
+
+                            </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <div id="loader" style="display: none;">
+                        Loading...
+                    </div>
+                    <button type="submit" class="btn btn-success" id="submitBtn">Submit Form</button>
+                </div>
+                </form>
+            </div>
         </div>
-      </div>
+    </div>
+
+    {{-- modal starts for making the is_recurring of the complainces activate and deactivate --}}
+    <div class="modal fade" id="confirmationModal">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Confirm Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to <span id="actionType">activate/deactivate</span> this
+                    compliances Is
+                    Recurring Status?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
     </div>
     @include('layouts.footer')
 
@@ -361,3 +478,44 @@
     });
 </script>
 
+<script>
+    // Toggle recurrence months input field based on checkbox state
+    const isRecurringCheckbox = document.getElementById('is_recurring_checkbox');
+    const recurrenceMonthsField = document.getElementById('recurrence_months_field');
+
+    isRecurringCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            recurrenceMonthsField.style.display = 'block';
+            document.getElementById('recurrence_months').setAttribute('required', 'required');
+        } else {
+            recurrenceMonthsField.style.display = 'none';
+            document.getElementById('recurrence_months').removeAttribute('required');
+        }
+    });
+</script>
+<script>
+    $("#single-select-abc1").select2();
+
+    $(".single-select-abc1-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc2").select2();
+
+    $(".single-select-abc2-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc3").select2();
+
+    $(".single-select-abc3-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc4").select2();
+
+    $(".single-select-abc4-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+</script>

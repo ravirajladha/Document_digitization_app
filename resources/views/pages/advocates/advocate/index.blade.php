@@ -15,117 +15,185 @@
                     </ol>
                 </div>
 
-
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h4>Advocates</h4>
-                                    <span class="float-end">
-                                        <button id="exportButton" class="btn btn-secondary btn-sm" style="margin-right: 1px;">
-                                            <i class="fas fa-file-export"></i>&nbsp;Export
-                                        </button>
-                                        @if ($user && $user->hasPermission('Add Assigned Docs to Advocate'))
-                                            <button type="button" class="btn btn-warning btn-sm" style="margin-right: 1px;" data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
-                                                <i class="fas fa-plus-square"></i>&nbsp; Bulk Upload Assign Doc to Advocate
-                                            </button>
-                                        @endif
-                                        @if ($user && $user->hasPermission('Add Advocates'))
-                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModalCenter1">
-                                                <i class="fas fa-plus-square"></i>&nbsp;Add Advocate
-                                            </button>
-                                        @endif
-                                    </span>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="filter cm-content-box box-primary">
+                            <div class="content-title SlideToolHeader">
+                                <h4>
+                                    Search Advocates
+                                </h4>
+                                <div class="tools">
+                                    <a href="javascript:void(0);" class="expand handle"><i
+                                            class="fal fa-angle-down"></i></a>
                                 </div>
-                                
+                            </div>
+                            <div class="cm-content-body  form excerpt">
                                 <div class="card-body">
-                                    <div class="table-responsive">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form action="{{ route('advocates.index') }}" method="GET" class="row">
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Name</label>
+                                                    <input name="name" class="form-control" placeholder="Enter Name"
+                                                        value="{{ request()->input('name') }}">
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Email</label>
+                                                    <input name="email" class="form-control" placeholder="Enter Email"
+                                                        value="{{ request()->input('email') }}">
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Phone</label>
+                                                    <input name="phone" class="form-control" placeholder="Enter Phone"
+                                                        value="{{ request()->input('phone') }}">
+                                                </div>
 
-                                        <table id="example3" class="display">
+                                                <div class="mb-3 col-md-12">
+                                                    <label class="form-label">Document </label>
+                                                    <select class="form-select form-control" id="single-select-abc1"
+                                                        name="doc_id">
+                                                        <option value="">Select Document </option>
+                                                        @foreach ($documents as $doc)
+                                                            <option value="{{ $doc->id }}"
+                                                                {{ request()->input('doc_id') == $doc->id ? 'selected' : '' }}>
+                                                                {{ $doc->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12 d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                                    <a href="{{ route('advocates.export', request()->all()) }}" class="btn btn-success ms-2">Export to Excel</a>
+                                                    <a href="{{ url('/') }}/advocates" class="btn btn-dark ms-2">Reset</a>
+                                                </div>
+                                                
+                                            </form>
+                                        </div>
+                                    </div>
 
-                                            <thead>
+
+
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4>Advocates</h4>
+                                <span class="float-end">
+                                    <button id="exportButton" class="btn btn-secondary btn-sm"
+                                        style="margin-right: 1px;">
+                                        <i class="fas fa-file-export"></i>&nbsp;Export
+                                    </button>
+                                    @if ($user && $user->hasPermission('Add Assigned Docs to Advocate'))
+                                        <button type="button" class="btn btn-warning btn-sm" style="margin-right: 1px;"
+                                            data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
+                                            <i class="fas fa-plus-square"></i>&nbsp; Bulk Upload Assign Doc to Advocate
+                                        </button>
+                                    @endif
+                                    @if ($user && $user->hasPermission('Add Advocates'))
+                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModalCenter1">
+                                            <i class="fas fa-plus-square"></i>&nbsp;Add Advocate
+                                        </button>
+                                    @endif
+                                </span>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+
+                                    <table id="example3" class="display">
+
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Sl. No.</th>
+                                                <th scope="col">Advocate Id</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Phone</th>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Email Id</th>
+
+                                                <th scope="col">No. of Document</th>
+                                                <th scope="col">Status</th>
+                                                {{-- <th scope="col">View Assigned Documents</th> --}}
+
+                                                <th scope="col">Action</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $index => $item)
                                                 <tr>
-                                                    <th scope="col">Sl. No.</th>
-                                                    <th scope="col">Advocate Id</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Phone</th>
-                                                    <th scope="col">Address</th>
-                                                    <th scope="col">Email Id</th>
+                                                    <th scope="row">{{ $index + 1 }}</th>
+                                                    <td>Advocate: {{ $item->id }}</td>
+                                                    <td>{{ $item->name }}</td>
+                                                    <td>{{ $item->phone }}</td>
+                                                    <td>{{ $item->address }}</td>
+                                                    <td>{{ $item->email }}</td>
 
-                                                    <th scope="col">No. of Document</th>
-                                                    <th scope="col">Status</th>
-                                                    {{-- <th scope="col">View Assigned Documents</th> --}}
+                                                    <td> {{ $item->document_assignments_count }}
+                                                    </td>
 
-                                                    <th scope="col">Action</th>
+                                                    <td>{!! $item->status
+                                                        ? '<span class="badge bg-success">Active</span>'
+                                                        : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
+
+                                                    <!-- Assuming you have a relation to get the receiver type name -->
+
+
+
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            @if ($user && $user->hasPermission('View Assigned Docs to Advocate'))
+                                                                <a href="/advocate-assign-documents/{{ $item->id }}"
+                                                                    title="View Assigned Documents" class="me-2">
+                                                                    <span class="btn btn-secondary btn-sm edit-btn"><i
+                                                                            class="fas fa-eye"></i></span>
+                                                                </a>
+                                                            @endif
+                                                            @if ($user && $user->hasPermission('Update Advocates'))
+                                                                <button title="Edit Receiver"
+                                                                    class="btn btn-primary btn-sm edit-btn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModalCenter"
+                                                                    data-receiver-id="{{ $item->id }}"
+                                                                    data-receiver-name="{{ $item->name }}"
+                                                                    data-receiver-phone="{{ $item->phone }}"
+                                                                    data-receiver-address="{{ $item->address }}"
+                                                                    data-receiver-email="{{ $item->email }}"
+                                                                    data-receiver-type-id="{{ $item->receiver_type_id }}"
+                                                                    data-receiver-status="{{ $item->status }}">
+                                                                    <i class="fas fa-pencil-square"></i>
+                                                                </button>
+                                                            @endif
+                                                            @if ($user && !$user->hasPermission('View Assigned Docs to Advocate') && !user->hasPermission('Update Advocates'))
+                                                                --
+                                                            @endif
+                                                        </div>
+                                                    </td>
+
 
 
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($data as $index => $item)
-                                                    <tr>
-                                                        <th scope="row">{{ $index + 1 }}</th>
-                                                        <td>Advocate: {{ $item->id }}</td>
-                                                        <td>{{ $item->name }}</td>
-                                                        <td>{{ $item->phone }}</td>
-                                                        <td>{{ $item->address }}</td>
-                                                        <td>{{ $item->email }}</td>
+                                            @endforeach
+                                        </tbody>
 
-                                                        <td> {{ $item->document_assignments_count }}
-                                                        </td>
-
-                                                        <td>{!! $item->status
-                                                            ? '<span class="badge bg-success">Active</span>'
-                                                            : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
-
-                                                        <!-- Assuming you have a relation to get the receiver type name -->
+                                    </table>
 
 
-
-                                                        <td>
-                                                            <div class="d-flex">
-                                                                @if ($user && $user->hasPermission('View Assigned Docs to Advocate'))
-                                                                    <a href="/advocate-assign-documents/{{ $item->id }}" title="View Assigned Documents" class="me-2">
-                                                                        <span class="btn btn-secondary btn-sm edit-btn"><i class="fas fa-eye"></i></span>
-                                                                    </a>
-                                                                @endif
-                                                                @if ($user && $user->hasPermission('Update Advocates'))
-                                                                    <button title="Edit Receiver"
-                                                                        class="btn btn-primary btn-sm edit-btn"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#exampleModalCenter"
-                                                                        data-receiver-id="{{ $item->id }}"
-                                                                        data-receiver-name="{{ $item->name }}"
-                                                                        data-receiver-phone="{{ $item->phone }}"
-                                                                        data-receiver-address="{{ $item->address }}"
-                                                                        data-receiver-email="{{ $item->email }}"
-                                                                        data-receiver-type-id="{{ $item->receiver_type_id }}"
-                                                                        data-receiver-status="{{ $item->status }}">
-                                                                        <i class="fas fa-pencil-square"></i>
-                                                                    </button>
-                                                                @endif
-                                                                @if ($user && !$user->hasPermission('View Assigned Docs to Advocate') && !user->hasPermission('Update Advocates'))
-                                                                    --
-                                                                @endif
-                                                            </div>
-                                                        </td>
-                                                        
-
-
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-
-                                        </table>
-
-
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
             </div>
         </div>
@@ -247,46 +315,45 @@
 </x-app-layout>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <div class="modal fade" id="addDocumentTypeModal" tabindex="-1" aria-labelledby="addDocumentTypeModalLabel"
-aria-hidden="true">
-<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="card-title">Bulk Upload Assign Document to Advocate</h4>
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="card-title">Bulk Upload Assign Document to Advocate</h4>
 
-            <div class="d-flex align-items-center">
-                <a href="/assets/sample/advocate_documents_sample.csv" download="sample.csv">
-                    <button type="button" class="btn btn-dark btn-sm">
-                        <i class="fas fa-download"></i>&nbsp; Download Sample CSV File
-                    </button>
-                </a>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <div class="d-flex align-items-center">
+                    <a href="/assets/sample/advocate_documents_sample.csv" download="sample.csv">
+                        <button type="button" class="btn btn-dark btn-sm">
+                            <i class="fas fa-download"></i>&nbsp; Download Sample CSV File
+                        </button>
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
             </div>
-        </div>
-        <div class="modal-body">
-            <div class="card overflow-hidden">
+            <div class="modal-body">
+                <div class="card overflow-hidden">
 
-                <div class="card-body">
-                    <form action="{{ url('/') }}/bulk-upload-advocate-assign-document" method="post"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <div class="row">
-                            <div class="mb-3 col-md-12">
-                                <label class="form-label">Bulk Upload (in csv file format)</label>
-                                <div class="fallback">
-                                    <input name="document" type="file" class="form-control" required>
+                    <div class="card-body">
+                        <form action="{{ url('/') }}/bulk-upload-advocate-assign-document" method="post"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="row">
+                                <div class="mb-3 col-md-12">
+                                    <label class="form-label">Bulk Upload (in csv file format)</label>
+                                    <div class="fallback">
+                                        <input name="document" type="file" class="form-control" required>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-success">Submit</button>
-                        </div>
-                    </form>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 <script>
@@ -495,4 +562,18 @@ aria-hidden="true">
         // Click download link
         downloadLink.click();
     }
+</script>
+<script>
+    $("#single-select-abc1").select2();
+
+    $(".single-select-abc1-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc2").select2();
+
+    $(".single-select-abc2-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
 </script>

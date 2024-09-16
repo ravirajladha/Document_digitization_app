@@ -1,5 +1,6 @@
 <x-app-layout>
     {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 
     <x-header />
     <x-sidebar />
@@ -14,9 +15,88 @@
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Receivers</a></li>
                     </ol>
                 </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="filter cm-content-box box-primary">
+                            <div class="content-title SlideToolHeader">
+                                <h4>
+                                    Search Receivers
+                                </h4>
+                                <div class="tools">
+                                    <a href="javascript:void(0);" class="expand handle"><i
+                                            class="fal fa-angle-down"></i></a>
+                                </div>
+                            </div>
+                            <div class="cm-content-body  form excerpt">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form action="{{ route('receivers.index') }}" method="GET" class="row">
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Name</label>
+                                                    <input name="name" class="form-control" placeholder="Enter Name"
+                                                        value="{{ request()->input('name') }}">
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Email</label>
+                                                    <input name="email" class="form-control" placeholder="Enter Email"
+                                                        value="{{ request()->input('email') }}">
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Phone</label>
+                                                    <input name="phone" class="form-control" placeholder="Enter Phone"
+                                                        value="{{ request()->input('phone') }}">
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Receiver Type</label>
+                                                    <select class="form-select form-control" name="receiver_type"
+                                                        id="single-select-abc1">
+                                                        <option value="">Select Receiver Type</option>
+                                                        @foreach ($receiverTypes as $type)
+                                                            <option value="{{ $type->id }}"
+                                                                {{ request()->input('receiver_type') == $type->id ? 'selected' : '' }}>
+                                                                {{ $type->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-4">
+                                                    <label class="form-label">Document </label>
+                                                    <select class="form-select form-control" id="single-select-abc2"
+                                                        name="doc_id">
+                                                        <option value="">Select Document </option>
+                                                        @foreach ($documents as $doc)
+                                                            <option value="{{ $doc->id }}"
+                                                                {{ request()->input('doc_id') == $doc->id ? 'selected' : '' }}>
+                                                                {{ $doc->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12 d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                                    <a href="{{ route('receivers.export', request()->all()) }}"
+                                                        class="btn btn-success ms-2">Export to Excel</a>
+                                                    <a href="{{ url('/') }}/receivers"
+                                                        class="btn btn-dark ms-2">Reset</a>
+                                                </div>
 
 
-                <div class="container-fluid">
+
+
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
@@ -32,11 +112,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        {{-- <h4>Receivers</h4> --}}
 
-
-                                        {{-- <div class="table-responsive"> --}}
-                                        {{-- <table id="example3" class="display" style="min-width: 845px"> --}}
                                         <table id="example3" class="display">
 
                                             <thead>
@@ -69,18 +145,20 @@
                                                         <td>{{ optional($item->receiverType)->name }}</td>
                                                         <td> {{ $item->document_assignments_count }}
                                                         </td>
-                                                     
+
                                                         <td>{!! $item->status
                                                             ? '<span class="badge bg-success">Active</span>'
                                                             : '<span class="badge bg-warning text-dark">Inactive</span>' !!}</td>
-   <td> <a href="/user-assign-documents/{{ $item->id }}" title="View Assigned Documents"><u><b><span
-    class="btn btn-secondary btn-sm edit-btn"><i
-    class="fas fa-eye"></i></span></b></u></a>
-</td>
+                                                        <td> <a href="/user-assign-documents/{{ $item->id }}"
+                                                                title="View Assigned Documents"><u><b><span
+                                                                            class="btn btn-secondary btn-sm edit-btn"><i
+                                                                                class="fas fa-eye"></i></span></b></u></a>
+                                                        </td>
                                                         <!-- Assuming you have a relation to get the receiver type name -->
                                                         @if ($user && $user->hasPermission('Update Receivers'))
                                                             <td>
-                                                                <button title="Edit Reciever" class="btn btn-primary btn-sm edit-btn"
+                                                                <button title="Edit Reciever"
+                                                                    class="btn btn-primary btn-sm edit-btn"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#exampleModalCenter"
                                                                     data-receiver-id="{{ $item->id }}"
@@ -95,7 +173,8 @@
                                                         @endif
                                                         @if ($user && $user->hasPermission('Assign Document'))
                                                             <td>
-                                                                <button class="btn btn-success btn-sm assign-doc-btn" title="Assign Document to the Receiver"
+                                                                <button class="btn btn-success btn-sm assign-doc-btn"
+                                                                    title="Assign Document to the Receiver"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#assignDocumentModal"
                                                                     data-receiver-id="{{ $item->id }}"
@@ -108,16 +187,13 @@
                                                     </tr>
                                                 @endforeach
                                             </tbody>
-
                                         </table>
-
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+              
 
             </div>
         </div>
@@ -142,19 +218,19 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label for="receiverName" class="form-label">Name&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="name" id="receiverName"
                                             placeholder="Enter Receiver's Name">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverEmail" class="form-label">Email&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="email" id="receiverEmail"
                                             placeholder="Enter Receiver's Email">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverPhone" class="form-label">Phone&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="phone" id="receiverPhone"
                                             placeholder="Enter Receiver's Phone Number" pattern="\d{0,10}$"
                                             title="Please enter a valid phone number with up to 10 digits."
@@ -162,14 +238,13 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverCity" class="form-label">City&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                                class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="city" id="receiverCity"
                                             placeholder="Enter Receiver's City">
                                     </div>
                                     <div class="mb-3">
                                         <label for="receiverType" class="form-label">Receiver
-                                            Type&nbsp;<span
-                                            class="text-danger">*</span></label>
+                                            Type&nbsp;<span class="text-danger">*</span></label>
                                         <select class="form-control" id="receiverType" name="receiver_type_id">
                                             <option selected value="">Select Receiver Type</option>
                                             @foreach ($receiverTypes as $type)
@@ -212,33 +287,7 @@
                         <input type="hidden" id="modalReceiverId" name="receiver_id">
                         <input type="hidden" id="modalReceiverTypeId" name="receiver_type">
                         <input type="hidden" name="location" value="user">
-                        {{-- <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="documentType" class="form-label">Document
-                                    Type</label>
-                                <select class="form-control" id="documentType" name="document_type"
-                                    onchange="fetchDocuments(this.value)" required>
-                                    <option value="">Select Document Type
-                                    </option>
-                                    @foreach ($documentTypes as $type)
-                                        <option value="{{ $type->id }}">
-                                            {{ ucwords(str_replace('_', ' ', $type->name)) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="document" class="form-label">Document <i><span
-                                            style="font-size:10px;">(Only the approved documents are shown
-                                            here.)</span></i></label>
-                                <select class="form-control" id="document" name="document_id" required>
-                                    <option value="">Select Document</option>
-                                   
-                                </select>
-                            </div>
-                        </div> --}}
+
                         <div class="row">
                             <x-document-type-select :is_status="1" />
 
@@ -317,36 +366,24 @@
 
 
 </x-app-layout>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
 
 <script>
-    // $(document).ready(function() {
-    //     $('.edit-btn').on('click', function() {
-    //         var receiverId = $(this).data('receiver-id');
-    //         var receiverName = $(this).data('receiver-name');
-    //         var receiverPhone = $(this).data('receiver-phone');
-    //         var receiverCity = $(this).data('receiver-city');
-    //         var receiverEmail = $(this).data('receiver-email');
-    //         var receiverTypeId = $(this).data('receiver-type-id');
-    //         var receiverStatus = $(this).data('receiver-status');
+    $("#single-select-abc1").select2();
 
-    //         // Console log the data for debugging
-    //         console.log('Receiver ID:', receiverId);
-    //         console.log('Receiver Name:', receiverName);
-    //         console.log('Receiver Phone:', receiverPhone);
-    //         console.log('Receiver City:', receiverCity);
-    //         console.log('Receiver Email:', receiverEmail);
-    //         console.log('Receiver Type ID:', receiverTypeId);
-    //         console.log('Receiver Status:', receiverStatus);
+    $(".single-select-abc1-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc2").select2();
 
+    $(".single-select-abc2-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+</script>
 
-    //     });
-    // });
-
-
-
-
+<script>
     $(document).ready(function() {
         $('#myAjaxForm').on('submit', function(e) {
             e.preventDefault(); // prevent the form from 'submitting'
@@ -406,10 +443,11 @@
 
                         '<td>' + receiver.receiver_type_name + '</td>' +
                         '<td>' + receiver.document_assignments_count + '</td>' +
-                      
+
 
                         '<td>' + statusBadge + '</td>' +
-                        '<td><a title="View Assigned Documents" href="/user-assign-documents/' + receiver.id +
+                        '<td><a title="View Assigned Documents" href="/user-assign-documents/' +
+                        receiver.id +
                         '"><u><b><span class="badge bg-secondary"><i class="fas fa-eye"></i> </span></b></u></a></td>' +
                         // Make sure you have the receiver type name available
                         '<td><Button title="Edit Receiver" class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-receiver-id="' +
@@ -417,7 +455,8 @@
                         '" data-receiver-phone="' + receiver.phone + '" data-receiver-city="' +
                         receiver.city + '" data-receiver-email="' + receiver.email +
                         '" data-receiver-type-id="' + receiver.receiver_type_id +
-                        '" data-receiver-status="' + receiver.status + '"><i class="fas fa-pencil-square"></i></Button></td>' +
+                        '" data-receiver-status="' + receiver.status +
+                        '"><i class="fas fa-pencil-square"></i></Button></td>' +
 
                         '<td>' + assignDocButton + '</td>' +
 

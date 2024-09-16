@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
         $table->unsignedBigInteger('doc_id');
         $table->foreign('doc_id')->references('id')->on('master_doc_datas')->onDelete('cascade'); // Assuming there's a 'documents' table
-        $table->string('case_name')->nullable();
-        $table->string('case_status')->nullable();
+        $table->text('case_name')->nullable();
+        $table->text('case_status')->nullable();
         $table->date('start_date')->nullable();
         $table->date('end_date')->nullable();
-        $table->string('court_name')->nullable();
-        $table->string('court_case_location')->nullable();
-        $table->string('plantiff_name')->nullable();
-        $table->string('defendant_name')->nullable();
-        $table->string('urgency_level')->nullable();
-        $table->string('case_result')->nullable();
+        $table->text('court_name')->nullable();
+        $table->text('court_case_location')->nullable();
+        $table->text('plantiff_name')->nullable();
+        $table->text('defendant_name')->nullable();
+        $table->text('urgency_level')->nullable();
+        $table->text('case_result')->nullable();
         $table->text('notes')->nullable();
         $table->date('submission_deadline')->nullable();
         $table->unsignedBigInteger('advocate_id');

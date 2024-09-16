@@ -8,7 +8,7 @@
                 </li>
             @else
                 <li style="margin-right: 5px;">
-                    <a href="{{ $paginator->previousPageUrl() }}&{{ http_build_query(request()->except('page')) }}" rel="prev" aria-label="@lang('pagination.previous')" style="display: inline-block; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; text-decoration: none; color: #007bff;">&lsaquo;</a>
+                    <a href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="@lang('pagination.previous')" style="display: inline-block; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; text-decoration: none; color: #007bff;">&lsaquo;</a>
                 </li>
             @endif
 
@@ -25,7 +25,7 @@
                         @if ($page == $paginator->currentPage())
                             <li class="active" aria-current="page" style="margin-right: 5px;"><span style="display: inline-block; padding: 5px 10px; border: 1px solid #007bff; border-radius: 4px; background-color: #007bff; color: #fff;">{{ $page }}</span></li>
                         @else
-                            <li style="margin-right: 5px;"><a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}" style="display: inline-block; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; text-decoration: none; color: #007bff;">{{ $page }}</a></li>
+                            <li style="margin-right: 5px;"><a href="{{ $url }}" style="display: inline-block; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; text-decoration: none; color: #007bff;">{{ $page }}</a></li>
                         @endif
                     @endforeach
                 @endif
@@ -34,7 +34,7 @@
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <li style="margin-right: 5px;">
-                    <a href="{{ $paginator->nextPageUrl() }}&{{ http_build_query(request()->except('page')) }}" rel="next" aria-label="@lang('pagination.next')" style="display: inline-block; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; text-decoration: none; color: #007bff;">&rsaquo;</a>
+                    <a href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="@lang('pagination.next')" style="display: inline-block; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; text-decoration: none; color: #007bff;">&rsaquo;</a>
                 </li>
             @else
                 <li class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')" style="margin-right: 5px;">

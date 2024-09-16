@@ -695,6 +695,8 @@
                                 <th scope="col">Document Type </th> --}}
                                                 <th scope="col">Due Date</th>
                                                 <th scope="col">Is Recurring </th>
+                                                <th scope="col">Recurrence Months </th>
+
                                                 {{-- <th scope="col">Status </th> --}}
                                                 <th scope="col">Action </th>
 
@@ -714,7 +716,13 @@
                                                     <td> {!! $item->is_recurring
                                                         ? '<span class="badge bg-success">Yes</span>'
                                                         : '<span class="badge bg-warning text-dark">Not</span>' !!}</td>
-
+    <td>
+        @if($item->is_recurring)
+            <span class="badge bg-success">Yes ({{ $item->recurrence_months }} months)</span>
+        @else
+            <span class="badge bg-danger">No</span>
+        @endif
+    </td>
                                                     <td class="action-cell">
                                                         <!-- Action buttons based on status -->
                                                         @if ($item->status == 0)
@@ -781,16 +789,20 @@
                                             </div>
 
                                             <div class="mb-3 row">
-                                                <div class="col-sm-6">Is Recurring ?</div>
+                                                <div class="col-sm-6">Is Recurring?</div>
                                                 <div class="col-sm-6">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" name="is_recurring"
-                                                            type="checkbox" value="1">
-                                                        <label class="form-check-label">
+                                                        <input class="form-check-input" id="is_recurring_checkbox" name="is_recurring" type="checkbox" value="1">
+                                                        <label class="form-check-label" for="is_recurring_checkbox">
                                                             Yes
                                                         </label>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <div id="recurrence_months_field" style="display: none;" class="mb-3">
+                                                <label class="form-label">Recurrence Months</label>
+                                                <input class="form-control" type="number"  name="recurrence_months" id="recurrence_months" placeholder="in months (minimum 1)">
                                             </div>
 
                                         </div>
@@ -1901,6 +1913,21 @@
             isDragging = false;
             document.removeEventListener('mousemove', handleDrag, false);
             document.removeEventListener('mouseup', stopDrag, false);
+        }
+    });
+</script>
+<script>
+    // Toggle recurrence months input field based on checkbox state
+    const isRecurringCheckbox = document.getElementById('is_recurring_checkbox');
+    const recurrenceMonthsField = document.getElementById('recurrence_months_field');
+
+    isRecurringCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+            recurrenceMonthsField.style.display = 'block';
+            document.getElementById('recurrence_months').setAttribute('required', 'required');
+        } else {
+            recurrenceMonthsField.style.display = 'none';
+            document.getElementById('recurrence_months').removeAttribute('required');
         }
     });
 </script>
