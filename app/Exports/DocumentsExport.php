@@ -34,11 +34,11 @@ class DocumentsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'ID', 'Index Id', 'Document Name', 'Document Type', 'Category', 'Subcategory', 'Number of Pages', 
+            'Serial Number', 'Index Id', 'Document Name', 'Document Type', 'Category', 'Subcategory', 'Number of Pages', 
             'Current State', 'State', 'Alternate State', 'Current District', 'District', 
             'Alternate District', 'Current Village', 'Village', 'Alternate Village', 
             'Current Taluk', 'Taluk', 'Alternate Taluk', 'Locker No', 'Area', 'Dry Land', 
-            'Wet Land', 'Unit', 'Set ID', 'Issued Date', 'Court Case No', 'Doc No', 'Survey No', 
+            'Wet Land', 'Unit', 'Set ID', 'Issued Date', 'Court Case No','Advocate Name', 'Case Status','Case Result', 'Doc No', 'Survey No', 
             'Doc Identifier ID', 'Latitude', 'Longitude', 'Created At', 'Updated At'
         ];
     }
@@ -49,13 +49,14 @@ class DocumentsExport implements FromCollection, WithHeadings, WithMapping
      */
     public function map($document): array
     {
+        static $serialNumber = 1;
         // Ensure $document is an array and contains necessary keys
         $categoryNames = $this->getCategoryNames($document['category_id'] ?? '');
         $subcategoryNames = $this->getSubcategoryNames($document['subcategory_id'] ?? '');
         $setNames = $this->getSetNames($document['set_id'] ?? '');
 
         return [
-            $document['id'] ?? '',
+            $serialNumber++,
             $document['temp_id'] ?? '',
             $document['name'] ?? '',
             $document['document_type_name'] ?? '',
@@ -82,6 +83,10 @@ class DocumentsExport implements FromCollection, WithHeadings, WithMapping
             $setNames,
             $document['issued_date'] ?? '',
             $document['court_case_no'] ?? '',
+            $document['advocate_name'] ?? '',
+            $document['case_status'] ?? '',
+            $document['case_result'] ?? '',
+         
             $document['doc_no'] ?? '',
             $document['survey_no'] ?? '',
             $document['doc_identifier_id'] ?? '',

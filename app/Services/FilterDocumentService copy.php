@@ -187,6 +187,7 @@ class FilterDocumentService
 
         Log::info('Generated SQL Query: ' . $query->toSql());
 
+
         $filteredData = $query->paginate($perPage);
         // dd($filteredData);
         // dd($filteredData);

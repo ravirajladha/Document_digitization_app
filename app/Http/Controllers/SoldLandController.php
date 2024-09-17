@@ -13,8 +13,28 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+use App\Exports\SoldLandExport;
+use Maatwebsite\Excel\Facades\Excel;
 class SoldLandController extends Controller
 {
+
+
+
+// Export Sold Land data to Excel
+public function exportSoldLand(Request $request)
+{
+    // Fetch the filtered sold land data, or you can fetch all data based on your needs
+    $soldLands = Sold_land::where(function ($query) use ($request) {
+        if ($request->input('state')) {
+            $query->where('state', $request->input('state'));
+        }
+        // Add more filter conditions based on the request inputs
+    })->get()->toArray();
+
+    // Export the data using the SoldLandExport class
+    return Excel::download(new SoldLandExport($soldLands), 'sold_land_data.xlsx');
+}
+
     public function view(Request $request)
     {
         $area_range_start = $request->input('area_range_start');

@@ -133,8 +133,9 @@
 
 
                                         <div class="card-footer">
-                                            <a href="{{ url('/') }}/sold-land" class="btn btn-dark">Reset</a>
-                                            <div class="text-end"><button class="btn btn-secondary" type="submit"><i
+                                            <div class="text-end">      <a href="{{ url('/') }}/sold-land" class="btn btn-dark"><i
+                                                class="fas fa-refresh"></i>&nbsp;Reset</a>
+                                      <button class="btn btn-secondary" type="submit"><i
                                                         class="fas fa-filter"></i>&nbsp;Filter</button>
                                             </div>
                                         </div>
@@ -152,29 +153,28 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
-                            <div class="card-header">
-                                <h5 class="title">Sold Lands</h5>
-                                <span>
-                                    <button id="exportButton" class="btn btn-secondary btn-sm "
-                                        style="margin-right: 10px;"><i
-                                            class="fas fa-file-export"></i>&nbsp;Export</button>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="title mb-0">Sold Lands</h5>
+                                <div class="button-group">
+                                    <form action="{{ route('soldLand.export') }}" method="GET" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="margin-right: 10px;">
+                                            <i class="fas fa-file-export"></i>&nbsp;Export
+                                        </button>
+                                    </form>
                                     @if ($user && $user->hasPermission('Add Sold Land'))
-                                        <button type="button" class="btn btn-warning btn-sm  "
-                                            style="margin-right: 10px;" data-bs-toggle="modal"
-                                            data-bs-target="#addDocumentTypeModal">
+                                        <button type="button" class="btn btn-warning btn-sm" style="margin-right: 10px;" data-bs-toggle="modal" data-bs-target="#addDocumentTypeModal">
                                             <i class="fas fa-plus-square"></i>&nbsp; Bulk Upload
                                         </button>
-                                        {{-- Add Sold Land Details button --}}
-                                        <a href="/sold-land-actions" >
-                                            <button type="button" class="btn btn-success btn-sm float-end">
+                                        <a href="/sold-land-actions">
+                                            <button type="button" class="btn btn-success btn-sm">
                                                 <i class="fas fa-plus-square"></i>&nbsp; Add
                                             </button>
                                         </a>
                                     @endif
-                                    {{-- Bulk Upload button --}}
-
-                                </span>
+                                </div>
                             </div>
+                            
 
                             <div class="card-body">
 
@@ -190,9 +190,6 @@
                                                 <th scope="col">District</th>
                                                 <th scope="col">Village</th>
                                                 <th scope="col">Total Area (Unit)</th>
-
-
-
                                                 <th scope="col">Action</th>
 
                                             </tr>
@@ -275,7 +272,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     </div>

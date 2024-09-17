@@ -176,6 +176,8 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     // Process the update form submission
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/sold-land/{id?}', [SoldLandController::class, 'storeOrUpdate'])->name('soldLand.storeOrUpdate');
+
+    Route::get('/sold-land/export', [SoldLandController::class, 'exportSoldLand'])->name('soldLand.export');
     Route::get('/sold-land', [SoldLandController::class, 'view'])->name('soldLand.view');
     Route::get('/sold-land-actions', [SoldLandController::class, 'add'])->name('soldLand.add');
     //show single page
