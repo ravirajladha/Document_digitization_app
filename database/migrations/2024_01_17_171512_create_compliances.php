@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->integer('status')->default(0);
             $table->boolean('is_recurring')->default(0);
+            $table->string('recurrence_interval')->nullable();
 
             $table->unsignedBigInteger('created_by')->nullable();
        

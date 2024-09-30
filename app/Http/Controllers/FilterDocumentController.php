@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
-use App\Models\{Master_doc_type, Master_doc_data, Category};
+use App\Models\{Master_doc_type, Master_doc_data, Category,Advocate,Advocate_documents};
 use App\Exports\DocumentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -36,9 +36,9 @@ class FilterDocumentController extends Controller
         }
 
 
-        $caseResults = Master_doc_data::pluck('case_result')->unique()->sort()->reject(fn ($value) => empty($value))->values();
-        $advocateNames = Master_doc_data::pluck('advocate_name')->unique()->sort()->reject(fn ($value) => empty($value))->values();
-        $courtCaseNos = Master_doc_data::pluck('court_case_no')->unique()->sort()->reject(fn ($value) => empty($value))->values();
+        $caseResults = Advocate_documents::pluck('case_result')->unique()->sort()->reject(fn ($value) => empty($value))->values();
+        $advocateNames = Advocate::pluck('name')->unique()->sort()->reject(fn ($value) => empty($value))->values();
+        $courtCaseNos = Advocate_documents::pluck('court_case_location')->unique()->sort()->reject(fn ($value) => empty($value))->values();
         $states = Master_doc_data::pluck('current_state')->flatMap(fn ($item) => collect(explode(',', $item))->map(fn ($i) => Str::of($i)->trim()))->unique()->sort()->reject(fn ($value) => empty($value))->values();
         $districts = Master_doc_data::pluck('current_district')->flatMap(fn ($item) => collect(explode(',', $item))->map(fn ($i) => Str::of($i)->trim()))->unique()->sort()->reject(fn ($value) => empty($value))->values();
         $villages = Master_doc_data::pluck('current_village')->flatMap(fn ($item) => collect(explode(',', $item))->map(fn ($i) => Str::of($i)->trim()))->unique()->sort()->reject(fn ($value) => empty($value))->values();
@@ -60,9 +60,8 @@ class FilterDocumentController extends Controller
             $filters['area_range_end'] ?? null,
             $filters['area_unit'] ?? null,
             $filters['court_case_no'] ?? null,
-             $filters['advocate_name'] ?? null,
-        
-          $filters['case_result'] ?? null,
+            $filters['advocate_name'] ?? null,
+            $filters['case_result'] ?? null,
             $filters['doc_no'] ?? null,
             $filters['survey_no'] ?? null,
             $filters['categories'] ?? null,
@@ -124,20 +123,65 @@ class FilterDocumentController extends Controller
     ) {
         // Build the query with all the filters
         $query = Master_doc_data::query();
+        // dd($advocate_name);
+
+        // Filtering by advocate name, court case number, and case result
+        if ($advocate_name) {
+            // Find the advocate by name
+            $advocate = DB::table('advocates')->where('name', 'like', '%' . $advocate_name . '%')->first();
+
+            if ($advocate) {
+                $advocateId = $advocate->id;
+
+                // Search in the advocate_documents table for doc_id with the advocate_id
+                $advocateDocsQuery = DB::table('advocate_documents')->where('advocate_id', $advocateId);
+
+             
+                // Get doc_ids from the advocate_documents table
+                $docIds = $advocateDocsQuery->pluck('doc_id');
+
+                // Apply the doc_ids filter to the main query
+                $query->whereIn('id', $docIds);
+            }
+        }
+
+        if ($court_case_no) {
+            // If advocate_name is not available, but court_case_no or case_result is provided
+
+            $advocateDocsQuery = DB::table('advocate_documents');
+
+            // Filter by court case number if provided
+            if ($court_case_no) {
+                $advocateDocsQuery->where('court_case_location', 'like', '%' . $court_case_no . '%');
+            }
+            $docIds = $advocateDocsQuery->pluck('doc_id');
+
+            // Apply the doc_ids filter to the main query
+            $query->whereIn('id', $docIds);
+        }
+
+        if ($case_result) {
+            // If advocate_name is not available, but court_case_no or case_result is provided
+
+            $advocateDocsQuery = DB::table('advocate_documents');
+
+            // Filter by case result if provided
+            if ($case_result) {
+                $advocateDocsQuery->where('case_result', 'like', '%' . $case_result . '%');
+            }
+
+            $docIds = $advocateDocsQuery->pluck('doc_id');
+
+            // Apply the doc_ids filter to the main query
+            $query->whereIn('id', $docIds);
+        }
+
 
         // Apply filters to the query
         if ($typeId) {
             $query->where('document_type', explode('|', $typeId)[0]);
         }
-        if ($court_case_no) {
-            $query->where('court_case_no', 'like', '%' . $court_case_no . '%');
-        }
-        if ($advocate_name) {
-            $query->where('advocate_name', 'like', '%' . $advocate_name . '%');
-        }
-        if ($case_result) {
-            $query->where('case_result', 'like', '%' . $case_result . '%');
-        }
+
         if ($locker_id) {
             $lockerNos = is_array($locker_id) ? $locker_id : explode(',', $locker_id);
             $query->where(function ($q) use ($lockerNos) {
@@ -265,7 +309,7 @@ class FilterDocumentController extends Controller
 
         // Fetch the filtered data
         $filteredData = $perPage ? $query->paginate($perPage) : $query->get();
-// dd($filteredData);
+        // dd($filteredData);
         // Loop through the filtered data to attach related table IDs
         foreach ($filteredData as $item) {
             $documentType = $item->document_type_name;

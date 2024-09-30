@@ -21,9 +21,7 @@
                     <div class="col-xl-12">
                         <div class="filter cm-content-box box-primary">
                             <div class="content-title SlideToolHeader">
-                                <h4>
-                                    Filters
-                                </h4>
+                                <h4>Filters</h4>
                                 <div class="tools">
                                     <a href="javascript:void(0);" class="expand handle"><i
                                             class="fal fa-angle-down"></i></a>
@@ -33,65 +31,59 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <form action="{{ route('compliances.index') }}" method="GET">
+                                            <form action="{{ route('logs.action-logs') }}" method="GET">
                                                 <div class="row">
 
-
-
-
-                                                    <div class="mb-3 col-md-4">
-                                                        <label for="start_due_date" class="form-label">Start Due
+                                                    <div class="mb-3 col-md-6">
+                                                        <label for="start_due_date" class="form-label">Start
                                                             Date</label>
                                                         <input type="date" id="start_due_date" class="form-control"
-                                                            name="start_due_date" value="{{ old('start_due_date') }}">
+                                                            name="start_due_date"
+                                                            value="{{ request('start_due_date') }}">
                                                     </div>
 
-                                                    <div class="mb-3 col-md-4">
-                                                        <label for="end_due_date" class="form-label">End Due
-                                                            Date</label>
+                                                    <div class="mb-3 col-md-6">
+                                                        <label for="end_due_date" class="form-label">End Date</label>
                                                         <input type="date" id="end_due_date" class="form-control"
-                                                            name="end_due_date" value="{{ old('end_due_date') }}">
+                                                            name="end_due_date" value="{{ request('end_due_date') }}">
                                                     </div>
 
-
-
-                                                    <div class="mb-3 col-md-4">
-                                                        <label for="status" class="form-label">Models</label>
-                                                        <select id="status" class="form-select form-control"
-                                                            id="single-select-abc4" name="status">
-                                                            <option value="">Model 1</option>
-                                                            <option value="">Model 2</option>
-
+                                                    <div class="mb-3 col-md-6">
+                                                        <label for="model_type" class="form-label">Model Type</label>
+                                                        <select  class="form-select form-control"
+                                                            name="model_type" id="single-select-abc1">
+                                                            <option value="">Select Model</option>
+                                                            @foreach ($uniqueModelTypes as $modelType)
+                                                                <option value="{{ $modelType }}"
+                                                                    {{ request('model_type') == $modelType ? 'selected' : '' }}>
+                                                                    {{ $modelType }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
 
-                                                    <div class="mb-3 col-md-4">
-                                                        <label for="status" class="form-label">Users</label>
-                                                        <select id="status" class="form-select form-control"
-                                                            id="single-select-abc4" name="status">
-                                                            <option value="">User 1</option>
-                                                            <option value="">User 2</option>
-
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 col-md-4">
-                                                        <label for="status" class="form-label">Action</label>
-                                                        <select id="status" class="form-select form-control"
-                                                            id="single-select-abc4" name="status">
-                                                            <option value="">Update</option>
-                                                            <option value="">Get</option>
-                                                            <option value="">Post</option>
-
+                                                    <div class="mb-3 col-md-6">
+                                                        <label for="action_type" class="form-label">Action</label>
+                                                        <select class="form-select form-control"
+                                                            name="action_type" id="single-select-abc2">
+                                                            <option value="">Select Action</option>
+                                                            @foreach ($uniqueActionTypes as $actionType)
+                                                                <option value="{{ $actionType }}"
+                                                                    {{ request('action_type') == $actionType ? 'selected' : '' }}>
+                                                                    {{ $actionType }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
 
                                                     <div class="col-md-12 d-flex justify-content-end">
-                                                        <button type="submit" class="btn btn-primary">Filter</button>
-                                                        <a href="{{ route('advocates.export', request()->all()) }}"
-                                                            class="btn btn-success ms-2">Export to Excel</a>
-                                                        <a href="{{ url('/') }}/advocates"
-                                                            class="btn btn-dark ms-2">Reset</a>
+                                                        <button type="submit" class="btn btn-primary"><i
+                                                            class="fas fa-filter"></i>&nbsp;Filter</button>
+                                                        <a href="{{ route('logs.action-logs') }}"
+                                                            class="btn btn-dark ms-2"><i
+                                                            class="fas fa-refresh"></i>&nbsp;Reset</a>
                                                     </div>
+
                                                 </div>
                                             </form>
                                         </div>
@@ -101,6 +93,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
@@ -188,3 +181,19 @@
 
 
 </x-app-layout>
+
+
+<script>
+    $("#single-select-abc1").select2();
+
+    $(".single-select-abc1-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+    $("#single-select-abc2").select2();
+
+    $(".single-select-abc2-placeholder").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+</script>

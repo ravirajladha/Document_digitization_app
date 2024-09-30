@@ -35,86 +35,85 @@
                                         <div class="col-md-12">
                                             <form action="{{ route('compliances.index') }}" method="GET">
                                                 <div class="row">
+                                                    <!-- Document Type Dropdown -->
                                                     <div class="mb-3 col-md-4">
                                                         <label for="document_type" class="form-label">Document
                                                             Type</label>
                                                         <select id="document_type" class="form-select form-control"
-                                                            id="single-select-abc1" name="document_type">
+                                                            name="document_type_name">
                                                             <option value="">Select Document Type</option>
-                                                            @foreach ($documentTypes as $type)
-                                                                <option value="{{ $type->id }}"
-                                                                    {{ old('document_type') == $type->id ? 'selected' : '' }}>
-                                                                    {{ $type->name }}
+                                                            @foreach ($uniqueDocuments->unique('document_type_name') as $document)
+                                                                <option value="{{ $document->document_type_name }}"
+                                                                    {{ request()->input('document_type_name') == $document->document_type_name ? 'selected' : '' }}>
+                                                                    {{ $document->document_type_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
 
+                                                    <!-- Document Name Dropdown -->
                                                     <div class="mb-3 col-md-4">
                                                         <label for="document_name" class="form-label">Document
                                                             Name</label>
                                                         <select id="document_name" class="form-select form-control"
-                                                            id="single-select-abc2" name="document_name">
+                                                            name="document_name">
                                                             <option value="">Select Document Name</option>
-                                                            @foreach ($documents as $document)
-                                                                <option value="{{ $document->id }}"
-                                                                    {{ old('document_name') == $document->id ? 'selected' : '' }}>
-                                                                    {{ $document->name }}
+                                                            @foreach ($uniqueDocuments->unique('document_name') as $document)
+                                                                <option value="{{ $document->document_name }}"
+                                                                    {{ request()->input('document_name') == $document->document_name ? 'selected' : '' }}>
+                                                                    {{ $document->document_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
 
-                                                    <div class="mb-3 col-md-4">
-                                                        <label for="start_due_date" class="form-label">Start Due
-                                                            Date</label>
-                                                        <input type="date" id="start_due_date" class="form-control"
-                                                            name="start_due_date" value="{{ old('start_due_date') }}">
-                                                    </div>
+                                                    <!-- Start Due Date -->
+        <div class="mb-3 col-md-4">
+            <label for="start_due_date" class="form-label">Start Due Date</label>
+            <input type="date" id="start_due_date" class="form-control" name="start_due_date"
+                value="{{ request()->input('start_due_date') }}">
+        </div>
 
                                                     <div class="mb-3 col-md-4">
-                                                        <label for="end_due_date" class="form-label">End Due
-                                                            Date</label>
-                                                        <input type="date" id="end_due_date" class="form-control"
-                                                            name="end_due_date" value="{{ old('end_due_date') }}">
+                                                        <label for="end_due_date" class="form-label">End Due Date</label>
+                                                        <input type="date" id="end_due_date" class="form-control" name="end_due_date"
+                                                            value="{{ request()->input('end_due_date') }}">
                                                     </div>
+                                            
 
                                                     <div class="mb-3 col-md-4">
-                                                        <label for="is_recurring" class="form-label">Is
-                                                            Recurring?</label>
-                                                        <select id="is_recurring" class="form-select form-control"
-                                                            id="single-select-abc3" name="is_recurring">
+                                                        <label for="is_recurring" class="form-label">Is Recurring?</label>
+                                                        <select id="is_recurring" class="form-select form-control" name="is_recurring">
                                                             <option value="">Select Recurring</option>
-                                                            <option value="1"
-                                                                {{ old('is_recurring') == '1' ? 'selected' : '' }}>Yes
-                                                            </option>
-                                                            <option value="0"
-                                                                {{ old('is_recurring') == '0' ? 'selected' : '' }}>No
-                                                            </option>
+                                                            <option value="1" {{ request()->input('is_recurring') == '1' ? 'selected' : '' }}>Yes</option>
+                                                            <option value="0" {{ request()->input('is_recurring') == '0' ? 'selected' : '' }}>No</option>
                                                         </select>
                                                     </div>
-
+                                            
+                                                    <!-- Status -->
                                                     <div class="mb-3 col-md-4">
                                                         <label for="status" class="form-label">Status</label>
-                                                        <select id="status" class="form-select form-control"
-                                                            id="single-select-abc4" name="status">
+                                                        <select id="status" class="form-select form-control" name="status">
                                                             <option value="">Select Status</option>
-                                                            <option value="1"
-                                                                {{ old('status') == '1' ? 'selected' : '' }}>Active
-                                                            </option>
-                                                            <option value="0"
-                                                                {{ old('status') == '0' ? 'selected' : '' }}>Inactive
-                                                            </option>
+                                                            <option value="1" {{ request()->input('status') == '1' ? 'selected' : '' }}>Active</option>
+                                                            <option value="0" {{ request()->input('status') == '0' ? 'selected' : '' }}>Inactive</option>
                                                         </select>
                                                     </div>
 
                                                     <div class="mb-3 col-md-4">
-                                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                                        <button type="submit" class="btn btn-primary"><i
+                                                            class="fas fa-filter"></i>&nbsp;Filter</button>
                                                         <a href="{{ url('/') }}/compliances"
-                                                            class="btn btn-dark ms-2">Reset</a>
+                                                            class="btn btn-dark ms-2"><i
+                                                            class="fas fa-refresh"></i>&nbsp;Reset</a>
+                                                            <a href="{{ route('compliances.export', request()->all()) }}" class="btn btn-success"><i
+                                                                class="fas fa-download"></i>&nbsp;Export to Excel</a>
+
                                                     </div>
                                                 </div>
                                             </form>
+                                      
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -162,7 +161,7 @@
                                                 <tr data-item-id="{{ $item->id }}">
                                                     <th scope="row">{{ $index + 1 }}</th>
 
-                                                    <td>{{ $item->name }}</td>
+                                                    <td>{{ $item->rec }}</td>
                                                     <td>{{ ucwords(str_replace('_', ' ', $item->documentType->name)) }}
                                                     </td>
                                                     <td><a style="color: #1714c9; text-decoration: underline;"
@@ -176,12 +175,11 @@
                                                     <td>
                                                         @if ($item->is_recurring)
                                                             <span class="badge bg-success">Yes
-                                                                ({{ $item->recurrence_months }} months)</span>
+                                                                ({{ $item->recurrence_interval }} months)</span>
                                                         @else
                                                             <span class="badge bg-danger">No</span>
                                                         @endif
                                                     </td>
-
 
                                                     @if ($user && $user->hasPermission('Update Compliances Status'))
                                                         <td class="action-cell" style="padding:0 0">
@@ -282,10 +280,19 @@
                                     </div>
                                 </div>
 
-                                <div id="recurrence_months_field" style="display: none;" class="mb-3">
-                                    <label class="form-label">Recurrence Months</label>
-                                    <input class="form-control" type="number" name="recurrence_months"
-                                        id="recurrence_months" placeholder="in months (minimum 1)">
+                                <div class="mb-3 row">
+                                    <div class="col-sm-6">Is Recurring?</div>
+                                    <div class="col-sm-6">
+                                        <select class="form-select form-control" id="recurrence_interval"
+                                            name="recurrence_interval">
+                                            <option value="">Select Recurrence</option>
+
+                                            <option value="1_months">1 Month </option>
+                                            <option value="3_months">3 Months</option>
+                                            <option value="6_months">6 Months</option>
+                                            <option value="12_months">12 Months</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                             </div>

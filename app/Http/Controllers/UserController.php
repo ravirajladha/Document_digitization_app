@@ -100,7 +100,6 @@ class UserController extends Controller
             'Hold' => $totalCounts[2] ?? 0,
             'Reviewer Feedback' => $totalCounts[3] ?? 0,
             'Total' => ($totalCounts[0] ?? 0) + ($totalCounts[1] ?? 0) + ($totalCounts[2] ?? 0) + ($totalCounts[3] ?? 0),
-
         ];
 
         // Add the total counts to the data array
@@ -118,7 +117,7 @@ class UserController extends Controller
             ->selectRaw('status_id, COUNT(*) as count')
             ->groupBy('status_id')
             ->pluck('count', 'status_id');
-
+dd($masterDocCounts);
         // Initialize an array to store the master doc counts
         $masterDocStatusCounts = [
             'Pending' => $masterDocCounts[0] ?? 0,
@@ -127,15 +126,13 @@ class UserController extends Controller
             'Reviewer Feedback' => $masterDocCounts[3] ?? 0,
             'Total' => ($masterDocCounts[0] ?? 0) + ($masterDocCounts[1] ?? 0) + ($masterDocCounts[2] ?? 0) + ($masterDocCounts[3] ?? 0),
         ];
+
         $data['MasterDocData'] = $masterDocStatusCounts;
-        // dd($masterDocStatusCounts);
-        //dd($data, $todayCounts);
-        // Return the view with the counts
+    // dd($data);
         return view('pages.users.reviewed-documents', [
             'data' => $data,
             'todayCounts' => $todayCounts,
             'user_detail' => $user_detail,
-
         ]);
     }
 
@@ -208,14 +205,6 @@ class UserController extends Controller
                 ],
                 'status' => 'required|in:0,1',
 
-                // Validate password if it's filled, and ensure it matches the confirmation and meets length requirements
-                // 'password' => [
-                //     'sometimes',
-
-                //     'confirmed',
-                //     'min:8',
-                //     'max:20'
-                // ],
 
             ]);
 
@@ -223,9 +212,6 @@ class UserController extends Controller
 
             // Convert the permission IDs to a simple array
             $permissionNames = array_keys($requestedPermissions);
-
-            // dd($permissionNames, $user->id);
-            $assign_permission = $this->assignPermissions($permissionNames, $user->id);
 
             // Update the user's information
             $user->name = $validatedData['name'];

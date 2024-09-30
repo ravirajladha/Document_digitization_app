@@ -181,7 +181,7 @@
                                                         <td>{{ $document->old_locker_number }}</td>
                                                         <td>{{ $document->latitude }}</td>
                                                         <td>{{ $document->longitude }}</td>
-                                                        <td>{{ $document->court_case_no }}</td>
+                                                        {{-- <td>{{ $document->court_case_no }}</td> --}}
                                                         <td>{{ $document->survey_no }}</td>
                                                     </tr>
                                                 @endforeach

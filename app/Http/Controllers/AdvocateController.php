@@ -13,7 +13,6 @@ use App\Models\{Receiver, Receiver_type, Master_doc_type, Advocate, Advocate_doc
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AdvocatesExport;
 
-
 class AdvocateController extends Controller
 {
     //receiver types function
@@ -21,8 +20,6 @@ class AdvocateController extends Controller
     //receivers
     public function showAdvocates(Request $request)
     {
-
-
         $query = Advocate::withCount('documentAssignments');
 
         if ($request->filled('name')) {
@@ -47,8 +44,6 @@ class AdvocateController extends Controller
 
         $data = $query->orderBy('created_at', 'desc')->get();
 
-
-
         $documentTypes = Master_doc_type::orderBy('name')->get();
         $documents = Master_doc_data::select('id', 'name')->get();
 
@@ -59,24 +54,12 @@ class AdvocateController extends Controller
             'documents' => $documents
         ]);
 
-
-
-        // $data = Advocate::withCount('documentAssignments') // Add the count of document assignments
-        //     ->orderBy('created_at', 'desc')
-        //     ->get();
-
-        // return view('pages.advocates.advocate.index', [
-        //     'data' => $data,
-        //     'documentTypes' => $documentTypes,
-        //     'documents' => $documents
-        // ]);
     }
 
     public function exportAdvocates(Request $request)
     {
         return Excel::download(new AdvocatesExport($request->all()), 'advocates.xlsx');
     }
-
 
     public function addAdvocate(Request $request)
     {
@@ -149,72 +132,83 @@ class AdvocateController extends Controller
         ]);
     }
 
-    //     public function showAdvocateAssignedDocument($advocateId)
-    //     {
-    //         // Filter the document assignments by the passed receiver ID
-    //         $documentAssignments = Advocate_documents::with(['advocate', 'document'])
-    //             ->where('advocate_id', $advocateId)
-    //             ->orderBy('created_at', 'desc')
-    //             ->paginate(10); 
-    // // dd($documentAssignments);
-    //         // If you still need the lists of document types and receiver types for dropdowns or other UI elements
-    //         $documentTypes = Master_doc_type::all();
-    //         $receiverTypes = Receiver_type::where('status', 1)->get();
-
-    //         // You can also get the receiver details if needed, for example to display their name on the page
-    //         $advocate = Advocate::find($advocateId);
-
-    //         return view('pages.advocates.assign-document.index', [
-    //             'documentAssignments' => $documentAssignments,
-    //             'documentTypes' => $documentTypes,
-    //             'receiverTypes' => $receiverTypes,
-    //             'advocate' => $advocate, 
-    //             'advocateId' => $advocateId
-    //         ]);
-    //     }
-    public function showAdvocateAssignedDocument($advocateId)
+    public function showAdvocateAssignedDocument(Request $request, $advocateId)
     {
-        // Filter the document assignments by the passed advocate ID
-        $documentAssignments = Advocate_documents::with(['advocate', 'document.documentType'])
-            ->where('advocate_id', $advocateId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        // Retrieve the lists of document types and receiver types for dropdowns or other UI elements
+        // Start a query to filter document assignments by advocate ID
+        $documentAssignmentsQuery = Advocate_documents::with(['advocate', 'document.documentType'])
+            ->where('advocate_id', $advocateId);
+    
+        // Apply filters based on the request
+        if ($request->has('doc_id') && !empty($request->input('doc_id'))) {
+            $documentAssignmentsQuery->where('doc_id', $request->input('doc_id'));
+        }
+    
+        if ($request->has('case_result') && !empty($request->input('case_result'))) {
+            $documentAssignmentsQuery->where('case_result', $request->input('case_result'));
+        }
+    
+        if ($request->has('plaintiff_name') && !empty($request->input('plaintiff_name'))) {
+            $documentAssignmentsQuery->where('plaintiff_name', $request->input('plaintiff_name'));
+        }
+    
+        if ($request->has('defendant_name') && !empty($request->input('defendant_name'))) {
+            $documentAssignmentsQuery->where('defendant_name', $request->input('defendant_name'));
+        }
+    
+        // Execute the query and paginate the results
+        $documentAssignments = $documentAssignmentsQuery->orderBy('created_at', 'desc')->paginate(10);
+    
+        // Retrieve the lists of document types and receiver types for dropdowns
         $documentTypes = Master_doc_type::all();
         $receiverTypes = Receiver_type::where('status', 1)->get();
-
+    
         // Retrieve the advocate details
         $advocate = Advocate::find($advocateId);
+      // Process each document assignment to retrieve the child_id
+      foreach ($documentAssignments as $assignment) {
+        $documentTypeName = $assignment->document->documentType->name;
 
-        // Process each document assignment to retrieve the child_id
-        foreach ($documentAssignments as $assignment) {
-            $documentTypeName = $assignment->document->documentType->name;
+        // Build the table name dynamically
+        $childDocument = DB::table($documentTypeName)
+            ->where('doc_id', $assignment->doc_id)
+            ->first();
 
-            // Build the table name dynamically
-            $childDocument = DB::table($documentTypeName)
-                ->where('doc_id', $assignment->doc_id)
-                ->first();
-
-            if ($childDocument) {
-                $assignment->child_id = $childDocument->id;
-            }
+        if ($childDocument) {
+            $assignment->child_id = $childDocument->id;
         }
-
+    }
+        // Retrieve all advocates for the dropdown
+        $advocates = Advocate::all();
+    
+        // Get unique plaintiff names and defendant names for the filters
+        $plaintiff_names = Advocate_documents::select('plaintiff_name')->distinct()->get();
+        $defendant_names = Advocate_documents::select('defendant_name')->distinct()->get();
+    
+        // Get unique case results for the filters
+        $unique_case_results = Advocate_documents::select('case_result')->distinct()->get();
+    // dd($documentAssignments);
+    
+        // Return the view with the necessary data
         return view('pages.advocates.assign-document.index', [
             'documentAssignments' => $documentAssignments,
             'documentTypes' => $documentTypes,
             'receiverTypes' => $receiverTypes,
             'advocate' => $advocate,
-            'advocateId' => $advocateId
+            'advocateId' => $advocateId,
+            'advocates' => $advocates,
+            'plaintiff_names' => $plaintiff_names,  // Pass to view
+            'defendant_names' => $defendant_names,  // Pass to view
+            'unique_case_results' => $unique_case_results  // Pass to view
         ]);
     }
+    
 
     public function getReceiversByType($typeId)
     {
         $receivers = Receiver::where('receiver_type_id', $typeId)->get();
         return response()->json(['receivers' => $receivers]);
     }
+
     public function getActiveReceiversByType($typeId)
     {
         $receivers = Receiver::where('receiver_type_id', $typeId)->where('status', true)->get();
@@ -230,16 +224,16 @@ class AdvocateController extends Controller
             'advocate_id' => 'required|exists:advocates,id', // Assuming advocates table exists
             'case_name' => 'nullable|string|max:255',
             'case_status' => 'nullable|string|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
+            // 'start_date' => 'nullable|date',
+            // 'end_date' => 'nullable|date',
             'court_name' => 'nullable|string|max:255',
             'court_case_location' => 'nullable|string|max:255',
-            'plantiff_name' => 'nullable|string|max:255',
+            'plaintiff_name' => 'nullable|string|max:255',
             'defendant_name' => 'nullable|string|max:255',
-            'urgency_level' => 'nullable|string|max:255',
+            // 'urgency_level' => 'nullable|string|max:255',
             'case_result' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
-            'submission_deadline' => 'nullable|date'
+            // 'submission_deadline' => 'nullable|date'
         ];
 
         // Validate the request
@@ -251,6 +245,7 @@ class AdvocateController extends Controller
             session()->flash('toastr', ['type' => 'error', 'message' => 'Advocate is not active.']);
             return redirect()->back();
         }
+
         // dd($validatedData['case_result']);
         $advocate_id = $validatedData['advocate_id'];
         // Create the assignment
@@ -259,16 +254,16 @@ class AdvocateController extends Controller
             'advocate_id' => $validatedData['advocate_id'],
             'case_name' => $validatedData['case_name'] ?? null,
             'case_status' => $validatedData['case_status'] ?? null,
-            'start_date' => $validatedData['start_date'] ?? null,
-            'end_date' => $validatedData['end_date'] ?? null,
+            // 'start_date' => $validatedData['start_date'] ?? null,
+            // 'end_date' => $validatedData['end_date'] ?? null,
             'court_name' => $validatedData['court_name'] ?? null,
             'court_case_location' => $validatedData['court_case_location'] ?? null,
-            'plantiff_name' => $validatedData['plantiff_name'] ?? null,
+            'plaintiff_name' => $validatedData['plaintiff_name'] ?? null,
             'defendant_name' => $validatedData['defendant_name'] ?? null,
-            'urgency_level' => $validatedData['urgency_level'] ?? null,
+            // 'urgency_level' => $validatedData['urgency_level'] ?? null,
             'case_result' => $validatedData['case_result'] ?? null,
             'notes' => $validatedData['notes'] ?? null,
-            'submission_deadline' => $validatedData['submission_deadline'] ?? null,
+            // 'submission_deadline' => $validatedData['submission_deadline'] ?? null,
             'created_by' => Auth::user()->id,
         ]);
 
@@ -285,31 +280,43 @@ class AdvocateController extends Controller
     public function editDocumentAssignment($id)
     {
         Log::info("edit document assignment", ['id' => $id]);
-        $assignment = Advocate_documents::with('document')->find($id);
+    
+        // Load the advocate name along with the document assignment
+        $assignment = Advocate_documents::with(['document', 'advocate'])->find($id); // Assuming 'advocate' is a relationship
+        Log::info("edit document assignment", ['assignment' => $assignment]);
+    
         if (!$assignment) {
             return response()->json(['error' => 'Document assignment not found.'], 404);
         }
-
-        return response()->json($assignment);
+    
+        // Retrieve all advocates
+        $advocates = Advocate::all();
+    
+        return response()->json([
+            'assignment' => $assignment,
+            'advocates' => $advocates
+        ]);
     }
+    
+    
     public function updateDocumentAssignment(Request $request, $id)
     {
         // Log::info("update document assignment", ['id' => $id]);
         // Define validation rules
         $rules = [
+            'advocate_id' => 'required|exists:advocates,id',
             'case_name' => 'nullable|string|max:255',
             'case_status' => 'nullable|string|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
+            // 'start_date' => 'nullable|date',
+            // 'end_date' => 'nullable|date',
             'court_name' => 'nullable|string|max:255',
             'court_case_location' => 'nullable|string|max:255',
-            'plantiff_name' => 'nullable|string|max:255',
+            'plaintiff_name' => 'nullable|string|max:255',
             'defendant_name' => 'nullable|string|max:255',
-            'urgency_level' => 'nullable|string|max:255',
+            // 'urgency_level' => 'nullable|string|max:255',
             'case_result' => 'nullable|string|max:255',
-
             'notes' => 'nullable|string',
-            'submission_deadline' => 'nullable|date'
+            // 'submission_deadline' => 'nullable|date'
         ];
 
         // Validate the request
@@ -324,8 +331,7 @@ class AdvocateController extends Controller
         // Update the assignment
         $assignment->update($validatedData);
         return redirect()->back()->with('success', 'Assignment updated successfully.');
-        // return redirect()->route('advocate.documents.assigned.show', ['advocate_id' => $assignment->advocate_id])
-        //                  ->with('success', 'Assignment updated successfully.');
+      
     }
 
     public function destroy($id)
@@ -350,15 +356,15 @@ class AdvocateController extends Controller
         $request->validate([
             'document' => 'required|file|mimes:csv,txt|max:10240', // Adjust max file size as needed
         ]);
-
+    
         $filePath = $request->file('document')->getRealPath();
         $file = fopen($filePath, 'r');
-
+    
         // Skip the first row (assuming it contains headers)
         fgetcsv($file);
-
+    
         DB::beginTransaction();
-
+    
         try {
             while (($line = fgetcsv($file)) !== false) {
                 if (!empty($line[1])) { // Use the second column (index 1) as the temp_id
@@ -367,6 +373,27 @@ class AdvocateController extends Controller
                         $startDate = $this->convertDateFormat($line[4]);
                         $endDate = $this->convertDateFormat($line[5]);
                         $submissionDeadline = $this->convertDateFormat($line[12]);
+    
+                        // Check if advocate exists by name
+                        $advocateName = $line[13] ?? null; // Assuming advocate name is in column 13
+                        if ($advocateName) {
+                            $advocate = DB::table('advocates')->where('name', $advocateName)->first();
+    
+                            if (!$advocate) {
+                                // If advocate doesn't exist, insert and retrieve the ID
+                                $advocateId = DB::table('advocates')->insertGetId([
+                                    'name' => $advocateName,
+                                    'created_at' => now(),
+                                    'updated_at' => now(),
+                                ]);
+                            } else {
+                                // If advocate exists, get the advocate ID
+                                $advocateId = $advocate->id;
+                            }
+                        } else {
+                            throw new \Exception("Advocate name not provided in the CSV.");
+                        }
+    
                         // Extract data from each row, adjusting indexes as necessary
                         $data = [
                             'case_name' => $line[2] ?? null,
@@ -375,81 +402,65 @@ class AdvocateController extends Controller
                             'end_date' => $endDate,
                             'court_name' => $line[6] ?? null,
                             'court_case_location' => $line[7] ?? null,
-                            'plantiff_name' => $line[8] ?? null,
+                            'plaintiff_name' => $line[8] ?? null,
                             'defendant_name' => $line[9] ?? null,
                             'urgency_level' => $line[10] ?? null,
                             'notes' => $line[11] ?? null,
                             'submission_deadline' => $submissionDeadline,
-                            'advocate_id' => $line[13] ?? null,
+                            'advocate_id' => $advocateId, // Using advocate ID
                             'case_result' => $line[14] ?? null,
                             'status' => $line[15] ?? null,
-                            // case result is pending here, and check for priority
                             'created_by' => Auth::user()->id,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
-
+    
                         // Validate the data
                         $validator = Validator::make($data, [
-                            // 'case_name' => 'nullable|string|max:255',
-                            // 'case_status' => 'nullable|string|max:255',
-                            // 'start_date' => 'nullable|date',
-                            // 'end_date' => 'nullable|date',
-                            // 'court_name' => 'nullable|string|max:255',
-                            // 'court_case_location' => 'nullable|string|max:255',
-                            // 'plantiff_name' => 'nullable|string|max:255',
-                            // 'defendant_name' => 'nullable|string|max:255',
-                            // 'urgency_level' => 'nullable|string|max:255',
-                            // 'notes' => 'nullable|string',
-                            // 'submission_deadline' => 'nullable|date',
-                            // 'advocate_id' => 'required|exists:advocates,id',
-                            // 'case_result' => 'nullable|string',
-
-                            // case result is pending here
-                            // 'status' => 'nullable|boolean',
+                            // Your validation rules here
                         ]);
-
+    
                         if ($validator->fails()) {
                             throw new \Exception('Validation failed for one or more rows.');
                         }
-
+    
                         // Retrieve the doc_id using temp_id from master_doc_data table
                         $doc_id = DB::table('master_doc_datas')
                             ->where('temp_id', $line[1]) // Assuming the second column (line[1]) is the temp_id
                             ->value('id');
-
+    
                         if (!$doc_id) {
                             throw new \Exception("Document ID not found for temp_id: {$line[1]}");
                         }
-
+    
                         // Assign the doc_id to the data
                         $data['doc_id'] = $doc_id;
-                        $data['created_by'] =  Auth::user()->id;
-
+    
                         // Insert data into advocate_documents table
                         DB::table('advocate_documents')->insert($data);
                     }
                 }
             }
-
+    
             DB::commit();
-
+    
             // Close the file
             fclose($file);
-
+    
             // Redirect or return a response
             return redirect()->back()->with('success', 'Bulk upload completed successfully.');
         } catch (\Exception $e) {
             Log::error('Bulk upload failed: ' . $e->getMessage());
             DB::rollBack();
-
+    
             // Close the file
             fclose($file);
-
+    
             // Redirect back with error message
             return redirect()->back()->with('error', 'Bulk upload failed. ' . $e->getMessage());
         }
     }
+    
     private function convertDateFormat($date)
     {
         if (!$date) {

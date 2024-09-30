@@ -1452,9 +1452,9 @@
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="plantiff_name" class="form-label">Plaintiff Name</label>
-                                    <input type="text" class="form-control" id="plantiff_name"
-                                        name="plantiff_name">
+                                    <label for="plaintiff_name" class="form-label">Plaintiff Name</label>
+                                    <input type="text" class="form-control" id="plaintiff_name"
+                                        name="plaintiff_name">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -1584,9 +1584,9 @@
                         </div>
                         <div class="col-6">
                             <div class="mb-3">
-                                <label for="edit_plantiff_name" class="form-label">Plaintiff Name</label>
-                                <input type="text" class="form-control" id="edit_plantiff_name"
-                                    name="plantiff_name">
+                                <label for="edit_plaintiff_name" class="form-label">Plaintiff Name</label>
+                                <input type="text" class="form-control" id="edit_plaintiff_name"
+                                    name="plaintiff_name">
                             </div>
                         </div>
                         <div class="col-6">
@@ -1666,8 +1666,8 @@
                 document.getElementById('edit_court_name').value = assignment.court_name;
                 document.getElementById('edit_court_case_location').value = assignment
                     .court_case_location;
-                document.getElementById('edit_plantiff_name').value = assignment
-                    .plantiff_name;
+                document.getElementById('edit_plaintiff_name').value = assignment
+                    .plaintiff_name;
                 document.getElementById('edit_defendant_name').value = assignment
                     .defendant_name;
                 document.getElementById('edit_urgency_level').value = assignment

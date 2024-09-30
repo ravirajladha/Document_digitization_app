@@ -133,10 +133,10 @@
                         </a>
 
                         <ul aria-expanded="false">
-                            <li><a href="{{ url('/') }}/receiver-type">Documents (with child data) <span class="badge bg-warning text-dark">In Progress</span></a></li>
+                            <li><a href="{{ url('/child-document-reports') }}/receiver-type">Documents (with child data) <span class="badge bg-warning text-dark">In Progress</span></a></li>
                             <li><a href="{{ url('/') }}/documents-assigned-to-receivers" > Assigned Documents to Receivers <span class="badge bg-success text-dark">New</span></a></li>
                             <li><a href="{{ url('/') }}/documents-assigned-to-advocates" >Assigned Documents to Advocates <span class="badge bg-success text-dark">New</span></a></li>
-                            <li><a href="{{ url('/') }}/subcategories">Users Work Progress <span class="badge bg-warning text-dark">In Progress</span></a></li>
+                            {{-- <li><a href="{{ url('/') }}/subcategories">Users Work Progress <span class="badge bg-warning text-dark">In Progress</span></a></li> --}}
                         </ul>
                         
                     </li>

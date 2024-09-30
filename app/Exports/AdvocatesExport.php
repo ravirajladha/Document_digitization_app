@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Exports;
 
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Carbon\Carbon;
 
 class AdvocatesExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -18,16 +18,20 @@ class AdvocatesExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
+        // dd("inside");
+
+        // Create a query that joins the necessary tables and applies the filters
         $query = DB::table('advocate_documents')
             ->join('advocates', 'advocate_documents.advocate_id', '=', 'advocates.id')
             ->join('master_doc_datas', 'advocate_documents.doc_id', '=', 'master_doc_datas.id');
-
+// dd($this->filters['advocate_id']);
+        // Apply filters
         if (!empty($this->filters['advocate_id'])) {
             $query->where('advocate_documents.advocate_id', $this->filters['advocate_id']);
         }
 
         if (!empty($this->filters['doc_id'])) {
-            $query->where('master_doc_datas.id', $this->filters['doc_id']);
+            $query->where('advocate_documents.doc_id', $this->filters['doc_id']);
         }
 
         if (!empty($this->filters['start_date'])) {
@@ -38,40 +42,24 @@ class AdvocatesExport implements FromCollection, WithHeadings, WithMapping
             $query->whereDate('advocate_documents.created_at', '<=', $this->filters['end_date']);
         }
 
-        return $query->get([
+        // Get the relevant data
+        return $query->select([
             'advocate_documents.id as assignment_id',
             'advocates.name as advocate_name',
             'advocate_documents.created_at as created_at',
             'master_doc_datas.name as document_name',
-            'master_doc_datas.category_id as category_id',
-            'master_doc_datas.subcategory_id as subcategory_id',
-            'master_doc_datas.location as location',
-            'master_doc_datas.locker_id as locker_id',
-            'master_doc_datas.category as category',
-            'master_doc_datas.document_type_name as document_type_name',
-            'master_doc_datas.current_state as current_state',
-            'master_doc_datas.state as state',
-            'master_doc_datas.alternate_state as alternate_state',
-            'master_doc_datas.current_district as current_district',
-            'master_doc_datas.district as district',
-            'master_doc_datas.alternate_district as alternate_district',
-            'master_doc_datas.current_taluk as current_taluk',
-            'master_doc_datas.taluk as taluk',
-            'master_doc_datas.alternate_taluk as alternate_taluk',
-            'master_doc_datas.current_village as current_village',
-            'master_doc_datas.village as village',
-            'master_doc_datas.alternate_village as alternate_village',
-            'master_doc_datas.issued_date as issued_date',
-            'master_doc_datas.area as area',
-            'master_doc_datas.dry_land as dry_land',
-            'master_doc_datas.wet_land as wet_land',
-            'master_doc_datas.unit as unit',
-            'master_doc_datas.old_locker_number as old_locker_number',
-            'master_doc_datas.latitude as latitude',
-            'master_doc_datas.longitude as longitude',
-            'master_doc_datas.court_case_no as court_case_no',
-            'master_doc_datas.survey_no as survey_no',
-        ]);
+            DB::raw('COALESCE(NULLIF(advocate_documents.case_name, ""), "--") as case_name'),
+            DB::raw('COALESCE(NULLIF(advocate_documents.case_status, ""), "--") as case_status'),
+            DB::raw('COALESCE(NULLIF(advocate_documents.court_name, ""), "--") as court_name'),
+            DB::raw('COALESCE(NULLIF(advocate_documents.court_case_location, ""), "--") as court_case_location'),
+            DB::raw('COALESCE(NULLIF(advocate_documents.plaintiff_name, ""), "--") as plaintiff_name'),
+            DB::raw('COALESCE(NULLIF(advocate_documents.defendant_name, ""), "--") as defendant_name'),
+        
+            DB::raw('COALESCE(NULLIF(advocate_documents.case_result, ""), "--") as case_result'),
+            DB::raw('COALESCE(NULLIF(advocate_documents.notes, ""), "--") as notes'),
+            'advocate_documents.created_at',
+            'advocate_documents.updated_at',
+        ])->get();
     }
 
     public function headings(): array
@@ -81,34 +69,17 @@ class AdvocatesExport implements FromCollection, WithHeadings, WithMapping
             'Advocate Name',
             'Created At',
             'Document Name',
-            'Category ID',
-            'Subcategory ID',
-            'Location',
-            'Locker ID',
-            'Category',
-            'Document Type Name',
-            'Current State',
-            'State',
-            'Alternate State',
-            'Current District',
-            'District',
-            'Alternate District',
-            'Current Taluk',
-            'Taluk',
-            'Alternate Taluk',
-            'Current Village',
-            'Village',
-            'Alternate Village',
-            'Issued Date',
-            'Area',
-            'Dry Land',
-            'Wet Land',
-            'Unit',
-            'Old Locker Number',
-            'Latitude',
-            'Longitude',
-            'Court Case No',
-            'Survey No',
+            'Case Name',
+            'Case Status',
+            'Court Name',
+            'Court Case Location',
+            'Plaintiff Name',
+            'Defendant Name',
+          
+            'Case Result',
+            'Notes',
+            'Created At',
+            'Updated At'
         ];
     }
 
@@ -117,36 +88,24 @@ class AdvocatesExport implements FromCollection, WithHeadings, WithMapping
         return [
             $document->assignment_id,
             $document->advocate_name,
-            $document->created_at,
-            $document->document_name,
-            $document->category_id,
-            $document->subcategory_id,
-            $document->location,
-            $document->locker_id,
-            $document->category,
-            $document->document_type_name,
-            $document->current_state,
-            $document->state,
-            $document->alternate_state,
-            $document->current_district,
-            $document->district,
-            $document->alternate_district,
-            $document->current_taluk,
-            $document->taluk,
-            $document->alternate_taluk,
-            $document->current_village,
-            $document->village,
-            $document->alternate_village,
-            $document->issued_date,
-            $document->area,
-            $document->dry_land,
-            $document->wet_land,
-            $document->unit,
-            $document->old_locker_number,
-            $document->latitude,
-            $document->longitude,
-            $document->court_case_no,
-            $document->survey_no,
+            $this->formatDate($document->created_at), // Format date as needed
+            $document->document_name ?? '--', // Handle null values with default '--'
+            $document->case_name ?? '--',
+            $document->case_status ?? '--',
+            $document->court_name ?? '--',
+            $document->court_case_location ?? '--',
+            $document->plaintiff_name ?? '--',
+            $document->defendant_name ?? '--',
+       
+            $document->case_result ?? '--',
+            $document->notes ?? '--',
+            $this->formatDate($document->created_at), // Handle date formatting
+            $this->formatDate($document->updated_at),
         ];
+    }
+
+    private function formatDate($date)
+    {
+        return $date ? Carbon::parse($date)->format('d-M-Y H:i') : '--';
     }
 }

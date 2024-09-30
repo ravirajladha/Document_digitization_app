@@ -4,7 +4,7 @@
 
     <x-sidebar />
 
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css"> --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css">
 
     <div class="content-body default-height">
         <!-- row -->
@@ -37,7 +37,7 @@
                         {{-- {{ dd($request->all()) }} --}}
                         <div class="cm-content-body  form excerpt">
                             <div class="card-body">
-                                <form action="{{ url('/') }}/filter-document" method="POST">
+                                <form action="{{ url('/') }}/child-filter-document" method="POST">
                                     @csrf
                                     <div class="row">
 
@@ -143,45 +143,8 @@
                                             </select>
                                         </div>
 
-                                        <div class="mb-3 col-md-4 col-xl-4">
-                                            <label class="form-label">Court Case</label>
-                                            <select id="single-select-abc8" class="form-select form-control"
-                                                style="width:100%;" name="court_case_no">
-                                                <option value="" selected>Select Court Case</option>
-                                                @foreach ($courtCaseNos as $court_case_no)
-                                                    <option value="{{ $court_case_no }}"
-                                                        {{ old('court_case_no', $filters['court_case_no'] ?? '') == $court_case_no ? 'selected' : '' }}>
-                                                        {{ ucwords(str_replace('_', ' ', $court_case_no)) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="mb-3 col-md-4 col-xl-4">
-                                            <label class="form-label">Advocate Name</label>
-                                            <select id="single-select-abc13" class="form-select form-control"
-                                                style="width:100%;" name="advocate_name">
-                                                <option value="" selected>Select Advocate Name</option>
-                                                @foreach ($advocateNames as $advocateName)
-                                                    <option value="{{ $advocateName }}"
-                                                        {{ old('advocate_name', $filters['advocate_name'] ?? '') == $advocateName ? 'selected' : '' }}>
-                                                        {{ ucwords(str_replace('_', ' ', $advocateName)) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="mb-3 col-md-4 col-xl-4">
-                                            <label class="form-label">Case Result</label>
-                                            <select id="single-select-abc14" class="form-select form-control"
-                                                style="width:100%;" name="case_result">
-                                                <option value="" selected>Select Case Result</option>
-                                                @foreach ($caseResults as $caseResult)
-                                                    <option value="{{ $caseResult }}"
-                                                        {{ old('case_result', $filters['case_result'] ?? '') == $caseResult ? 'selected' : '' }}>
-                                                        {{ ucwords(str_replace('_', ' ', $caseResult)) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    
+                                   
 
                                         <div class="mb-3 col-md-6 col-xl-6">
                                             <label class="form-label">Document No</label>
@@ -331,25 +294,12 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">Document</h4>
-                            {{-- <button id="exportButton" class="btn btn-primary float-end"><i
-                                    class="fas fa-file-export"></i>&nbsp;Export</button> --}}
-                            {{-- <form action="{{ route('documents.export') }}" method="GET">
-                                        <button type="submit" class="btn btn-primary float-end"><i
-                                            class="fas fa-file-export"></i>&nbsp;Export to Excel</button>
-                                    </form> --}}
-                            <!-- Hidden form for exporting data -->
-                            {{-- <form id="export-form" action="{{ route('documents.export') }}" method="POST" style="display:none;">
-                                        @csrf
-                                        <textarea name="documents">{{ json_encode($documents->items()) }}</textarea>
-                                    </form> --}}
 
-                            <!-- Export button -->
-                            {{-- <button onclick="document.getElementById('export-form').submit();" class="btn btn-success">Export to Excel</button> --}}
-                            <form method="POST" action="{{ route('documents.export') }}">
+                            <form method="POST" action="{{ route('childDocuments.export') }}">
                                 @csrf
+                                {{-- <input type="hidden" name="document_type" value="{{ $document_type_name }}"> --}}
                                 <input type="hidden" name="filters" value="{{ json_encode($documents) }}">
-                                <button type="submit" class="btn btn-primary"><i
-                                    class="fas fa-download"></i>&nbsp;Export CSV</button>
+                                <button type="submit" class="btn btn-primary">Export CSV</button>
                             </form>
                         </div>
                         <div class="card-body">
@@ -357,16 +307,10 @@
                                 <div class="table-responsive">
                                     <table class="table table-striped table-responsive-sm" style="width:100%"
                                         id="filter-table" style="min-width: 845px;font-size: 12px;">
-                                        {{-- <table id="example2" lass="display table-hover"  > --}}
+
                                         <thead>
                                             <tr>
-                                                {{-- <th>
-                                                    <div class="custom-control d-inline custom-checkbox ms-2">
-                                                        <input type="checkbox" class="form-check-input" id="checkAll"
-                                                            required="">
-                                                        <label class="form-check-label" for="checkAll"></label>
-                                                    </div>
-                                                </th> --}}
+
                                                 <th scope="col">Sl. No.</th>
                                                 <th scope="col">Document Name</th>
                                                 <th scope="col">Category</th>
@@ -374,6 +318,8 @@
                                                 <th scope="col">Village</th>
                                                 <th scope="col">District</th>
                                                 <th scope="col">Area</th>
+
+
                                                 <th scope="col">Status</th>
                                                 @if ($user && $user->hasPermission('Main Document View '))
                                                     <th scope="col">Action</th>
@@ -397,7 +343,7 @@
                                                     <td>{{ $item->current_district ? $item->current_district : '--' }}
                                                     </td>
                                                     <td>{{ $item->area ? $item->area : '--' }}
-                                                        {{-- ({{ $item->unit ? ($item->unit === 'acres and cents' ? 'A&C' : 'SqFt') : '--' }}) --}}
+
                                                         {{ $item->unit }}
                                                     </td>
 
@@ -415,11 +361,11 @@
                                                                 '2' => 'Hold',
                                                                 '3' => 'Feedback',
                                                             ];
-                                                            $statusId = strval($item->status_id); // Convert to string to match array keys
+                                                            $statusId = strval($item->status_id);
                                                             $statusClass =
                                                                 $statusClasses[$statusId] ??
-                                                                'badge-secondary text-secondary'; // Default class if key doesn't exist
-$statusText = $statusTexts[$statusId] ?? 'Unknown'; // Default text if key doesn't exist
+                                                                'badge-secondary text-secondary';
+                                                            $statusText = $statusTexts[$statusId] ?? 'Unknown';
                                                         @endphp
 
                                                         <span class="badge light {{ $statusClass }}">

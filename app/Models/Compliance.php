@@ -9,7 +9,7 @@ class Compliance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['document_type', 'doc_id', 'name','due_date', 'is_recurring','created_by'];
+    protected $fillable = ['document_type', 'doc_id', 'name','due_date', 'is_recurring','recurrence_interval','created_by'];
 
     protected $casts = [
         'due_date' => 'datetime',

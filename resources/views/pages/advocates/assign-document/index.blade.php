@@ -14,7 +14,8 @@
             <div class="page-body">
                 <div class="row page-titles">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Document</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/advocates">Advocates</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Assigned Document</a></li>
                     </ol>
                 </div>
@@ -36,28 +37,103 @@
                         </ul>
                     </div>
                 @endif
+                <div class="row">
+                    <div class="col-xl-12">
 
-                <div class="container-fluid">
+                        <div class="filter cm-content-box box-primary">
+                            <div class="content-title SlideToolHeader">
+                                <h4>
+                                    Search Advocates
+                                </h4>
+                                <div class="tools">
+                                    <a href="javascript:void(0);" class="expand handle"><i
+                                            class="fal fa-angle-down"></i></a>
+                                </div>
+                            </div>
+                            <div class="cm-content-body  form excerpt">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form action="{{ route('advocate.documents.assigned.show', ['advocate_id' => $advocateId]) }}" method="GET" class="row">
+
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Document ID</label>
+                                                    <select class="form-select form-control" id="single-select-abc2" name="doc_id">
+                                                        <option value="">Select Document ID</option>
+                                                        {{-- {{ dd($documentAssignments) }} --}}
+                                                        @foreach ($documentAssignments as $doc)
+                                                            <option value="{{ $doc->doc_id }}" {{ request()->input('doc_id') == $doc->doc_id ? 'selected' : '' }}>
+                                                                {{ $doc->document->name   }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Case Result</label>
+                                                    <select class="form-select form-control" id="single-select-abc3" name="case_result">
+                                                        <option value="">Select Case Result</option>
+                                                        @foreach ($unique_case_results as $result)
+                                                            <option value="{{ $result->case_result }}" {{ request()->input('case_result') == $result->case_result ? 'selected' : '' }}>
+                                                                {{ $result->case_result }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                
+                                                <!-- New Plaintiff Name Filter -->
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Plaintiff Name</label>
+                                                    <select class="form-select form-control" name="plaintiff_name">
+                                                        <option value="">Select Plaintiff</option>
+                                                        @foreach ($plaintiff_names as $plaintiff)
+                                                            <option value="{{ $plaintiff->plaintiff_name }}" {{ request()->input('plaintiff_name') == $plaintiff->plaintiff_name ? 'selected' : '' }}>
+                                                                {{ $plaintiff->plaintiff_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                
+                                                <!-- New Defendant Name Filter -->
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Defendant Name</label>
+                                                    <select class="form-select form-control" name="defendant_name">
+                                                        <option value="">Select Defendant</option>
+                                                        @foreach ($defendant_names as $defendant)
+                                                            <option value="{{ $defendant->defendant_name }}" {{ request()->input('defendant_name') == $defendant->defendant_name ? 'selected' : '' }}>
+                                                                {{ $defendant->defendant_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary"><i
+                                                        class="fas fa-filter"></i>&nbsp;Filter</button>
+                                                    {{-- <a href="{{ route('assignedDocumentsToAdvocates.export', request()->all()) }}" class="btn btn-success">Export to Excel</a> --}}
+                                                    <a href="{{ route('advocate.documents.assigned.show', ['advocate_id' => $advocateId]) }}" class="btn btn-dark"><i
+                                                        class="fas fa-refresh"></i>&nbsp;Reset</a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-body">
 
                                     <div class="table-responsive">
-                                        {{-- @if ($documentAssignments->isEmpty())
-                                            @if ($user && $user->hasPermission('Add Assigned Docs to Advocate'))
-                                                <button class="btn btn-success btn-sm assign-doc-btn float-end flex"
-                                                    title="Assign Document to the Receiver" data-bs-toggle="modal"
-                                                    data-bs-target="#assignDocumentModal"
-                                                    data-receiver-id="{{ $advocateId }}"><i
-                                                        class="fas fa-plus-square"></i>&nbsp;Assign Document
-                                                </button>
-                                            @endif
-                                            <p>No document assignments available.</p>
-                                        @else --}}
+
                                         <table class="table table-responsive-sm">
 
-                                            {{-- <button type="button" class="btn btn-success mb-2 float-end"   data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Assign Document</button> --}}
                                             Assigned documents to the Advocate : {{ $advocate->name }}
 
                                             {{-- {{ dd($documentAssignments) }} --}}
@@ -77,16 +153,15 @@
                                                     <th scope="col">Document Type </th>
                                                     <th scope="col">Case Name </th>
                                                     <th scope="col">Case Status </th>
-                                                    <th scope="col">Start Date </th>
-                                                    <th scope="col">End Date </th>
+
                                                     <th scope="col">Court Name </th>
                                                     <th scope="col">Court Case Location </th>
                                                     <th scope="col">Plaintiff Name </th>
                                                     <th scope="col">Defendent Name </th>
-                                                    <th scope="col">Priority Level </th>
+
                                                     <th scope="col">Case Result </th>
                                                     <th scope="col">Notes </th>
-                                                    <th scope="col">Submission Deadline </th>
+
                                                     <th scope="col">Status </th>
                                                     <th scope="col">Created At </th>
                                                     <th scope="col">Action </th>
@@ -107,72 +182,36 @@
                                                         <th scope="row">{{ $index + 1 }}</th>
 
                                                         <td>
-                                                            <a href="/review_doc/{{ $item->document->document_type_name }}/{{ $item->child_id }}" style="color: #1714c9; text-decoration: underline;">
+                                                            <a href="/review_doc/{{ $item->document->document_type_name }}/{{ $item->child_id }}"
+                                                                style="color: #1714c9; text-decoration: underline;">
                                                                 {{ $item->document->name }}
                                                             </a>
                                                         </td>
-                                                        
+
                                                         </td>
                                                         <td>
                                                             {{ $item->document->document_type_name ? formatDocumentType($item->document->document_type_name) : '--' }}
                                                         </td>
-
-
                                                         <td>{{ $item->case_name ?? '--' }}</td>
-
                                                         <td>{{ $item->case_status ?? '--' }}</td>
-                                                        <td>
-                                                            {{ $item->start_date ? Carbon::parse($item->start_date)->format('d-M-Y') : '--' }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $item->end_date ? Carbon::parse($item->end_date)->format('d-M-Y') : '--' }}
-                                                        </td>
-
                                                         <td>{{ $item->court_name ?? '--' }}</td>
                                                         <td>{{ $item->court_case_location ?? '--' }}</td>
-                                                        <td>{{ $item->plantiff_name ?? '--' }}</td>
+                                                        <td>{{ $item->plaintiff_name ?? '--' }}</td>
                                                         <td>{{ $item->defendant_name ?? '--' }}</td>
-                                                        <td>
-                                                            @if(isset($item->urgency_level))
-                                                                @switch($item->urgency_level)
-                                                                    @case('high')
-                                                                        <span class="badge bg-danger">High</span>
-                                                                        @break
-                                                        
-                                                                    @case('medium')
-                                                                        <span class="badge bg-warning">Medium</span>
-                                                                        @break
-                                                        
-                                                                    @case('low')
-                                                                        <span class="badge bg-success">Low</span>
-                                                                        @break
-                                                        
-                                                                    @default
-                                                                        <span>{{ $item->urgency_level }}</span>
-                                                                @endswitch
-                                                            @else
-                                                                --
-                                                            @endif
-                                                        </td>
-                                                        
                                                         <td>{{ $item->case_result ?? '--' }}</td>
                                                         <td>{{ $item->notes ?? '--' }}</td>
+
                                                         <td>
-                                                            {{ $item->submission_deadline ? Carbon::parse($item->submission_deadline)->format('d-M-Y') : '--' }}
-                                                        </td>
-                                                        <td>
-                                                            @if(isset($item->status))
+                                                            @if (isset($item->status))
                                                                 @switch($item->status)
                                                                     @case('1')
                                                                         <span class="badge bg-success">Active</span>
-                                                                        @break
-                                                        
+                                                                    @break
+
                                                                     @case('0')
                                                                         <span class="badge bg-warning">Inactive</span>
-                                                                        @break
-                                                        
-                                                                   
-                                                        
+                                                                    @break
+
                                                                     @default
                                                                         <span>{{ $item->status }}</span>
                                                                 @endswitch
@@ -186,39 +225,42 @@
 
                                                         <td>
                                                             <div class="d-flex">
-                                                              
-                                                            @if ($user && $user->hasPermission('Update Assigned Docs to Advocate'))
-                                                            @if($item->status==1)
-                                                                <button class="btn btn-primary btn-sm edit-doc-btn"
-                                                                    title="Edit Document Assignment"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#editDocumentModal"
-                                                                    data-id="{{ $item->id }}">
-                                                                    <i class="fas fa-edit"></i> Edit
-                                                                </button>
-                                                            
-                                                         
-                                                                <form
-                                                                    action="{{ route('documentAdvocateAssignment.destroy', $item->id) }}"
-                                                                    method="POST" style="display:inline-block;">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger btn-sm"
-                                                                        onclick="return confirm('Are you sure you want to disable this assignment?');">
-                                                                        <i class="fas fa-trash"></i> Disable
-                                                                    </button>
-                                                                </form>
-                                                                @else
-                                                                <button type="button" class="btn btn-primary btn-sm  " data-bs-container="body" data-bs-toggle="popover"
-                                                                data-bs-placement="top"
-                                                                data-bs-content="The assigned document is already inactive, due to which edit option is no more avaiable."><i class="fas fa-info-circle"></i></button>
+
+                                                                @if ($user && $user->hasPermission('Update Assigned Docs to Advocate'))
+                                                                    @if ($item->status == 1)
+                                                                        <button
+                                                                            class="btn btn-primary btn-sm edit-doc-btn"
+                                                                            title="Edit Document Assignment"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#editDocumentModal"
+                                                                            data-id="{{ $item->id }}">
+                                                                            <i class="fas fa-edit"></i> Edit
+                                                                        </button>
+                                                                        <form
+                                                                            action="{{ route('documentAdvocateAssignment.destroy', $item->id) }}"
+                                                                            method="POST"
+                                                                            style="display:inline-block;">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit"
+                                                                                class="btn btn-danger btn-sm"
+                                                                                onclick="return confirm('Are you sure you want to disable this assignment?');">
+                                                                                <i class="fas fa-trash"></i> Disable
+                                                                            </button>
+                                                                        </form>
+                                                                    @else
+                                                                        <button type="button"
+                                                                            class="btn btn-primary btn-sm  "
+                                                                            data-bs-container="body"
+                                                                            data-bs-toggle="popover"
+                                                                            data-bs-placement="top"
+                                                                            data-bs-content="The assigned document is already inactive, due to which edit option is no more avaiable."><i
+                                                                                class="fas fa-info-circle"></i></button>
+                                                                    @endif
                                                                 @endif
-                                                            @endif
-                                                            @if (
-                                                                $user &&
-                                                                    !$user->hasPermission('Update Assigned Docs to Advocate'))
-                                                                --
-                                                            @endif
+                                                                @if ($user && !$user->hasPermission('Update Assigned Docs to Advocate'))
+                                                                    --
+                                                                @endif
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -283,7 +325,7 @@
                                     <input type="text" class="form-control" id="case_status" name="case_status">
                                 </div>
                             </div>
-                            <div class="col-6">
+                            {{-- <div class="col-6">
                                 <div class="mb-3">
                                     <label for="start_date" class="form-label">Start Date</label>
                                     <input type="date" class="form-control" id="start_date" name="start_date">
@@ -294,7 +336,7 @@
                                     <label for="end_date" class="form-label">End Date</label>
                                     <input type="date" class="form-control" id="end_date" name="end_date">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label for="court_name" class="form-label">Court Name</label>
@@ -310,9 +352,9 @@
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="plantiff_name" class="form-label">Plaintiff Name</label>
-                                    <input type="text" class="form-control" id="plantiff_name"
-                                        name="plantiff_name">
+                                    <label for="plaintiff_name" class="form-label">Plaintiff Name</label>
+                                    <input type="text" class="form-control" id="plaintiff_name"
+                                        name="plaintiff_name">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -322,8 +364,8 @@
                                         name="defendant_name">
                                 </div>
                             </div>
-                           
-                            <div class="col-4">
+
+                            {{-- <div class="col-4">
                                 <div class="mb-3">
                                     <label for="edit_urgency_level" class="form-label">Priority Level</label>
                                     <select class="form-control" id="urgency_level" name="urgency_level">
@@ -332,22 +374,21 @@
                                         <option value="low">Low</option>
                                     </select>
                                 </div>
-                            </div>
-                            
+                            </div> --}}
 
-                            <div class="col-4">
+
+                            {{-- <div class="col-4">
                                 <div class="mb-3">
                                     <label for="submission_deadline" class="form-label">Submission Deadline</label>
                                     <input type="date" class="form-control" id="submission_deadline"
                                         name="submission_deadline">
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="col-4">
+                            <div class="col-12">
                                 <div class="mb-3">
-                                    <label for="submission_deadline" class="form-label">Case Result</label>
-                                    <input type="text" class="form-control" id="case_result"
-                                        name="case_result">
+                                    <label for="case_result" class="form-label">Case Result</label>
+                                    <input type="text" class="form-control" id="case_result" name="case_result">
                                 </div>
                             </div>
 
@@ -388,11 +429,20 @@
                     @method('PUT')
                     <input type="hidden" id="editAssignmentId" name="assignment_id">
                     <div class="row">
+
                         <div class="col-12">
                             <div class="mb-3">
                                 <label for="edit_document_name" class="form-label">Document Name</label>
                                 <input type="text" class="form-control" id="edit_document_name"
                                     name="document_name" readonly>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+
+                                <label for="edit_advocate_id" class="form-label">Advocate</label>
+                                <select class="form-control" id="edit_advocate_id" name="advocate_id">
+                                </select>
                             </div>
                         </div>
                         <div class="col-6">
@@ -407,18 +457,7 @@
                                 <input type="text" class="form-control" id="edit_case_status" name="case_status">
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="mb-3">
-                                <label for="edit_start_date" class="form-label">Start Date</label>
-                                <input type="date" class="form-control" id="edit_start_date" name="start_date">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="mb-3">
-                                <label for="edit_end_date" class="form-label">End Date</label>
-                                <input type="date" class="form-control" id="edit_end_date" name="end_date">
-                            </div>
-                        </div>
+                    
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="edit_court_name" class="form-label">Court Name</label>
@@ -434,9 +473,9 @@
                         </div>
                         <div class="col-6">
                             <div class="mb-3">
-                                <label for="edit_plantiff_name" class="form-label">Plaintiff Name</label>
-                                <input type="text" class="form-control" id="edit_plantiff_name"
-                                    name="plantiff_name">
+                                <label for="edit_plaintiff_name" class="form-label">Plaintiff Name</label>
+                                <input type="text" class="form-control" id="edit_plaintiff_name"
+                                    name="plaintiff_name">
                             </div>
                         </div>
                         <div class="col-6">
@@ -446,29 +485,11 @@
                                     name="defendant_name">
                             </div>
                         </div>
-                        <div class="col-4">
+                  
+                        <div class="col-12">
                             <div class="mb-3">
-                                <label for="edit_urgency_level" class="form-label">Priority Level</label>
-                                <select class="form-control" id="edit_urgency_level" name="urgency_level">
-                                    <option value="high">High</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="low">Low</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="col-4">
-                            <div class="mb-3">
-                                <label for="edit_submission_deadline" class="form-label">Submission Deadline</label>
-                                <input type="date" class="form-control" id="edit_submission_deadline"
-                                    name="submission_deadline">
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="mb-3">
-                                <label for="edit_submission_deadline" class="form-label">Case Result</label>
-                                <input type="text" class="form-control" id="edit_case_result"
-                                    name="case_result">
+                                <label for="edit_case_result" class="form-label">Case Result</label>
+                                <input type="text" class="form-control" id="edit_case_result" name="case_result">
                             </div>
                         </div>
                         <div class="col-12">
@@ -504,29 +525,50 @@
             button.addEventListener('click', async (event) => {
                 const assignmentId = button.getAttribute('data-id');
                 const response = await fetch(`/document-assignment/${assignmentId}/edit`);
-                const assignment = await response.json();
-                console.log("assignment", assignment)
+                console.log("response: " + response)
+                const {
+                    assignment,
+                    advocates
+                } = await response.json();
+                console.log("assignment", assignment);
                 document.getElementById('editAssignmentId').value = assignment.id;
                 document.getElementById('edit_document_name').value = assignment.document
                     .name;
                 document.getElementById('edit_case_name').value = assignment.case_name;
                 document.getElementById('edit_case_status').value = assignment.case_status;
-                document.getElementById('edit_start_date').value = assignment.start_date;
-                document.getElementById('edit_end_date').value = assignment.end_date;
+                // document.getElementById('edit_start_date').value = assignment.start_date;
+                // document.getElementById('edit_end_date').value = assignment.end_date;
                 document.getElementById('edit_court_name').value = assignment.court_name;
                 document.getElementById('edit_case_result').value = assignment.case_result;
                 document.getElementById('edit_court_case_location').value = assignment
                     .court_case_location;
-                document.getElementById('edit_plantiff_name').value = assignment
-                    .plantiff_name;
+                document.getElementById('edit_plaintiff_name').value = assignment
+                    .plaintiff_name;
                 document.getElementById('edit_defendant_name').value = assignment
                     .defendant_name;
                 // document.getElementById('edit_urgency_level').value = assignment
                 //     .urgency_level;
-                    document.getElementById('edit_urgency_level').value = assignment.urgency_level.toLowerCase(); // Ensure the value matches "high", "medium", or "low"
-                document.getElementById('edit_submission_deadline').value = assignment
-                    .submission_deadline;
+                // document.getElementById('edit_urgency_level').value = assignment.urgency_level.toLowerCase(); // Ensure the value matches "high", "medium", or "low"
+                // document.getElementById('edit_submission_deadline').value = assignment
+                // .submission_deadline;
                 document.getElementById('edit_notes').value = assignment.notes;
+
+
+                // Populate the advocate dropdown
+                const advocateSelect = document.getElementById('edit_advocate_id');
+                advocateSelect.innerHTML = '';
+                advocates.forEach(advocate => {
+                    const option = document.createElement('option');
+                    option.value = advocate.id;
+                    option.textContent = advocate.name;
+                    // Set selected advocate
+                    if (advocate.id === assignment.advocate_id) {
+                        option.selected = true;
+                    }
+                    advocateSelect.appendChild(option);
+                });
+
+
                 const form = document.getElementById('editDocumentForm');
                 form.action = `/document-assignment/${assignment.id}`;
             });

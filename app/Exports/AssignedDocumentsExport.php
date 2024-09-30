@@ -75,10 +75,7 @@ class AssignedDocumentsExport implements FromCollection, WithHeadings
             'master_doc_datas.old_locker_number as old_locker_number',
             'master_doc_datas.latitude as latitude',
             'master_doc_datas.longitude as longitude',
-            'master_doc_datas.court_case_no as court_case_no',
-            'master_doc_datas.court_case_no as advocate_name',
-            'master_doc_datas.court_case_no as case_status',
-            'master_doc_datas.court_case_no as case_result',
+          
             'master_doc_datas.survey_no as survey_no',
         ]);
 
@@ -128,10 +125,7 @@ return collect($data);
             'Old Locker Number',
             'Latitude',
             'Longitude',
-            'Court Case No',
-            'Advocate Name',
-            'Case Status',
-            'Case Result',
+          
             'Survey No',
         ];
     }

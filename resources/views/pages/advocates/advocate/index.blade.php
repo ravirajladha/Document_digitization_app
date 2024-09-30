@@ -413,7 +413,6 @@
                         '<td>' + receiver.phone + '</td>' +
                         '<td>' + receiver.city + '</td>' +
                         '<td>' + receiver.email + '</td>' +
-
                         '<td>' + receiver.receiver_type_name + '</td>' +
                         '<td>' + receiver.document_assignments_count + '</td>' +
 

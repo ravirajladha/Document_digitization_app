@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\{NotificationController, ReceiverController, DocumentController, SetController, UserController, ComplianceController, DashboardController, BulkUploadController, ReceiverProcessController, ProfileController, FilterDocumentController, LogController, SoldLandController, ProjectSettingsController, AdvocateController, DataSetController, ReportController};
 use Illuminate\Support\Facades\Route;
-
+use App\Exports\CompliancesExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 Route::view('/error/403', 'error.403')->name('error');
 Route::middleware('guest')->group(function () {
@@ -32,13 +34,22 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
     Route::post('/add_set', [SetController::class, 'addSet'])->name('sets.add');
     Route::post('/update-set', [SetController::class, 'updateSet'])->name('sets.update');
 
-
     //reports
+    Route::get('/child-document-reports', [ReportController::class, 'childDocumentReports'])->name('childDocumentReports.index');
+    Route::post('/child-filter-document', [ReportController::class, 'childDocumentReports'])->name('childDocumentReports.review');
+    Route::post('/child-export-documents', [ReportController::class, 'exportFilteredDocuments'])->name('childDocuments.export');
     Route::get('/documents-assigned-to-receivers', [ReportController::class, 'documentsAssignedToReceivers'])->name('documentsAssignedToReceivers.index');
     Route::get('/assignedDocumentsToReceivers/export', [ReportController::class, 'documentsAssignedToReceiversExport'])->name('assignedDocumentsToReceivers.export');
     Route::get('/documents-assigned-to-advocates', [ReportController::class, 'documentsAssignedToAdvocates'])->name('documentsAssignedToAdvocates.index');
     // assignedDocumentsToAdvocates
     Route::get('/assignedDocumentsToAdvocates/export', [ReportController::class, 'documentsAssignedToAdvocatesExport'])->name('assignedDocumentsToAdvocates.export');
+    Route::get('/compliances/export', [ComplianceController::class, 'compliancesExport'])->name('compliances.export');
+
+    // Route::get('/compliances/export', function (Request $request) {
+    //     return Excel::download(new CompliancesExport($request->all()), 'compliances.xlsx');
+    // })->name('compliances.export');
+
+
     // Route::get('/assignedDocumentsToReceivers/export', [ReportController::class, 'export'])->name('assignedDocumentsToReceivers.export');
     //in the receivers page
     Route::get('/export-receivers', [ReceiverController::class, 'exportReceivers'])->name('receivers.export');
@@ -210,8 +221,7 @@ Route::middleware(['auth', 'verified', 'checkuserpermission', 'xss-protection', 
 
     Route::get('/advocate-assign-documents/{advocate_id}', [AdvocateController::class, 'showAdvocateAssignedDocument'])
         ->name('advocate.documents.assigned.show');
-    Route::post('/assign-documents-to-advocate', [AdvocateController::class, 'assignDocumentsToAdvocate'])
-        ->name('documents.assign.toAdvocate');
+    Route::post('/assign-documents-to-advocate', [AdvocateController::class, 'assignDocumentsToAdvocate'])->name('documents.assign.toAdvocate');
     Route::put('/document-assignment/{id}', [AdvocateController::class, 'updateDocumentAssignment'])->name('documentAdvocateAssignment.update');
     Route::get('/document-assignment/{id}/edit', [AdvocateController::class, 'editDocumentAssignment'])->name('documentAdvocateAssignment.edit');
     Route::delete('/document-assignment/{id}', [AdvocateController::class, 'destroy'])->name('documentAdvocateAssignment.destroy');

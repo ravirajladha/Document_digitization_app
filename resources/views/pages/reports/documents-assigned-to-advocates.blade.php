@@ -33,7 +33,7 @@
                                         <div class="col-md-12">
                                             <form action="{{ route('documentsAssignedToAdvocates.index') }}" method="GET" class="row">
 
-                                                <div class="mb-3 col-md-4">
+                                                <div class="mb-3 col-md-6">
                                                     <label class="form-label">Advocates</label>
                                                     <select class="form-select form-control" name="advocate_id"
                                                         id="single-select-abc1">
@@ -46,7 +46,8 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="mb-3 col-md-4">
+
+                                                <div class="mb-3 col-md-6">
                                                     <label class="form-label">Document ID</label>
                                                     <select class="form-select form-control" id="single-select-abc2" name="doc_id">
                                                         <option value="">Select Document ID</option>
@@ -56,24 +57,44 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    
                                                 </div>
-                                                <div class="mb-3 col-md-4">
-                                                    <label class="form-label">Start Date</label>
-                                                    <input name="start_date" type="date" class="form-control"
-                                                        value="{{ request()->input('start_date') }}">
+                                                
+                                               
+
+
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Case Status</label>
+                                                    <select class="form-select form-control" id="single-select-abc2" name="case_status">
+                                                        <option value="">Select Case Status</option>
+                                                        @foreach ($unique_case_statuses as $doc)
+                                                            <option value="{{ $doc->case_status }}" {{ request()->input('case_status') == $doc->case_status ? 'selected' : '' }}>
+                                                                {{ $doc->case_status }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
-                                                <div class="mb-3 col-md-4">
-                                                    <label class="form-label">End Date</label>
-                                                    <input name="end_date" type="date" class="form-control"
-                                                        value="{{ request()->input('end_date') }}">
+                                                
+                                                <div class="mb-3 col-md-6">
+                                                    <label class="form-label">Case Result</label>
+                                                    <select class="form-select form-control" id="single-select-abc3" name="case_result">
+                                                        <option value="">Select Case Result</option>
+                                                        @foreach ($unique_case_results as $doc)
+                                                            <option value="{{ $doc->case_result }}" {{ request()->input('case_result') == $doc->case_result ? 'selected' : '' }}>
+                                                                {{ $doc->case_result }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
+                                                
                                                 <div class="col-md-12">
-                                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                                    <button type="submit" class="btn btn-primary"><i
+                                                        class="fas fa-filter"></i>&nbsp;Filter</button>
                                                     <a href="{{ route('assignedDocumentsToAdvocates.export', request()->all()) }}"
-                                                        class="btn btn-success">Export to Excel</a>
+                                                        class="btn btn-success"><i
+                                                        class="fas fa-download"></i>&nbsp;Export to Excel</a>
                                                     <a href="{{ url('/') }}/documents-assigned-to-advocates"
-                                                        class="btn btn-dark">Reset</a>
+                                                        class="btn btn-dark"><i
+                                                        class="fas fa-refresh"></i>&nbsp;Reset</a>
                                                 </div>
                                             </form>
                                         </div>
@@ -99,36 +120,19 @@
                                                 <tr>
                                                     <th>Assignment ID</th>
                                                     <th>Advocate Name</th>
-                                                    <th>Created At</th>
+                                                    {{-- <th>Created At</th> --}}
                                                     <th>Document Name</th>
-                                                    <th>Category ID</th>
-                                                    <th>Subcategory ID</th>
-                                                    <th>Location</th>
-                                                    <th>Locker ID</th>
-                                                    <th>Category</th>
-                                                    <th>Document Type Name</th>
-                                                    <th>Current State</th>
-                                                    <th>State</th>
-                                                    <th>Alternate State</th>
-                                                    <th>Current District</th>
-                                                    <th>District</th>
-                                                    <th>Alternate District</th>
-                                                    <th>Current Taluk</th>
-                                                    <th>Taluk</th>
-                                                    <th>Alternate Taluk</th>
-                                                    <th>Current Village</th>
-                                                    <th>Village</th>
-                                                    <th>Alternate Village</th>
-                                                    <th>Issued Date</th>
-                                                    <th>Area</th>
-                                                    <th>Dry Land</th>
-                                                    <th>Wet Land</th>
-                                                    <th>Unit</th>
-                                                    <th>Old Locker Number</th>
-                                                    <th>Latitude</th>
-                                                    <th>Longitude</th>
-                                                    <th>Court Case No</th>
-                                                    <th>Survey No</th>
+                                                    <th>Case Name</th> <!-- Replaced Category ID with Case Name -->
+                                                    <th>Case Status</th> <!-- Replaced Subcategory ID with Case Status -->
+                                                    <th>Court Name</th>
+                                                    <th>Court Case Location</th>
+                                                    <th>Plaintiff Name</th>
+                                                    <th>Defendant Name</th>
+                                            
+                                                    <th>Case Result</th>
+                                                    <th>Notes</th>
+                                                    <th>Created At</th> <!-- Duplicate Created At to match your data -->
+                                                    <th>Updated At</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -136,36 +140,20 @@
                                                 <tr>
                                                     <td>{{ $document->assignment_id }}</td>
                                                     <td>{{ $document->advocate_name }}</td>
-                                                    <td>{{ $document->created_at_formatted }}</td>
+                                                    {{-- <td>{{ $document->created_at_formatted }}</td> --}}
                                                     <td>{{ $document->document_name }}</td>
-                                                    <td>{{ $document->category_names }}</td>
-                                                    <td>{{ $document->subcategory_names }}</td>
-                                                    <td>{{ $document->location }}</td>
-                                                    <td>{{ $document->locker_id }}</td>
-                                                    <td>{{ $document->category }}</td>
-                                                    <td>{{ $document->document_type_name }}</td>
-                                                    <td>{{ $document->current_state }}</td>
-                                                    <td>{{ $document->state }}</td>
-                                                    <td>{{ $document->alternate_state }}</td>
-                                                    <td>{{ $document->current_district }}</td>
-                                                    <td>{{ $document->district }}</td>
-                                                    <td>{{ $document->alternate_district }}</td>
-                                                    <td>{{ $document->current_taluk }}</td>
-                                                    <td>{{ $document->taluk }}</td>
-                                                    <td>{{ $document->alternate_taluk }}</td>
-                                                    <td>{{ $document->current_village }}</td>
-                                                    <td>{{ $document->village }}</td>
-                                                    <td>{{ $document->alternate_village }}</td>
-                                                    <td>{{ $document->issued_date }}</td>
-                                                    <td>{{ $document->area }}</td>
-                                                    <td>{{ $document->dry_land }}</td>
-                                                    <td>{{ $document->wet_land }}</td>
-                                                    <td>{{ $document->unit }}</td>
-                                                    <td>{{ $document->old_locker_number }}</td>
-                                                    <td>{{ $document->latitude }}</td>
-                                                    <td>{{ $document->longitude }}</td>
-                                                    <td>{{ $document->court_case_no }}</td>
-                                                    <td>{{ $document->survey_no }}</td>
+                                                    <td>{{ $document->case_name }}</td>
+                                                    <td>{{ $document->case_status }}</td>
+                                                    <td>{{ $document->court_name }}</td>
+                                                    <td>{{ $document->court_case_location }}</td>
+                                                    <td>{{ $document->plaintiff_name }}</td>
+                                                    <td>{{ $document->defendant_name }}</td>
+                                                    {{-- <td>{{ $document->urgency_level }}</td> --}}
+                                                    <td>{{ $document->case_result }}</td>
+                                                    <td>{{ $document->notes }}</td>
+                                                    <td>{{ $document->created_at }}</td>
+                                                    <td>{{ $document->updated_at }}</td>
+                                                  
                                                 </tr>
                                             @endforeach
                                             </tbody>

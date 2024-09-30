@@ -1,5 +1,5 @@
 @php
-use Carbon\Carbon;
+    use Carbon\Carbon;
 @endphp
 <x-app-layout>
 
@@ -16,7 +16,8 @@ use Carbon\Carbon;
                         <div class="row page-titles">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/users">Users</a></li>
-                                <li class="breadcrumb-item active"><a href="javascript:void(0)">Reviewed Documents User Wise Count</a>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">Reviewed Documents User
+                                        Wise Count</a>
                                 </li>
                             </ol>
                         </div>
@@ -27,7 +28,6 @@ use Carbon\Carbon;
                             <div class="col-xl-4 col-lg-4 col-xxl-4 col-sm-4">
                                 <div class="card text-white bg-primary">
                                     <ul class="list-group list-group-flush">
-
                                         <li class="list-group-item d-flex justify-content-between"><span
                                                 class="mb-0 text-white">Name :</span><strong
                                                 class="text-white">{{ $user_detail->name }} </strong></li>
@@ -36,8 +36,8 @@ use Carbon\Carbon;
                                                 class="text-white">{{ $user_detail->email }}</strong></li>
                                         <li class="list-group-item d-flex justify-content-between"><span
                                                 class="mb-0 text-white">Phone :</span><strong
-                                                class="text-white">{{ $user_detail->phone ?? "xxxxxxxxx" }}</strong></li>
-
+                                                class="text-white">{{ $user_detail->phone ?? 'xxxxxxxxx' }}</strong>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -47,7 +47,7 @@ use Carbon\Carbon;
                                         <h2 class="card-title">Today's Reviewed Document Count</h2>
                                     </div>
                                     <div class="card-body pb-0">
-                                       
+
 
                                     </div>
                                     <div class="card-footer pt-0 pb-0 text-center">
@@ -57,15 +57,15 @@ use Carbon\Carbon;
                                                 <span>Pending</span>
                                             </div>
                                             <div class="col-3 pt-3 pb-3 border-end">
-                                                <h3 class="mb-1 text-primary">{{ $todayCounts[1]??0 }}</h3>
+                                                <h3 class="mb-1 text-primary">{{ $todayCounts[1] ?? 0 }}</h3>
                                                 <span>Approved</span>
                                             </div>
                                             <div class="col-3 pt-3 pb-3 border-end">
-                                                <h3 class="mb-1 text-primary">{{ $todayCounts[2] ??0 }}</h3>
+                                                <h3 class="mb-1 text-primary">{{ $todayCounts[2] ?? 0 }}</h3>
                                                 <span>Hold</span>
                                             </div>
                                             <div class="col-3 pt-3 pb-3">
-                                                <h3 class="mb-1 text-primary">{{ $todayCounts[3] ??0 }}</h3>
+                                                <h3 class="mb-1 text-primary">{{ $todayCounts[3] ?? 0 }}</h3>
                                                 <span>Review Feedback</span>
                                             </div>
                                         </div>
@@ -74,44 +74,55 @@ use Carbon\Carbon;
                             </div>
                             {{-- {{ dd($data['Total']['Pending']) }} --}}
 
-<div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card text-black">
-            {{-- <div class="card-header">
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <div class="card text-black">
+                                        {{-- <div class="card-header">
                 <h3>Total Counts</h3>
             </div> --}}
-          
-            <div class="card-footer pt-0 pb-0 text-center">
-                <div class="row">
-                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #f8f9fa;">
-                        <h3 class="mb-1 text-dark">Total Counts</h3>
-                        {{-- <span>Total Counts</span> --}}
-                    </div>
-                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #e9ecef;">
-                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Pending'] }}</h3>
-                        <span>Pending</span>
-                    </div>
-                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #dee2e6;">
-                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Approved'] }}</h3>
-                        <span>Approved</span>
-                    </div>
-                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #ced4da;">
-                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Hold'] }}</h3>
-                        <span>Hold</span>
-                    </div>
-                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #adb5bd;">
-                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Reviewer Feedback'] }}</h3>
-                        <span>Review Feedback</span>
-                    </div>
-                    <div class="col-2 pt-3 pb-3 border-end" style="background-color: #6c757d;">
-                        <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Total'] }}</h3>
-                        <span>Total </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+                                        <div class="card-footer pt-0 pb-0 text-center">
+                                            <div class="row">
+                                                <div class="col-2 pt-3 pb-3 border-end"
+                                                    style="background-color: #f8f9fa;">
+                                                    <h3 class="mb-1 text-dark">Total Counts</h3>
+                                                    {{-- <span>Total Counts</span> --}}
+                                                </div>
+                                                <div class="col-2 pt-3 pb-3 border-end"
+                                                    style="background-color: #e9ecef;">
+                                                    <h3 class="mb-1 text-primary">
+                                                        {{ $data['MasterDocData']['Pending'] }}</h3>
+                                                    <span>Pending</span>
+                                                </div>
+                                                <div class="col-2 pt-3 pb-3 border-end"
+                                                    style="background-color: #dee2e6;">
+                                                    <h3 class="mb-1 text-primary">
+                                                        {{ $data['MasterDocData']['Approved'] }}</h3>
+                                                    <span>Approved</span>
+                                                </div>
+                                                <div class="col-2 pt-3 pb-3 border-end"
+                                                    style="background-color: #ced4da;">
+                                                    <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Hold'] }}
+                                                    </h3>
+                                                    <span>Hold</span>
+                                                </div>
+                                                <div class="col-2 pt-3 pb-3 border-end"
+                                                    style="background-color: #adb5bd;">
+                                                    <h3 class="mb-1 text-primary">
+                                                        {{ $data['MasterDocData']['Reviewer Feedback'] }}</h3>
+                                                    <span>Review Feedback</span>
+                                                </div>
+                                                <div class="col-2 pt-3 pb-3 border-end"
+                                                    style="background-color: #6c757d;">
+                                                    <h3 class="mb-1 text-primary">{{ $data['MasterDocData']['Total'] }}
+                                                    </h3>
+                                                    <span>Total </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-xl-12 col-lg-12 col-xxl-12 col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -121,7 +132,7 @@ use Carbon\Carbon;
                                         <div class="table-responsive recentOrderTable">
                                             <table class="table verticle-middle table-responsive-md">
                                                 <thead>
-                                                    <tr>
+                                                
                                                     <tr>
                                                         <th>Date</th>
                                                         <th>Pending</th>
@@ -132,39 +143,29 @@ use Carbon\Carbon;
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($data as $date => $counts)
-                                                    <tr>
-                                                        <td>{{ $date }}</td>
-                                                        {{-- <td>{{ Carbon::parse($date)->format('d-M-Y') }}</td> --}}
-                                                        <td>{{ $counts['Pending'] }}</td>
-                                                        <td>{{ $counts['Approved'] }}</td>
-                                                        <td>{{ $counts['Hold'] }}</td>
-                                                        <td>{{ $counts['Reviewer Feedback'] }}</td>
-                                                        <td>{{ $counts['Total'] }}</td>
-                                                    </tr>
+                                                    {{-- <td>{{ Carbon::parse($date)->format('d-M-Y') }}</td> --}}
+                                                    @foreach ($data as $date => $counts)
+                                                        <tr>
+                                                            <td>{{ $date }}</td>
+                                                            <td>{{ $counts['Pending'] }}</td>
+                                                            <td>{{ $counts['Approved'] }}</td>
+                                                            <td>{{ $counts['Hold'] }}</td>
+                                                            <td>{{ $counts['Reviewer Feedback'] }}</td>
+                                                            <td>{{ $counts['Total'] }}</td>
+                                                        </tr>
                                                     @endforeach
-                                                
-
-                                                  
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
-
         </div>
     </div>
-
 
     @include('layouts.footer')
 
